@@ -1,5 +1,6 @@
 package hiiragi283.material.util
 
+import hiiragi283.material.RagiMaterials
 import net.minecraft.block.BlockState
 import net.minecraft.data.client.Models
 import net.minecraft.data.client.TextureKey
@@ -25,6 +26,8 @@ fun <A, B> Pair<A, B>.reverse(): Pair<B, A> = this.second to this.first
 //    Identifier    //
 
 fun commonId(path: String) = Identifier("c", path)
+
+fun hiiragiId(path: String) = Identifier(RagiMaterials.MOD_ID, path)
 
 fun Identifier.append(path: String) = Identifier(this.namespace, this.path + path)
 

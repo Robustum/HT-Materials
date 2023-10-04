@@ -1,6 +1,5 @@
 package hiiragi283.material.api.material
 
-import hiiragi283.material.RagiMaterials
 import hiiragi283.material.api.part.HiiragiPart
 import hiiragi283.material.api.reigstry.HiiragiRegistries
 import hiiragi283.material.api.reigstry.HiiragiRegistry
@@ -8,8 +7,12 @@ import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.api.shape.HiiragiShapeType
 import hiiragi283.material.api.shape.HiiragiShapeTypes
 import hiiragi283.material.api.shape.HiiragiShapes
+import hiiragi283.material.util.HiiragiNbtConstants
+import hiiragi283.material.util.hiiragiId
 import net.minecraft.item.Item
 import net.minecraft.item.Items
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.network.PacketByteBuf
 import net.minecraft.tag.TagKey
 import net.minecraft.util.registry.Registry
 
@@ -17,6 +20,7 @@ data class HiiragiMaterial(
     val name: String,
     var color: Int = 0xFFFFFF,
     var formula: String = "",
+    var miningProperty: MiningProperty = MiningProperty(),
     var molar: Double = 0.0,
     var shapeType: HiiragiShapeType = HiiragiShapeTypes.EMPTY,
     var tempBoil: Int = 0,
@@ -28,9 +32,11 @@ data class HiiragiMaterial(
 
     //    Conversion    //
 
-    val tagKey: TagKey<Item> = TagKey.of(Registry.ITEM_KEY, RagiMaterials.id(name))
+    val tagKey: TagKey<Item> = TagKey.of(Registry.ITEM_KEY, hiiragiId(name))
 
     fun addBracket() = copy(formula = "($formula)")
+
+    fun getNotEmpty(): HiiragiMaterial? = takeUnless(HiiragiMaterial::isEmpty)
 
     fun getPart(shape: HiiragiShape) = HiiragiPart(shape, this)
 
@@ -43,6 +49,8 @@ data class HiiragiMaterial(
     fun hasTempBoil(): Boolean = tempBoil > 0
 
     fun hasTempMelt(): Boolean = tempMelt > 0
+
+    fun isEmpty(): Boolean = this == EMPTY || name == "empty"
 
     fun isGem(): Boolean = HiiragiShapes.GEM.isValid(this)
 
@@ -78,10 +86,20 @@ data class HiiragiMaterial(
 
     override fun toString(): String = "material:$name"
 
-    //    Registration    //
+    //    Entry    //
 
     fun register() {
         HiiragiRegistries.MATERIAL.register(name, this)
+    }
+
+    override fun toNbt(): NbtCompound {
+        val nbt = NbtCompound()
+        nbt.putString(HiiragiNbtConstants.MATERIAL, name)
+        return nbt
+    }
+
+    override fun toPacket(buf: PacketByteBuf) {
+        buf.writeString(name)
     }
 
     companion object {
@@ -89,6 +107,12 @@ data class HiiragiMaterial(
         @JvmField
         val EMPTY = HiiragiMaterial("empty")
 
+        @JvmStatic
+        fun fromNbt(nbt: NbtCompound): HiiragiMaterial =
+            HiiragiRegistries.MATERIAL.getValue(nbt.getString(HiiragiNbtConstants.MATERIAL))
+
+        @JvmStatic
+        fun fromPacket(buf: PacketByteBuf): HiiragiMaterial = HiiragiRegistries.MATERIAL.getValue(buf.readString())
     }
 
 }

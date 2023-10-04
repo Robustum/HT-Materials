@@ -59,7 +59,7 @@ abstract class MaterialItem(
 
     @Environment(EnvType.CLIENT)
     override fun onRegisterClient() {
-        ColorProviderRegistry.ITEM.register(SimpleColorProvider(part), this)
+        ColorProviderRegistry.ITEM.register(SimpleColorProvider.of(part) { it.material.color }, this)
     }
 
 }

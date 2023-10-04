@@ -1,11 +1,14 @@
 package hiiragi283.material
 
 import hiiragi283.material.api.reigstry.HiiragiRegistries
+import hiiragi283.material.init.HiiragiBlocks
+import hiiragi283.material.init.HiiragiItems
+import hiiragi283.material.util.hiiragiId
 import net.fabricmc.api.ModInitializer
-import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import pers.solid.brrp.v1.RRPEventHelper
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 
 object RagiMaterials : ModInitializer {
@@ -15,19 +18,27 @@ object RagiMaterials : ModInitializer {
 
     val LOGGER: Logger = LogManager.getLogger(MOD_NAME)
 
-    private val RESOURCE_PACK = RuntimeResourcePack.create(id("runtime"))
+    private val RESOURCE_PACK = RuntimeResourcePack.create(hiiragiId("runtime"))
 
     override fun onInitialize() {
 
+        HiiragiRegistries.registerShape()
+        HiiragiRegistries.registerMaterial()
+        HiiragiRegistries.registerPart()
+
+        HiiragiBlocks.registerMaterialBlocks()
+        HiiragiItems.registerMaterialItems()
+
         HiiragiRegistries.BLOCK.register(Registry.BLOCK)
-        HiiragiRegistries.BLOCK_ENTITY.register(Registry.BLOCK_ENTITY_TYPE)
         HiiragiRegistries.ITEM.register(Registry.ITEM)
 
         HiiragiRegistries.BLOCK.addResources(RESOURCE_PACK)
         HiiragiRegistries.ITEM.addResources(RESOURCE_PACK)
 
-    }
+        HiiragiTagRegistry.register(RESOURCE_PACK)
 
-    fun id(path: String) = Identifier(MOD_ID, path)
+        RRPEventHelper.BEFORE_VANILLA.registerPack(RESOURCE_PACK)
+
+    }
 
 }

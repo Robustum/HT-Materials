@@ -14,10 +14,22 @@
   "icon": "assets/ragi_materials/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
+    "preLaunch": [
       {
         "adapter": "kotlin",
-        "value": "hiiragi283.material.client.RagiMaterialsClient"
+        "value": "hiiragi283.material.core.RagiMaterialsCore"
+      }
+    ],
+    "hiiragi283.shape": [
+      {
+        "adapter": "kotlin",
+        "value": "hiiragi283.material.core.RagiMaterialsCore"
+      }
+    ],
+    "hiiragi283.material": [
+      {
+        "adapter": "kotlin",
+        "value": "hiiragi283.material.core.RagiMaterialsCore"
       }
     ],
     "main": [
@@ -26,10 +38,10 @@
         "value": "hiiragi283.material.RagiMaterials"
       }
     ],
-    "preLaunch": [
+    "client": [
       {
         "adapter": "kotlin",
-        "value": "hiiragi283.material.core.RagiMaterialsCore"
+        "value": "hiiragi283.material.client.RagiMaterialsClient"
       }
     ]
   },

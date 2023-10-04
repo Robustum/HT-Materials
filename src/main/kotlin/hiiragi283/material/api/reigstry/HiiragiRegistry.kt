@@ -1,14 +1,15 @@
 package hiiragi283.material.api.reigstry
 
-import hiiragi283.material.RagiMaterials
+import hiiragi283.material.util.hiiragiId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.item.ItemConvertible
-import net.minecraft.util.Identifier
+import net.minecraft.nbt.NbtCompound
+import net.minecraft.network.PacketByteBuf
 import net.minecraft.util.registry.Registry
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 
-class HiiragiRegistry<T>(private val name: String) {
+sealed class HiiragiRegistry<T>(private val title: String) {
 
     //    Lock    //
 
@@ -20,30 +21,33 @@ class HiiragiRegistry<T>(private val name: String) {
 
     //    Registration    //
 
+    val entriesMap: Map<String, Entry<T>>
+        get() = entriesInternal
     private val entriesInternal: MutableMap<String, Entry<T>> = mutableMapOf()
 
-    fun getMap(): Map<String, T> = entriesInternal.toList().associate { it.first to it.second.getValue() }
+    val map: Map<String, T>
+        get() = mapInternal
+    private val mapInternal: MutableMap<String, T> = mutableMapOf()
 
-    fun getMapReversed(): Map<T, String> = entriesInternal.toList().associate { it.second.getValue() to it.first }
+    open fun getValue(key: String): T? = mapInternal[key]
 
-    fun getPath(entry: Entry<T>): String? = getMapReversed()[entry.getValue()]
+    fun getValues(): Collection<T> = mapInternal.values
 
-    fun getKey(entry: Entry<T>): Identifier? = getPath(entry)?.let(RagiMaterials::id)
-
-    fun <U: Entry<T>> register(path: String, entry: U): U {
+    fun <U : Entry<T>> register(name: String, entry: U): U {
         if (isLocked) {
-            throw IllegalStateException("[$name] This registry is already locked!!")
+            throw IllegalStateException("[$title] This registry is already locked!!")
         }
-        if (entriesInternal.putIfAbsent(path, entry) != null) {
-            throw IllegalStateException("[$name] The key: $path is already registered!")
+        if (entriesInternal.putIfAbsent(name, entry) != null) {
+            throw IllegalStateException("[$title] The key: $name is already registered!")
         }
+        mapInternal[name] = entry.getValue()
+        entry.onRegister(name)
         return entry
     }
 
     fun register(registry: Registry<T>) {
-        entriesInternal.forEach { (path: String, entry: Entry<T>) ->
-            entry.onRegister(path, registry)
-            Registry.register(registry, RagiMaterials.id(path), entry.getValue())
+        entriesInternal.forEach { (name: String, entry: Entry<T>) ->
+            Registry.register(registry, hiiragiId(name), entry.getValue())
         }
         lock()
     }
@@ -57,6 +61,22 @@ class HiiragiRegistry<T>(private val name: String) {
         entriesInternal.values.forEach { it.onRegisterClient() }
     }
 
+    //    Simple    //
+
+    class Simple<T>(title: String) : HiiragiRegistry<T>(title)
+
+    //    Defaulted    //
+
+    class Defaulted<T>(title: String, val defaultValue: Entry<T>) : HiiragiRegistry<T>(title) {
+
+        init {
+            register("default", defaultValue)
+        }
+
+        override fun getValue(key: String): T = super.getValue(key) ?: defaultValue.getValue()
+
+    }
+
     //    Entry    //
 
     interface Entry<T> : ItemConvertible {
@@ -64,18 +84,19 @@ class HiiragiRegistry<T>(private val name: String) {
         @Suppress("UNCHECKED_CAST")
         fun getValue(): T = this as T
 
-        fun onRegister(path: String, registry: Registry<T>) {
-
+        fun onRegister(name: String) {
         }
 
         fun addResources(resourcePack: RuntimeResourcePack) {
-
         }
 
         @Environment(EnvType.CLIENT)
         fun onRegisterClient() {
-
         }
+
+        fun toNbt(): NbtCompound
+
+        fun toPacket(buf: PacketByteBuf)
 
     }
 

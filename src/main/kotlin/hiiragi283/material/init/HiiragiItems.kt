@@ -19,7 +19,7 @@ object HiiragiItems {
 
     fun registerMaterialItems() {
         materialFunctions.forEach { (shape: HiiragiShape, constructor: (HiiragiMaterial) -> MaterialItem) ->
-            HiiragiRegistries.MATERIAL.getMap().values
+            HiiragiRegistries.MATERIAL.getValues()
                 .filter(shape::isValid)
                 .map(constructor)
                 .forEach(MaterialItem::register)
