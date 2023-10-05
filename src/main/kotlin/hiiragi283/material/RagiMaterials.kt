@@ -1,8 +1,9 @@
 package hiiragi283.material
 
-import hiiragi283.material.api.reigstry.HiiragiRegistries
 import hiiragi283.material.init.HiiragiBlocks
 import hiiragi283.material.init.HiiragiItems
+import hiiragi283.material.init.HiiragiRegistries
+import hiiragi283.material.init.HiiragiTagRegistry
 import hiiragi283.material.util.hiiragiId
 import net.fabricmc.api.ModInitializer
 import net.minecraft.util.registry.Registry

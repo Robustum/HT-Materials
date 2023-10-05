@@ -1,6 +1,6 @@
 package hiiragi283.material.client
 
-import hiiragi283.material.api.reigstry.HiiragiRegistries
+import hiiragi283.material.init.HiiragiRegistries
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment

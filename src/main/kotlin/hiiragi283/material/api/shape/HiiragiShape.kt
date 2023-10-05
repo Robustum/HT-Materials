@@ -2,8 +2,8 @@ package hiiragi283.material.api.shape
 
 import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.part.HiiragiPart
-import hiiragi283.material.api.reigstry.HiiragiRegistries
 import hiiragi283.material.api.reigstry.HiiragiRegistry
+import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.util.HiiragiNbtConstants
 import hiiragi283.material.util.hiiragiId
 import net.minecraft.item.Item

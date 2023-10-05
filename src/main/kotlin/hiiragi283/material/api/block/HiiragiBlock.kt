@@ -1,8 +1,8 @@
 package hiiragi283.material.api.block
 
 import hiiragi283.material.api.item.HiiragiBlockItem
-import hiiragi283.material.api.reigstry.HiiragiRegistries
 import hiiragi283.material.api.reigstry.HiiragiRegistry
+import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.util.HiiragiNbtConstants
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block

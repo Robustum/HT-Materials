@@ -43,6 +43,19 @@
         "adapter": "kotlin",
         "value": "hiiragi283.material.client.RagiMaterialsClient"
       }
+    ],
+    "rei_server": [
+      {
+        "adapter": "kotlin",
+        "value": "hiiragi283.material.compat.rei.client.HiiragiReiClientPlugin"
+      }
+    ],
+
+    "rei_client": [
+      {
+        "adapter": "kotlin",
+        "value": "hiiragi283.material.compat.rei.server.HiiragiReiServerPlugin"
+      }
     ]
   },
   "mixins": [

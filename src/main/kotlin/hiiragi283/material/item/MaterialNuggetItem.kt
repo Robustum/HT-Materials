@@ -2,7 +2,7 @@ package hiiragi283.material.item
 
 import hiiragi283.material.api.item.MaterialItem
 import hiiragi283.material.api.material.HiiragiMaterial
-import hiiragi283.material.api.shape.HiiragiShapes
+import hiiragi283.material.init.HiiragiShapes
 import hiiragi283.material.util.append
 import hiiragi283.material.util.simpleItemModel
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings

@@ -1,6 +1,9 @@
-package hiiragi283.material.api.shape
+package hiiragi283.material.init
 
+import hiiragi283.material.api.shape.HiiragiShape
+import hiiragi283.material.util.canAccessible
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import java.lang.reflect.Field
 
 @Suppress("UnstableApiUsage")
 object HiiragiShapes {
@@ -53,7 +56,7 @@ object HiiragiShapes {
 
     fun register() {
         this::class.java.declaredFields
-            .map { it.also { it.isAccessible = true } }
+            .map(Field::canAccessible)
             .map { it.get(this) }
             .filterIsInstance<HiiragiShape>()
             .forEach(HiiragiShape::register)

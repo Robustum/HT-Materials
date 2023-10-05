@@ -1,9 +1,10 @@
-package hiiragi283.material.api.reigstry
+package hiiragi283.material.init
 
 import hiiragi283.material.api.MaterialEntryPoint
 import hiiragi283.material.api.ShapeEntryPoint
 import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.part.HiiragiPart
+import hiiragi283.material.api.reigstry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.util.hiiragiId
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder

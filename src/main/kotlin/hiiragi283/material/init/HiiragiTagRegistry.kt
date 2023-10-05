@@ -1,4 +1,4 @@
-package hiiragi283.material
+package hiiragi283.material.init
 
 import net.minecraft.block.Block
 import net.minecraft.item.Item

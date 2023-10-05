@@ -1,19 +1,22 @@
 package hiiragi283.material.api.material
 
 import hiiragi283.material.api.part.HiiragiPart
-import hiiragi283.material.api.reigstry.HiiragiRegistries
 import hiiragi283.material.api.reigstry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.api.shape.HiiragiShapeType
-import hiiragi283.material.api.shape.HiiragiShapeTypes
-import hiiragi283.material.api.shape.HiiragiShapes
+import hiiragi283.material.init.HiiragiRegistries
+import hiiragi283.material.init.HiiragiShapeTypes
+import hiiragi283.material.init.HiiragiShapes
 import hiiragi283.material.util.HiiragiNbtConstants
+import hiiragi283.material.util.MiningProperty
 import hiiragi283.material.util.hiiragiId
 import net.minecraft.item.Item
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.tag.TagKey
+import net.minecraft.text.TranslatableText
+import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
 data class HiiragiMaterial(
@@ -32,13 +35,22 @@ data class HiiragiMaterial(
 
     //    Conversion    //
 
-    val tagKey: TagKey<Item> = TagKey.of(Registry.ITEM_KEY, hiiragiId(name))
+    val identifier: Identifier = hiiragiId(name)
+
+    val tagKey: TagKey<Item> = TagKey.of(Registry.ITEM_KEY, identifier)
 
     fun addBracket() = copy(formula = "($formula)")
+
+    fun getItems(): List<Item> = HiiragiRegistries.SHAPE.getValues()
+        .map(this::getPart)
+        .map(HiiragiPart::asItem)
+        .filterNot { it == Items.AIR }
 
     fun getNotEmpty(): HiiragiMaterial? = takeUnless(HiiragiMaterial::isEmpty)
 
     fun getPart(shape: HiiragiShape) = HiiragiPart(shape, this)
+
+    fun getText() = TranslatableText(translationKey)
 
     //    Boolean    //
 

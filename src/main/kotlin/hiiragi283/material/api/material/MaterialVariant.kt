@@ -1,7 +1,7 @@
 package hiiragi283.material.api.material
 
 import hiiragi283.material.api.part.HiiragiPart
-import hiiragi283.material.api.reigstry.HiiragiRegistries
+import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.util.HiiragiNbtConstants
 import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant
 import net.minecraft.nbt.NbtCompound

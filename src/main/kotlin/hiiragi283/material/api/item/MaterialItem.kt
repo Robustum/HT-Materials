@@ -1,11 +1,11 @@
 package hiiragi283.material.api.item
 
-import hiiragi283.material.HiiragiTagRegistry
+import hiiragi283.material.init.HiiragiTagRegistry
 import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.material.MaterialItemProvider
 import hiiragi283.material.api.part.HiiragiPart
-import hiiragi283.material.api.reigstry.HiiragiRegistries
 import hiiragi283.material.api.shape.HiiragiShape
+import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.util.SimpleColorProvider
 import hiiragi283.material.util.appendBefore
 import net.fabricmc.api.EnvType

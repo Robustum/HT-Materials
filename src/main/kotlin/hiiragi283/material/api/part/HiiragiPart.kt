@@ -2,9 +2,9 @@ package hiiragi283.material.api.part
 
 import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.material.MaterialVariant
-import hiiragi283.material.api.reigstry.HiiragiRegistries
 import hiiragi283.material.api.reigstry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
+import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.util.HiiragiNbtConstants
 import hiiragi283.material.util.commonId
 import hiiragi283.material.util.hiiragiId

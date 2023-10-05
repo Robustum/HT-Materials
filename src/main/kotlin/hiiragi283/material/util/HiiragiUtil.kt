@@ -9,6 +9,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockView
 import pers.solid.brrp.v1.model.ModelJsonBuilder
+import java.lang.reflect.Field
 
 //    Block    //
 
@@ -33,6 +34,10 @@ fun Identifier.append(path: String) = Identifier(this.namespace, this.path + pat
 
 fun Identifier.appendBefore(path: String) = Identifier(this.namespace, path + this.path)
 
+//    Implementation    //
+
+inline fun <reified T> getBlockEntity(world: BlockView, pos: BlockPos): T? = world.getBlockEntity(pos) as? T
+
 //    Model    //
 
 fun simpleItemModel(layer0: Identifier, layer1: Identifier? = null): ModelJsonBuilder =
@@ -43,6 +48,6 @@ fun simpleItemModel(layer0: Identifier, layer1: Identifier? = null): ModelJsonBu
 fun simpleItemModel(layer0: String, layer1: String? = null) =
     simpleItemModel(Identifier(layer0), layer1?.let(::Identifier))
 
-//    Implementation    //
+//    Reflection    //
 
-inline fun <reified T> getBlockEntity(world: BlockView, pos: BlockPos): T? = world.getBlockEntity(pos) as? T
+fun Field.canAccessible() = also { it.isAccessible = true }
