@@ -5,7 +5,7 @@ import hiiragi283.material.util.hiiragiId
 import net.minecraft.item.ItemConvertible
 import net.minecraft.util.Identifier
 
-interface MaterialItemProvider : ItemConvertible {
+interface MaterialItemConvertible : ItemConvertible {
 
     val part: HiiragiPart
 

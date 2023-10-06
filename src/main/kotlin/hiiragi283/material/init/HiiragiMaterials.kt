@@ -1,9 +1,10 @@
 package hiiragi283.material.init
 
+import hiiragi283.material.api.block.MaterialBlock
 import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.material.materialOf
 import hiiragi283.material.util.HiiragiColor
-import hiiragi283.material.util.canAccessible
+import hiiragi283.material.util.enableAccess
 import java.lang.reflect.Field
 
 object HiiragiMaterials {
@@ -12,6 +13,7 @@ object HiiragiMaterials {
 
     @JvmField
     val HYDROGEN = materialOf("hydrogen") {
+        blockSettings = MaterialBlock.Settings.GAS
         color = HiiragiColor.BLUE.rgb
         formula = "H"
         molar = 1.0
@@ -22,6 +24,7 @@ object HiiragiMaterials {
 
     @JvmField
     val HELIUM = materialOf("helium") {
+        blockSettings = MaterialBlock.Settings.GAS
         color = HiiragiColor.YELLOW.rgb
         formula = "He"
         molar = 4.0
@@ -42,6 +45,7 @@ object HiiragiMaterials {
 
     @JvmField
     val CARBON = materialOf("carbon") {
+        blockSettings = MaterialBlock.Settings.DUST
         color = HiiragiColor.mixColor(HiiragiColor.BLACK, HiiragiColor.DARK_GRAY).rgb
         formula = "C"
         molar = 12.0
@@ -52,6 +56,7 @@ object HiiragiMaterials {
 
     @JvmField
     val NITROGEN = materialOf("nitrogen") {
+        blockSettings = MaterialBlock.Settings.GAS
         color = HiiragiColor.AQUA.rgb
         formula = "N"
         molar = 14.0
@@ -62,6 +67,7 @@ object HiiragiMaterials {
 
     @JvmField
     val OXYGEN = materialOf("oxygen") {
+        blockSettings = MaterialBlock.Settings.GAS
         formula = "O"
         molar = 16.0
         shapeType = HiiragiShapeTypes.GAS
@@ -71,6 +77,7 @@ object HiiragiMaterials {
 
     @JvmField
     val FLUORINE = materialOf("fluorine") {
+        blockSettings = MaterialBlock.Settings.GAS
         color = HiiragiColor.GREEN.rgb
         formula = "F"
         molar = 19.0
@@ -81,6 +88,7 @@ object HiiragiMaterials {
 
     @JvmField
     val NEON = materialOf("neon") {
+        blockSettings = MaterialBlock.Settings.GAS
         color = HiiragiColor.LIGHT_PURPLE.rgb
         formula = "Ne"
         molar = 20.2
@@ -91,7 +99,7 @@ object HiiragiMaterials {
 
     fun register() {
         this::class.java.declaredFields
-            .map(Field::canAccessible)
+            .map(Field::enableAccess)
             .map { it.get(this) }
             .filterIsInstance<HiiragiMaterial>()
             .forEach(HiiragiMaterial::register)

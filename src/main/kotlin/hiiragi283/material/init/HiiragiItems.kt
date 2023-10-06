@@ -6,6 +6,7 @@ import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.item.MaterialDustItem
 import hiiragi283.material.item.MaterialIngotItem
 import hiiragi283.material.item.MaterialNuggetItem
+import hiiragi283.material.item.MaterialPlateItem
 
 typealias MaterialItemConstructor = (HiiragiMaterial) -> MaterialItem
 
@@ -14,7 +15,8 @@ object HiiragiItems {
     private val materialFunctions: Map<HiiragiShape, MaterialItemConstructor> = mapOf(
         HiiragiShapes.DUST to ::MaterialDustItem,
         HiiragiShapes.INGOT to ::MaterialIngotItem,
-        HiiragiShapes.NUGGET to ::MaterialNuggetItem
+        HiiragiShapes.NUGGET to ::MaterialNuggetItem,
+        HiiragiShapes.PLATE to ::MaterialPlateItem
     )
 
     fun registerMaterialItems() {

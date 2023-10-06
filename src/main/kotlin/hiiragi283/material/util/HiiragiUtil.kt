@@ -1,5 +1,7 @@
 package hiiragi283.material.util
 
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import hiiragi283.material.RagiMaterials
 import net.minecraft.block.BlockState
 import net.minecraft.data.client.Models
@@ -7,6 +9,7 @@ import net.minecraft.data.client.TextureKey
 import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.registry.Registry
 import net.minecraft.world.BlockView
 import pers.solid.brrp.v1.model.ModelJsonBuilder
 import java.lang.reflect.Field
@@ -38,6 +41,15 @@ fun Identifier.appendBefore(path: String) = Identifier(this.namespace, path + th
 
 inline fun <reified T> getBlockEntity(world: BlockView, pos: BlockPos): T? = world.getBlockEntity(pos) as? T
 
+//    Json    //
+
+fun ItemStack.toJson(): JsonElement {
+    val root = JsonObject()
+    root.addProperty("item", Registry.ITEM.getId(this.item).toString())
+    root.addProperty("count", 1)
+    return root
+}
+
 //    Model    //
 
 fun simpleItemModel(layer0: Identifier, layer1: Identifier? = null): ModelJsonBuilder =
@@ -50,4 +62,4 @@ fun simpleItemModel(layer0: String, layer1: String? = null) =
 
 //    Reflection    //
 
-fun Field.canAccessible() = also { it.isAccessible = true }
+fun Field.enableAccess() = also { it.isAccessible = true }

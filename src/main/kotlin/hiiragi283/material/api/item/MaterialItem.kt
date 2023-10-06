@@ -1,33 +1,26 @@
 package hiiragi283.material.api.item
 
-import hiiragi283.material.init.HiiragiTagRegistry
 import hiiragi283.material.api.material.HiiragiMaterial
-import hiiragi283.material.api.material.MaterialItemProvider
+import hiiragi283.material.api.material.MaterialItemConvertible
 import hiiragi283.material.api.part.HiiragiPart
 import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.init.HiiragiRegistries
+import hiiragi283.material.init.HiiragiTagRegistry
 import hiiragi283.material.util.SimpleColorProvider
 import hiiragi283.material.util.appendBefore
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.model.ModelJsonBuilder
 
-abstract class MaterialItem(
-    final override val part: HiiragiPart,
-    settings: FabricItemSettings
-) : HiiragiItem(settings), MaterialItemProvider {
+abstract class MaterialItem private constructor(final override val part: HiiragiPart) :
+    HiiragiItem(part.material.itemSettings), MaterialItemConvertible {
 
-    constructor(
-        shape: HiiragiShape,
-        material: HiiragiMaterial,
-        settings: FabricItemSettings
-    ) : this(shape.getPart(material), settings)
+    constructor(shape: HiiragiShape, material: HiiragiMaterial) : this(shape.getPart(material))
 
     //    General    //
 

@@ -1,7 +1,7 @@
 package hiiragi283.material.init
 
 import hiiragi283.material.api.shape.HiiragiShape
-import hiiragi283.material.util.canAccessible
+import hiiragi283.material.util.enableAccess
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import java.lang.reflect.Field
 
@@ -56,7 +56,7 @@ object HiiragiShapes {
 
     fun register() {
         this::class.java.declaredFields
-            .map(Field::canAccessible)
+            .map(Field::enableAccess)
             .map { it.get(this) }
             .filterIsInstance<HiiragiShape>()
             .forEach(HiiragiShape::register)

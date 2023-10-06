@@ -1,7 +1,6 @@
 package hiiragi283.material.api.part
 
 import hiiragi283.material.api.material.HiiragiMaterial
-import hiiragi283.material.api.material.MaterialVariant
 import hiiragi283.material.api.reigstry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.init.HiiragiRegistries
@@ -48,8 +47,6 @@ data class HiiragiPart(
     fun getNotEmpty(): HiiragiPart? = takeUnless(HiiragiPart::isEmpty)
 
     fun getText() = TranslatableText(shape.translationKey, TranslatableText(material.translationKey))
-
-    fun toVariant() = MaterialVariant(material, shape.toNbt())
 
     //    Boolean    //
 

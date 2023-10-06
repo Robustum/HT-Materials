@@ -4,16 +4,11 @@ import hiiragi283.material.api.item.MaterialItem
 import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.init.HiiragiShapes
 import hiiragi283.material.util.simpleItemModel
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.util.Identifier
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.model.ModelJsonBuilder
 
-class MaterialDustItem(material: HiiragiMaterial) : MaterialItem(
-    HiiragiShapes.DUST,
-    material,
-    FabricItemSettings()
-) {
+class MaterialDustItem(material: HiiragiMaterial) : MaterialItem(HiiragiShapes.DUST, material) {
 
     override fun getModel(identifier: Identifier): ModelJsonBuilder = simpleItemModel("item/sugar")
 

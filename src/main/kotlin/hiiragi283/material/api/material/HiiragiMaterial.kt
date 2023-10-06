@@ -1,5 +1,6 @@
 package hiiragi283.material.api.material
 
+import hiiragi283.material.api.block.MaterialBlock
 import hiiragi283.material.api.part.HiiragiPart
 import hiiragi283.material.api.reigstry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
@@ -10,6 +11,8 @@ import hiiragi283.material.init.HiiragiShapes
 import hiiragi283.material.util.HiiragiNbtConstants
 import hiiragi283.material.util.MiningProperty
 import hiiragi283.material.util.hiiragiId
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.item.Item
 import net.minecraft.item.Items
 import net.minecraft.nbt.NbtCompound
@@ -21,8 +24,10 @@ import net.minecraft.util.registry.Registry
 
 data class HiiragiMaterial(
     val name: String,
+    var blockSettings: FabricBlockSettings = MaterialBlock.Settings.METAL,
     var color: Int = 0xFFFFFF,
     var formula: String = "",
+    var itemSettings: FabricItemSettings = FabricItemSettings(),
     var miningProperty: MiningProperty = MiningProperty(),
     var molar: Double = 0.0,
     var shapeType: HiiragiShapeType = HiiragiShapeTypes.EMPTY,

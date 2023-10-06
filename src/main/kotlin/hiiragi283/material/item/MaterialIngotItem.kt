@@ -5,18 +5,13 @@ import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.init.HiiragiShapes
 import hiiragi283.material.util.append
 import hiiragi283.material.util.simpleItemModel
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder
 import net.minecraft.util.Identifier
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.model.ModelJsonBuilder
 
-class MaterialIngotItem(material: HiiragiMaterial) : MaterialItem(
-    HiiragiShapes.INGOT,
-    material,
-    FabricItemSettings()
-) {
+class MaterialIngotItem(material: HiiragiMaterial) : MaterialItem(HiiragiShapes.INGOT, material) {
 
     //    MaterialItem    //
 
