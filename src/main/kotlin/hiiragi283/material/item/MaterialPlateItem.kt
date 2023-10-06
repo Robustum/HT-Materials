@@ -2,11 +2,11 @@ package hiiragi283.material.item
 
 import hiiragi283.material.api.item.MaterialItem
 import hiiragi283.material.api.material.HiiragiMaterial
-import hiiragi283.material.api.recipe.SmithingForgeRecipe
+import hiiragi283.material.init.HiiragiItems
 import hiiragi283.material.init.HiiragiShapes
 import hiiragi283.material.util.append
 import hiiragi283.material.util.simpleItemModel
-import net.minecraft.item.Items
+import net.minecraft.data.server.recipe.SmithingRecipeJsonBuilder
 import net.minecraft.recipe.Ingredient
 import net.minecraft.util.Identifier
 import pers.solid.brrp.v1.api.RuntimeResourcePack
@@ -18,12 +18,14 @@ class MaterialPlateItem(material: HiiragiMaterial) : MaterialItem(HiiragiShapes.
 
     override fun addRecipe(resourcePack: RuntimeResourcePack, identifier: Identifier) {
         //1x Ingot + 1x Hammer -> 1x Plate
-        SmithingForgeRecipe(
+        resourcePack.addRecipeAndAdvancement(
             identifier.append("_smithing"),
-            Ingredient.fromTag(HiiragiShapes.INGOT.getPart(part.material).tagKey),
-            Ingredient.ofItems(Items.IRON_PICKAXE),
-            this.defaultStack
-        ).register()
+            SmithingRecipeJsonBuilder.create(
+                Ingredient.fromTag(HiiragiShapes.INGOT.getPart(part.material).tagKey),
+                Ingredient.ofItems(HiiragiItems.FORGE_HAMMER),
+                this
+            )
+        )
     }
 
 }

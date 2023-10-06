@@ -3,10 +3,13 @@ package hiiragi283.material.util
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import hiiragi283.material.RagiMaterials
+import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.data.client.Models
 import net.minecraft.data.client.TextureKey
 import net.minecraft.item.ItemStack
+import net.minecraft.predicate.BlockPredicate
+import net.minecraft.predicate.StatePredicate
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.registry.Registry
@@ -17,6 +20,20 @@ import java.lang.reflect.Field
 //    Block    //
 
 fun BlockState.itemStack(count: Int = 1) = ItemStack(this.block, count)
+
+fun blockPredicateOf(block: Block) = blockPredicateOf { blocks(block) }
+
+fun blockPredicateOf(init: BlockPredicate.Builder.() -> Unit): BlockPredicate {
+    val builder: BlockPredicate.Builder = BlockPredicate.Builder.create()
+    builder.init()
+    return builder.build()
+}
+
+fun statePredicateOf(init: StatePredicate.Builder.() -> Unit): StatePredicate {
+    val builder: StatePredicate.Builder = StatePredicate.Builder.create()
+    builder.init()
+    return builder.build()
+}
 
 //    Collection    //
 

@@ -1,9 +1,6 @@
 package hiiragi283.material
 
-import hiiragi283.material.init.HiiragiBlocks
-import hiiragi283.material.init.HiiragiItems
-import hiiragi283.material.init.HiiragiRegistries
-import hiiragi283.material.init.HiiragiTagRegistry
+import hiiragi283.material.init.*
 import hiiragi283.material.util.hiiragiId
 import net.fabricmc.api.ModInitializer
 import net.minecraft.util.registry.Registry
@@ -37,6 +34,8 @@ object RagiMaterials : ModInitializer {
         HiiragiRegistries.ITEM.addResources(RESOURCE_PACK)
 
         HiiragiTagRegistry.register(RESOURCE_PACK)
+
+        HiiragiEventHandlers.register()
 
         RRPEventHelper.BEFORE_VANILLA.registerPack(RESOURCE_PACK)
 

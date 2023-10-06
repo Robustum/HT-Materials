@@ -41,18 +41,18 @@ object HiiragiShapes {
     //    State    //
 
     @JvmField
-    val SOLID = HiiragiShape("solid", 0, "solid")
+    val SOLID = HiiragiShape("solid")
 
     @JvmField
-    val LIQUID = HiiragiShape("liquid", 0, "liquid")
+    val LIQUID = HiiragiShape("liquid")
 
     @JvmField
-    val GAS = HiiragiShape("gas", 0, "gas")
+    val GAS = HiiragiShape("gas")
 
     //    Type    //
 
     @JvmField
-    val METAL = HiiragiShape("metal", 0, "metal")
+    val METAL = HiiragiShape("metal")
 
     fun register() {
         this::class.java.declaredFields

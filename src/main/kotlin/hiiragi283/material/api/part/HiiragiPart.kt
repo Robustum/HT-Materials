@@ -17,14 +17,17 @@ import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.tag.TagKey
+import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.registry.Registry
 
-fun BlockState.getParts(): List<HiiragiPart> = this.itemStack().getParts()
+fun BlockState.getParts(): Collection<HiiragiPart> = this.itemStack().getParts()
 
-fun ItemStack.getParts(): List<HiiragiPart> = this.streamTags().toList()
+fun ItemStack.getParts(): Collection<HiiragiPart> = this.streamTags().toList()
     .mapNotNull(TagKey<Item>::getPart)
     .map(HiiragiPart::getValue)
+    .toSet()
 
 fun TagKey<Item>.getPart(): HiiragiPart? = HiiragiRegistries.PART.get(this.id)
 
@@ -40,6 +43,20 @@ data class HiiragiPart(
     val tagPath: String = shape.prefix.replace("@", material.name)
 
     val tagKey: TagKey<Item> = TagKey.of(Registry.ITEM_KEY, commonId(tagPath))
+
+    fun appendTooltip(tooltip: MutableList<Text>) {
+        if (isEmpty()) return
+        tooltip.add(LiteralText("§e=== Property ==="))
+        tooltip.add(TranslatableText("tips.ragi_materials.property.name", "§b${getName()}"))
+        if (material.hasFormula())
+            tooltip.add(TranslatableText("tips.ragi_materials.property.formula", "§b${material.formula}"))
+        if (shape.hasScale())
+            tooltip.add(TranslatableText("tips.ragi_materials.property.mol", "§b${shape.scale}"))
+        if (material.hasTempMelt())
+            tooltip.add(TranslatableText("tips.ragi_materials.property.melt", "§b${material.tempMelt}"))
+        if (material.hasTempBoil())
+            tooltip.add(TranslatableText("tips.ragi_materials.property.boil", "§b${material.tempBoil}"))
+    }
 
     @Environment(EnvType.CLIENT)
     fun getName(): String = I18n.translate(shape.translationKey, material.translationKey)

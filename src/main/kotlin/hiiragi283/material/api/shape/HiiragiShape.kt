@@ -15,8 +15,8 @@ import net.minecraft.util.registry.Registry
 
 data class HiiragiShape(
     val name: String,
-    val scale: Int,
-    val prefix: String,
+    val scale: Int = 0,
+    val prefix: String = "",
     var translationKey: String = "hiiragi_shape.$name"
 ) : HiiragiRegistry.Entry<HiiragiShape> {
 
@@ -59,7 +59,7 @@ data class HiiragiShape(
     companion object {
 
         @JvmField
-        val EMPTY = HiiragiShape("empty", 0, "")
+        val EMPTY = HiiragiShape("empty")
 
         @JvmStatic
         fun fromNbt(nbt: NbtCompound): HiiragiShape =

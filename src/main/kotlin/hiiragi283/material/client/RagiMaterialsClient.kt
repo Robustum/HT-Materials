@@ -1,5 +1,6 @@
 package hiiragi283.material.client
 
+import hiiragi283.material.init.HiiragiEventHandlers
 import hiiragi283.material.init.HiiragiRegistries
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
@@ -12,6 +13,8 @@ object RagiMaterialsClient : ClientModInitializer {
 
         HiiragiRegistries.BLOCK.registerClient()
         HiiragiRegistries.ITEM.registerClient()
+
+        HiiragiEventHandlers.registerClient()
 
     }
 
