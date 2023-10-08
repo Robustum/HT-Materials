@@ -4,18 +4,12 @@ import hiiragi283.material.api.MaterialEntryPoint
 import hiiragi283.material.api.ShapeEntryPoint
 import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.part.HiiragiPart
-import hiiragi283.material.api.reigstry.HiiragiRegistry
+import hiiragi283.material.api.registry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
-import hiiragi283.material.util.hiiragiId
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.block.Block
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
-import net.minecraft.util.registry.DefaultedRegistry
-import net.minecraft.util.registry.Registry
-import net.minecraft.util.registry.SimpleRegistry
 
 object HiiragiRegistries {
 
@@ -51,25 +45,12 @@ object HiiragiRegistries {
     }
 
     @JvmField
-    val PART: SimpleRegistry<HiiragiPart> = createSimpleRegistry("part")
+    val PART: HiiragiRegistry.Simple<HiiragiPart> = HiiragiRegistry.Simple("Part")
 
     fun registerPart() {
-        HiiragiPart.getAllParts().forEach {
-            Registry.register(PART, it.tagKey.id, it)
+        HiiragiPart.getAllParts().forEach { part: HiiragiPart ->
+            PART.register(part.tagPath, part)
         }
     }
-
-    private inline fun <reified T> createSimpleRegistry(name: String): SimpleRegistry<T> =
-        FabricRegistryBuilder.createSimple(
-            T::class.java,
-            hiiragiId(name)
-        ).attribute(RegistryAttribute.SYNCED).buildAndRegister()
-
-    inline fun <reified T> createDefaultedRegistry(name: String, defaultName: String): DefaultedRegistry<T> =
-        FabricRegistryBuilder.createDefaulted(
-            T::class.java,
-            hiiragiId(name),
-            hiiragiId(defaultName)
-        ).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
 }

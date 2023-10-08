@@ -1,6 +1,6 @@
 package hiiragi283.material.api.item
 
-import hiiragi283.material.api.reigstry.HiiragiRegistry
+import hiiragi283.material.api.registry.HiiragiRegistry
 import hiiragi283.material.util.HiiragiNbtConstants
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.item.Item

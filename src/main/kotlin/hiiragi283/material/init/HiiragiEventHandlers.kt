@@ -1,5 +1,6 @@
 package hiiragi283.material.init
 
+import hiiragi283.material.RagiMaterials
 import hiiragi283.material.api.part.getParts
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -12,6 +13,7 @@ object HiiragiEventHandlers {
 
     fun register() {
 
+        RagiMaterials.LOGGER.info("All Common Events have been registered!")
     }
 
     @Environment(EnvType.CLIENT)
@@ -22,6 +24,7 @@ object HiiragiEventHandlers {
                 stack.getParts().forEach { it.appendTooltip(lines) }
             }
         )
+        RagiMaterials.LOGGER.info("All Client Events have been registered!")
     }
 
 }

@@ -25,12 +25,15 @@ object RagiMaterials : ModInitializer {
         HiiragiRegistries.registerPart()
 
         HiiragiBlocks.registerMaterialBlocks()
+        HiiragiFluids.registerMaterialFluids()
         HiiragiItems.registerMaterialItems()
 
         HiiragiRegistries.BLOCK.register(Registry.BLOCK)
+        HiiragiRegistries.FLUID.register(Registry.FLUID)
         HiiragiRegistries.ITEM.register(Registry.ITEM)
 
         HiiragiRegistries.BLOCK.addResources(RESOURCE_PACK)
+        HiiragiRegistries.FLUID.addResources(RESOURCE_PACK)
         HiiragiRegistries.ITEM.addResources(RESOURCE_PACK)
 
         HiiragiTagRegistry.register(RESOURCE_PACK)

@@ -1,6 +1,6 @@
 package hiiragi283.material.api.material
 
-import hiiragi283.material.api.reigstry.HiiragiRegistry
+import hiiragi283.material.api.registry.HiiragiRegistry
 import hiiragi283.material.util.HiiragiNbtConstants
 import net.minecraft.item.Item
 import net.minecraft.nbt.NbtCompound

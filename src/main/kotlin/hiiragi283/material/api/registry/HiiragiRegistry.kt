@@ -1,5 +1,6 @@
-package hiiragi283.material.api.reigstry
+package hiiragi283.material.api.registry
 
+import hiiragi283.material.RagiMaterials
 import hiiragi283.material.util.hiiragiId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -7,9 +8,13 @@ import net.minecraft.item.ItemConvertible
 import net.minecraft.nbt.NbtCompound
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.util.registry.Registry
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 
 sealed class HiiragiRegistry<T>(private val title: String) {
+
+    private val logger: Logger = LogManager.getLogger("${RagiMaterials.MOD_NAME}/$title")
 
     //    Lock    //
 
@@ -17,6 +22,7 @@ sealed class HiiragiRegistry<T>(private val title: String) {
 
     fun lock() {
         isLocked = true
+        logger.info("This Registry has been locked!")
     }
 
     //    Registration    //
@@ -49,16 +55,19 @@ sealed class HiiragiRegistry<T>(private val title: String) {
         entriesInternal.forEach { (name: String, entry: Entry<T>) ->
             Registry.register(registry, hiiragiId(name), entry.getValue())
         }
+        logger.info("All entries have been registered!")
         lock()
     }
 
     fun addResources(resourcePack: RuntimeResourcePack) {
         entriesInternal.values.forEach { it.addResources(resourcePack) }
+        logger.info("All resources have been registered! ")
     }
 
     @Environment(EnvType.CLIENT)
     fun registerClient() {
         entriesInternal.values.forEach { it.onRegisterClient() }
+        logger.info("All client initialization have been done!")
     }
 
     //    Simple    //
@@ -67,7 +76,7 @@ sealed class HiiragiRegistry<T>(private val title: String) {
 
     //    Defaulted    //
 
-    class Defaulted<T>(title: String, val defaultValue: Entry<T>) : HiiragiRegistry<T>(title) {
+    class Defaulted<T>(title: String, private val defaultValue: Entry<T>) : HiiragiRegistry<T>(title) {
 
         init {
             register("default", defaultValue)

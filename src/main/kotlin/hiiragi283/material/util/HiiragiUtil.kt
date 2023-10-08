@@ -3,6 +3,8 @@ package hiiragi283.material.util
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import hiiragi283.material.RagiMaterials
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.data.client.Models
@@ -12,7 +14,9 @@ import net.minecraft.predicate.BlockPredicate
 import net.minecraft.predicate.StatePredicate
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
+import net.minecraft.util.registry.DefaultedRegistry
 import net.minecraft.util.registry.Registry
+import net.minecraft.util.registry.SimpleRegistry
 import net.minecraft.world.BlockView
 import pers.solid.brrp.v1.model.ModelJsonBuilder
 import java.lang.reflect.Field
@@ -80,3 +84,18 @@ fun simpleItemModel(layer0: String, layer1: String? = null) =
 //    Reflection    //
 
 fun Field.enableAccess() = also { it.isAccessible = true }
+
+//    Registry    //
+
+inline fun <reified T> createSimpleRegistry(name: String): SimpleRegistry<T> =
+    FabricRegistryBuilder.createSimple(
+        T::class.java,
+        hiiragiId(name)
+    ).attribute(RegistryAttribute.SYNCED).buildAndRegister()
+
+inline fun <reified T> createDefaultedRegistry(name: String, defaultName: String): DefaultedRegistry<T> =
+    FabricRegistryBuilder.createDefaulted(
+        T::class.java,
+        hiiragiId(name),
+        hiiragiId(defaultName)
+    ).attribute(RegistryAttribute.SYNCED).buildAndRegister()

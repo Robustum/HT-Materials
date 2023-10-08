@@ -1,7 +1,7 @@
 package hiiragi283.material.api.part
 
 import hiiragi283.material.api.material.HiiragiMaterial
-import hiiragi283.material.api.reigstry.HiiragiRegistry
+import hiiragi283.material.api.registry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.util.HiiragiNbtConstants
@@ -29,7 +29,7 @@ fun ItemStack.getParts(): Collection<HiiragiPart> = this.streamTags().toList()
     .map(HiiragiPart::getValue)
     .toSet()
 
-fun TagKey<Item>.getPart(): HiiragiPart? = HiiragiRegistries.PART.get(this.id)
+fun TagKey<Item>.getPart(): HiiragiPart? = HiiragiRegistries.PART.getValue(this.id.path)
 
 data class HiiragiPart(
     val shape: HiiragiShape,
@@ -106,6 +106,7 @@ data class HiiragiPart(
             .flatMap { shape: HiiragiShape ->
                 HiiragiRegistries.MATERIAL.getValues().map(shape::getPart)
             }
+            .filterNot(HiiragiPart::isEmpty)
 
         @JvmStatic
         fun fromNbt(nbt: NbtCompound) = HiiragiPart(

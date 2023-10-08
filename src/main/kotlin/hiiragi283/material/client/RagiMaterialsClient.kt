@@ -12,6 +12,7 @@ object RagiMaterialsClient : ClientModInitializer {
     override fun onInitializeClient() {
 
         HiiragiRegistries.BLOCK.registerClient()
+        HiiragiRegistries.FLUID.registerClient()
         HiiragiRegistries.ITEM.registerClient()
 
         HiiragiEventHandlers.registerClient()

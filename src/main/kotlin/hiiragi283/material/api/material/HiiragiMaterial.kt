@@ -1,10 +1,12 @@
 package hiiragi283.material.api.material
 
 import hiiragi283.material.api.block.MaterialBlock
+import hiiragi283.material.api.fluid.MaterialFluid
 import hiiragi283.material.api.part.HiiragiPart
-import hiiragi283.material.api.reigstry.HiiragiRegistry
+import hiiragi283.material.api.registry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.api.shape.HiiragiShapeType
+import hiiragi283.material.init.HiiragiItemGroups
 import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.init.HiiragiShapeTypes
 import hiiragi283.material.init.HiiragiShapes
@@ -27,7 +29,7 @@ data class HiiragiMaterial(
     var blockSettings: FabricBlockSettings = MaterialBlock.Settings.METAL,
     var color: Int = 0xFFFFFF,
     var formula: String = "",
-    var itemSettings: FabricItemSettings = FabricItemSettings(),
+    var itemSettings: FabricItemSettings = FabricItemSettings().group(HiiragiItemGroups.MATERIAL),
     var miningProperty: MiningProperty = MiningProperty(),
     var molar: Double = 0.0,
     var shapeType: HiiragiShapeType = HiiragiShapeTypes.EMPTY,
@@ -35,6 +37,8 @@ data class HiiragiMaterial(
     var tempMelt: Int = 0,
     var translationKey: String = "hiiragi_material.$name"
 ) : HiiragiRegistry.Entry<HiiragiMaterial> {
+
+    var fluid: () -> MaterialFluid? = { MaterialFluid(this) }
 
     override fun asItem(): Item = Items.AIR
 
