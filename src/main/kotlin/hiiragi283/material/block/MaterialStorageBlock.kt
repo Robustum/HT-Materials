@@ -8,7 +8,6 @@ import hiiragi283.material.util.hiiragiId
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
 import net.minecraft.util.Identifier
 import pers.solid.brrp.v1.api.RuntimeResourcePack
-import pers.solid.brrp.v1.model.ModelJsonBuilder
 
 class MaterialStorageBlock(material: HiiragiMaterial) : MaterialBlock(HiiragiShapes.BLOCK, material) {
 
@@ -22,22 +21,10 @@ class MaterialStorageBlock(material: HiiragiMaterial) : MaterialBlock(HiiragiSha
         }
     )
 
-    override fun getItemModel(): ModelJsonBuilder = ModelJsonBuilder.create(
-        hiiragiId(
-            when {
-                part.material.isMetal() -> "block/storage_metal"
-                part.material.isGem() -> "block/storage_gem"
-                else -> "block/storage_dust"
-            }
-        )
-    )
-
     override fun addRecipe(resourcePack: RuntimeResourcePack) {
         //9x Ingot/Gem/Dust -> 1x Block
         val shapedRecipe: ShapedRecipeJsonBuilder = ShapedRecipeJsonBuilder.create(this)
-            .pattern("AAA")
-            .pattern("AAA")
-            .pattern("AAA")
+            .patterns("AAA", "AAA", "AAA")
             .criterionFromItem(this)
         if (part.material.isMetal()) {
             resourcePack.addRecipeAndAdvancement(

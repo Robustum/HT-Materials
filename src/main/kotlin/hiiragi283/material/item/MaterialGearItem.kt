@@ -8,16 +8,16 @@ import hiiragi283.material.util.append
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 
-class MaterialDustItem(material: HiiragiMaterial) : MaterialItem(HiiragiShapes.DUST, material) {
+class MaterialGearItem(material: HiiragiMaterial) : MaterialItem(HiiragiShapes.GEAR, material) {
 
     override fun addRecipe(resourcePack: RuntimeResourcePack) {
-        //1x Ingot + 1x Hammer -> 1x Plate
+        //4x Ingot + 1x Hammer -> 1x Gear
         resourcePack.addRecipeAndAdvancement(
             getIdentifier().append("_shaped"),
             ShapedRecipeJsonBuilder.create(this)
-                .patterns("A", "B")
-                .input('A', HiiragiItems.SMITHING_HAMMER)
-                .input('B', HiiragiShapes.INGOT.getPart(part.material).tagKey)
+                .patterns(" A ", "ABA", " A ")
+                .input('A', HiiragiShapes.INGOT.getPart(part.material).tagKey)
+                .input('B', HiiragiItems.SMITHING_HAMMER)
                 .criterionFromItem(this)
         )
     }

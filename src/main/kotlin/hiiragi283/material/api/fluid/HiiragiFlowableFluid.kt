@@ -1,6 +1,7 @@
 package hiiragi283.material.api.fluid
 
 import hiiragi283.material.api.registry.HiiragiRegistry
+import hiiragi283.material.util.HiiragiNbtConstants
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -80,12 +81,12 @@ abstract class HiiragiFlowableFluid(settings: Settings = Settings()) : FlowableF
 
     override fun toNbt(): NbtCompound {
         val nbt = NbtCompound()
-        nbt.putString("fluid", Registry.FLUID.getId(this).toString())
+        nbt.putString(HiiragiNbtConstants.FLUID, Registry.FLUID.getId(this).toString())
         return nbt
     }
 
     override fun toPacket(buf: PacketByteBuf) {
-        buf.writeString(Registry.FLUID.getId(this).toString())
+        buf.writeVarInt(Registry.FLUID.getRawId(this))
     }
 
     //    Flowing    //

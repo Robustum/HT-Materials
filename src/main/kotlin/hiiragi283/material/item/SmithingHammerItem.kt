@@ -4,7 +4,7 @@ import hiiragi283.material.api.item.HiiragiItem
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.item.ItemStack
 
-object ForgeHammerItem : HiiragiItem(FabricItemSettings().maxDamage(63)) {
+object SmithingHammerItem : HiiragiItem(FabricItemSettings().maxDamage(63)) {
 
     override fun getRecipeRemainder(stack: ItemStack): ItemStack = stack.copy().also { it.damage += 1 }
 

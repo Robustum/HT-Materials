@@ -9,34 +9,34 @@ import java.lang.reflect.Field
 object HiiragiShapes {
 
     @JvmField
-    val BLOCK = HiiragiShape("block", FluidConstants.BLOCK, "@_block")
+    val BLOCK = HiiragiShape("block", FluidConstants.BLOCK, "@_blocks")
 
     @JvmField
-    val CASING = HiiragiShape("casing", FluidConstants.INGOT * 8, "@_casing")
+    val CASING = HiiragiShape("casing", FluidConstants.INGOT * 8, "@_casings")
 
     @JvmField
-    val DUST = HiiragiShape("dust", FluidConstants.INGOT, "@_dust")
+    val DUST = HiiragiShape("dust", FluidConstants.INGOT, "@_dusts")
 
     @JvmField
-    val GEAR = HiiragiShape("gear", FluidConstants.INGOT * 4, "@_gear")
+    val GEAR = HiiragiShape("gear", FluidConstants.INGOT * 4, "@_gears")
 
     @JvmField
-    val GEM = HiiragiShape("gem", FluidConstants.INGOT, "@_gem")
+    val GEM = HiiragiShape("gem", FluidConstants.INGOT, "@_gems")
 
     @JvmField
-    val INGOT = HiiragiShape("ingot", FluidConstants.INGOT, "@_ingot")
+    val INGOT = HiiragiShape("ingot", FluidConstants.INGOT, "@_ingots")
 
     @JvmField
-    val NUGGET = HiiragiShape("nugget", FluidConstants.NUGGET, "@_nugget")
+    val NUGGET = HiiragiShape("nugget", FluidConstants.NUGGET, "@_nuggets")
 
     @JvmField
-    val ORE = HiiragiShape("ore", FluidConstants.INGOT * 2, "@_ore")
+    val ORE = HiiragiShape("ore", FluidConstants.INGOT * 2, "@_ores")
 
     @JvmField
-    val PLATE = HiiragiShape("plate", FluidConstants.INGOT, "@_plate")
+    val PLATE = HiiragiShape("plate", FluidConstants.INGOT, "@_plates")
 
     @JvmField
-    val ROD = HiiragiShape("rod", FluidConstants.INGOT / 2, "@_rod")
+    val ROD = HiiragiShape("rod", FluidConstants.INGOT / 2, "@_rods")
 
     //    State    //
 

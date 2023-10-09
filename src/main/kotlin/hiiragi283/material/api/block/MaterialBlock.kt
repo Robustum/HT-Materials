@@ -47,7 +47,7 @@ abstract class MaterialBlock private constructor(final override val part: Hiirag
         //Item Model
         resourcePack.addModel(
             getIdentifier().appendBefore("item/"),
-            getItemModel()
+            getItemModel(resourcePack)
         )
         //LootTable
         resourcePack.addLootTable(
@@ -66,7 +66,8 @@ abstract class MaterialBlock private constructor(final override val part: Hiirag
 
     abstract fun getBlockModel(resourcePack: RuntimeResourcePack): Identifier
 
-    abstract fun getItemModel(): ModelJsonBuilder
+    open fun getItemModel(resourcePack: RuntimeResourcePack): ModelJsonBuilder =
+        ModelJsonBuilder.create(getBlockModel(resourcePack).appendBefore("block/"))
 
     abstract fun addRecipe(resourcePack: RuntimeResourcePack)
 

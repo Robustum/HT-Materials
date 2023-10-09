@@ -8,12 +8,13 @@ import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.init.HiiragiTagRegistry
 import hiiragi283.material.util.SimpleColorProvider
 import hiiragi283.material.util.appendBefore
+import hiiragi283.material.util.hiiragiId
+import hiiragi283.material.util.simpleItemModel
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
-import net.minecraft.util.Identifier
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.model.ModelJsonBuilder
 
@@ -36,19 +37,20 @@ abstract class MaterialItem private constructor(final override val part: Hiiragi
         //Model
         resourcePack.addModel(
             getIdentifier().appendBefore("item/"),
-            getModel(getIdentifier())
+            getModel(resourcePack)
         )
         //Recipe
-        addRecipe(resourcePack, getIdentifier())
+        addRecipe(resourcePack)
         //Tag
         HiiragiTagRegistry.getItemBuilder(part.material.tagKey).add(this)
         HiiragiTagRegistry.getItemBuilder(part.shape.tagKey).add(this)
         HiiragiTagRegistry.getItemBuilder(part.tagKey).add(this)
     }
 
-    abstract fun getModel(identifier: Identifier): ModelJsonBuilder
+    open fun getModel(resourcePack: RuntimeResourcePack): ModelJsonBuilder =
+        simpleItemModel(hiiragiId("item/${part.shape.name}"))
 
-    abstract fun addRecipe(resourcePack: RuntimeResourcePack, identifier: Identifier)
+    abstract fun addRecipe(resourcePack: RuntimeResourcePack)
 
     @Environment(EnvType.CLIENT)
     override fun onRegisterClient() {

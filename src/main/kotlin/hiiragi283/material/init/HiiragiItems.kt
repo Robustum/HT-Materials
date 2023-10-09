@@ -10,13 +10,15 @@ typealias MaterialItemConstructor = (HiiragiMaterial) -> MaterialItem
 object HiiragiItems {
 
     @JvmField
-    val FORGE_HAMMER = HiiragiRegistries.ITEM.register("forge_hammer", ForgeHammerItem)
+    val SMITHING_HAMMER = HiiragiRegistries.ITEM.register("smithing_hammer", SmithingHammerItem)
 
     private val materialFunctions: Map<HiiragiShape, MaterialItemConstructor> = mapOf(
         HiiragiShapes.DUST to ::MaterialDustItem,
+        HiiragiShapes.GEAR to ::MaterialGearItem,
         HiiragiShapes.INGOT to ::MaterialIngotItem,
         HiiragiShapes.NUGGET to ::MaterialNuggetItem,
-        HiiragiShapes.PLATE to ::MaterialPlateItem
+        HiiragiShapes.PLATE to ::MaterialPlateItem,
+        HiiragiShapes.ROD to ::MaterialRodItem
     )
 
     fun registerMaterialItems() {

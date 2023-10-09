@@ -4,6 +4,7 @@ import hiiragi283.material.api.block.MaterialBlock
 import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.block.MachineExtenderBlock
+import hiiragi283.material.block.MaterialCasingBlock
 import hiiragi283.material.block.MaterialStorageBlock
 
 typealias MaterialBlockConstructor = (HiiragiMaterial) -> MaterialBlock
@@ -14,7 +15,8 @@ object HiiragiBlocks {
     val MACHINE_EXTENDER = HiiragiRegistries.BLOCK.register("machine_extender", MachineExtenderBlock)
 
     private val materialFunctions: Map<HiiragiShape, MaterialBlockConstructor> = mapOf(
-        HiiragiShapes.BLOCK to ::MaterialStorageBlock
+        HiiragiShapes.BLOCK to ::MaterialStorageBlock,
+        HiiragiShapes.CASING to ::MaterialCasingBlock
     )
 
     fun registerMaterialBlocks() {

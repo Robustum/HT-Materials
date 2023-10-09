@@ -22,21 +22,27 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.tag.TagKey
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
+import net.minecraft.util.Rarity
 import net.minecraft.util.registry.Registry
 
 data class HiiragiMaterial(
     val name: String,
-    var blockSettings: FabricBlockSettings = MaterialBlock.Settings.METAL,
     var color: Int = 0xFFFFFF,
     var formula: String = "",
-    var itemSettings: FabricItemSettings = FabricItemSettings().group(HiiragiItemGroups.MATERIAL),
-    var miningProperty: MiningProperty = MiningProperty(),
     var molar: Double = 0.0,
+    var rarity: Rarity = Rarity.COMMON,
     var shapeType: HiiragiShapeType = HiiragiShapeTypes.EMPTY,
     var tempBoil: Int = 0,
     var tempMelt: Int = 0,
     var translationKey: String = "hiiragi_material.$name"
 ) : HiiragiRegistry.Entry<HiiragiMaterial> {
+
+    var blockSettings: FabricBlockSettings = MaterialBlock.Settings.METAL
+    var itemSettings: FabricItemSettings = FabricItemSettings()
+        .group(HiiragiItemGroups.MATERIAL)
+        .rarity(rarity)
+
+    var miningProperty: MiningProperty = MiningProperty()
 
     var fluid: () -> MaterialFluid? = { MaterialFluid(this) }
 
