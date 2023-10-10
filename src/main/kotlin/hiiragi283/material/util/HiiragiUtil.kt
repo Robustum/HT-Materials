@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
+import net.minecraft.client.util.ModelIdentifier
 import net.minecraft.data.client.Models
 import net.minecraft.data.client.TextureKey
 import net.minecraft.item.ItemStack
@@ -57,6 +58,8 @@ fun hiiragiId(path: String) = Identifier(RagiMaterials.MOD_ID, path)
 fun Identifier.append(path: String) = Identifier(this.namespace, this.path + path)
 
 fun Identifier.appendBefore(path: String) = Identifier(this.namespace, path + this.path)
+
+fun Identifier.toModelId(variant: String = "inventory") = ModelIdentifier(this, variant)
 
 //    Implementation    //
 

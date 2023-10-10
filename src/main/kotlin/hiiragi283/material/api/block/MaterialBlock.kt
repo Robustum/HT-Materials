@@ -73,6 +73,7 @@ abstract class MaterialBlock private constructor(final override val part: Hiirag
 
     @Environment(EnvType.CLIENT)
     override fun onRegisterClient() {
+        //Color Provider
         val colorProvider: SimpleColorProvider = SimpleColorProvider.of(part) { it.material.color }
         ColorProviderRegistry.BLOCK.register(colorProvider, this)
         ColorProviderRegistry.ITEM.register(colorProvider, this)

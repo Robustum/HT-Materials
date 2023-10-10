@@ -6,10 +6,12 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
 import net.minecraft.util.Identifier
 
+@Suppress("UnstableApiUsage")
 class MaterialFluid(val material: HiiragiMaterial) : HiiragiFlowableFluid() {
 
     override fun getStill(): Fluid = this
@@ -24,6 +26,10 @@ class MaterialFluid(val material: HiiragiMaterial) : HiiragiFlowableFluid() {
 
     fun register() {
         HiiragiRegistries.FLUID.register(material.name, this)
+    }
+
+    override fun onRegister(name: String) {
+        FluidVariantAttributes.register(this, MaterialFluidAttributeHandler(material))
     }
 
     @Environment(EnvType.CLIENT)

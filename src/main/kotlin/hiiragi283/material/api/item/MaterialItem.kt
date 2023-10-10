@@ -54,6 +54,7 @@ abstract class MaterialItem private constructor(final override val part: Hiiragi
 
     @Environment(EnvType.CLIENT)
     override fun onRegisterClient() {
+        //Color Provider
         ColorProviderRegistry.ITEM.register(SimpleColorProvider.of(part) { it.material.color }, this)
     }
 
