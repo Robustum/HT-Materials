@@ -5,6 +5,7 @@ import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.material.materialOf
 import hiiragi283.material.util.HiiragiColor
 import hiiragi283.material.util.enableAccess
+import net.minecraft.util.Rarity
 import java.lang.reflect.Field
 
 object HiiragiMaterials {
@@ -28,6 +29,7 @@ object HiiragiMaterials {
         color = HiiragiColor.YELLOW.rgb
         formula = "He"
         molar = 4.0
+        rarity = Rarity.RARE
         shapeType = HiiragiShapeTypes.GAS
         tempBoil = 3
         tempMelt = 1
@@ -38,6 +40,7 @@ object HiiragiMaterials {
         color = HiiragiColor.GRAY.rgb
         formula = "Li"
         molar = 6.9
+        rarity = Rarity.UNCOMMON
         shapeType = HiiragiShapeTypes.METAL_COMMON
         tempBoil = 1560
         tempMelt = 454
@@ -92,6 +95,7 @@ object HiiragiMaterials {
         color = HiiragiColor.LIGHT_PURPLE.rgb
         formula = "Ne"
         molar = 20.2
+        rarity = Rarity.RARE
         shapeType = HiiragiShapeTypes.GAS
         tempBoil = 27
         tempMelt = 25

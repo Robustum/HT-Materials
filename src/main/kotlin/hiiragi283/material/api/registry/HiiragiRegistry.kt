@@ -39,6 +39,7 @@ sealed class HiiragiRegistry<T>(private val title: String) {
 
     fun getValues(): Collection<T> = mapInternal.values
 
+    @Synchronized
     fun <U : Entry<T>> register(name: String, entry: U): U {
         if (isLocked) {
             throw IllegalStateException("[$title] This registry is already locked!!")

@@ -8,12 +8,8 @@ import me.shedaniel.rei.api.client.plugins.REIClientPlugin
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry
 import me.shedaniel.rei.api.common.category.CategoryIdentifier
-import me.shedaniel.rei.api.common.display.Display
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.minecraft.text.TranslatableText
-
-fun <T : Display> CategoryIdentifier<T>.getTitle() = TranslatableText("gui.${this.namespace}.${this.path}.name")
 
 @Environment(EnvType.CLIENT)
 object HiiragiReiPlugin : REIClientPlugin {

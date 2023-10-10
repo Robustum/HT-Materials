@@ -15,11 +15,13 @@ object HiiragiTagRegistry {
     private val BLOCKS: MutableMap<TagKey<Block>, IdentifiedTagBuilder<Block>> = mutableMapOf()
     private val ITEMS: MutableMap<TagKey<Item>, IdentifiedTagBuilder<Item>> = mutableMapOf()
 
+    @Synchronized
     fun getBlockBuilder(tagKey: TagKey<Block>): IdentifiedTagBuilder<Block> {
         BLOCKS.putIfAbsent(tagKey, IdentifiedTagBuilder.createBlock(tagKey))
         return BLOCKS[tagKey]!!
     }
 
+    @Synchronized
     fun getItemBuilder(tagKey: TagKey<Item>): IdentifiedTagBuilder<Item> {
         ITEMS.putIfAbsent(tagKey, IdentifiedTagBuilder.createItem(tagKey))
         return ITEMS[tagKey]!!
