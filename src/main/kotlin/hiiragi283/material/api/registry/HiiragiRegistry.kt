@@ -5,8 +5,6 @@ import hiiragi283.material.util.hiiragiId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.item.ItemConvertible
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -103,10 +101,6 @@ sealed class HiiragiRegistry<T>(private val title: String) {
         @Environment(EnvType.CLIENT)
         fun onRegisterClient() {
         }
-
-        fun toNbt(): NbtCompound
-
-        fun toPacket(buf: PacketByteBuf)
 
     }
 

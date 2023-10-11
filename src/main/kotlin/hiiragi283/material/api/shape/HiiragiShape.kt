@@ -4,12 +4,10 @@ import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.part.HiiragiPart
 import hiiragi283.material.api.registry.HiiragiRegistry
 import hiiragi283.material.init.HiiragiRegistries
-import hiiragi283.material.util.HiiragiNbtConstants
+import hiiragi283.material.util.HiiragiConstants
 import hiiragi283.material.util.hiiragiId
 import net.minecraft.item.Item
 import net.minecraft.item.Items
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.tag.TagKey
 import net.minecraft.util.registry.Registry
 
@@ -38,7 +36,7 @@ data class HiiragiShape(
 
     fun hasScale(): Boolean = scale > 0
 
-    fun isEmpty(): Boolean = this == EMPTY || name == "empty" || scale <= 0
+    fun isEmpty(): Boolean = this == EMPTY || name == HiiragiConstants.EMPTY || scale <= 0
 
     fun isValid(material: HiiragiMaterial): Boolean = this in material.shapeType.shapes
 
@@ -48,27 +46,10 @@ data class HiiragiShape(
         HiiragiRegistries.SHAPE.register(name, this)
     }
 
-    override fun toNbt(): NbtCompound {
-        val nbt = NbtCompound()
-        nbt.putString(HiiragiNbtConstants.SHAPE, name)
-        return nbt
-    }
-
-    override fun toPacket(buf: PacketByteBuf) {
-        buf.writeString(name)
-    }
-
     companion object {
 
         @JvmField
-        val EMPTY = HiiragiShape("empty")
-
-        @JvmStatic
-        fun fromNbt(nbt: NbtCompound): HiiragiShape =
-            HiiragiRegistries.SHAPE.getValue(nbt.getString(HiiragiNbtConstants.SHAPE))
-
-        @JvmStatic
-        fun fromPacket(buf: PacketByteBuf): HiiragiShape = HiiragiRegistries.SHAPE.getValue(buf.readString())
+        val EMPTY = HiiragiShape(HiiragiConstants.EMPTY)
 
     }
 

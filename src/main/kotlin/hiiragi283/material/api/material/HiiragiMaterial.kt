@@ -6,19 +6,16 @@ import hiiragi283.material.api.part.HiiragiPart
 import hiiragi283.material.api.registry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.api.shape.HiiragiShapeType
-import hiiragi283.material.init.HiiragiItemGroups
 import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.init.HiiragiShapeTypes
 import hiiragi283.material.init.HiiragiShapes
-import hiiragi283.material.util.HiiragiNbtConstants
+import hiiragi283.material.util.HiiragiConstants
 import hiiragi283.material.util.MiningProperty
 import hiiragi283.material.util.hiiragiId
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.item.Item
 import net.minecraft.item.Items
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.tag.TagKey
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
@@ -39,7 +36,6 @@ data class HiiragiMaterial(
 
     var blockSettings: FabricBlockSettings = MaterialBlock.Settings.METAL
     var itemSettings: FabricItemSettings = FabricItemSettings()
-        .group(HiiragiItemGroups.MATERIAL)
         .rarity(rarity)
 
     var miningProperty: MiningProperty = MiningProperty()
@@ -77,7 +73,7 @@ data class HiiragiMaterial(
 
     fun hasTempMelt(): Boolean = tempMelt > 0
 
-    fun isEmpty(): Boolean = this == EMPTY || name == "empty"
+    fun isEmpty(): Boolean = this == EMPTY || name == HiiragiConstants.EMPTY
 
     fun isGem(): Boolean = HiiragiShapes.GEM.isValid(this)
 
@@ -119,27 +115,11 @@ data class HiiragiMaterial(
         HiiragiRegistries.MATERIAL.register(name, this)
     }
 
-    override fun toNbt(): NbtCompound {
-        val nbt = NbtCompound()
-        nbt.putString(HiiragiNbtConstants.MATERIAL, name)
-        return nbt
-    }
-
-    override fun toPacket(buf: PacketByteBuf) {
-        buf.writeString(name)
-    }
-
     companion object {
 
         @JvmField
-        val EMPTY = HiiragiMaterial("empty")
+        val EMPTY = HiiragiMaterial(HiiragiConstants.EMPTY)
 
-        @JvmStatic
-        fun fromNbt(nbt: NbtCompound): HiiragiMaterial =
-            HiiragiRegistries.MATERIAL.getValue(nbt.getString(HiiragiNbtConstants.MATERIAL))
-
-        @JvmStatic
-        fun fromPacket(buf: PacketByteBuf): HiiragiMaterial = HiiragiRegistries.MATERIAL.getValue(buf.readString())
     }
 
 }

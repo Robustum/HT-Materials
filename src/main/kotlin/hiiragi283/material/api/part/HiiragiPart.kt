@@ -4,7 +4,6 @@ import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.registry.HiiragiRegistry
 import hiiragi283.material.api.shape.HiiragiShape
 import hiiragi283.material.init.HiiragiRegistries
-import hiiragi283.material.util.HiiragiNbtConstants
 import hiiragi283.material.util.commonId
 import hiiragi283.material.util.hiiragiId
 import hiiragi283.material.util.itemStack
@@ -14,8 +13,6 @@ import net.minecraft.block.BlockState
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.tag.TagKey
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
@@ -85,20 +82,6 @@ data class HiiragiPart(
 
     override fun toString(): String = shape.name + ":" + material.name
 
-    //    Entry    //
-
-    override fun toNbt(): NbtCompound {
-        val nbt = NbtCompound()
-        nbt.putString(HiiragiNbtConstants.SHAPE, shape.name)
-        nbt.putString(HiiragiNbtConstants.MATERIAL, material.name)
-        return nbt
-    }
-
-    override fun toPacket(buf: PacketByteBuf) {
-        buf.writeString(shape.name)
-        buf.writeString(material.name)
-    }
-
     companion object {
 
         @JvmStatic
@@ -107,18 +90,6 @@ data class HiiragiPart(
                 HiiragiRegistries.MATERIAL.getValues().map(shape::getPart)
             }
             .filterNot(HiiragiPart::isEmpty)
-
-        @JvmStatic
-        fun fromNbt(nbt: NbtCompound) = HiiragiPart(
-            HiiragiRegistries.SHAPE.getValue(nbt.getString(HiiragiNbtConstants.SHAPE)),
-            HiiragiRegistries.MATERIAL.getValue(nbt.getString(HiiragiNbtConstants.MATERIAL))
-        )
-
-        @JvmStatic
-        fun fromPacket(buf: PacketByteBuf) = HiiragiPart(
-            HiiragiRegistries.SHAPE.getValue(buf.readString()),
-            HiiragiRegistries.MATERIAL.getValue(buf.readString())
-        )
 
     }
 }

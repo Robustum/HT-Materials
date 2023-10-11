@@ -1,7 +1,6 @@
 package hiiragi283.material.api.fluid
 
 import hiiragi283.material.api.registry.HiiragiRegistry
-import hiiragi283.material.util.HiiragiNbtConstants
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -11,13 +10,10 @@ import net.minecraft.fluid.FluidState
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
 import net.minecraft.item.Items
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.registry.Registry
 import net.minecraft.world.BlockView
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
@@ -78,16 +74,6 @@ abstract class HiiragiFlowableFluid(settings: Settings = Settings()) : FlowableF
     //    Entry    //
 
     override fun asItem(): Item = bucketItem
-
-    override fun toNbt(): NbtCompound {
-        val nbt = NbtCompound()
-        nbt.putString(HiiragiNbtConstants.FLUID, Registry.FLUID.getId(this).toString())
-        return nbt
-    }
-
-    override fun toPacket(buf: PacketByteBuf) {
-        buf.writeVarInt(Registry.FLUID.getRawId(this))
-    }
 
     //    Flowing    //
 

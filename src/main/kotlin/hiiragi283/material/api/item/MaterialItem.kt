@@ -4,6 +4,7 @@ import hiiragi283.material.api.material.HiiragiMaterial
 import hiiragi283.material.api.material.MaterialItemConvertible
 import hiiragi283.material.api.part.HiiragiPart
 import hiiragi283.material.api.shape.HiiragiShape
+import hiiragi283.material.init.HiiragiItemGroups
 import hiiragi283.material.init.HiiragiRegistries
 import hiiragi283.material.init.HiiragiTagRegistry
 import hiiragi283.material.util.SimpleColorProvider
@@ -18,8 +19,9 @@ import net.minecraft.text.Text
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.model.ModelJsonBuilder
 
-abstract class MaterialItem private constructor(final override val part: HiiragiPart) :
-    HiiragiItem(part.material.itemSettings), MaterialItemConvertible {
+abstract class MaterialItem private constructor(final override val part: HiiragiPart) : HiiragiItem(
+    part.material.itemSettings.group(HiiragiItemGroups.MATERIAL)
+), MaterialItemConvertible {
 
     constructor(shape: HiiragiShape, material: HiiragiMaterial) : this(shape.getPart(material))
 
