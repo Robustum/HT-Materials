@@ -3,8 +3,7 @@ package hiiragi283.material.api.recipe
 import com.google.gson.JsonObject
 import com.mojang.serialization.JsonOps
 import hiiragi283.material.RagiMaterials
-import hiiragi283.material.init.HiiragiRecipeSerializers
-import hiiragi283.material.init.HiiragiRecipeTypes
+import hiiragi283.material.init.HiiragiRecipes
 import hiiragi283.material.util.HiiragiConstants
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage
@@ -48,9 +47,9 @@ class MillRecipe(
 
     override fun getId(): Identifier = id
 
-    override fun getSerializer(): RecipeSerializer<*> = HiiragiRecipeSerializers.MILL
+    override fun getSerializer(): RecipeSerializer<*> = HiiragiRecipes.Serializer.MILL
 
-    override fun getType(): RecipeType<*> = HiiragiRecipeTypes.MILL
+    override fun getType(): RecipeType<*> = HiiragiRecipes.Type.MILL
 
     fun toJson(): JsonObject {
         val root = JsonObject()

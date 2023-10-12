@@ -21,7 +21,7 @@ class MultiblockPattern : BiPredicate<ServerWorld, BlockPos> {
 
     //    BiPredicate    //
 
-    override fun test(t: ServerWorld, u: BlockPos): Boolean = MAP
-        .all { (pos, predicate) -> predicate.test(t, u.add(pos)) }
+    override fun test(world: ServerWorld, origin: BlockPos): Boolean = MAP
+        .all { (pos: BlockPos, predicate: BlockPredicate) -> predicate.test(world, origin.add(pos)) }
 
 }

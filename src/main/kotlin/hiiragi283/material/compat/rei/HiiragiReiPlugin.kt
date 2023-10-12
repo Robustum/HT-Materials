@@ -24,7 +24,7 @@ object HiiragiReiPlugin : REIClientPlugin {
         //Material
         HiiragiRegistries.MATERIAL.getValues()
             .map(::HiiragiMaterialDisplay)
-            .forEach { display -> display.register(registry) }
+            .forEach(registry::add)
     }
 
 }

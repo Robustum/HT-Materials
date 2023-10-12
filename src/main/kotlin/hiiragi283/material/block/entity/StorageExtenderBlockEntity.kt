@@ -1,9 +1,6 @@
 package hiiragi283.material.block.entity
 
-import hiiragi283.material.init.HiiragiBlockEntities
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext
@@ -41,12 +38,5 @@ abstract class StorageExtenderBlockEntity<T>(
 
     override fun iterator(transaction: TransactionContext): MutableIterator<StorageView<T>> =
         getStorage()?.iterator(transaction) ?: Collections.emptyIterator()
-
-    class Tank(pos: BlockPos, state: BlockState) : StorageExtenderBlockEntity<FluidVariant>(
-        HiiragiBlockEntities.TANK_EXTENDER,
-        pos,
-        state,
-        FluidStorage::SIDED
-    )
 
 }
