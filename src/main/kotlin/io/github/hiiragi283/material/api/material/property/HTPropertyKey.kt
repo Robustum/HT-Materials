@@ -7,13 +7,13 @@ data class HTPropertyKey<T : HTMaterialProperty>(val name: String, val clazz: Cl
         @JvmStatic
         inline fun <reified T : HTMaterialProperty> create(name: String) = HTPropertyKey(name, T::class.java)
 
+        val REGISTRY: Map<String, HTPropertyKey<*>>
+            get() = map
         private val map: MutableMap<String, HTPropertyKey<*>> = mutableMapOf()
 
         @JvmStatic
-        operator fun get(name: String): HTPropertyKey<*>? = map[name]
-
         @Suppress("UNCHECKED_CAST")
-        fun <T : HTMaterialProperty> getAs(name: String): T? = get(name) as? T
+        fun <T : HTMaterialProperty> getAs(name: String): T? = map[name] as? T
 
         //    Keys    //
 

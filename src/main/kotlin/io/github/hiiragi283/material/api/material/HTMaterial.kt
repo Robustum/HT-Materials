@@ -9,8 +9,8 @@ import io.github.hiiragi283.material.common.HTMaterialsCommon
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.DefaultedRegistry
 import net.minecraft.util.registry.Registry
+import net.minecraft.util.registry.SimpleRegistry
 import java.util.*
 import java.util.function.Consumer
 
@@ -24,17 +24,16 @@ class HTMaterial private constructor(
     companion object {
 
         @JvmStatic
-        val REGISTRY: DefaultedRegistry<HTMaterial> = FabricRegistryBuilder.createDefaulted(
+        val REGISTRY: SimpleRegistry<HTMaterial> = FabricRegistryBuilder.createSimple(
             HTMaterial::class.java,
-            HTMaterialsCommon.id("material"),
-            HTMaterialsCommon.id("empty")
+            HTMaterialsCommon.id("material")
         ).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
         @JvmStatic
-        fun createMaterial(identifier: Identifier, consumer: Consumer<HTMaterial>): HTMaterial =
+        fun createMaterial(identifier: Identifier, consumer: Consumer<HTMaterial> = Consumer {}): HTMaterial =
             HTMaterial(Info(identifier), HTMaterialProperties(), HTMaterialFlags())
                 .also(consumer::accept)
-                .also { mat -> Registry.register(REGISTRY, identifier, mat) }
+                .let { mat -> Registry.register(REGISTRY, identifier, mat) }
 
     }
 

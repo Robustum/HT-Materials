@@ -4,12 +4,12 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.property.HTMetalProperty
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
-import io.github.hiiragi283.material.common.HTMaterialsCommon
+import io.github.hiiragi283.material.common.commonId
 
 object HTVanillaMaterials {
 
     @JvmField
-    val IRON = HTMaterial.createMaterial(HTMaterialsCommon.id("iron")) { mat ->
+    val IRON = HTMaterial.createMaterial(commonId("iron")) { mat ->
         mat.modifyInfo { info ->
             info.formula = "Fe"
         }

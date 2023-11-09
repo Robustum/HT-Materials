@@ -15,13 +15,12 @@ class HTMaterialFlag private constructor(
 
         //    Registry    //
 
-        private val REGISTRY: MutableMap<String, HTMaterialFlag> = mutableMapOf()
+        val REGISTRY: Map<String, HTMaterialFlag>
+            get() = map
+        private val map: MutableMap<String, HTMaterialFlag> = mutableMapOf()
 
         @JvmStatic
-        operator fun get(name: String): HTMaterialFlag? = REGISTRY[name]
-
-        @JvmStatic
-        fun getOpt(name: String): Optional<HTMaterialFlag> = Optional.ofNullable(get(name))
+        fun getOptional(name: String): Optional<HTMaterialFlag> = Optional.ofNullable(map[name])
 
         //    Builder    //
 
@@ -31,14 +30,18 @@ class HTMaterialFlag private constructor(
 
         //    Flags    //
 
+        @JvmField
         val GENERATE_INGOT: HTMaterialFlag = create("generate_ingot") { builder ->
             builder.addProperty(HTPropertyKey.METAL)
         }
 
+        @JvmField
+        val FIREPROOF: HTMaterialFlag = create("fireproof")
+
     }
 
     init {
-        REGISTRY[name] = this
+        map.putIfAbsent(name, this)
     }
 
     fun verify(material: HTMaterial) {
