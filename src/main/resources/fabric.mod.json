@@ -1,58 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "ragi_materials",
+  "id": "ht_materals",
   "version": "${version}",
-  "name": "RagiMaterials",
+  "name": "HT Materials",
   "description": "",
   "authors": [
     "Hiiragi283"
   ],
   "contact": {
-    "repo": "https://github.com/hiiragi283/RagiMaterials_Fabric/"
+    "repo": "https://github.com/hiiragi283/HTMaterials"
   },
   "license": "MPL-2.0",
-  "icon": "assets/ragi_materials/icon.png",
+  "icon": "assets/ht_materals/icon.png",
   "environment": "*",
   "entrypoints": {
-    "preLaunch": [
+    "client": [
       {
         "adapter": "kotlin",
-        "value": "hiiragi283.material.core.RagiMaterialsCore"
-      }
-    ],
-    "hiiragi283.shape": [
-      {
-        "adapter": "kotlin",
-        "value": "hiiragi283.material.core.RagiMaterialsCore"
-      }
-    ],
-    "hiiragi283.material": [
-      {
-        "adapter": "kotlin",
-        "value": "hiiragi283.material.core.RagiMaterialsCore"
+        "value": "io.github.hiiragi283.material.client.HTMaterialsClient"
       }
     ],
     "main": [
       {
         "adapter": "kotlin",
-        "value": "hiiragi283.material.RagiMaterials"
-      }
-    ],
-    "client": [
-      {
-        "adapter": "kotlin",
-        "value": "hiiragi283.material.client.RagiMaterialsClient"
-      }
-    ],
-    "rei_client": [
-      {
-        "adapter": "kotlin",
-        "value": "hiiragi283.material.compat.rei.server.HiiragiReiServerPlugin"
+        "value": "io.github.hiiragi283.material.common.HTMaterialsCommon"
       }
     ]
   },
   "mixins": [
-    "ragi_materials.mixins.json"
+    "ht_materals.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",
