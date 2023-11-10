@@ -6,6 +6,7 @@ import net.minecraft.util.Identifier
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.fabric.api.RRPCallback
 
+@Suppress("unused")
 object HTMaterialsCommon : ModInitializer {
 
     const val MOD_ID: String = "ht_materials"

@@ -8,5 +8,4 @@ object HTMaterialsAPI {
     @JvmField
     val materialRegistry: SimpleRegistry<HTMaterial> = HTMaterial.REGISTRY
 
-
 }

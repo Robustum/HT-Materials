@@ -1,11 +1,11 @@
 package io.github.hiiragi283.material.api.material.property
 
-data class HTPropertyKey<T : HTMaterialProperty>(val name: String, val clazz: Class<T>) {
+data class HTPropertyKey<T : HTMaterialProperty<T>>(val name: String, val clazz: Class<T>) {
 
     companion object {
 
         @JvmStatic
-        inline fun <reified T : HTMaterialProperty> create(name: String) = HTPropertyKey(name, T::class.java)
+        inline fun <reified T : HTMaterialProperty<T>> create(name: String) = HTPropertyKey(name, T::class.java)
 
         val REGISTRY: Map<String, HTPropertyKey<*>>
             get() = map
@@ -13,7 +13,7 @@ data class HTPropertyKey<T : HTMaterialProperty>(val name: String, val clazz: Cl
 
         @JvmStatic
         @Suppress("UNCHECKED_CAST")
-        fun <T : HTMaterialProperty> getAs(name: String): T? = map[name] as? T
+        fun <T : HTMaterialProperty<T>> getAs(name: String): T? = map[name] as? T
 
         //    Keys    //
 
@@ -28,6 +28,13 @@ data class HTPropertyKey<T : HTMaterialProperty>(val name: String, val clazz: Cl
 
         @JvmField
         val METAL: HTPropertyKey<HTMetalProperty> = create("metal")
+
+        @JvmField
+        val STONE: HTPropertyKey<HTStoneProperty> = create("stone")
+
+        @JvmField
+        val WOOD: HTPropertyKey<HTWoodProperty> = create("wood")
+
 
     }
 

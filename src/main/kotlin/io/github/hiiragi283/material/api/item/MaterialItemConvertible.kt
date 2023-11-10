@@ -26,7 +26,12 @@ interface MaterialItemConvertible : ItemConvertible {
         fun getItemsFromShape(shape: HTShape): Collection<MaterialItemConvertible> = table.column(shape).values
 
         @JvmStatic
-        fun register(material: HTMaterial, shape: HTShape, itemConvertible: MaterialItemConvertible) {
+        fun register(itemConvertible: MaterialItemConvertible) {
+            val material: HTMaterial = itemConvertible.material
+            val shape: HTShape = itemConvertible.shape
+            check(!table.contains(material, shape)) {
+                "The MaterialItemConvertible entry already registered with Shape: $shape and Material: $material!"
+            }
             table.put(material, shape, itemConvertible)
         }
 

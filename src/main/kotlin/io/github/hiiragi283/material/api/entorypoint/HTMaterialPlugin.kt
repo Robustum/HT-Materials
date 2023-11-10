@@ -3,7 +3,6 @@ package io.github.hiiragi283.material.api.entorypoint
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import net.fabricmc.loader.api.FabricLoader
 
-@Suppress("unused")
 object HTMaterialPlugin {
 
     fun interface Pre {

@@ -3,7 +3,6 @@ package io.github.hiiragi283.material.api.material.flag
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import java.util.*
-import java.util.function.Consumer
 
 class HTMaterialFlag private constructor(
     val name: String,
@@ -15,9 +14,10 @@ class HTMaterialFlag private constructor(
 
         //    Registry    //
 
-        val REGISTRY: Map<String, HTMaterialFlag>
-            get() = map
         private val map: MutableMap<String, HTMaterialFlag> = mutableMapOf()
+
+        @JvmField
+        val REGISTRY: Map<String, HTMaterialFlag> = map
 
         @JvmStatic
         fun getOptional(name: String): Optional<HTMaterialFlag> = Optional.ofNullable(map[name])
@@ -25,18 +25,57 @@ class HTMaterialFlag private constructor(
         //    Builder    //
 
         @JvmStatic
-        fun create(name: String, consumer: Consumer<Builder> = Consumer {}): HTMaterialFlag =
-            Builder(name).also(consumer::accept).build()
+        fun create(name: String, init: Builder.() -> Unit = {}): HTMaterialFlag =
+            Builder(name).apply(init).build()
 
         //    Flags    //
 
         @JvmField
-        val GENERATE_INGOT: HTMaterialFlag = create("generate_ingot") { builder ->
-            builder.addProperty(HTPropertyKey.METAL)
+        val GENERATE_BLOCk = create("generate_block") {
+            requiredProperties.add(HTPropertyKey.SOLID)
         }
 
         @JvmField
-        val FIREPROOF: HTMaterialFlag = create("fireproof")
+        val GENERATE_DUST = create("generate_dust") {
+            requiredProperties.add(HTPropertyKey.SOLID)
+        }
+
+        @JvmField
+        val GENERATE_GEAR = create("generate_gear") {
+            requiredProperties.add(HTPropertyKey.SOLID)
+        }
+
+        @JvmField
+        val GENERATE_GEM = create("generate_gem") {
+            requiredProperties.add(HTPropertyKey.SOLID)
+            requiredProperties.add(HTPropertyKey.GEM)
+        }
+
+        @JvmField
+        val GENERATE_INGOT = create("generate_ingot") {
+            requiredProperties.add(HTPropertyKey.SOLID)
+            requiredProperties.add(HTPropertyKey.METAL)
+        }
+
+        @JvmField
+        val GENERATE_NUGGET = create("generate_nugget") {
+            requiredFlags.add(GENERATE_INGOT)
+            requiredProperties.add(HTPropertyKey.SOLID)
+            requiredProperties.add(HTPropertyKey.METAL)
+        }
+
+        @JvmField
+        val GENERATE_PLATE = create("generate_plate") {
+            requiredProperties.add(HTPropertyKey.SOLID)
+        }
+
+        @JvmField
+        val GENERATE_ROD = create("generate_rod") {
+            requiredProperties.add(HTPropertyKey.SOLID)
+        }
+
+        @JvmField
+        val FIREPROOF = create("fireproof")
 
     }
 
@@ -76,15 +115,7 @@ class HTMaterialFlag private constructor(
         val requiredFlags: MutableSet<HTMaterialFlag> = mutableSetOf()
         val requiredProperties: MutableSet<HTPropertyKey<*>> = mutableSetOf()
 
-        fun addFlag(vararg flag: HTMaterialFlag) {
-            flag.forEach(requiredFlags::add)
-        }
-
-        fun addProperty(vararg key: HTPropertyKey<*>) {
-            key.forEach(requiredProperties::add)
-        }
-
-        fun build(): HTMaterialFlag = HTMaterialFlag(name, requiredFlags, requiredProperties)
+        internal fun build(): HTMaterialFlag = HTMaterialFlag(name, requiredFlags, requiredProperties)
 
     }
 

@@ -1,32 +1,70 @@
 package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.api.material.HTMaterial
-import io.github.hiiragi283.material.common.append
+import io.github.hiiragi283.material.common.modify
+import net.minecraft.client.resource.language.I18n
 import net.minecraft.item.Item
 import net.minecraft.tag.TagKey
+import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
+import net.minecraft.util.Identifier
 import java.util.function.Function
-import java.util.function.Predicate
 
-class HTShape private constructor(
-    val name: String,
-    private val tagPredicate: Predicate<String>,
-    private val nameFunction: Function<String, String>
-) {
+@Suppress("LeakingThis")
+sealed class HTShape(val name: String) {
 
     companion object {
 
-        val REGISTRY: Map<String, HTShape>
-            get() = map
         private val map: MutableMap<String, HTShape> = mutableMapOf()
 
-        @JvmStatic
-        fun createSimple(name: String): HTShape = Builder(name)
-            .setTagPredicate { namespace -> namespace.endsWith("_${name}s") }
-            .setNameFunction { namespace -> namespace.split("_")[0] }
-            .build()
+        @JvmField
+        val REGISTRY: Map<String, HTShape> = map
+
+        //    Shapes    //
 
         @JvmField
-        val INGOT: HTShape = createSimple("ingot")
+        val BLOCK: HTShape = Simple("block")
+
+        @JvmField
+        val DUST: HTShape = Simple("dust")
+
+        @JvmField
+        val GEAR: HTShape = Simple("gear")
+
+        @JvmField
+        val GEM: HTShape = Simple("gem")
+
+        @JvmField
+        val INGOT: HTShape = Simple("ingot")
+
+        @JvmField
+        val NUGGET: HTShape = Simple("nugget")
+
+        @JvmField
+        val PLATE: HTShape = Simple("plate")
+
+        @JvmField
+        val RAW_ORE: HTShape = Custom("raw_ore") { id ->
+            val path: String = id.path
+            return@Custom if (path.startsWith("raw_") && path.endsWith("_ores")) {
+                HTMaterial.REGISTRY.get(id.modify {
+                    path.removePrefix("raw_").removeSuffix("_ores")
+                })
+            } else null
+        }
+
+        @JvmField
+        val RAW_BLOCK: HTShape = Custom("raw_block") { id ->
+            val path: String = id.path
+            return@Custom if (path.startsWith("raw_") && path.endsWith("_blocks")) {
+                HTMaterial.REGISTRY.get(id.modify {
+                    path.removePrefix("raw_").removeSuffix("_blocks")
+                })
+            } else null
+        }
+
+        @JvmField
+        val ROD: HTShape = Simple("rod")
 
     }
 
@@ -34,39 +72,35 @@ class HTShape private constructor(
         map.putIfAbsent(name, this)
     }
 
-    fun getMaterial(tagKey: TagKey<Item>): HTMaterial? = if (tagPredicate.test(tagKey.id.path)) {
-        tagKey.id.append(nameFunction::apply).let(HTMaterial.REGISTRY::get)
-    } else null
+    val translationKey: String = "shape.c.$name"
 
-    //    Builder    //
+    fun getTranslatedName(material: HTMaterial): String = I18n.translate(translationKey, material.getTranslatedName())
 
-    class Builder(val name: String) {
+    fun getTranslatedText(material: HTMaterial): Text = TranslatableText(translationKey, material.getTranslatedName())
 
-        var tagPredicate: Predicate<String> = Predicate { false }
-        var nameFunction: Function<String, String> = Function { "empty" }
+    abstract fun getMaterial(tagKey: TagKey<Item>): HTMaterial?
 
-        fun setTagPredicate(predicate: Predicate<String>) = also {
-            tagPredicate = predicate
+    //    Simple    //
+
+    class Simple(name: String) : HTShape(name) {
+
+        override fun getMaterial(tagKey: TagKey<Item>): HTMaterial? {
+            val tagId: Identifier = tagKey.id
+            val path: String = tagId.path
+            val pattern = "_${name}s"
+            return if (path.endsWith(pattern)) {
+                HTMaterial.REGISTRY.get(tagId.modify { path.removeSuffix(pattern) })
+            } else null
         }
-
-        fun setNameFunction(function: Function<String, String>) = also {
-            nameFunction = function
-        }
-
-        fun build() = HTShape(name, tagPredicate, nameFunction)
 
     }
 
-    //    Any    //
+    //    Custom    //
 
-    override fun equals(other: Any?): Boolean = when (other) {
-        null -> false
-        !is HTShape -> false
-        else -> other.name == this.name
+    class Custom(name: String, private val function: Function<Identifier, HTMaterial?>) : HTShape(name) {
+
+        override fun getMaterial(tagKey: TagKey<Item>): HTMaterial? = function.apply(tagKey.id)
+
     }
-
-    override fun hashCode(): Int = name.hashCode()
-
-    override fun toString(): String = name
 
 }

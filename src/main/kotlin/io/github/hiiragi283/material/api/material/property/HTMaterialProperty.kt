@@ -1,7 +1,11 @@
 package io.github.hiiragi283.material.api.material.property
 
-fun interface HTMaterialProperty {
+import io.github.hiiragi283.material.api.material.HTMaterial
 
-    fun verify(properties: HTMaterialProperties)
+interface HTMaterialProperty<T : HTMaterialProperty<T>> {
+
+    val key: HTPropertyKey<T>
+
+    fun verify(material: HTMaterial)
 
 }
