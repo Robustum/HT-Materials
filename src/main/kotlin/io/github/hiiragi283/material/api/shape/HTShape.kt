@@ -1,6 +1,7 @@
 package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.common.commonId
 import io.github.hiiragi283.material.common.modify
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.item.Item
@@ -8,12 +9,17 @@ import net.minecraft.tag.TagKey
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
+import net.minecraft.util.registry.Registry
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import java.util.function.Function
 
 @Suppress("LeakingThis")
 sealed class HTShape(val name: String) {
 
     companion object {
+
+        private val logger: Logger = LogManager.getLogger("HTShape")
 
         private val map: MutableMap<String, HTShape> = mutableMapOf()
 
@@ -69,6 +75,7 @@ sealed class HTShape(val name: String) {
     }
 
     init {
+        logger.info("The Shape: $name registered!")
         map.putIfAbsent(name, this)
     }
 
@@ -79,6 +86,21 @@ sealed class HTShape(val name: String) {
     fun getTranslatedText(material: HTMaterial): Text = TranslatableText(translationKey, material.getTranslatedName())
 
     abstract fun getMaterial(tagKey: TagKey<Item>): HTMaterial?
+
+    fun getTagKey(material: HTMaterial): TagKey<Item> =
+        TagKey.of(Registry.ITEM_KEY, commonId("${material.getName()}_${name}s"))
+
+    //    Any    //
+
+    override fun equals(other: Any?): Boolean = when (other) {
+        null -> false
+        !is HTShape -> false
+        else -> other.name == this.name
+    }
+
+    override fun hashCode(): Int = name.hashCode()
+
+    override fun toString(): String = name
 
     //    Simple    //
 

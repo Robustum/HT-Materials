@@ -6,10 +6,6 @@ class HTMaterialFlags() {
 
     private val flags: MutableSet<HTMaterialFlag> = mutableSetOf()
 
-    constructor(flags: HTMaterialFlags) : this() {
-        this.flags.addAll(flags.flags)
-    }
-
     fun addFlags(vararg flag: HTMaterialFlag) = also { flag.forEach(flags::add) }
 
     operator fun contains(flag: HTMaterialFlag): Boolean = flag in flags

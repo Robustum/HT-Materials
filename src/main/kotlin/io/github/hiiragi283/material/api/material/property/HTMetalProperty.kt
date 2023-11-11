@@ -8,9 +8,8 @@ class HTMetalProperty : HTMaterialProperty<HTMetalProperty> {
     override val key: HTPropertyKey<HTMetalProperty> = HTPropertyKey.METAL
 
     override fun verify(material: HTMaterial) {
-        val properties: HTMaterialProperties = material.getProperties()
-        properties.addSafety(HTSolidProperty(BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE))
-        if (HTPropertyKey.GEM in properties) {
+        material.modifyProperties { addSafety(HTSolidProperty(BlockTags.NEEDS_STONE_TOOL, BlockTags.PICKAXE_MINEABLE)) }
+        if (material.hasProperty(HTPropertyKey.GEM)) {
             throw IllegalStateException("Material: has both Metal and Gem Property, which is not allowed!")
         }
     }

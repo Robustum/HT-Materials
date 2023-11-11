@@ -6,12 +6,15 @@ import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperty
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.common.HTMaterialsCommon
+import io.github.hiiragi283.material.common.commonId
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.SimpleRegistry
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import java.util.*
 
 @Suppress("unused")
@@ -23,6 +26,8 @@ class HTMaterial private constructor(
 
     companion object {
 
+        private val logger: Logger = LogManager.getLogger("HTMaterial")
+
         @JvmField
         val REGISTRY: SimpleRegistry<HTMaterial> = FabricRegistryBuilder.createSimple(
             HTMaterial::class.java,
@@ -31,19 +36,23 @@ class HTMaterial private constructor(
 
         @JvmOverloads
         internal fun createMaterial(
-            identifier: Identifier,
+            name: String,
             preInit: HTMaterial.() -> Unit = {},
             init: HTMaterial.() -> Unit = {},
-        ): HTMaterial = HTMaterial(Info(identifier), HTMaterialProperties(), HTMaterialFlags())
+        ): HTMaterial = HTMaterial(Info(name), HTMaterialProperties(), HTMaterialFlags())
             .apply(preInit)
             .apply(init)
-            .let { mat -> Registry.register(REGISTRY, identifier, mat) }
+            .let { mat ->
+                logger.info("The Material: $mat registered!")
+                Registry.register(REGISTRY, commonId(name), mat)
+            }
+
+        @JvmStatic
+        fun getMaterial(name: String): HTMaterial? = REGISTRY.get(commonId(name))
 
     }
 
     //    Properties    //
-
-    fun getProperties(): HTMaterialProperties = HTMaterialProperties(properties)
 
     fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties.getAs(key)
 
@@ -58,8 +67,6 @@ class HTMaterial private constructor(
 
     //    Flags    //
 
-    fun getFlags(): HTMaterialFlags = HTMaterialFlags(flags)
-
     fun hasFlag(flag: HTMaterialFlag): Boolean = flag in flags
 
     fun modifyFlags(init: HTMaterialFlags.() -> Unit) {
@@ -70,7 +77,9 @@ class HTMaterial private constructor(
 
     fun getInfo(): Info = info.copy()
 
-    fun getIdentifier(): Identifier = info.identifier
+    fun getName(): String = info.name
+
+    fun getIdentifier(): Identifier = commonId(getName())
 
     fun getBlockMultiplier(): Int = info.blockMultiplier
 
@@ -87,11 +96,11 @@ class HTMaterial private constructor(
     }
 
     data class Info(
-        val identifier: Identifier,
+        val name: String,
         var blockMultiplier: Int = 9,
         var color: Int = -1,
         var formula: String = "",
-        var translationKey: String = "material.${identifier.namespace}.${identifier.path}"
+        var translationKey: String = "material.$name"
     )
 
     //    Any    //
@@ -99,11 +108,11 @@ class HTMaterial private constructor(
     override fun equals(other: Any?): Boolean = when (other) {
         null -> false
         !is HTMaterial -> false
-        else -> other.getIdentifier() == this.getIdentifier()
+        else -> other.getName() == this.getName()
     }
 
-    override fun hashCode(): Int = getIdentifier().hashCode()
+    override fun hashCode(): Int = getName().hashCode()
 
-    override fun toString(): String = getIdentifier().toString()
+    override fun toString(): String = getName()
 
 }

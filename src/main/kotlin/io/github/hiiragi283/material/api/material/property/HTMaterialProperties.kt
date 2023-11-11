@@ -4,10 +4,6 @@ class HTMaterialProperties() {
 
     private val map: MutableMap<HTPropertyKey<*>, HTMaterialProperty<*>> = mutableMapOf()
 
-    constructor(properties: HTMaterialProperties) : this() {
-        this.map.putAll(properties.map)
-    }
-
     operator fun get(key: HTPropertyKey<*>): HTMaterialProperty<*>? = map[key]
 
     fun <T : HTMaterialProperty<T>> getAs(key: HTPropertyKey<T>): T? = key.clazz.cast(get(key))
