@@ -1,8 +1,11 @@
 package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.api.material.property.HTPropertyKey
+import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.commonId
-import io.github.hiiragi283.material.common.modify
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.item.Item
 import net.minecraft.tag.TagKey
@@ -10,85 +13,99 @@ import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
+import net.minecraft.util.registry.SimpleRegistry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import java.util.function.Function
+import java.util.function.Predicate
 
-@Suppress("LeakingThis")
-sealed class HTShape(val name: String) {
+@Suppress("unused")
+class HTShape private constructor(
+    val name: String,
+    val prefix: String,
+    val suffix: String,
+    val generateItem: Predicate<HTMaterial>
+) {
+
+    private val translationKey: String = "ht_shape.$name"
 
     companion object {
 
         private val logger: Logger = LogManager.getLogger("HTShape")
 
-        private val map: MutableMap<String, HTShape> = mutableMapOf()
-
         @JvmField
-        val REGISTRY: Map<String, HTShape> = map
+        val REGISTRY: SimpleRegistry<HTShape> = FabricRegistryBuilder.createSimple(
+            HTShape::class.java,
+            HTMaterialsCommon.id("shape")
+        ).attribute(RegistryAttribute.SYNCED).buildAndRegister()
+
+        @JvmStatic
+        fun getShape(name: String): HTShape? = REGISTRY.get(commonId(name))
 
         //    Shapes    //
 
-        @JvmField
-        val BLOCK: HTShape = Simple("block")
+        @JvmStatic
+        fun create(name: String, init: Builder.() -> Unit = {}): HTShape = Builder(name).apply(init).build()
+            .also {
+                Registry.register(REGISTRY, commonId(name), it)
+                logger.info("The Shape: $name registered!")
+            }
+
+        @JvmStatic
+        fun createSimple(name: String) = create(name) { suffix = "_${name}s" }
 
         @JvmField
-        val DUST: HTShape = Simple("dust")
+        val BLOCK = createSimple("block")
 
         @JvmField
-        val GEAR: HTShape = Simple("gear")
+        val DUST = createSimple("dust")
 
         @JvmField
-        val GEM: HTShape = Simple("gem")
+        val GEAR = createSimple("gear")
 
         @JvmField
-        val INGOT: HTShape = Simple("ingot")
+        val GEM = createSimple("gem")
 
         @JvmField
-        val NUGGET: HTShape = Simple("nugget")
+        val INGOT = createSimple("ingot")
 
         @JvmField
-        val PLATE: HTShape = Simple("plate")
+        val NUGGET = createSimple("nugget")
 
         @JvmField
-        val RAW_ORE: HTShape = Custom("raw_ore") { id ->
-            val path: String = id.path
-            return@Custom if (path.startsWith("raw_") && path.endsWith("_ores")) {
-                HTMaterial.REGISTRY.get(id.modify {
-                    path.removePrefix("raw_").removeSuffix("_ores")
-                })
-            } else null
+        val PLATE = createSimple("plate")
+
+        @JvmField
+        val RAW_ORE = create("raw_ore") {
+            prefix = "raw_"
+            suffix = "_ores"
         }
 
         @JvmField
-        val RAW_BLOCK: HTShape = Custom("raw_block") { id ->
-            val path: String = id.path
-            return@Custom if (path.startsWith("raw_") && path.endsWith("_blocks")) {
-                HTMaterial.REGISTRY.get(id.modify {
-                    path.removePrefix("raw_").removeSuffix("_blocks")
-                })
-            } else null
+        val RAW_BLOCK = create("raw_block") {
+            prefix = "raw_"
+            suffix = "_blocks"
         }
 
-        @JvmField
-        val ROD: HTShape = Simple("rod")
-
     }
 
-    init {
-        logger.info("The Shape: $name registered!")
-        map.putIfAbsent(name, this)
-    }
+    fun canGenerateItem(material: HTMaterial): Boolean = generateItem.test(material)
 
-    val translationKey: String = "shape.c.$name"
+    fun getIdentifier(namespace: String, material: HTMaterial) =
+        Identifier(namespace, prefix + material.getName() + suffix)
+
+    fun getCommonId(material: HTMaterial) = getIdentifier("c", material)
+
+    fun getMaterial(tagKey: TagKey<Item>): HTMaterial? = getMaterial(tagKey.id.path)
+
+    private fun getMaterial(path: String) = if (path.startsWith(prefix) && path.endsWith(suffix)) {
+        HTMaterial.getMaterial(path.removePrefix(prefix).removeSuffix(suffix))
+    } else null
 
     fun getTranslatedName(material: HTMaterial): String = I18n.translate(translationKey, material.getTranslatedName())
 
     fun getTranslatedText(material: HTMaterial): Text = TranslatableText(translationKey, material.getTranslatedName())
 
-    abstract fun getMaterial(tagKey: TagKey<Item>): HTMaterial?
-
-    fun getTagKey(material: HTMaterial): TagKey<Item> =
-        TagKey.of(Registry.ITEM_KEY, commonId("${material.getName()}_${name}s"))
+    fun getTagKey(material: HTMaterial): TagKey<Item> = TagKey.of(Registry.ITEM_KEY, getCommonId(material))
 
     //    Any    //
 
@@ -102,26 +119,19 @@ sealed class HTShape(val name: String) {
 
     override fun toString(): String = name
 
-    //    Simple    //
+    //    Builder    //
 
-    class Simple(name: String) : HTShape(name) {
+    class Builder(val name: String) {
 
-        override fun getMaterial(tagKey: TagKey<Item>): HTMaterial? {
-            val tagId: Identifier = tagKey.id
-            val path: String = tagId.path
-            val pattern = "_${name}s"
-            return if (path.endsWith(pattern)) {
-                HTMaterial.REGISTRY.get(tagId.modify { path.removeSuffix(pattern) })
-            } else null
+        var prefix: String = ""
+        var suffix: String = ""
+        var generateItem: Predicate<HTMaterial> = Predicate { it.hasProperty(HTPropertyKey.SOLID) }
+
+        internal fun build() = HTShape(name, prefix, suffix, generateItem).also {
+            check(prefix.isNotEmpty() || suffix.isNotEmpty()) {
+                "The shape: $name must have either prefix or suffix!"
+            }
         }
-
-    }
-
-    //    Custom    //
-
-    class Custom(name: String, private val function: Function<Identifier, HTMaterial?>) : HTShape(name) {
-
-        override fun getMaterial(tagKey: TagKey<Item>): HTMaterial? = function.apply(tagKey.id)
 
     }
 

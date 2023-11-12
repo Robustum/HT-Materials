@@ -1,13 +1,82 @@
 package io.github.hiiragi283.material.api.material.materials
 
-import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialBuilder
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
-import io.github.hiiragi283.material.api.material.property.HTMetalProperty
+import io.github.hiiragi283.material.api.material.property.HTPropertyKey
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.minecraft.block.Blocks
+import net.minecraft.fluid.Fluids
+import net.minecraft.tag.BlockTags
 
-@Suppress("unused")
+@Suppress("unused", "UnstableApiUsage")
 object HTVanillaMaterials {
+
+    //    Fluids    //
+
+    @JvmField
+    val WATER = HTMaterialBuilder.createFluid("water") {
+        modifyProperties {
+            getAs(HTPropertyKey.FLUID)?.let { property ->
+                property.fluid = Fluids.WATER
+                property.defaultAmount = FluidConstants.BLOCK
+            }
+        }
+    }
+
+    @JvmField
+    val LAVA = HTMaterialBuilder.createFluid("lava") {
+        modifyProperties {
+            getAs(HTPropertyKey.FLUID)?.let { property ->
+                property.fluid = Fluids.LAVA
+                property.defaultAmount = FluidConstants.BLOCK
+            }
+        }
+    }
+
+    //    Minerals    //
+
+    val DIAMOND = HTMaterialBuilder.createGem("diamond") {
+        modifyInfo {
+            color = Blocks.DIAMOND_BLOCK.defaultMapColor.color
+            formula = "C"
+        }
+        modifyProperties { getAs(HTPropertyKey.SOLID)?.harvestLevel = BlockTags.NEEDS_DIAMOND_TOOL }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEAR,
+                HTMaterialFlag.GENERATE_PLATE,
+                HTMaterialFlag.GENERATE_ROD
+            )
+        }
+    }
+
+    @JvmField
+    val NETHERITE = HTMaterialBuilder.createMetal("netherite") {
+        modifyInfo {
+            color = Blocks.NETHERITE_BLOCK.defaultMapColor.color
+            formula = "Nr"
+        }
+        modifyProperties { getAs(HTPropertyKey.SOLID)?.harvestLevel = BlockTags.NEEDS_DIAMOND_TOOL }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEAR,
+                HTMaterialFlag.GENERATE_PLATE,
+                HTMaterialFlag.GENERATE_ROD
+            )
+        }
+    }
+
+    //    Woods    //
+
+    @JvmField
+    val WOOD = HTMaterialBuilder.createWood("wood") {
+        modifyInfo {
+            color = Blocks.OAK_PLANKS.defaultMapColor.color
+        }
+    }
+
 
     //    Stones    //
 
@@ -64,51 +133,6 @@ object HTVanillaMaterials {
     val DRIPSTONE = HTMaterialBuilder.createStone("dripstone") {
         modifyInfo {
             color = Blocks.DRIPSTONE_BLOCK.defaultMapColor.color
-        }
-    }
-
-    //    Woods    //
-
-    @JvmField
-    val WOOD = HTMaterialBuilder.createWood("wood") {
-        modifyInfo {
-            color = Blocks.OAK_PLANKS.defaultMapColor.color
-        }
-    }
-
-    //    Minerals    //
-
-    @JvmField
-    val IRON = HTMaterial.createMaterial("iron") {
-        modifyInfo {
-            color = Blocks.IRON_BLOCK.defaultMapColor.color
-            formula = "Fe"
-        }
-        modifyProperties { addSafety(HTMetalProperty()) }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
-        }
-    }
-
-    @JvmField
-    val GOLD = HTMaterial.createMaterial("gold") {
-        modifyInfo {
-            color = Blocks.GOLD_BLOCK.defaultMapColor.color
-            formula = "Au"
-        }
-        modifyProperties { addSafety(HTMetalProperty()) }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
         }
     }
 

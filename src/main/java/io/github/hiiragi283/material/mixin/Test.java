@@ -6,8 +6,6 @@ import io.github.hiiragi283.material.api.shape.HTShape;
 import kotlin.Unit;
 import net.minecraft.util.registry.SimpleRegistry;
 
-import java.util.Map;
-
 public class Test {
 
     public static void material() {
@@ -22,7 +20,7 @@ public class Test {
     }
 
     public static void shape() {
-        Map<String, HTShape> registry = HTShape.REGISTRY;
+        SimpleRegistry<HTShape> registry = HTShape.REGISTRY;
     }
 
 }

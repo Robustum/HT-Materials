@@ -100,7 +100,7 @@ class HTMaterial private constructor(
         var blockMultiplier: Int = 9,
         var color: Int = -1,
         var formula: String = "",
-        var translationKey: String = "material.$name"
+        var translationKey: String = "ht_material.$name"
     )
 
     //    Any    //
