@@ -11,10 +11,14 @@ object HTElementMaterials {
     //    1st Period    //
 
     @JvmField
-    val HYDROGEN = HTMaterialBuilder.createFluid("hydrogen")
+    val HYDROGEN = HTMaterialBuilder.createFluid("hydrogen") {
+        modifyInfo { color = Blocks.BLUE_CONCRETE.defaultMapColor.color }
+    }
 
     @JvmField
-    val HELIUM = HTMaterialBuilder.createFluid("helium")
+    val HELIUM = HTMaterialBuilder.createFluid("helium") {
+        modifyInfo { color = Blocks.YELLOW_CONCRETE.defaultMapColor.color }
+    }
 
     //    2nd Period    //
 

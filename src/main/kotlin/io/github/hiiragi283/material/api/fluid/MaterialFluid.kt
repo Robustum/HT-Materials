@@ -2,8 +2,8 @@ package io.github.hiiragi283.material.api.fluid
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.common.HTMaterialsCommon
-import io.github.hiiragi283.material.common.append
-import io.github.hiiragi283.material.common.modify
+import io.github.hiiragi283.material.common.prefix
+import io.github.hiiragi283.material.common.suffix
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.BlockState
@@ -107,7 +107,7 @@ abstract class MaterialFluid(val material: HTMaterial) : FlowableFluid() {
             fluidFlowing.putIfAbsent(material, this)
             Registry.register(
                 Registry.FLUID,
-                material.getIdentifier(HTMaterialsCommon.MOD_ID).modify { "flowing_$it" },
+                material.getIdentifier(HTMaterialsCommon.MOD_ID).prefix("flowing_"),
                 this
             )
         }
@@ -165,7 +165,7 @@ abstract class MaterialFluid(val material: HTMaterial) : FlowableFluid() {
             fluidBucket.putIfAbsent(fluid.material, this)
             Registry.register(
                 Registry.ITEM,
-                fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID).append("_bucket"),
+                fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID).suffix("_bucket"),
                 this
             )
         }

@@ -8,17 +8,15 @@ import java.util.function.Supplier
 
 object HTJsonRecipeManager {
 
-    private val registry: MutableMap<Identifier, JsonObject> = mutableMapOf()
-
     @JvmField
-    val REGISTRY: Map<Identifier, JsonObject> = registry
+    internal val REGISTRY: MutableMap<Identifier, JsonObject> = mutableMapOf()
 
     //    Vanilla    //
 
     @JvmStatic
     fun createVanillaRecipe(jsonBuilder: CraftingRecipeJsonBuilder, recipeId: Identifier) {
         jsonBuilder.offerTo { provider: RecipeJsonProvider ->
-            registry.putIfAbsent(recipeId, provider.toJson())
+            REGISTRY.putIfAbsent(recipeId, provider.toJson())
         }
     }
 

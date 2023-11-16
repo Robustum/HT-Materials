@@ -1,6 +1,7 @@
 package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.commonId
@@ -21,12 +22,10 @@ import java.util.function.Predicate
 @Suppress("unused")
 class HTShape private constructor(
     val name: String,
-    val prefix: String,
-    val suffix: String,
-    val generateItem: Predicate<HTMaterial>
+    val forgeTag: String,
+    val fabricTag: String,
+    private val generateItem: Predicate<HTMaterial>
 ) {
-
-    private val translationKey: String = "ht_shape.$name"
 
     companion object {
 
@@ -50,62 +49,94 @@ class HTShape private constructor(
                 logger.info("The Shape: $name registered!")
             }
 
-        @JvmStatic
-        fun createSimple(name: String) = create(name) { suffix = "_${name}s" }
+        @JvmField
+        val BLOCK = create("block") {
+            forgeTag = "storage_block/%s"
+            fabricTag = "%s_blocks"
+            generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_BLOCk) }
+        }
 
         @JvmField
-        val BLOCK = createSimple("block")
+        val DUST = create("dust") {
+            forgeTag = "dusts/%s"
+            fabricTag = "%s_dusts"
+            generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_DUST) }
+        }
 
         @JvmField
-        val DUST = createSimple("dust")
+        val GEAR = create("gear"){
+            forgeTag = "gears/%s"
+            fabricTag = "%s_gears"
+            generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_GEAR) }
+        }
 
         @JvmField
-        val GEAR = createSimple("gear")
+        val GEM = create("gem"){
+            forgeTag = "gems/%s"
+            fabricTag = "%s_gems"
+            generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_GEM) }
+        }
 
         @JvmField
-        val GEM = createSimple("gem")
+        val INGOT = create("ingot"){
+            forgeTag = "ingots/%s"
+            fabricTag = "%s_ingots"
+            generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_INGOT) }
+        }
 
         @JvmField
-        val INGOT = createSimple("ingot")
+        val NUGGET = create("nugget"){
+            forgeTag = "nuggets/%s"
+            fabricTag = "%s_nuggets"
+            generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_NUGGET) }
+        }
 
         @JvmField
-        val NUGGET = createSimple("nugget")
-
-        @JvmField
-        val PLATE = createSimple("plate")
+        val PLATE = create("plate"){
+            forgeTag = "plates/%s"
+            fabricTag = "%s_plates"
+            generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_PLATE) }
+        }
 
         @JvmField
         val RAW_ORE = create("raw_ore") {
-            prefix = "raw_"
-            suffix = "_ores"
+            forgeTag = "raw_materials/%s"
+            fabricTag = "raw_%s_ores"
+            generateItem = Predicate { false }
         }
 
         @JvmField
         val RAW_BLOCK = create("raw_block") {
-            prefix = "raw_"
-            suffix = "_blocks"
+            forgeTag = "storage_blocks/raw_%s"
+            fabricTag = "raw_%s_blocks"
+            generateItem = Predicate { false }
         }
 
     }
 
     fun canGenerateItem(material: HTMaterial): Boolean = generateItem.test(material)
 
-    fun getIdentifier(namespace: String, material: HTMaterial) =
-        Identifier(namespace, prefix + material.getName() + suffix)
+    //    Translation    //
 
-    fun getCommonId(material: HTMaterial) = getIdentifier("c", material)
-
-    fun getMaterial(tagKey: TagKey<Item>): HTMaterial? = getMaterial(tagKey.id.path)
-
-    private fun getMaterial(path: String) = if (path.startsWith(prefix) && path.endsWith(suffix)) {
-        HTMaterial.getMaterial(path.removePrefix(prefix).removeSuffix(suffix))
-    } else null
+    private val translationKey: String = "ht_shape.$name"
 
     fun getTranslatedName(material: HTMaterial): String = I18n.translate(translationKey, material.getTranslatedName())
 
     fun getTranslatedText(material: HTMaterial): Text = TranslatableText(translationKey, material.getTranslatedName())
 
-    fun getTagKey(material: HTMaterial): TagKey<Item> = TagKey.of(Registry.ITEM_KEY, getCommonId(material))
+    //    Identifier    //
+
+    fun getIdentifier(namespace: String, material: HTMaterial) = Identifier(namespace, fabricTag.format(material.getName()))
+
+    fun getForgeId(material: HTMaterial) = Identifier("c", forgeTag.format(material.getName()))
+
+    fun getCommonId(material: HTMaterial) = Identifier("c", fabricTag.format(material.getName()))
+
+    //    TagKey    //
+
+    fun getForgeTag(material: HTMaterial): TagKey<Item> = TagKey.of(Registry.ITEM_KEY, getForgeId(material))
+
+    fun getCommonTag(material: HTMaterial): TagKey<Item> = TagKey.of(Registry.ITEM_KEY, getCommonId(material))
 
     //    Any    //
 
@@ -123,13 +154,13 @@ class HTShape private constructor(
 
     class Builder(val name: String) {
 
-        var prefix: String = ""
-        var suffix: String = ""
+        var forgeTag: String = ""
+        var fabricTag: String = ""
         var generateItem: Predicate<HTMaterial> = Predicate { it.hasProperty(HTPropertyKey.SOLID) }
 
-        internal fun build() = HTShape(name, prefix, suffix, generateItem).also {
-            check(prefix.isNotEmpty() || suffix.isNotEmpty()) {
-                "The shape: $name must have either prefix or suffix!"
+        internal fun build() = HTShape(name, forgeTag, fabricTag, generateItem).also {
+            check(forgeTag.isNotEmpty() && fabricTag.isNotEmpty()) {
+                "The shape: $name must have both forgeTag and fabricTag!"
             }
         }
 

@@ -10,6 +10,8 @@ import java.util.function.Function
 
 fun commonId(path: String) = Identifier("c", path)
 
-fun Identifier.append(path: String) = Identifier(this.namespace, this.path + path)
+fun Identifier.prefix(prefix: String) = Identifier(this.namespace, prefix + this.path)
+
+fun Identifier.suffix(suffix: String) = Identifier(this.namespace, this.path + suffix)
 
 fun Identifier.modify(function: Function<String, String>) = Identifier(this.namespace, function.apply(this.path))

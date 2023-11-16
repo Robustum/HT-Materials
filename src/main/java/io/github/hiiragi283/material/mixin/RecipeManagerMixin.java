@@ -19,6 +19,7 @@ public class RecipeManagerMixin {
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
     public void apply$ht_materials(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
         HTJsonRecipeManager.REGISTRY.forEach(map::putIfAbsent);
+        HTJsonRecipeManager.REGISTRY.clear();
     }
 
 }

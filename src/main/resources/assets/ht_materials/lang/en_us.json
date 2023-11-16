@@ -1,0 +1,22 @@
+{
+  "ht_material.copper": "Copper",
+  "ht_material.diamond": "Netherite",
+  "ht_material.gold": "Gold",
+  "ht_material.helium": "Helium",
+  "ht_material.hydrogen": "Hydrogen",
+  "ht_material.iron": "Iron",
+  "ht_material.lava": "Lava",
+  "ht_material.lithium": "Lithium",
+  "ht_material.netherite": "Netherite",
+  "ht_material.water": "Water",
+  "ht_material.wood": "Wood",
+  "ht_shape.block": "Block of %s",
+  "ht_shape.dust": "%s Dust",
+  "ht_shape.gear": "%s Gear",
+  "ht_shape.gem": "%s",
+  "ht_shape.ingot": "%s Ingot",
+  "ht_shape.nugget": "%s Nugget",
+  "ht_shape.plate": "%s Plate",
+  "ht_shape.raw_block": "Raw %s Block",
+  "ht_shape.raw_ore": "Raw %s Ore"
+}

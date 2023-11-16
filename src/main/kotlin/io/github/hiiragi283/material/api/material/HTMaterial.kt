@@ -54,6 +54,11 @@ class HTMaterial private constructor(
 
     }
 
+    fun verify() {
+        properties.verify(this)
+        flags.verify(this)
+    }
+
     //    Properties    //
 
     fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties.get(key)
@@ -66,7 +71,6 @@ class HTMaterial private constructor(
     fun modifyProperties(init: HTMaterialProperties.() -> Unit) {
         check(HTMaterialsAPI.canModifyMaterial())
         properties.init()
-        properties.verify(this)
     }
 
     //    Flags    //
@@ -76,7 +80,6 @@ class HTMaterial private constructor(
     fun modifyFlags(init: HTMaterialFlags.() -> Unit) {
         check(HTMaterialsAPI.canModifyMaterial())
         flags.init()
-        flags.verify(this)
     }
 
     //    Info    //
