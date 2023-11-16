@@ -1,7 +1,8 @@
 package io.github.hiiragi283.material.api.item
 
-import com.google.common.collect.HashMultimap
-import com.google.common.collect.Multimap
+import com.google.common.collect.HashBasedTable
+import com.google.common.collect.ImmutableTable
+import com.google.common.collect.Table
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.part.HTPart
 import io.github.hiiragi283.material.api.shape.HTShape
@@ -15,60 +16,46 @@ interface MaterialItemConvertible : ItemConvertible {
     val material: HTMaterial
     val shape: HTShape
 
-    fun registerPart() {
-        register(material, shape, this)
-    }
+    fun getPart(): HTPart = HTPart(material, shape)
 
     companion object {
 
         private val logger: Logger = LogManager.getLogger("MaterialItemConvertible")
 
-        private val itemToPart: MutableMap<ItemConvertible, HTPart> = mutableMapOf()
+        private val table: Table<HTMaterial, HTShape, ItemConvertible> = HashBasedTable.create()
 
         @JvmStatic
-        val ITEM_TO_PART: Map<ItemConvertible, HTPart> = itemToPart
-
-        private val partToItem: MutableMap<HTPart, ItemConvertible> = mutableMapOf()
+        fun getTable(): ImmutableTable<HTMaterial, HTShape, ItemConvertible> = ImmutableTable.copyOf(table)
 
         @JvmStatic
-        val PART_TO_ITEM: Map<HTPart, ItemConvertible> = partToItem
-
-        private val partToItems: Multimap<HTPart, ItemConvertible> = HashMultimap.create()
+        fun getItems(): Collection<ItemConvertible> = table.values()
 
         @JvmStatic
-        val PART_TO_ITEMS: Multimap<HTPart, ItemConvertible> = partToItems
-
-
-        @JvmStatic
-        fun register(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
-            register(HTPart(material, shape), itemConvertible)
+        fun registerDefaultItem(part: HTPart, itemConvertible: ItemConvertible) {
+            registerDefaultItem(part.material, part.shape, itemConvertible)
         }
 
-        private fun register(part: HTPart, itemConvertible: ItemConvertible) {
-            itemToPart.putIfAbsent(itemConvertible, part)
-            if (!partToItem.containsKey(part)) {
-                partToItem[part] = itemConvertible
-                logger.info("The item: $itemConvertible registered as default item for part: $part!")
+        @JvmStatic
+        fun registerDefaultItem(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
+            if (hasDefaultItem(material, shape)) {
+                throw IllegalStateException("")
             }
-            partToItems.put(part, itemConvertible)
-            logger.info("The item: $itemConvertible linked to part: $part!")
+            table.put(material, shape, itemConvertible)
+            logger.info("The item: $itemConvertible registered as default for material: $material, shape: $shape!")
         }
 
         @JvmStatic
-        fun getPart(itemConvertible: ItemConvertible): HTPart? = itemToPart[itemConvertible]
+        fun getDefaultItem(part: HTPart): ItemConvertible? = getDefaultItem(part.material, part.shape)
 
         @JvmStatic
-        fun getItem(part: HTPart): ItemConvertible? = partToItem[part]
+        fun getDefaultItem(material: HTMaterial, shape: HTShape): ItemConvertible? = table.get(material, shape)
 
         @JvmStatic
-        fun getItems(part: HTPart): MutableCollection<ItemConvertible> = partToItems[part]
+        fun hasDefaultItem(part: HTPart): Boolean = table.contains(part.material, part.shape)
+
+        @JvmStatic
+        fun hasDefaultItem(material: HTMaterial, shape: HTShape): Boolean = table.contains(material, shape)
 
     }
-
-    data class Wrapper(
-        override val material: HTMaterial,
-        override val shape: HTShape,
-        val itemConvertible: ItemConvertible
-    ) : MaterialItemConvertible, ItemConvertible by itemConvertible
 
 }

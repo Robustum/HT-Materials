@@ -1,8 +1,8 @@
 package io.github.hiiragi283.material.common
 
 import com.dm.earth.tags_binder.api.LoadTagsCallback
-import io.github.hiiragi283.material.api.item.MaterialItemConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.minecraft.client.item.TooltipContext
@@ -21,7 +21,7 @@ object HTEventHandler {
                     val tagKey: TagKey<Item> = shape.getTagKey(material)
                     handler.register(tagKey)
                     handler.get(shape.getTagKey(material)).forEach {
-                        MaterialItemConvertible.register(material, shape, it)
+                        HTPartManager.register(material, shape, it)
                     }
                 }
             }
@@ -32,7 +32,7 @@ object HTEventHandler {
     fun registerClient() {
 
         ItemTooltipCallback.EVENT.register { stack: ItemStack, context: TooltipContext, lines: MutableList<Text> ->
-            MaterialItemConvertible.getPart(stack.item)?.let { }
+            HTPartManager.getPart(stack.item)?.let { }
         }
 
     }

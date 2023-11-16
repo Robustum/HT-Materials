@@ -3,12 +3,11 @@ package io.github.hiiragi283.material.api.material.materials
 import io.github.hiiragi283.material.api.material.HTMaterialBuilder
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.minecraft.block.Blocks
 import net.minecraft.fluid.Fluids
 import net.minecraft.tag.BlockTags
 
-@Suppress("unused", "UnstableApiUsage")
+@Suppress("unused")
 object HTVanillaMaterials {
 
     //    Fluids    //
@@ -16,20 +15,14 @@ object HTVanillaMaterials {
     @JvmField
     val WATER = HTMaterialBuilder.createFluid("water") {
         modifyProperties {
-            getAs(HTPropertyKey.FLUID)?.let { property ->
-                property.fluid = Fluids.WATER
-                property.defaultAmount = FluidConstants.BLOCK
-            }
+            get(HTPropertyKey.FLUID)?.fluid = Fluids.WATER
         }
     }
 
     @JvmField
     val LAVA = HTMaterialBuilder.createFluid("lava") {
         modifyProperties {
-            getAs(HTPropertyKey.FLUID)?.let { property ->
-                property.fluid = Fluids.LAVA
-                property.defaultAmount = FluidConstants.BLOCK
-            }
+            get(HTPropertyKey.FLUID)?.fluid = Fluids.LAVA
         }
     }
 
@@ -40,7 +33,7 @@ object HTVanillaMaterials {
             color = Blocks.DIAMOND_BLOCK.defaultMapColor.color
             formula = "C"
         }
-        modifyProperties { getAs(HTPropertyKey.SOLID)?.harvestLevel = BlockTags.NEEDS_DIAMOND_TOOL }
+        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = BlockTags.NEEDS_DIAMOND_TOOL }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
@@ -57,7 +50,7 @@ object HTVanillaMaterials {
             color = Blocks.NETHERITE_BLOCK.defaultMapColor.color
             formula = "Nr"
         }
-        modifyProperties { getAs(HTPropertyKey.SOLID)?.harvestLevel = BlockTags.NEEDS_DIAMOND_TOOL }
+        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = BlockTags.NEEDS_DIAMOND_TOOL }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,

@@ -1,28 +1,22 @@
 package io.github.hiiragi283.material.api.material.property
 
-class HTMaterialProperties() {
+import io.github.hiiragi283.material.api.material.HTMaterial
+
+class HTMaterialProperties {
 
     private val map: MutableMap<HTPropertyKey<*>, HTMaterialProperty<*>> = mutableMapOf()
 
-    operator fun get(key: HTPropertyKey<*>): HTMaterialProperty<*>? = map[key]
-
-    fun <T : HTMaterialProperty<T>> getAs(key: HTPropertyKey<T>): T? = key.clazz.cast(get(key))
+    operator fun <T : HTMaterialProperty<T>> get(key: HTPropertyKey<T>): T? = key.clazz.cast(map[key])
 
     operator fun <T : HTMaterialProperty<T>> plusAssign(property: T) {
-        val key: HTPropertyKey<T> = property.key
-        if (contains(key)) {
-            throw IllegalArgumentException("Material Property: ${key.name} already registered!")
-        }
-        map[key] = property
-    }
-
-    fun <T : HTMaterialProperty<T>> addSafety(property: T) {
-        if (!contains(property.key)) {
-            plusAssign(property)
-        }
+        map.putIfAbsent(property.key, property)
     }
 
     operator fun <T : HTMaterialProperty<T>> contains(key: HTPropertyKey<T>): Boolean = key in map
+
+    fun verify(material: HTMaterial) {
+        map.values.forEach { it.verify(material) }
+    }
 
     //    Any    //
 

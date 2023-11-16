@@ -1,5 +1,6 @@
 package io.github.hiiragi283.material.api.material
 
+import io.github.hiiragi283.material.api.HTMaterialsAPI
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
@@ -34,6 +35,7 @@ class HTMaterial private constructor(
             HTMaterialsCommon.id("material")
         ).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
+        @JvmStatic
         @JvmOverloads
         internal fun createMaterial(
             name: String,
@@ -54,7 +56,7 @@ class HTMaterial private constructor(
 
     //    Properties    //
 
-    fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties.getAs(key)
+    fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties.get(key)
 
     fun <T : HTMaterialProperty<T>> getPropertyOpt(key: HTPropertyKey<T>): Optional<T> =
         Optional.ofNullable(getProperty(key))
@@ -62,7 +64,9 @@ class HTMaterial private constructor(
     fun <T : HTMaterialProperty<T>> hasProperty(key: HTPropertyKey<T>): Boolean = key in properties
 
     fun modifyProperties(init: HTMaterialProperties.() -> Unit) {
+        check(HTMaterialsAPI.canModifyMaterial())
         properties.init()
+        properties.verify(this)
     }
 
     //    Flags    //
@@ -70,7 +74,9 @@ class HTMaterial private constructor(
     fun hasFlag(flag: HTMaterialFlag): Boolean = flag in flags
 
     fun modifyFlags(init: HTMaterialFlags.() -> Unit) {
+        check(HTMaterialsAPI.canModifyMaterial())
         flags.init()
+        flags.verify(this)
     }
 
     //    Info    //
@@ -79,11 +85,11 @@ class HTMaterial private constructor(
 
     fun getName(): String = info.name
 
-    fun getIdentifier(): Identifier = commonId(getName())
+    fun getIdentifier(namespace: String): Identifier = Identifier(namespace, getName())
 
-    fun getBlockMultiplier(): Int = info.blockMultiplier
+    fun getCommonId(): Identifier = commonId(getName())
 
-    fun getBlockAmount(): Long = (getProperty(HTPropertyKey.FLUID)?.defaultAmount ?: 0) * getBlockMultiplier()
+    fun getIngotCountPerBlock(): Int = info.ingotPerBlock
 
     fun getColor(): Int = info.color
 
@@ -92,12 +98,13 @@ class HTMaterial private constructor(
     fun getTranslatedName(): String = I18n.translate(info.translationKey)
 
     fun modifyInfo(init: Info.() -> Unit) {
+        check(HTMaterialsAPI.canModifyMaterial())
         info.init()
     }
 
     data class Info(
         val name: String,
-        var blockMultiplier: Int = 9,
+        var ingotPerBlock: Int = 9,
         var color: Int = -1,
         var formula: String = "",
         var translationKey: String = "ht_material.$name"

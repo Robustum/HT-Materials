@@ -2,7 +2,7 @@ package io.github.hiiragi283.material.api.material.flag
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 
-class HTMaterialFlags() {
+class HTMaterialFlags {
 
     private val flags: MutableSet<HTMaterialFlag> = mutableSetOf()
 

@@ -14,7 +14,7 @@ class MaterialItem(
 ) : Item(settings), MaterialItemConvertible {
 
     init {
-        registerPart()
+        MaterialItemConvertible.registerDefaultItem(material, shape, this)
     }
 
     override fun getName(stack: ItemStack?): Text = shape.getTranslatedText(material)
