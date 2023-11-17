@@ -47,7 +47,7 @@ object HTVanillaMaterials {
     @JvmField
     val NETHERITE = HTMaterialBuilder.createMetal("netherite") {
         modifyInfo {
-            color = Blocks.NETHERITE_BLOCK.defaultMapColor.color
+            color = Blocks.DEEPSLATE.defaultMapColor.color
             formula = "Nr"
         }
         modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = BlockTags.NEEDS_DIAMOND_TOOL }

@@ -16,15 +16,6 @@ object HTMaterialsAPI {
     @JvmStatic
     fun getMaterial(name: String): HTMaterial? = HTMaterial.getMaterial(name)
 
-    private var canModifyMaterial: Boolean = true
-
-    internal fun disableModifyMaterial() {
-        canModifyMaterial = false
-    }
-
-    @JvmStatic
-    fun canModifyMaterial(): Boolean = canModifyMaterial
-
     //    Shape    //
 
     @JvmField

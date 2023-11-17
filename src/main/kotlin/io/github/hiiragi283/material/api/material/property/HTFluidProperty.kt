@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.api.material.property
 
-import io.github.hiiragi283.material.api.fluid.MaterialFluid
+import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
 import io.github.hiiragi283.material.api.material.HTMaterial
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
@@ -21,12 +21,12 @@ class HTFluidProperty : HTMaterialProperty<HTFluidProperty> {
 
     internal fun init(material: HTMaterial) {
         if (this::fluid.isInitialized) return
-        MaterialFluid.Flowing(material)
-        val still = MaterialFluid.Still(material)
-        MaterialFluid.Bucket(still)
-        MaterialFluid.Block(still)
-        fluid = still
-
+        HTMaterialFluid.Flowing(material)
+        HTMaterialFluid.Still(material).run {
+            HTMaterialFluid.Bucket(this)
+            HTMaterialFluid.Block(this)
+            fluid = this
+        }
     }
 
 }

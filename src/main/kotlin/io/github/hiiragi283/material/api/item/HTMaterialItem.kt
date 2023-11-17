@@ -8,11 +8,13 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 
-class MaterialItem(
-    override val material: HTMaterial,
-    override val shape: HTShape
-) : Item(FabricItemSettings().group(HTItemGroup.MATERIAL)), MaterialItemConvertible {
+class HTMaterialItem(
+    override val materialHT: HTMaterial,
+    override val shapeHT: HTShape
+) : Item(FabricItemSettings().group(HTItemGroup.MATERIAL)), HTMaterialItemConvertible {
 
-    override fun getName(stack: ItemStack?): Text = shape.getTranslatedText(material)
+    override fun getName(): Text = shapeHT.getTranslatedText(materialHT)
+
+    override fun getName(stack: ItemStack): Text = shapeHT.getTranslatedText(materialHT)
 
 }

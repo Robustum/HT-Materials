@@ -2,15 +2,13 @@ package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
-import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.common.HTMaterialsCommon
-import io.github.hiiragi283.material.common.commonId
+import io.github.hiiragi283.material.common.util.commonId
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.item.Item
 import net.minecraft.tag.TagKey
-import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
@@ -22,8 +20,10 @@ import java.util.function.Predicate
 @Suppress("unused")
 class HTShape private constructor(
     val name: String,
+    val defaultTextureId: Identifier,
     val forgeTag: String,
     val fabricTag: String,
+    private val generateBlock: Predicate<HTMaterial>,
     private val generateItem: Predicate<HTMaterial>
 ) {
 
@@ -43,21 +43,22 @@ class HTShape private constructor(
         //    Shapes    //
 
         @JvmStatic
-        fun create(name: String, init: Builder.() -> Unit = {}): HTShape = Builder(name).apply(init).build()
-            .also {
+        fun create(name: String, init: Builder.() -> Unit = {}): HTShape = Builder(name).apply(init).build().also {
                 Registry.register(REGISTRY, commonId(name), it)
                 logger.info("The Shape: $name registered!")
-            }
+        }
 
         @JvmField
         val BLOCK = create("block") {
+            defaultTextureId = Identifier("block/iron_block")
             forgeTag = "storage_block/%s"
             fabricTag = "%s_blocks"
-            generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_BLOCk) }
+            generateBlock = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_BLOCk) }
         }
 
         @JvmField
         val DUST = create("dust") {
+            defaultTextureId = Identifier("item/sugar")
             forgeTag = "dusts/%s"
             fabricTag = "%s_dusts"
             generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_DUST) }
@@ -65,6 +66,7 @@ class HTShape private constructor(
 
         @JvmField
         val GEAR = create("gear"){
+            defaultTextureId = HTMaterialsCommon.id("item/gear")
             forgeTag = "gears/%s"
             fabricTag = "%s_gears"
             generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_GEAR) }
@@ -72,6 +74,7 @@ class HTShape private constructor(
 
         @JvmField
         val GEM = create("gem"){
+            defaultTextureId = Identifier("item/quartz")
             forgeTag = "gems/%s"
             fabricTag = "%s_gems"
             generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_GEM) }
@@ -86,6 +89,7 @@ class HTShape private constructor(
 
         @JvmField
         val NUGGET = create("nugget"){
+            defaultTextureId = HTMaterialsCommon.id("item/nugget")
             forgeTag = "nuggets/%s"
             fabricTag = "%s_nuggets"
             generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_NUGGET) }
@@ -93,6 +97,7 @@ class HTShape private constructor(
 
         @JvmField
         val PLATE = create("plate"){
+            defaultTextureId = HTMaterialsCommon.id("item/plate")
             forgeTag = "plates/%s"
             fabricTag = "%s_plates"
             generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_PLATE) }
@@ -109,10 +114,20 @@ class HTShape private constructor(
         val RAW_BLOCK = create("raw_block") {
             forgeTag = "storage_blocks/raw_%s"
             fabricTag = "raw_%s_blocks"
-            generateItem = Predicate { false }
+            generateBlock = Predicate { false }
+        }
+
+        @JvmField
+        val ROD = create("rod"){
+            defaultTextureId = HTMaterialsCommon.id("item/rod")
+            forgeTag = "rods/%s"
+            fabricTag = "%s_rods"
+            generateItem = Predicate { it.hasFlag(HTMaterialFlag.GENERATE_ROD) }
         }
 
     }
+
+    fun canGenerateBlock(material: HTMaterial): Boolean = generateBlock.test(material)
 
     fun canGenerateItem(material: HTMaterial): Boolean = generateItem.test(material)
 
@@ -122,7 +137,8 @@ class HTShape private constructor(
 
     fun getTranslatedName(material: HTMaterial): String = I18n.translate(translationKey, material.getTranslatedName())
 
-    fun getTranslatedText(material: HTMaterial): Text = TranslatableText(translationKey, material.getTranslatedName())
+    fun getTranslatedText(material: HTMaterial): TranslatableText =
+        TranslatableText(translationKey, material.getTranslatedName())
 
     //    Identifier    //
 
@@ -154,11 +170,20 @@ class HTShape private constructor(
 
     class Builder(val name: String) {
 
-        var forgeTag: String = ""
+        var defaultTextureId: Identifier = Identifier("item/iron_ingot")
         var fabricTag: String = ""
-        var generateItem: Predicate<HTMaterial> = Predicate { it.hasProperty(HTPropertyKey.SOLID) }
+        var forgeTag: String = ""
+        var generateBlock: Predicate<HTMaterial> = Predicate { false }
+        var generateItem: Predicate<HTMaterial> = Predicate { false }
 
-        internal fun build() = HTShape(name, forgeTag, fabricTag, generateItem).also {
+        internal fun build() = HTShape(
+            name,
+            defaultTextureId,
+            forgeTag,
+            fabricTag,
+            generateBlock,
+            generateItem
+        ).also {
             check(forgeTag.isNotEmpty() && fabricTag.isNotEmpty()) {
                 "The shape: $name must have both forgeTag and fabricTag!"
             }

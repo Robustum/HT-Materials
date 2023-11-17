@@ -59,7 +59,6 @@ class HTMaterialFlag private constructor(
 
         @JvmField
         val GENERATE_NUGGET = create("generate_nugget") {
-            requiredFlags.add(GENERATE_INGOT)
             requiredProperties.add(HTPropertyKey.SOLID)
             requiredProperties.add(HTPropertyKey.METAL)
         }

@@ -2,10 +2,13 @@ package io.github.hiiragi283.material.api.fluid
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.common.HTMaterialsCommon
-import io.github.hiiragi283.material.common.prefix
-import io.github.hiiragi283.material.common.suffix
+import io.github.hiiragi283.material.common.util.prefix
+import io.github.hiiragi283.material.common.util.suffix
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.block.FluidBlock
@@ -17,6 +20,8 @@ import net.minecraft.item.Item
 import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
+import net.minecraft.text.Text
+import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
@@ -24,7 +29,8 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 
-abstract class MaterialFluid(val material: HTMaterial) : FlowableFluid() {
+@Suppress("UnstableApiUsage", "unused")
+abstract class HTMaterialFluid(val material: HTMaterial) : FlowableFluid() {
 
     companion object {
 
@@ -101,7 +107,7 @@ abstract class MaterialFluid(val material: HTMaterial) : FlowableFluid() {
 
     //    Flowing    //
 
-    class Flowing(material: HTMaterial) : MaterialFluid(material) {
+    class Flowing(material: HTMaterial) : HTMaterialFluid(material) {
 
         init {
             fluidFlowing.putIfAbsent(material, this)
@@ -125,7 +131,7 @@ abstract class MaterialFluid(val material: HTMaterial) : FlowableFluid() {
 
     //    Still    //
 
-    class Still(material: HTMaterial) : MaterialFluid(material) {
+    class Still(material: HTMaterial) : HTMaterialFluid(material) {
 
         init {
             fluidStill.putIfAbsent(material, this)
@@ -134,6 +140,7 @@ abstract class MaterialFluid(val material: HTMaterial) : FlowableFluid() {
                 material.getIdentifier(HTMaterialsCommon.MOD_ID),
                 this
             )
+            FluidVariantAttributes.register(this, AttributeHandler(material))
         }
 
         override fun getLevel(state: FluidState): Int = 8
@@ -146,13 +153,11 @@ abstract class MaterialFluid(val material: HTMaterial) : FlowableFluid() {
 
     class Block(fluid: Still) : FluidBlock(fluid, FabricBlockSettings.copyOf(Blocks.WATER)) {
 
+        val identifier: Identifier = fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID)
+
         init {
             fluidBlock.putIfAbsent(fluid.material, this)
-            Registry.register(
-                Registry.BLOCK,
-                fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID),
-                this
-            )
+            Registry.register(Registry.BLOCK, identifier, this)
         }
 
     }
@@ -161,14 +166,22 @@ abstract class MaterialFluid(val material: HTMaterial) : FlowableFluid() {
 
     class Bucket(fluid: Still) : BucketItem(fluid, FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)) {
 
+        val material: HTMaterial = fluid.material
+
+        val identifier: Identifier = fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID).suffix("_bucket")
+
         init {
             fluidBucket.putIfAbsent(fluid.material, this)
-            Registry.register(
-                Registry.ITEM,
-                fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID).suffix("_bucket"),
-                this
-            )
+            Registry.register(Registry.ITEM, identifier, this)
         }
+
+    }
+
+    //    Attribute    //
+
+    class AttributeHandler(val material: HTMaterial) : FluidVariantAttributeHandler {
+
+        override fun getName(fluidVariant: FluidVariant): Text = material.getTranslatedText()
 
     }
 

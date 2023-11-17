@@ -1,7 +1,7 @@
 @file:JvmName("HTUtil")
 @file:Suppress("unused")
 
-package io.github.hiiragi283.material.common
+package io.github.hiiragi283.material.common.util
 
 import net.minecraft.util.Identifier
 import java.util.function.Function

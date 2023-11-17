@@ -37,4 +37,20 @@ object HTMaterialPlugin {
 
     }
 
+    fun interface Client {
+
+        companion object {
+
+            private const val KEY: String = "${HTMaterialsCommon.MOD_ID}.client"
+
+            internal fun clientInitialize() {
+                FabricLoader.getInstance().getEntrypoints(KEY, Client::class.java).forEach(Client::clientInitialize)
+            }
+
+        }
+
+        fun clientInitialize()
+
+    }
+
 }

@@ -1,16 +1,20 @@
 package io.github.hiiragi283.material.api.material
 
-import io.github.hiiragi283.material.api.HTMaterialsAPI
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperty
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
+import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.common.HTLoadState
 import io.github.hiiragi283.material.common.HTMaterialsCommon
-import io.github.hiiragi283.material.common.commonId
+import io.github.hiiragi283.material.common.util.commonId
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.minecraft.client.resource.language.I18n
+import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.SimpleRegistry
@@ -18,7 +22,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.util.*
 
-@Suppress("unused")
+@Suppress("unused", "UnstableApiUsage")
 class HTMaterial private constructor(
     private val info: Info,
     private val properties: HTMaterialProperties,
@@ -36,7 +40,6 @@ class HTMaterial private constructor(
         ).attribute(RegistryAttribute.SYNCED).buildAndRegister()
 
         @JvmStatic
-        @JvmOverloads
         internal fun createMaterial(
             name: String,
             preInit: HTMaterial.() -> Unit = {},
@@ -44,9 +47,9 @@ class HTMaterial private constructor(
         ): HTMaterial = HTMaterial(Info(name), HTMaterialProperties(), HTMaterialFlags())
             .apply(preInit)
             .apply(init)
-            .let { mat ->
-                logger.info("The Material: $mat registered!")
+            .also { mat ->
                 Registry.register(REGISTRY, commonId(name), mat)
+                logger.info("The Material: $mat registered!")
             }
 
         @JvmStatic
@@ -69,8 +72,15 @@ class HTMaterial private constructor(
     fun <T : HTMaterialProperty<T>> hasProperty(key: HTPropertyKey<T>): Boolean = key in properties
 
     fun modifyProperties(init: HTMaterialProperties.() -> Unit) {
-        check(HTMaterialsAPI.canModifyMaterial())
+        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT)
         properties.init()
+    }
+
+    fun getDefaultShape(): HTShape? = when {
+        hasProperty(HTPropertyKey.METAL) -> HTShape.INGOT
+        hasProperty(HTPropertyKey.GEM) -> HTShape.GEM
+        hasProperty(HTPropertyKey.SOLID) -> HTShape.DUST
+        else -> null
     }
 
     //    Flags    //
@@ -78,7 +88,7 @@ class HTMaterial private constructor(
     fun hasFlag(flag: HTMaterialFlag): Boolean = flag in flags
 
     fun modifyFlags(init: HTMaterialFlags.() -> Unit) {
-        check(HTMaterialsAPI.canModifyMaterial())
+        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT)
         flags.init()
     }
 
@@ -92,24 +102,28 @@ class HTMaterial private constructor(
 
     fun getCommonId(): Identifier = commonId(getName())
 
-    fun getIngotCountPerBlock(): Int = info.ingotPerBlock
-
     fun getColor(): Int = info.color
 
     fun getFormula(): String = info.formula
 
+    fun getIngotCountPerBlock(): Int = info.ingotPerBlock
+
+    fun getFluidAmountPerIngot(): Long = FluidConstants.BLOCK / getIngotCountPerBlock()
+
     fun getTranslatedName(): String = I18n.translate(info.translationKey)
 
+    fun getTranslatedText(): Text = TranslatableText(info.translationKey)
+
     fun modifyInfo(init: Info.() -> Unit) {
-        check(HTMaterialsAPI.canModifyMaterial())
+        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT)
         info.init()
     }
 
     data class Info(
         val name: String,
-        var ingotPerBlock: Int = 9,
         var color: Int = -1,
         var formula: String = "",
+        var ingotPerBlock: Int = 9,
         var translationKey: String = "ht_material.$name"
     )
 
