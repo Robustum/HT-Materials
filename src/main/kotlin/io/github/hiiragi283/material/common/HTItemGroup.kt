@@ -8,7 +8,7 @@ object HTItemGroup {
 
     @JvmField
     val MATERIAL: ItemGroup = FabricItemGroupBuilder.create(HTMaterialsCommon.id("material"))
-        .icon { Items.IRON_INGOT.defaultStack }
+        .icon(Items.IRON_INGOT::getDefaultStack)
         .build()
 
 }

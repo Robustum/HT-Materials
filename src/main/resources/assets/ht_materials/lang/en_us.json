@@ -34,9 +34,20 @@
   "ht_shape.gem": "%s",
   "ht_shape.ingot": "%s Ingot",
   "ht_shape.nugget": "%s Nugget",
+  "ht_shape.ore": "%s Ore",
   "ht_shape.plate": "%s Plate",
   "ht_shape.raw_block": "Raw %s Block",
   "ht_shape.raw_ore": "Raw %s Ore",
   "ht_shape.rod": "%s Rod",
-  "itemGroup.ht_materials.material": "HT Materials"
+  "itemGroup.ht_materials.material": "HT Materials",
+  "tooltip.ht_materials.material.fluid_amount": "§7- Fluid Amount: %s Unit/ingot",
+  "tooltip.ht_materials.material.formula": "§7- Formula: %s",
+  "tooltip.ht_materials.material.luminance": "§7- Luminance: %s",
+  "tooltip.ht_materials.material.mining_level": "§7- Mining Level: %s",
+  "tooltip.ht_materials.material.mining_tool": "§7- Mining Tool: %s",
+  "tooltip.ht_materials.material.name": "§7- Name: %s",
+  "tooltip.ht_materials.material.state": "§7- State: %s",
+  "tooltip.ht_materials.material.temperature": "§7- Temperature: %s K",
+  "tooltip.ht_materials.material.title": "§e=== Material Info === ",
+  "tooltip.ht_materials.material.viscosity": "§7- Viscosity: %s"
 }

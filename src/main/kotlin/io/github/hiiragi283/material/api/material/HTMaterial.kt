@@ -12,14 +12,16 @@ import io.github.hiiragi283.material.common.util.commonId
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
+import net.minecraft.block.Block
+import net.minecraft.block.MapColor
 import net.minecraft.client.resource.language.I18n
-import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.SimpleRegistry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.awt.Color
 import java.util.*
 
 @Suppress("unused", "UnstableApiUsage")
@@ -45,6 +47,11 @@ class HTMaterial private constructor(
             preInit: HTMaterial.() -> Unit = {},
             init: HTMaterial.() -> Unit = {},
         ): HTMaterial = HTMaterial(Info(name), HTMaterialProperties(), HTMaterialFlags())
+            .also {
+                check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT) {
+                    "Cannot register material after Initialization!!"
+                }
+            }
             .apply(preInit)
             .apply(init)
             .also { mat ->
@@ -64,15 +71,19 @@ class HTMaterial private constructor(
 
     //    Properties    //
 
-    fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties.get(key)
+    fun getProperties(): Collection<HTMaterialProperty<*>> = properties.values
 
-    fun <T : HTMaterialProperty<T>> getPropertyOpt(key: HTPropertyKey<T>): Optional<T> =
+    fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties[key]
+
+    fun <T : HTMaterialProperty<T>> getPropertyOptional(key: HTPropertyKey<T>): Optional<T> =
         Optional.ofNullable(getProperty(key))
 
     fun <T : HTMaterialProperty<T>> hasProperty(key: HTPropertyKey<T>): Boolean = key in properties
 
     fun modifyProperties(init: HTMaterialProperties.() -> Unit) {
-        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT)
+        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT) {
+            "Cannot modify material properties after Initialization!!"
+        }
         properties.init()
     }
 
@@ -88,7 +99,9 @@ class HTMaterial private constructor(
     fun hasFlag(flag: HTMaterialFlag): Boolean = flag in flags
 
     fun modifyFlags(init: HTMaterialFlags.() -> Unit) {
-        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT)
+        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT) {
+            "Cannot modify material flags after Initialization!!"
+        }
         flags.init()
     }
 
@@ -112,10 +125,12 @@ class HTMaterial private constructor(
 
     fun getTranslatedName(): String = I18n.translate(info.translationKey)
 
-    fun getTranslatedText(): Text = TranslatableText(info.translationKey)
+    fun getTranslatedText(): TranslatableText = TranslatableText(info.translationKey)
 
     fun modifyInfo(init: Info.() -> Unit) {
-        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT)
+        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT) {
+            "Cannot modify material infos after Initialization!!"
+        }
         info.init()
     }
 
@@ -125,7 +140,21 @@ class HTMaterial private constructor(
         var formula: String = "",
         var ingotPerBlock: Int = 9,
         var translationKey: String = "ht_material.$name"
-    )
+    ) {
+
+        fun setColor(color: Color) {
+            this.color = color.rgb
+        }
+
+        fun setColor(block: Block) {
+            setColor(block.defaultMapColor)
+        }
+
+        fun setColor(mapColor: MapColor) {
+            this.color = mapColor.color
+        }
+
+    }
 
     //    Any    //
 

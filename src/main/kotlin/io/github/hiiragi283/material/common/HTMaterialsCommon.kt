@@ -12,6 +12,7 @@ import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.common.util.suffix
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder
 import net.minecraft.item.ItemConvertible
@@ -48,6 +49,7 @@ object HTMaterialsCommon : ModInitializer {
         loadState = HTLoadState.INIT
 
         //Initialize Game Objects
+        HTItemGroup
         registerMaterialBlocks()
         registerMaterialFluids()
         registerMaterialItems()
@@ -58,13 +60,13 @@ object HTMaterialsCommon : ModInitializer {
         loadState = HTLoadState.COMPLETE
 
         //Register Common Events
-        HTEventHandler.registerCommon()
+        registerEvents()
 
         //Register Json Tags
         HTTagManager.register()
 
         //Register Json Recipes
-        registerRecipes()
+        //registerRecipes()
 
         //Register Resource Pack
         RRPCallback.AFTER_VANILLA.register { it.add(RESOURCE_PACK) }
@@ -78,12 +80,16 @@ object HTMaterialsCommon : ModInitializer {
     fun getLoadState(): HTLoadState = loadState
 
     private fun registerMaterialBlocks() {
-        HTShape.REGISTRY.forEach { shape: HTShape ->
+        HTShape.REGISTRY
+            .forEach { shape: HTShape ->
             HTMaterial.REGISTRY
+                .filter { it.hasProperty(HTPropertyKey.SOLID) }
                 .filter(shape::canGenerateBlock)
-                .forEach { material: HTMaterial ->
+                .forEach material@{ material: HTMaterial ->
                     val identifier: Identifier = shape.getIdentifier(MOD_ID, material)
-                    val block = HTMaterialBlock(material, shape)
+                    val settings: FabricBlockSettings =
+                        material.getProperty(HTPropertyKey.SOLID)?.blockSettings ?: return@material
+                    val block = HTMaterialBlock(material, shape, settings)
                     //Register Block
                     Registry.register(Registry.BLOCK, identifier, block)
                     //Register as Default Item
@@ -109,6 +115,7 @@ object HTMaterialsCommon : ModInitializer {
                     //Register as Default Item
                     HTPartManager.forceRegister(material, shape, item)
                     //Register Item Tags
+                    HTTagManager.registerItemTags(shape.getForgeTag(material), item)
                     HTTagManager.registerItemTags(shape.getCommonTag(material), item)
                 }
         }
@@ -116,6 +123,10 @@ object HTMaterialsCommon : ModInitializer {
 
     private fun registerMaterialFluids() {
         HTMaterial.REGISTRY.forEach { material -> material.getProperty(HTPropertyKey.FLUID)?.init(material) }
+    }
+
+    private fun registerEvents() {
+        HTPartManager.registerEvent()
     }
 
     private fun registerRecipes() {
@@ -131,7 +142,7 @@ object HTMaterialsCommon : ModInitializer {
         //1x Block -> 9x Ingot/Gem/Dust
         val defaultShape: HTShape = material.getDefaultShape() ?: return
         val resultItem: ItemConvertible = HTPartManager.getDefaultItemTable().get(material, defaultShape) ?: return
-        HTJsonRecipeManager.createVanillaRecipe(
+        HTRecipeManager.createVanillaRecipe(
             ShapelessRecipeJsonBuilder.create(resultItem, 9)
                 .input(HTShape.BLOCK.getCommonTag(material))
                 .setBypassesValidation(true),
@@ -142,7 +153,7 @@ object HTMaterialsCommon : ModInitializer {
     private fun blockRecipe(material: HTMaterial, item: ItemConvertible) {
         //9x Ingot/Gem/Dust -> 1x Block
         val defaultShape: HTShape = material.getDefaultShape() ?: return
-        HTJsonRecipeManager.createVanillaRecipe(
+        HTRecipeManager.createVanillaRecipe(
             ShapedRecipeJsonBuilder.create(item)
                 .patterns("AAA", "AAA", "AAA")
                 .input('A', defaultShape.getCommonTag(material))
@@ -153,7 +164,7 @@ object HTMaterialsCommon : ModInitializer {
 
     private fun ingotRecipe(material: HTMaterial, item: ItemConvertible) {
         //9x Nugget -> 1x Ingot
-        HTJsonRecipeManager.createVanillaRecipe(
+        HTRecipeManager.createVanillaRecipe(
             ShapedRecipeJsonBuilder.create(item)
                 .patterns("AAA", "AAA", "AAA")
                 .input('A', HTShape.NUGGET.getCommonTag(material))
@@ -164,7 +175,7 @@ object HTMaterialsCommon : ModInitializer {
 
     private fun nuggetRecipe(material: HTMaterial, item: ItemConvertible) {
         //1x Ingot -> 9x Nugget
-        HTJsonRecipeManager.createVanillaRecipe(
+        HTRecipeManager.createVanillaRecipe(
             ShapelessRecipeJsonBuilder.create(item, 9)
                 .input(HTShape.INGOT.getCommonTag(material))
                 .setBypassesValidation(true),

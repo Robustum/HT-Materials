@@ -1,7 +1,7 @@
 package io.github.hiiragi283.material.api.material
 
+import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.property.*
-import net.minecraft.tag.BlockTags
 
 object HTMaterialBuilder {
 
@@ -21,7 +21,7 @@ object HTMaterialBuilder {
         name,
         preInit = {
             modifyProperties {
-                this += HTSolidProperty(harvestTools = BlockTags.PICKAXE_MINEABLE)
+                this += HTSolidProperty.createGem()
                 this += HTGemProperty()
             }
         },
@@ -33,9 +33,19 @@ object HTMaterialBuilder {
         name,
         preInit = {
             modifyProperties {
-                this += HTSolidProperty(harvestTools = BlockTags.PICKAXE_MINEABLE)
+                this += HTSolidProperty.createMetal()
                 this += HTMetalProperty()
             }
+        },
+        init = init
+    )
+
+    @JvmStatic
+    fun createSolid(name: String, init: HTMaterial.() -> Unit = {}): HTMaterial = HTMaterial.createMaterial(
+        name,
+        preInit = {
+            modifyProperties { this += HTSolidProperty.createDust() }
+            modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
         },
         init = init
     )
@@ -45,8 +55,14 @@ object HTMaterialBuilder {
         name,
         preInit = {
             modifyProperties {
-                this += HTSolidProperty(harvestTools = BlockTags.PICKAXE_MINEABLE)
+                this += HTSolidProperty.createStone()
                 this += HTStoneProperty()
+            }
+            modifyFlags {
+                addFlags(
+                    HTMaterialFlag.GENERATE_DUST,
+                    HTMaterialFlag.GENERATE_PLATE
+                )
             }
         },
         init = init
@@ -57,9 +73,10 @@ object HTMaterialBuilder {
         name,
         preInit = {
             modifyProperties {
-                this += HTSolidProperty(harvestTools = BlockTags.PICKAXE_MINEABLE)
+                this += HTSolidProperty.createWood()
                 this += HTWoodProperty()
             }
+            modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
         },
         init = init
     )

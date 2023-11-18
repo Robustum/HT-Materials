@@ -1,14 +1,13 @@
 package io.github.hiiragi283.material.api.fluid
 
+import io.github.hiiragi283.material.api.item.HTMaterialItemConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.prefix
 import io.github.hiiragi283.material.common.util.suffix
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.block.FluidBlock
@@ -20,7 +19,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
-import net.minecraft.text.Text
+import net.minecraft.text.MutableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -29,8 +28,8 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 
-@Suppress("UnstableApiUsage", "unused")
-abstract class HTMaterialFluid(val material: HTMaterial) : FlowableFluid() {
+@Suppress("unused")
+abstract class HTMaterialFluid private constructor(val material: HTMaterial) : FlowableFluid() {
 
     companion object {
 
@@ -65,6 +64,10 @@ abstract class HTMaterialFluid(val material: HTMaterial) : FlowableFluid() {
 
         @JvmStatic
         fun getBucket(material: HTMaterial): Bucket? = fluidBucket[material]
+
+        private val blockSettings = FabricBlockSettings.copyOf(Blocks.WATER)
+
+        private val itemSettings = FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)
 
     }
 
@@ -107,7 +110,7 @@ abstract class HTMaterialFluid(val material: HTMaterial) : FlowableFluid() {
 
     //    Flowing    //
 
-    class Flowing(material: HTMaterial) : HTMaterialFluid(material) {
+    class Flowing internal constructor(material: HTMaterial) : HTMaterialFluid(material) {
 
         init {
             fluidFlowing.putIfAbsent(material, this)
@@ -131,7 +134,7 @@ abstract class HTMaterialFluid(val material: HTMaterial) : FlowableFluid() {
 
     //    Still    //
 
-    class Still(material: HTMaterial) : HTMaterialFluid(material) {
+    class Still internal constructor(material: HTMaterial) : HTMaterialFluid(material) {
 
         init {
             fluidStill.putIfAbsent(material, this)
@@ -140,7 +143,6 @@ abstract class HTMaterialFluid(val material: HTMaterial) : FlowableFluid() {
                 material.getIdentifier(HTMaterialsCommon.MOD_ID),
                 this
             )
-            FluidVariantAttributes.register(this, AttributeHandler(material))
         }
 
         override fun getLevel(state: FluidState): Int = 8
@@ -151,7 +153,11 @@ abstract class HTMaterialFluid(val material: HTMaterial) : FlowableFluid() {
 
     //    Block    //
 
-    class Block(fluid: Still) : FluidBlock(fluid, FabricBlockSettings.copyOf(Blocks.WATER)) {
+    class Block internal constructor(fluid: Still) : FluidBlock(fluid, blockSettings), HTMaterialItemConvertible {
+
+        override val materialHT: HTMaterial = fluid.material
+
+        override val shapeHT: HTShape = HTShape.FLUID
 
         val identifier: Identifier = fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID)
 
@@ -160,13 +166,17 @@ abstract class HTMaterialFluid(val material: HTMaterial) : FlowableFluid() {
             Registry.register(Registry.BLOCK, identifier, this)
         }
 
+        override fun getName(): MutableText = materialHT.getTranslatedText()
+
     }
 
     //    Bucket    //
 
-    class Bucket(fluid: Still) : BucketItem(fluid, FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)) {
+    class Bucket internal constructor(fluid: Still) : BucketItem(fluid, itemSettings), HTMaterialItemConvertible {
 
-        val material: HTMaterial = fluid.material
+        override val materialHT: HTMaterial = fluid.material
+
+        override val shapeHT: HTShape = HTShape.BUCKET
 
         val identifier: Identifier = fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID).suffix("_bucket")
 
@@ -174,14 +184,6 @@ abstract class HTMaterialFluid(val material: HTMaterial) : FlowableFluid() {
             fluidBucket.putIfAbsent(fluid.material, this)
             Registry.register(Registry.ITEM, identifier, this)
         }
-
-    }
-
-    //    Attribute    //
-
-    class AttributeHandler(val material: HTMaterial) : FluidVariantAttributeHandler {
-
-        override fun getName(fluidVariant: FluidVariant): Text = material.getTranslatedText()
 
     }
 

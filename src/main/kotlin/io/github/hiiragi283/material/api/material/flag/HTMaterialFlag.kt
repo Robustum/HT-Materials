@@ -85,12 +85,12 @@ class HTMaterialFlag private constructor(
     fun verify(material: HTMaterial) {
         requiredProperties.forEach { key: HTPropertyKey<*> ->
             if (!material.hasProperty(key)) {
-                throw IllegalStateException("The material: $material has no property: ${key.name} but required!")
+                throw IllegalStateException("The material: $material has no property: ${key.name} but required for ${this.name}!")
             }
         }
         requiredFlags.forEach { flag: HTMaterialFlag ->
             if (!material.hasFlag(flag)) {
-                throw IllegalStateException("The material: $material has no flag: ${flag.name} but required!")
+                throw IllegalStateException("The material: $material has no flag: ${flag.name} but required for ${this.name}!")
             }
         }
     }

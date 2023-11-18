@@ -12,12 +12,20 @@ object HTElementMaterials {
 
     @JvmField
     val HYDROGEN = HTMaterialBuilder.createFluid("hydrogen") {
-        modifyInfo { color = Blocks.BLUE_CONCRETE.defaultMapColor.color }
+        modifyInfo {
+            setColor(Blocks.BLUE_CONCRETE)
+            formula = "H"
+        }
+        modifyProperties { get(HTPropertyKey.FLUID)?.attribute?.isGas = true }
     }
 
     @JvmField
     val HELIUM = HTMaterialBuilder.createFluid("helium") {
-        modifyInfo { color = Blocks.YELLOW_CONCRETE.defaultMapColor.color }
+        modifyInfo {
+            setColor(Blocks.YELLOW_CONCRETE)
+            formula = "He"
+        }
+        modifyProperties { get(HTPropertyKey.FLUID)?.attribute?.isGas = true }
     }
 
     //    2nd Period    //
@@ -41,7 +49,7 @@ object HTElementMaterials {
     @JvmField
     val BERYLLIUM = HTMaterialBuilder.createMetal("beryllium") {
         modifyInfo {
-            color = Blocks.CACTUS.defaultMapColor.color
+            setColor(Blocks.SLIME_BLOCK)
             formula = "Be"
         }
         modifyFlags {
@@ -55,6 +63,48 @@ object HTElementMaterials {
                 HTMaterialFlag.GENERATE_ROD
             )
         }
+    }
+
+    @JvmField
+    val CARBON = HTMaterialBuilder.createSolid("carbon") {
+        modifyInfo {
+            setColor(Blocks.COAL_BLOCK)
+            formula = "C"
+        }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_PLATE,
+                HTMaterialFlag.GENERATE_ROD
+            )
+        }
+    }
+
+    @JvmField
+    val NITROGEN = HTMaterialBuilder.createFluid("nitrogen") {
+        modifyInfo {
+            setColor(Blocks.ICE)
+            formula = "N"
+        }
+        modifyProperties { get(HTPropertyKey.FLUID)?.attribute?.isGas = true }
+    }
+
+    @JvmField
+    val OXYGEN = HTMaterialBuilder.createFluid("oxygen") {
+        modifyInfo {
+            formula = "O"
+        }
+        modifyProperties { get(HTPropertyKey.FLUID)?.attribute?.isGas = true }
+    }
+
+
+    @JvmField
+    val FLUORINE = HTMaterialBuilder.createFluid("fluorine") {
+        modifyInfo {
+            setColor(Blocks.EMERALD_BLOCK)
+            formula = "F"
+        }
+        modifyProperties { get(HTPropertyKey.FLUID)?.attribute?.isGas = true }
     }
 
     //    3rd Period    //
@@ -78,10 +128,9 @@ object HTElementMaterials {
     @JvmField
     val SILICON = HTMaterialBuilder.createMetal("silicon") {
         modifyInfo {
-            color = Blocks.BLUE_TERRACOTTA.defaultMapColor.color
+            setColor(Blocks.BLUE_TERRACOTTA)
             formula = "Si"
         }
-
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_BLOCk,
@@ -99,7 +148,7 @@ object HTElementMaterials {
     @JvmField
     val TITANIUM = HTMaterialBuilder.createMetal("titanium") {
         modifyInfo {
-            color = Blocks.PINK_WOOL.defaultMapColor.color
+            setColor(Blocks.PINK_CONCRETE)
             formula = "Ti"
         }
         modifyFlags {
@@ -118,7 +167,7 @@ object HTElementMaterials {
     @JvmField
     val CHROMIUM = HTMaterialBuilder.createMetal("chromium") {
         modifyInfo {
-            color = Blocks.PINK_STAINED_GLASS.defaultMapColor.color
+            color = 0xffc0cb
             formula = "Cr"
         }
         modifyFlags {
@@ -137,7 +186,7 @@ object HTElementMaterials {
     @JvmField
     val MANGANESE = HTMaterialBuilder.createMetal("manganese") {
         modifyInfo {
-            color = Blocks.GRAVEL.defaultMapColor.color
+            setColor(Blocks.GRAVEL)
             formula = "Mn"
         }
         modifyFlags {
@@ -155,10 +204,7 @@ object HTElementMaterials {
 
     @JvmField
     val IRON = HTMaterialBuilder.createMetal("iron") {
-        modifyInfo {
-            color = Blocks.IRON_BLOCK.defaultMapColor.color
-            formula = "Fe"
-        }
+        modifyInfo { formula = "Fe" }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
@@ -172,7 +218,7 @@ object HTElementMaterials {
     @JvmField
     val NICKEL = HTMaterialBuilder.createMetal("nickel") {
         modifyInfo {
-            color = Blocks.END_STONE.defaultMapColor.color
+            setColor(Blocks.END_STONE)
             formula = "Ni"
         }
         modifyFlags {
@@ -191,10 +237,10 @@ object HTElementMaterials {
     @JvmField
     val COPPER = HTMaterialBuilder.createMetal("copper") {
         modifyInfo {
-            color = Blocks.COPPER_BLOCK.defaultMapColor.color
+            setColor(Blocks.COPPER_BLOCK)
             formula = "Cu"
         }
-        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = null }
+        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 0 }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
@@ -209,7 +255,7 @@ object HTElementMaterials {
     @JvmField
     val ZINC = HTMaterialBuilder.createMetal("zinc") {
         modifyInfo {
-            color = Blocks.GLOW_LICHEN.defaultMapColor.color
+            setColor(Blocks.GLOW_LICHEN)
             formula = "Zn"
         }
         modifyFlags {
@@ -230,7 +276,7 @@ object HTElementMaterials {
     @JvmField
     val SILVER = HTMaterialBuilder.createMetal("silver") {
         modifyInfo {
-            color = Blocks.CLAY.defaultMapColor.color
+            setColor(Blocks.ICE)
             formula = "Ag"
         }
         modifyFlags {
@@ -249,7 +295,7 @@ object HTElementMaterials {
     @JvmField
     val CADMIUM = HTMaterialBuilder.createMetal("cadmium") {
         modifyInfo {
-            color = Blocks.DIRT_PATH.defaultMapColor.color
+            setColor(Blocks.OAK_PLANKS)
             formula = "Cd"
         }
         modifyFlags {
@@ -267,7 +313,10 @@ object HTElementMaterials {
 
     @JvmField
     val TIN = HTMaterialBuilder.createMetal("tin") {
-        modifyInfo { formula = "Sn" }
+        modifyInfo {
+            setColor(Blocks.CLAY)
+            formula = "Sn"
+        }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_BLOCk,
@@ -302,7 +351,7 @@ object HTElementMaterials {
     @JvmField
     val TUNGSTEN = HTMaterialBuilder.createMetal("tungsten") {
         modifyInfo {
-            color = Blocks.GRAY_CONCRETE.defaultMapColor.color
+            setColor(Blocks.IRON_BLOCK)
             formula = "T"
         }
         modifyFlags {
@@ -356,9 +405,7 @@ object HTElementMaterials {
             color = Blocks.GOLD_BLOCK.defaultMapColor.color
             formula = "Au"
         }
-        modifyProperties {
-            get(HTPropertyKey.SOLID)?.harvestLevel = null
-        }
+        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 0 }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
@@ -372,7 +419,7 @@ object HTElementMaterials {
     @JvmField
     val LEAD = HTMaterialBuilder.createMetal("lead") {
         modifyInfo {
-            color = Blocks.CYAN_TERRACOTTA.defaultMapColor.color
+            setColor(Blocks.BLUE_TERRACOTTA)
             formula = "Pb"
         }
         modifyFlags {
@@ -393,7 +440,7 @@ object HTElementMaterials {
     @JvmField
     val URANIUM = HTMaterialBuilder.createMetal("uranium") {
         modifyInfo {
-            color = Blocks.LIME_CONCRETE.defaultMapColor.color
+            setColor(Blocks.LIME_CONCRETE)
             formula = "U"
         }
         modifyFlags {
@@ -411,7 +458,7 @@ object HTElementMaterials {
     @JvmField
     val PLUTONIUM = HTMaterialBuilder.createMetal("plutonium") {
         modifyInfo {
-            color = Blocks.MAGENTA_CONCRETE.defaultMapColor.color
+            setColor(Blocks.MAGENTA_CONCRETE)
             formula = "Pu"
         }
         modifyFlags {

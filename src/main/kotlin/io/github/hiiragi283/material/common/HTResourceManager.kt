@@ -11,6 +11,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.util.function.BiConsumer
 
 object HTResourceManager {
 
@@ -18,8 +19,7 @@ object HTResourceManager {
 
     private val gson = Gson()
 
-    fun register() {
-
+    fun register(path: String, consumer: BiConsumer<Identifier, JsonObject>) {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(
             object : SimpleSynchronousResourceReloadListener {
 
@@ -30,6 +30,7 @@ object HTResourceManager {
                             val inputStream: InputStream = manager.getResource(identifier).inputStream
                             val inputStreamReader = InputStreamReader(inputStream)
                             val jsonObject: JsonObject = gson.fromJson(inputStreamReader, JsonObject::class.java)
+                            consumer.accept(identifier, jsonObject)
                         } catch (e: Exception) {
                             logger.error(e)
                         }
@@ -37,11 +38,10 @@ object HTResourceManager {
 
                 }
 
-                override fun getFabricId(): Identifier = HTMaterialsCommon.id("material_item_manager")
+                override fun getFabricId(): Identifier = HTMaterialsCommon.id(path)
 
             }
         )
-
     }
 
 }
