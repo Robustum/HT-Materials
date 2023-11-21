@@ -2,6 +2,7 @@ package io.github.hiiragi283.material.api.part
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.common.HTMaterialsCommon
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
@@ -16,7 +17,8 @@ data class HTPart(val material: HTMaterial, val shape: HTShape) {
 
     fun getTranslatedText(): TranslatableText = shape.getTranslatedText(material)
 
-    fun getIdentifier(namespace: String): Identifier = shape.getIdentifier(namespace, material)
+    fun getIdentifier(namespace: String = HTMaterialsCommon.MOD_ID): Identifier =
+        shape.getIdentifier(material, namespace)
 
     fun getCommonId(): Identifier = shape.getCommonId(material)
 
@@ -28,9 +30,12 @@ data class HTPart(val material: HTMaterial, val shape: HTShape) {
         //Name
         lines.add(TranslatableText("tooltip.ht_materials.material.name", getTranslatedName()))
         //Formula
-        lines.add(TranslatableText("tooltip.ht_materials.material.formula", material.getFormula()))
-        //Fluid amount per ingot
-        lines.add(TranslatableText("tooltip.ht_materials.material.fluid_amount", material.getFluidAmountPerIngot()))
+        material.asFormula().takeIf(String::isNotEmpty)?.let { formula: String ->
+            lines.add(TranslatableText("tooltip.ht_materials.material.formula", formula))
+        }
+        //Fluid Amount
+        /*val fluidAmount: Long = material.getFluidAmountPerIngot() * stack.count
+        lines.add(TranslatableText("tooltip.ht_materials.material.fluid_amount", fluidAmount))*/
         //Tooltip from Properties
         material.getProperties().forEach { it.appendTooltip(this, stack, context, lines) }
     }

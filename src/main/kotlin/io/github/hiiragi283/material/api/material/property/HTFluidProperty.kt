@@ -30,8 +30,9 @@ class HTFluidProperty : HTMaterialProperty<HTFluidProperty> {
 
     }
 
+    private val fluidVariant: FluidVariant by lazy { FluidVariant.of(fluid) }
+
     override fun appendTooltip(part: HTPart, stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
-        val fluidVariant: FluidVariant = FluidVariant.of(fluid)
         //Luminance
         lines.add(
             TranslatableText(

@@ -9,15 +9,13 @@ import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.common.HTTagManager
-import io.github.hiiragi283.material.common.util.component1
-import io.github.hiiragi283.material.common.util.component2
-import io.github.hiiragi283.material.common.util.component3
-import io.github.hiiragi283.material.common.util.forEach
+import io.github.hiiragi283.material.common.util.*
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 import net.minecraft.tag.TagKey
+import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
@@ -25,27 +23,42 @@ object HTPartManager {
 
     private val logger: Logger = LogManager.getLogger("HTPartManager")
 
-    //    ItemConvertible -> HTPart    //
+    //    Item -> HTPart    //
 
-    private val itemToPart: MutableMap<ItemConvertible, HTPart> = mutableMapOf()
+    private val itemToPart: MutableMap<Item, HTPart> = mutableMapOf()
 
     @JvmField
-    val ITEM_TO_PART: Map<ItemConvertible, HTPart> = itemToPart
-
-    //    HTMaterial, HTShape -> ItemConvertible    //
-
-    private val partToItem: Table<HTMaterial, HTShape, ItemConvertible> = HashBasedTable.create()
+    val ITEM_TO_PART: Map<Item, HTPart> = itemToPart
 
     @JvmStatic
-    fun getDefaultItemTable(): ImmutableTable<HTMaterial, HTShape, ItemConvertible> = ImmutableTable.copyOf(partToItem)
-
-    //    HTMaterial, HTShape -> Collection<ItemConvertible>    //
-
-    private val partToItems: Table<HTMaterial, HTShape, MutableSet<ItemConvertible>> = HashBasedTable.create()
+    fun getPart(itemConvertible: ItemConvertible): HTPart? = itemToPart[itemConvertible.asItem()]
 
     @JvmStatic
-    fun getPartToItemsTable(): ImmutableTable<HTMaterial, HTShape, Collection<ItemConvertible>> =
+    fun hasPart(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in itemToPart
+
+    //    HTMaterial, HTShape -> Item    //
+
+    private val partToItem: Table<HTMaterial, HTShape, Item> = HashBasedTable.create()
+
+    @JvmStatic
+    fun getDefaultItemTable(): ImmutableTable<HTMaterial, HTShape, Item> = ImmutableTable.copyOf(partToItem)
+
+    @JvmStatic
+    fun getDefaultItem(material: HTMaterial, shape: HTShape): Item? = partToItem.get(material, shape)
+
+    @JvmStatic
+    fun hasDefaultItem(material: HTMaterial, shape: HTShape): Boolean = partToItem.contains(material, shape)
+
+    //    HTMaterial, HTShape -> Collection<Item>    //
+
+    private val partToItems: Table<HTMaterial, HTShape, MutableSet<Item>> = HashBasedTable.create()
+
+    @JvmStatic
+    fun getPartToItemsTable(): ImmutableTable<HTMaterial, HTShape, Collection<Item>> =
         ImmutableTable.copyOf(partToItems)
+
+    @JvmStatic
+    fun getItems(material: HTMaterial, shape: HTShape): Collection<Item> = partToItems.get(material, shape) ?: setOf()
 
     //    Initialization    //
 
@@ -113,7 +126,6 @@ object HTPartManager {
         forceRegister(HTVanillaMaterials.LAPIS, HTShape.GEM, Items.LAPIS_LAZULI)
         forceRegister(HTVanillaMaterials.LAPIS, HTShape.ORE, Blocks.LAPIS_ORE)
         //Lava
-        forceRegister(HTVanillaMaterials.LAVA, HTShape.BLOCK, Blocks.LAVA)
         forceRegister(HTVanillaMaterials.LAVA, HTShape.BUCKET, Items.LAVA_BUCKET)
         //Nether Brick
         forceRegister(HTVanillaMaterials.NETHER_BRICK, HTShape.BLOCK, Blocks.NETHER_BRICKS)
@@ -141,7 +153,6 @@ object HTPartManager {
         //Tuff
         forceRegister(HTVanillaMaterials.TUFF, HTShape.BLOCK, Blocks.TUFF)
         //Water
-        forceRegister(HTVanillaMaterials.WATER, HTShape.BLOCK, Blocks.WATER)
         forceRegister(HTVanillaMaterials.WATER, HTShape.BUCKET, Items.WATER_BUCKET)
         //Wood
         forceRegister(HTVanillaMaterials.WOOD, HTShape.BLOCK, Blocks.OAK_PLANKS)
@@ -160,53 +171,66 @@ object HTPartManager {
 
             HTMaterial.REGISTRY.forEach { material: HTMaterial ->
                 HTShape.REGISTRY.forEach { shape: HTShape ->
+                    //Register ForgeTag for Material Items
+                    val forgeTag: TagKey<Item> = shape.getForgeTag(material)
+                    if (forgeTag in handler.keys) {
+                        handler.get(forgeTag).forEach { register(material, shape, it) }
+                    }
                     //Register CommonTag for Material Items
                     val commonTag: TagKey<Item> = shape.getCommonTag(material)
                     if (commonTag in handler.keys) {
                         handler.get(commonTag).forEach { register(material, shape, it) }
                     }
-
                 }
             }
         }
     }
 
-    private fun register(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
+    private fun checkItemNotAir(itemConvertible: ItemConvertible): Item = itemConvertible.asItem().also { item ->
+        check(!item.isAir()) { "The Entry: $itemConvertible has no valid Item!" }
+    }
+
+    @JvmStatic
+    fun register(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
+        //Check if the itemConvertible has non-air item
+        val item: Item = checkItemNotAir(itemConvertible)
         //Register Tag
-        HTTagManager.registerItemTags(shape.getForgeTag(material), itemConvertible.asItem())
-        HTTagManager.registerItemTags(shape.getCommonTag(material), itemConvertible.asItem())
+        HTTagManager.registerItemTags(shape.getForgeTag(material), item)
+        HTTagManager.registerItemTags(shape.getCommonTag(material), item)
         //ItemConvertible -> HTPart
-        itemToPart.putIfAbsent(itemConvertible, HTPart(material, shape))
+        itemToPart.putIfAbsent(item, HTPart(material, shape))
         //HTMaterial, HTShape -> ItemConvertible
         if (!partToItem.contains(material, shape)) {
-            partToItem.put(material, shape, itemConvertible)
-            logger.info("The Item: $itemConvertible registered as Default Item for Material: $material and Shape: $shape!!")
+            partToItem.put(material, shape, item)
+            logger.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
         }
         //HTMaterial, HTShape -> Collection<ItemConvertible>
         if (!partToItems.contains(material, shape)) {
             partToItems.put(material, shape, mutableSetOf())
         }
-        partToItems.get(material, shape)!!.add(itemConvertible)
+        partToItems.get(material, shape)!!.add(item)
         //print info
-        logger.info("The Item: $itemConvertible linked to Material: $material and Shape: $shape!")
+        logger.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
     }
 
     internal fun forceRegister(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
+        //Check if the itemConvertible has non-air item
+        val item: Item = checkItemNotAir(itemConvertible)
         //Register Tag
-        HTTagManager.registerItemTags(shape.getForgeTag(material), itemConvertible.asItem())
-        HTTagManager.registerItemTags(shape.getCommonTag(material), itemConvertible.asItem())
+        HTTagManager.registerItemTags(shape.getForgeTag(material), item)
+        HTTagManager.registerItemTags(shape.getCommonTag(material), item)
         //ItemConvertible -> HTPart
-        itemToPart.putIfAbsent(itemConvertible, HTPart(material, shape))
+        itemToPart.putIfAbsent(item, HTPart(material, shape))
         //HTMaterial, HTShape -> ItemConvertible
-        partToItem.put(material, shape, itemConvertible)
-        logger.info("The Item: $itemConvertible registered as Default Item for Material: $material and Shape: $shape!!")
+        partToItem.put(material, shape, item)
+        logger.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
         //HTMaterial, HTShape -> Collection<ItemConvertible>
         if (!partToItems.contains(material, shape)) {
             partToItems.put(material, shape, mutableSetOf())
         }
-        partToItems.get(material, shape)!!.add(itemConvertible)
+        partToItems.get(material, shape)!!.add(item)
         //print info
-        logger.info("The Item: $itemConvertible linked to Material: $material and Shape: $shape!")
+        logger.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
     }
 
 }

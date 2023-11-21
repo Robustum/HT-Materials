@@ -2,6 +2,9 @@ package io.github.hiiragi283.material.api.material
 
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags
+import io.github.hiiragi283.material.api.material.formula.FormulaConvertible
+import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
+import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperty
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
@@ -29,7 +32,7 @@ class HTMaterial private constructor(
     private val info: Info,
     private val properties: HTMaterialProperties,
     private val flags: HTMaterialFlags
-) {
+) : FormulaConvertible {
 
     companion object {
 
@@ -62,6 +65,11 @@ class HTMaterial private constructor(
         @JvmStatic
         fun getMaterial(name: String): HTMaterial? = REGISTRY.get(commonId(name))
 
+        init {
+            HTElementMaterials
+            HTVanillaMaterials
+        }
+
     }
 
     fun verify() {
@@ -90,7 +98,6 @@ class HTMaterial private constructor(
     fun getDefaultShape(): HTShape? = when {
         hasProperty(HTPropertyKey.METAL) -> HTShape.INGOT
         hasProperty(HTPropertyKey.GEM) -> HTShape.GEM
-        hasProperty(HTPropertyKey.SOLID) -> HTShape.DUST
         else -> null
     }
 
@@ -111,13 +118,21 @@ class HTMaterial private constructor(
 
     fun getName(): String = info.name
 
-    fun getIdentifier(namespace: String): Identifier = Identifier(namespace, getName())
+    fun getIdentifier(namespace: String = HTMaterialsCommon.MOD_ID): Identifier = Identifier(namespace, getName())
 
     fun getCommonId(): Identifier = commonId(getName())
 
     fun getColor(): Int = info.color
 
-    fun getFormula(): String = info.formula
+    private lateinit var formulaCache: String
+
+    override fun asFormula(): String {
+        check(HTMaterialsCommon.getLoadState() > HTLoadState.PRE_INIT) { "Cannot call #asFormula before Initialization!!" }
+        if (!this::formulaCache.isInitialized) {
+            formulaCache = info.formula.asFormula()
+        }
+        return formulaCache
+    }
 
     fun getIngotCountPerBlock(): Int = info.ingotPerBlock
 
@@ -137,7 +152,7 @@ class HTMaterial private constructor(
     data class Info(
         val name: String,
         var color: Int = -1,
-        var formula: String = "",
+        var formula: FormulaConvertible = FormulaConvertible.EMPTY,
         var ingotPerBlock: Int = 9,
         var translationKey: String = "ht_material.$name"
     ) {

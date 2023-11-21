@@ -37,9 +37,14 @@ object HTTagManager {
 
     @JvmStatic
     fun register() {
-        blocks.values.forEach(HTMaterialsCommon.RESOURCE_PACK::addTag)
-        fluids.values.forEach(HTMaterialsCommon.RESOURCE_PACK::addTag)
-        items.values.forEach(HTMaterialsCommon.RESOURCE_PACK::addTag)
+        register(blocks)
+        register(fluids)
+        register(items)
+    }
+
+    private fun <T> register(map: MutableMap<TagKey<T>, IdentifiedTagBuilder<T>>) {
+        map.values.forEach(HTMaterialsCommon.RESOURCE_PACK::addTag)
+        map.clear()
     }
 
 }

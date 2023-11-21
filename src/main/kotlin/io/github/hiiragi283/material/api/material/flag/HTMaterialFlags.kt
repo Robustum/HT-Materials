@@ -8,6 +8,8 @@ class HTMaterialFlags {
 
     fun addFlags(vararg flag: HTMaterialFlag) = also { flag.forEach(flags::add) }
 
+    fun removeFlags(vararg flag: HTMaterialFlag) = also { flag.forEach(flags::remove) }
+
     operator fun contains(flag: HTMaterialFlag): Boolean = flag in flags
 
     fun verify(material: HTMaterial) {

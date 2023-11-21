@@ -44,29 +44,16 @@ dependencies {
 
     modImplementation(include("com.github.DM-Earth:Tags-Binder:0.1.2"))
 
-    modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:0.5.0.i-944+1.18.2") {
-        exclude(group: "net.fabricmc.fabric-api")
+    modImplementation("pers.solid:brrp-fabric:1.0.1-1.18.2") {
+        transitive = false
     }
 
-    modRuntimeOnly("com.github.Technici4n:magna:1.7.0-1.18") {
-        exclude(group: "io.github.prospector")
-        exclude(group: "me.shedaniel.cloth")
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
+    //Roughly Enough Items
     modRuntimeOnly("com.terraformersmc:modmenu:3.2.5") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
     modRuntimeOnly("dev.architectury:architectury-fabric:4.11.93") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
-    modRuntimeOnly("io.github.ladysnake:PlayerAbilityLib:1.5.0") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-
-    modImplementation("maven.modrinth:modern-industrialization:1.2.3") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
@@ -78,10 +65,31 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
-    modImplementation("pers.solid:brrp-fabric:1.0.1-1.18.2") {
-        transitive = false
+    //Create
+    modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:0.5.0.i-944+1.18.2") {
+        exclude(group: "net.fabricmc.fabric-api")
     }
 
+    modImplementation("com.tterrag.registrate_fabric:Registrate:MC1.18.2-1.1.7") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    //Modern Industrialization
+    modRuntimeOnly("com.github.Technici4n:magna:1.7.0-1.18") {
+        exclude(group: "io.github.prospector")
+        exclude(group: "me.shedaniel.cloth")
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    modRuntimeOnly("io.github.ladysnake:PlayerAbilityLib:1.5.0") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    modImplementation("maven.modrinth:modern-industrialization:1.2.3") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
+    //Tech Reborn
     modRuntimeOnly("RebornCore:RebornCore-1.18:+") {
         exclude(group: "net.fabricmc.fabric-api")
     }

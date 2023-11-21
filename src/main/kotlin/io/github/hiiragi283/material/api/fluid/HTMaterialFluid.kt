@@ -2,10 +2,10 @@ package io.github.hiiragi283.material.api.fluid
 
 import io.github.hiiragi283.material.api.item.HTMaterialItemConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
-import io.github.hiiragi283.material.common.HTMaterialsCommon
+import io.github.hiiragi283.material.common.HTItemGroup
 import io.github.hiiragi283.material.common.util.prefix
-import io.github.hiiragi283.material.common.util.suffix
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.BlockState
@@ -20,7 +20,6 @@ import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.text.MutableText
-import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
@@ -67,7 +66,10 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
 
         private val blockSettings = FabricBlockSettings.copyOf(Blocks.WATER)
 
-        private val itemSettings = FabricItemSettings().recipeRemainder(Items.BUCKET).maxCount(1)
+        private val itemSettings = FabricItemSettings()
+            .group(HTItemGroup.MATERIAL)
+            .maxCount(1)
+            .recipeRemainder(Items.BUCKET)
 
     }
 
@@ -116,7 +118,7 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
             fluidFlowing.putIfAbsent(material, this)
             Registry.register(
                 Registry.FLUID,
-                material.getIdentifier(HTMaterialsCommon.MOD_ID).prefix("flowing_"),
+                material.getIdentifier().prefix("flowing_"),
                 this
             )
         }
@@ -140,7 +142,7 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
             fluidStill.putIfAbsent(material, this)
             Registry.register(
                 Registry.FLUID,
-                material.getIdentifier(HTMaterialsCommon.MOD_ID),
+                material.getIdentifier(),
                 this
             )
         }
@@ -159,11 +161,9 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
 
         override val shapeHT: HTShape = HTShape.FLUID
 
-        val identifier: Identifier = fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID)
-
         init {
             fluidBlock.putIfAbsent(fluid.material, this)
-            Registry.register(Registry.BLOCK, identifier, this)
+            Registry.register(Registry.BLOCK, getPart().getIdentifier(), this)
         }
 
         override fun getName(): MutableText = materialHT.getTranslatedText()
@@ -178,11 +178,10 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
 
         override val shapeHT: HTShape = HTShape.BUCKET
 
-        val identifier: Identifier = fluid.material.getIdentifier(HTMaterialsCommon.MOD_ID).suffix("_bucket")
-
         init {
             fluidBucket.putIfAbsent(fluid.material, this)
-            Registry.register(Registry.ITEM, identifier, this)
+            Registry.register(Registry.ITEM, getPart().getIdentifier(), this)
+            HTPartManager.forceRegister(materialHT, shapeHT, this)
         }
 
     }

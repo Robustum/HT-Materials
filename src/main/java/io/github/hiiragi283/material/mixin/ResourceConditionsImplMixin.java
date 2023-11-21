@@ -15,7 +15,7 @@ import java.util.Map;
 public class ResourceConditionsImplMixin {
 
     @Redirect(method = "tagsPopulatedMatch", at = @At(value = "INVOKE", target = "Ljava/util/Map;get(Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 1))
-    private static <K, V> V get$ht_materials(Map<K, V> instance, Object o) {
+    private static <K, V> V ht_materials$get(Map<K, V> instance, Object o) {
         Map<Identifier, Tag<RegistryEntry<?>>> map = (Map<Identifier, Tag<RegistryEntry<?>>>) instance;
         Identifier id = (Identifier) o;
         ResourceConditionsImpl.LOGGER.info(id.toString());

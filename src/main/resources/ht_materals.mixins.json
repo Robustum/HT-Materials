@@ -4,9 +4,12 @@
   "package": "io.github.hiiragi283.material.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MainMixin",
     "RecipeManagerMixin"
   ],
-  "client": [],
+  "client": [
+    "ClientMainMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

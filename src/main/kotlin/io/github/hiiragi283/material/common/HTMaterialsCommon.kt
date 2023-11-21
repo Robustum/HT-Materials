@@ -5,8 +5,6 @@ import io.github.hiiragi283.material.api.entorypoint.HTMaterialPlugin
 import io.github.hiiragi283.material.api.item.HTMaterialBlockItem
 import io.github.hiiragi283.material.api.item.HTMaterialItem
 import io.github.hiiragi283.material.api.material.HTMaterial
-import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
-import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
@@ -18,6 +16,8 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder
 import net.minecraft.item.ItemConvertible
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.fabric.api.RRPCallback
 
@@ -29,21 +29,23 @@ object HTMaterialsCommon : ModInitializer {
 
     internal val RESOURCE_PACK: RuntimeResourcePack = RuntimeResourcePack.create(id("runtime"))
 
+    private val logger: Logger = LogManager.getLogger(MOD_NAME)
+
     private var loadState: HTLoadState = HTLoadState.CONSTRUCT
 
     override fun onInitialize() {
 
-        //Initialize material/shape
+        //Initialize HTShape
         HTShape
-        HTElementMaterials
-        HTVanillaMaterials
 
         //Pre Initialization for registering material/shape from other mods
         loadState = HTLoadState.PRE_INIT
         HTMaterialPlugin.Pre.preInitializes()
+        logger.info("Pre-Init Plugins loaded!")
 
         //Verify Material Properties and Flags
         HTMaterial.REGISTRY.forEach(HTMaterial::verify)
+        logger.info("All Materials Verified!")
 
         //Disable Material Modification
         loadState = HTLoadState.INIT
@@ -51,25 +53,37 @@ object HTMaterialsCommon : ModInitializer {
         //Initialize Game Objects
         HTItemGroup
         registerMaterialBlocks()
+        logger.info("All Material Blocks Registered!")
         registerMaterialFluids()
+        logger.info("All Material Fluids Registered!")
         registerMaterialItems()
+        logger.info("All Material Items Registered!")
 
         //Post Initialization for access material/shape from other mods
         loadState = HTLoadState.POST_INIT
         HTMaterialPlugin.Post.postInitializes()
         loadState = HTLoadState.COMPLETE
+        logger.info("Post-Init Plugins loaded!")
 
         //Register Common Events
         registerEvents()
-
-        //Register Json Tags
-        HTTagManager.register()
+        logger.info("Common Events Registered!")
 
         //Register Json Recipes
-        //registerRecipes()
+        registerRecipes()
+        logger.info("Json Recipes Registered!")
 
-        //Register Resource Pack
-        RRPCallback.AFTER_VANILLA.register { it.add(RESOURCE_PACK) }
+        RRPCallback.AFTER_VANILLA.register {
+
+            //Register Json Tags
+            HTTagManager.register()
+            logger.info("Tags Registered!")
+
+            //Register Resource Pack
+            it.add(RESOURCE_PACK)
+            logger.info("Runtime ResourcePack Registered!")
+
+        }
 
     }
 
@@ -86,19 +100,20 @@ object HTMaterialsCommon : ModInitializer {
                 .filter { it.hasProperty(HTPropertyKey.SOLID) }
                 .filter(shape::canGenerateBlock)
                 .forEach material@{ material: HTMaterial ->
-                    val identifier: Identifier = shape.getIdentifier(MOD_ID, material)
+                    val identifier: Identifier = shape.getIdentifier(material)
                     val settings: FabricBlockSettings =
                         material.getProperty(HTPropertyKey.SOLID)?.blockSettings ?: return@material
                     val block = HTMaterialBlock(material, shape, settings)
                     //Register Block
                     Registry.register(Registry.BLOCK, identifier, block)
-                    //Register as Default Item
-                    HTPartManager.forceRegister(material, shape, block)
                     //Register BlockItem
-                    val blockItem = HTMaterialBlockItem(block)
-                    Registry.register(Registry.ITEM, identifier, blockItem)
-                    //Register item Tags
-                    HTTagManager.registerItemTags(shape.getCommonTag(material), blockItem)
+                    HTMaterialBlockItem(block).run {
+                        Registry.register(Registry.ITEM, identifier, this)
+                        //Register as Default Item
+                        HTPartManager.forceRegister(material, shape, this)
+                        //Register item Tags
+                        HTTagManager.registerItemTags(shape.getCommonTag(material), this)
+                    }
                 }
         }
     }
@@ -108,15 +123,16 @@ object HTMaterialsCommon : ModInitializer {
             HTMaterial.REGISTRY
                 .filter(shape::canGenerateItem)
                 .forEach { material: HTMaterial ->
-                    val identifier: Identifier = shape.getIdentifier(MOD_ID, material)
-                    val item = HTMaterialItem(material, shape)
+                    val identifier: Identifier = shape.getIdentifier(material)
                     //Register Item
-                    Registry.register(Registry.ITEM, identifier, item)
-                    //Register as Default Item
-                    HTPartManager.forceRegister(material, shape, item)
-                    //Register Item Tags
-                    HTTagManager.registerItemTags(shape.getForgeTag(material), item)
-                    HTTagManager.registerItemTags(shape.getCommonTag(material), item)
+                    HTMaterialItem(material, shape).run {
+                        Registry.register(Registry.ITEM, identifier, this)
+                        //Register as Default Item
+                        HTPartManager.forceRegister(material, shape, this)
+                        //Register Item Tags
+                        HTTagManager.registerItemTags(shape.getForgeTag(material), this)
+                        HTTagManager.registerItemTags(shape.getCommonTag(material), this)
+                    }
                 }
         }
     }
@@ -132,54 +148,58 @@ object HTMaterialsCommon : ModInitializer {
     private fun registerRecipes() {
         HTMaterial.REGISTRY.forEach { material: HTMaterial ->
             materialRecipe(material)
-            HTPartManager.getDefaultItemTable().get(material, HTShape.BLOCK)?.run { blockRecipe(material, this) }
-            HTPartManager.getDefaultItemTable().get(material, HTShape.INGOT)?.run { ingotRecipe(material, this) }
-            HTPartManager.getDefaultItemTable().get(material, HTShape.NUGGET)?.run { nuggetRecipe(material, this) }
+            HTPartManager.getDefaultItem(material, HTShape.BLOCK)?.run { blockRecipe(material, this) }
+            HTPartManager.getDefaultItem(material, HTShape.INGOT)?.run { ingotRecipe(material, this) }
+            HTPartManager.getDefaultItem(material, HTShape.NUGGET)?.run { nuggetRecipe(material, this) }
         }
     }
 
     private fun materialRecipe(material: HTMaterial) {
         //1x Block -> 9x Ingot/Gem/Dust
         val defaultShape: HTShape = material.getDefaultShape() ?: return
-        val resultItem: ItemConvertible = HTPartManager.getDefaultItemTable().get(material, defaultShape) ?: return
+        val resultItem: ItemConvertible = HTPartManager.getDefaultItem(material, defaultShape) ?: return
+        if (!HTPartManager.hasDefaultItem(material, HTShape.BLOCK)) return
         HTRecipeManager.createVanillaRecipe(
             ShapelessRecipeJsonBuilder.create(resultItem, 9)
                 .input(HTShape.BLOCK.getCommonTag(material))
                 .setBypassesValidation(true),
-            HTShape.INGOT.getIdentifier(MOD_ID, material).suffix("_shapeless")
+            defaultShape.getIdentifier(material).suffix("_shapeless")
         )
     }
 
     private fun blockRecipe(material: HTMaterial, item: ItemConvertible) {
-        //9x Ingot/Gem/Dust -> 1x Block
+        //9x Ingot/Gem -> 1x Block
         val defaultShape: HTShape = material.getDefaultShape() ?: return
+        if (!HTPartManager.hasDefaultItem(material, defaultShape)) return
         HTRecipeManager.createVanillaRecipe(
             ShapedRecipeJsonBuilder.create(item)
                 .patterns("AAA", "AAA", "AAA")
                 .input('A', defaultShape.getCommonTag(material))
                 .setBypassesValidation(true),
-            HTShape.BLOCK.getIdentifier(MOD_ID, material).suffix("_shaped")
+            HTShape.BLOCK.getIdentifier(material).suffix("_shaped")
         )
     }
 
     private fun ingotRecipe(material: HTMaterial, item: ItemConvertible) {
         //9x Nugget -> 1x Ingot
+        if (!HTPartManager.hasDefaultItem(material, HTShape.NUGGET)) return
         HTRecipeManager.createVanillaRecipe(
             ShapedRecipeJsonBuilder.create(item)
                 .patterns("AAA", "AAA", "AAA")
                 .input('A', HTShape.NUGGET.getCommonTag(material))
                 .setBypassesValidation(true),
-            HTShape.INGOT.getIdentifier(MOD_ID, material).suffix("_shaped")
+            HTShape.INGOT.getIdentifier(material).suffix("_shaped")
         )
     }
 
     private fun nuggetRecipe(material: HTMaterial, item: ItemConvertible) {
         //1x Ingot -> 9x Nugget
+        if (!HTPartManager.hasDefaultItem(material, HTShape.INGOT)) return
         HTRecipeManager.createVanillaRecipe(
             ShapelessRecipeJsonBuilder.create(item, 9)
                 .input(HTShape.INGOT.getCommonTag(material))
                 .setBypassesValidation(true),
-            HTShape.NUGGET.getIdentifier(MOD_ID, material).suffix("_shapeless")
+            HTShape.NUGGET.getIdentifier(material).suffix("_shapeless")
         )
     }
 

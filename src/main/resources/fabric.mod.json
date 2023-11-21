@@ -25,6 +25,16 @@
         "adapter": "kotlin",
         "value": "io.github.hiiragi283.material.common.HTMaterialsCommon"
       }
+    ],
+    "ht_materials.pre": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.HTCreatePlugin"
+      },
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.HTMIPlugin"
+      }
     ]
   },
   "mixins": [
