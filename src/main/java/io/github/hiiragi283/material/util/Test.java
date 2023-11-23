@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material.mixin;
+package io.github.hiiragi283.material.util;
 
 import io.github.hiiragi283.material.api.material.HTMaterial;
 import io.github.hiiragi283.material.api.material.HTMaterialBuilder;

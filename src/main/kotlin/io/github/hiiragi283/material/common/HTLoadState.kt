@@ -6,4 +6,13 @@ enum class HTLoadState {
     INIT,
     POST_INIT,
     COMPLETE;
+
+    fun checkAfter() {
+        check(this >= HTMaterialsCommon.getLoadState())
+    }
+
+    fun checkBefore() {
+        check(this <= HTMaterialsCommon.getLoadState())
+    }
+
 }

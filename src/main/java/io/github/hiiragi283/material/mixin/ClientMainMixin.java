@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.mixin;
 
-import io.github.hiiragi283.material.api.event.HTModsLoadedCallback;
+import io.github.hiiragi283.material.api.addon.HTMaterialsAddons;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ClientMainMixin {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;currentThread()Ljava/lang/Thread;"))
-    public void ht_materials$currentThread(RunArgs args, CallbackInfo ci) {
-        HTModsLoadedCallback.EVENT.invoker().onAllModsLoaded(EnvType.CLIENT);
+    private void ht_materials$currentThread(RunArgs args, CallbackInfo ci) {
+        HTMaterialsAddons.INSTANCE.clientSetup();
     }
 
 }

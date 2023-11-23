@@ -26,14 +26,14 @@
         "value": "io.github.hiiragi283.material.common.HTMaterialsCommon"
       }
     ],
-    "ht_materials.pre": [
+    "ht_materials": [
       {
         "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.compat.HTCreatePlugin"
+        "value": "io.github.hiiragi283.material.compat.HTCreateAddon"
       },
       {
         "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.compat.HTMIPlugin"
+        "value": "io.github.hiiragi283.material.compat.HTMIAddon"
       }
     ]
   },

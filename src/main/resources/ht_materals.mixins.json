@@ -5,7 +5,10 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "MainMixin",
-    "RecipeManagerMixin"
+    "RecipeManagerMixin",
+    "TagBuilderMixin",
+    "TagLoaderMixin",
+    "TagManagerLoaderMixin"
   ],
   "client": [
     "ClientMainMixin"

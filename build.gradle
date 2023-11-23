@@ -42,8 +42,6 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    modImplementation(include("com.github.DM-Earth:Tags-Binder:0.1.2"))
-
     modImplementation("pers.solid:brrp-fabric:1.0.1-1.18.2") {
         transitive = false
     }

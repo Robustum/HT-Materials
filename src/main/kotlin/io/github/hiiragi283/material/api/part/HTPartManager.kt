@@ -1,6 +1,5 @@
 package io.github.hiiragi283.material.api.part
 
-import com.dm.earth.tags_binder.api.LoadTagsCallback
 import com.google.common.collect.HashBasedTable
 import com.google.common.collect.ImmutableTable
 import com.google.common.collect.Table
@@ -8,13 +7,11 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
 import io.github.hiiragi283.material.api.shape.HTShape
-import io.github.hiiragi283.material.common.HTTagManager
-import io.github.hiiragi283.material.common.util.*
+import io.github.hiiragi283.material.common.util.isAir
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
-import net.minecraft.tag.TagKey
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -160,32 +157,6 @@ object HTPartManager {
 
     //    Registration    //
 
-    fun registerEvent() {
-
-        partToItem.forEach { (material: HTMaterial, shape: HTShape, item: ItemConvertible) ->
-            HTTagManager.registerItemTags(shape.getForgeTag(material), item.asItem())
-            HTTagManager.registerItemTags(shape.getCommonTag(material), item.asItem())
-        }
-
-        LoadTagsCallback.ITEM.register { handler: LoadTagsCallback.TagHandler<Item> ->
-
-            HTMaterial.REGISTRY.forEach { material: HTMaterial ->
-                HTShape.REGISTRY.forEach { shape: HTShape ->
-                    //Register ForgeTag for Material Items
-                    val forgeTag: TagKey<Item> = shape.getForgeTag(material)
-                    if (forgeTag in handler.keys) {
-                        handler.get(forgeTag).forEach { register(material, shape, it) }
-                    }
-                    //Register CommonTag for Material Items
-                    val commonTag: TagKey<Item> = shape.getCommonTag(material)
-                    if (commonTag in handler.keys) {
-                        handler.get(commonTag).forEach { register(material, shape, it) }
-                    }
-                }
-            }
-        }
-    }
-
     private fun checkItemNotAir(itemConvertible: ItemConvertible): Item = itemConvertible.asItem().also { item ->
         check(!item.isAir()) { "The Entry: $itemConvertible has no valid Item!" }
     }
@@ -194,9 +165,6 @@ object HTPartManager {
     fun register(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
         //Check if the itemConvertible has non-air item
         val item: Item = checkItemNotAir(itemConvertible)
-        //Register Tag
-        HTTagManager.registerItemTags(shape.getForgeTag(material), item)
-        HTTagManager.registerItemTags(shape.getCommonTag(material), item)
         //ItemConvertible -> HTPart
         itemToPart.putIfAbsent(item, HTPart(material, shape))
         //HTMaterial, HTShape -> ItemConvertible
@@ -216,9 +184,6 @@ object HTPartManager {
     internal fun forceRegister(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
         //Check if the itemConvertible has non-air item
         val item: Item = checkItemNotAir(itemConvertible)
-        //Register Tag
-        HTTagManager.registerItemTags(shape.getForgeTag(material), item)
-        HTTagManager.registerItemTags(shape.getCommonTag(material), item)
         //ItemConvertible -> HTPart
         itemToPart.putIfAbsent(item, HTPart(material, shape))
         //HTMaterial, HTShape -> ItemConvertible

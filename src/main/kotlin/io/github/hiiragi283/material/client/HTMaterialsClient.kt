@@ -1,6 +1,5 @@
 package io.github.hiiragi283.material.client
 
-import io.github.hiiragi283.material.api.entorypoint.HTMaterialPlugin
 import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
 import io.github.hiiragi283.material.api.item.HTMaterialBlockItem
 import io.github.hiiragi283.material.api.item.HTMaterialItem
@@ -27,9 +26,6 @@ object HTMaterialsClient : ClientModInitializer {
 
         //Register Default Model Consumer
         HTMaterialModelManager
-
-        //Client Initialization for registering texture for Material Block/Item
-        HTMaterialPlugin.Client.clientInitialize()
 
         //Register Block Color Provider
         registerBlockColorProvider()

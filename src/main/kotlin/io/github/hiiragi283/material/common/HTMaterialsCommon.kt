@@ -1,7 +1,7 @@
 package io.github.hiiragi283.material.common
 
+import io.github.hiiragi283.material.api.addon.HTMaterialsAddons
 import io.github.hiiragi283.material.api.block.HTMaterialBlock
-import io.github.hiiragi283.material.api.entorypoint.HTMaterialPlugin
 import io.github.hiiragi283.material.api.item.HTMaterialBlockItem
 import io.github.hiiragi283.material.api.item.HTMaterialItem
 import io.github.hiiragi283.material.api.material.HTMaterial
@@ -35,13 +35,15 @@ object HTMaterialsCommon : ModInitializer {
 
     override fun onInitialize() {
 
-        //Initialize HTShape
-        HTShape
+        //Collect Addons
+        HTMaterialsAddons
 
         //Pre Initialization for registering material/shape from other mods
         loadState = HTLoadState.PRE_INIT
-        HTMaterialPlugin.Pre.preInitializes()
-        logger.info("Pre-Init Plugins loaded!")
+        HTMaterialsAddons.registerShapes()
+        logger.info("HTShape loaded!")
+        HTMaterialsAddons.registerMaterials()
+        logger.info("HTMaterial loaded!")
 
         //Verify Material Properties and Flags
         HTMaterial.REGISTRY.forEach(HTMaterial::verify)
@@ -61,7 +63,7 @@ object HTMaterialsCommon : ModInitializer {
 
         //Post Initialization for access material/shape from other mods
         loadState = HTLoadState.POST_INIT
-        HTMaterialPlugin.Post.postInitializes()
+
         loadState = HTLoadState.COMPLETE
         logger.info("Post-Init Plugins loaded!")
 
@@ -69,15 +71,11 @@ object HTMaterialsCommon : ModInitializer {
         registerEvents()
         logger.info("Common Events Registered!")
 
-        //Register Json Recipes
-        registerRecipes()
-        logger.info("Json Recipes Registered!")
-
         RRPCallback.AFTER_VANILLA.register {
 
-            //Register Json Tags
-            HTTagManager.register()
-            logger.info("Tags Registered!")
+            //Register Json Recipes
+            registerRecipes()
+            logger.info("Json Recipes Registered!")
 
             //Register Resource Pack
             it.add(RESOURCE_PACK)
@@ -111,8 +109,6 @@ object HTMaterialsCommon : ModInitializer {
                         Registry.register(Registry.ITEM, identifier, this)
                         //Register as Default Item
                         HTPartManager.forceRegister(material, shape, this)
-                        //Register item Tags
-                        HTTagManager.registerItemTags(shape.getCommonTag(material), this)
                     }
                 }
         }
@@ -129,9 +125,6 @@ object HTMaterialsCommon : ModInitializer {
                         Registry.register(Registry.ITEM, identifier, this)
                         //Register as Default Item
                         HTPartManager.forceRegister(material, shape, this)
-                        //Register Item Tags
-                        HTTagManager.registerItemTags(shape.getForgeTag(material), this)
-                        HTTagManager.registerItemTags(shape.getCommonTag(material), this)
                     }
                 }
         }
@@ -142,7 +135,7 @@ object HTMaterialsCommon : ModInitializer {
     }
 
     private fun registerEvents() {
-        HTPartManager.registerEvent()
+
     }
 
     private fun registerRecipes() {
