@@ -15,6 +15,7 @@ import net.minecraft.item.Items
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.util.*
 
 object HTPartManager {
 
@@ -31,6 +32,10 @@ object HTPartManager {
     fun getPart(itemConvertible: ItemConvertible): HTPart? = itemToPart[itemConvertible.asItem()]
 
     @JvmStatic
+    fun getPartOptional(itemConvertible: ItemConvertible): Optional<HTPart> =
+        Optional.ofNullable(getPart(itemConvertible))
+
+    @JvmStatic
     fun hasPart(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in itemToPart
 
     //    HTMaterial, HTShape -> Item    //
@@ -42,6 +47,10 @@ object HTPartManager {
 
     @JvmStatic
     fun getDefaultItem(material: HTMaterial, shape: HTShape): Item? = partToItem.get(material, shape)
+
+    @JvmStatic
+    fun getDefaultItemOptional(material: HTMaterial, shape: HTShape): Optional<Item> =
+        Optional.ofNullable(getDefaultItem(material, shape))
 
     @JvmStatic
     fun hasDefaultItem(material: HTMaterial, shape: HTShape): Boolean = partToItem.contains(material, shape)

@@ -2,7 +2,6 @@ package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
-import io.github.hiiragi283.material.common.HTLoadState
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.commonId
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
@@ -32,6 +31,8 @@ class HTShape private constructor(
 
         private val logger: Logger = LogManager.getLogger("HTShape")
 
+        internal var canModify: Boolean = true
+
         @JvmField
         val REGISTRY: SimpleRegistry<HTShape> = FabricRegistryBuilder.createSimple(
             HTShape::class.java,
@@ -45,9 +46,7 @@ class HTShape private constructor(
 
         @JvmStatic
         fun create(name: String, init: Builder.() -> Unit = {}): HTShape = Builder(name).apply(init).build().also {
-            check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT) {
-                "Cannot register shape after Initialization!!"
-            }
+            check(canModify) { "Cannot register shape after Initialization!!" }
             Registry.register(REGISTRY, commonId(name), it)
             logger.info("The Shape: $name registered!")
         }

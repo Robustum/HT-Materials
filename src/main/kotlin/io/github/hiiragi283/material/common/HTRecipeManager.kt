@@ -1,5 +1,6 @@
 package io.github.hiiragi283.material.common
 
+import aztech.modern_industrialization.recipe.json.MIRecipeJson
 import com.google.gson.JsonObject
 import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder
 import net.minecraft.data.server.recipe.RecipeJsonProvider
@@ -16,23 +17,29 @@ object HTRecipeManager {
     //    Vanilla    //
 
     @JvmStatic
-    fun createVanillaRecipe(jsonBuilder: CraftingRecipeJsonBuilder, recipeId: Identifier) {
+    fun registerVanillaRecipe(recipeId: Identifier, jsonBuilder: CraftingRecipeJsonBuilder) {
         jsonBuilder.offerTo({ provider: RecipeJsonProvider ->
             REGISTRY.putIfAbsent(recipeId, provider.toJson())
         }, recipeId)
     }
 
+    //    Create    //
+
+    fun registerCreateRecipe() {
+
+    }
+
     //    Modern Industrialization    //
 
     @JvmStatic
-    fun createMIRecipe() {
-
+    fun <T : MIRecipeJson<*>> registerMIRecipe(recipeId: Identifier, recipeJson: MIRecipeJson<T>) {
+        REGISTRY.putIfAbsent(recipeId, recipeJson.toJsonObject())
     }
 
     //    TechReborn    //
 
     @JvmStatic
-    fun <T : RebornRecipe> createTRRecipe(
+    fun <T : RebornRecipe> registerTRRecipe(
         recipeId: Identifier,
         rebornRecipeSerde: RebornRecipeSerde<T>,
         function: Function<Identifier, T>
@@ -53,6 +60,7 @@ object HTRecipeManager {
                 200
             )
         }*/
+
     }
 
 }

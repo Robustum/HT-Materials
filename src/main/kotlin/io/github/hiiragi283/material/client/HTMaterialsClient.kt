@@ -5,6 +5,7 @@ import io.github.hiiragi283.material.api.item.HTMaterialBlockItem
 import io.github.hiiragi283.material.api.item.HTMaterialItem
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.part.HTPartManager
+import io.github.hiiragi283.material.common.HTMaterialsCommon
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
@@ -18,9 +19,13 @@ import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 
 @Environment(EnvType.CLIENT)
 object HTMaterialsClient : ClientModInitializer {
+
+    private val logger: Logger = LogManager.getLogger("${HTMaterialsCommon.MOD_NAME} Client")
 
     override fun onInitializeClient() {
 
@@ -29,18 +34,23 @@ object HTMaterialsClient : ClientModInitializer {
 
         //Register Block Color Provider
         registerBlockColorProvider()
+        logger.info("Block Color Provider Registered!")
 
         //Register Item Color Provider
         registerItemColorProvider()
+        logger.info("Item Color Provider Registered!")
 
         //Register Render Handler for Material Fluid
         registerFluidRenderHandler()
+        logger.info("Material Fluid Renderer Registered!")
 
         //Register BlockStates and Models
         HTMaterialModelManager.register()
+        logger.info("BlockStates and Models Registered!")
 
         //Register Client Events
         registerEvents()
+        logger.info("Client Events Registered!")
 
     }
 

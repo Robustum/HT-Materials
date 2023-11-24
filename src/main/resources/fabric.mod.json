@@ -1,14 +1,15 @@
 {
   "schemaVersion": 1,
-  "id": "ht_materals",
+  "id": "ht_materials",
   "version": "${version}",
   "name": "HT Materials",
-  "description": "",
+  "description": "Add material system, Unify Forge Tag and Common Tag",
   "authors": [
     "Hiiragi283"
   ],
   "contact": {
-    "repo": "https://github.com/hiiragi283/HTMaterials"
+    "issues": "https://github.com/Hiiragi283/HT-Materials/issues",
+    "sources": "https://github.com/Hiiragi283/HT-Materials"
   },
   "license": "MPL-2.0",
   "icon": "assets/ht_materals/icon.png",
@@ -29,18 +30,19 @@
     "ht_materials": [
       {
         "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.compat.HTCreateAddon"
+        "value": "io.github.hiiragi283.material.addon.HTCreateAddon"
       },
       {
         "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.compat.HTMIAddon"
+        "value": "io.github.hiiragi283.material.addon.HTMIAddon"
       }
     ]
   },
   "mixins": [
-    "ht_materals.mixins.json"
+    "ht_materials.mixins.json"
   ],
   "depends": {
+    "brrp_v1": ">=${brrp_version}",
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "${minecraft_version}",

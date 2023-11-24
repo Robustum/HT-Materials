@@ -11,6 +11,8 @@ interface HTMaterialsAddon {
 
     fun registerMaterials() {}
 
+    fun modifyMaterials() {}
+
     fun commonSetup() {}
 
     @Environment(EnvType.CLIENT)

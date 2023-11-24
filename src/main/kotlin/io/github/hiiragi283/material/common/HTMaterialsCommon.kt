@@ -8,12 +8,17 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.common.util.asBlock
+import io.github.hiiragi283.material.common.util.prefix
 import io.github.hiiragi283.material.common.util.suffix
 import net.fabricmc.api.ModInitializer
+import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder
-import net.minecraft.item.ItemConvertible
+import net.minecraft.data.server.BlockLootTableGenerator
+import net.minecraft.item.Item
+import net.minecraft.item.ItemGroup
+import net.minecraft.item.Items
+import net.minecraft.resource.ResourceType
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
@@ -21,39 +26,36 @@ import org.apache.logging.log4j.Logger
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.fabric.api.RRPCallback
 
-@Suppress("unused")
 object HTMaterialsCommon : ModInitializer {
 
     const val MOD_ID: String = "ht_materials"
     const val MOD_NAME: String = "HT Materials"
 
-    internal val RESOURCE_PACK: RuntimeResourcePack = RuntimeResourcePack.create(id("runtime"))
+    private val RESOURCE_PACK: RuntimeResourcePack = RuntimeResourcePack.create(id("runtime"))
 
     private val logger: Logger = LogManager.getLogger(MOD_NAME)
 
-    private var loadState: HTLoadState = HTLoadState.CONSTRUCT
+    @JvmField
+    val MATERIAL: ItemGroup = FabricItemGroupBuilder.create(id("material"))
+        .icon(Items.IRON_INGOT::getDefaultStack)
+        .build()
 
     override fun onInitialize() {
 
         //Collect Addons
         HTMaterialsAddons
 
-        //Pre Initialization for registering material/shape from other mods
-        loadState = HTLoadState.PRE_INIT
+        //Register Materials and Shapes
         HTMaterialsAddons.registerShapes()
         logger.info("HTShape loaded!")
         HTMaterialsAddons.registerMaterials()
         logger.info("HTMaterial loaded!")
 
-        //Verify Material Properties and Flags
-        HTMaterial.REGISTRY.forEach(HTMaterial::verify)
+        //Modify and Verify Material Properties and Flags
+        HTMaterialsAddons.modifyMaterials()
         logger.info("All Materials Verified!")
 
-        //Disable Material Modification
-        loadState = HTLoadState.INIT
-
         //Initialize Game Objects
-        HTItemGroup
         registerMaterialBlocks()
         logger.info("All Material Blocks Registered!")
         registerMaterialFluids()
@@ -61,35 +63,23 @@ object HTMaterialsCommon : ModInitializer {
         registerMaterialItems()
         logger.info("All Material Items Registered!")
 
-        //Post Initialization for access material/shape from other mods
-        loadState = HTLoadState.POST_INIT
-
-        loadState = HTLoadState.COMPLETE
-        logger.info("Post-Init Plugins loaded!")
-
         //Register Common Events
         registerEvents()
         logger.info("Common Events Registered!")
 
-        RRPCallback.AFTER_VANILLA.register {
-
-            //Register Json Recipes
-            registerRecipes()
-            logger.info("Json Recipes Registered!")
-
+        RRPCallback.BEFORE_USER.register {
+            //Register Loot Tables
+            registerLootTables()
+            logger.info("Loot Tables Registered!")
             //Register Resource Pack
             it.add(RESOURCE_PACK)
-            logger.info("Runtime ResourcePack Registered!")
-
+            logger.info("Dynamic Data Pack Registered!")
         }
 
     }
 
     @JvmStatic
     fun id(path: String) = Identifier(MOD_ID, path)
-
-    @JvmStatic
-    fun getLoadState(): HTLoadState = loadState
 
     private fun registerMaterialBlocks() {
         HTShape.REGISTRY
@@ -138,62 +128,19 @@ object HTMaterialsCommon : ModInitializer {
 
     }
 
-    private fun registerRecipes() {
-        HTMaterial.REGISTRY.forEach { material: HTMaterial ->
-            materialRecipe(material)
-            HTPartManager.getDefaultItem(material, HTShape.BLOCK)?.run { blockRecipe(material, this) }
-            HTPartManager.getDefaultItem(material, HTShape.INGOT)?.run { ingotRecipe(material, this) }
-            HTPartManager.getDefaultItem(material, HTShape.NUGGET)?.run { nuggetRecipe(material, this) }
-        }
-    }
-
-    private fun materialRecipe(material: HTMaterial) {
-        //1x Block -> 9x Ingot/Gem/Dust
-        val defaultShape: HTShape = material.getDefaultShape() ?: return
-        val resultItem: ItemConvertible = HTPartManager.getDefaultItem(material, defaultShape) ?: return
-        if (!HTPartManager.hasDefaultItem(material, HTShape.BLOCK)) return
-        HTRecipeManager.createVanillaRecipe(
-            ShapelessRecipeJsonBuilder.create(resultItem, 9)
-                .input(HTShape.BLOCK.getCommonTag(material))
-                .setBypassesValidation(true),
-            defaultShape.getIdentifier(material).suffix("_shapeless")
-        )
-    }
-
-    private fun blockRecipe(material: HTMaterial, item: ItemConvertible) {
-        //9x Ingot/Gem -> 1x Block
-        val defaultShape: HTShape = material.getDefaultShape() ?: return
-        if (!HTPartManager.hasDefaultItem(material, defaultShape)) return
-        HTRecipeManager.createVanillaRecipe(
-            ShapedRecipeJsonBuilder.create(item)
-                .patterns("AAA", "AAA", "AAA")
-                .input('A', defaultShape.getCommonTag(material))
-                .setBypassesValidation(true),
-            HTShape.BLOCK.getIdentifier(material).suffix("_shaped")
-        )
-    }
-
-    private fun ingotRecipe(material: HTMaterial, item: ItemConvertible) {
-        //9x Nugget -> 1x Ingot
-        if (!HTPartManager.hasDefaultItem(material, HTShape.NUGGET)) return
-        HTRecipeManager.createVanillaRecipe(
-            ShapedRecipeJsonBuilder.create(item)
-                .patterns("AAA", "AAA", "AAA")
-                .input('A', HTShape.NUGGET.getCommonTag(material))
-                .setBypassesValidation(true),
-            HTShape.INGOT.getIdentifier(material).suffix("_shaped")
-        )
-    }
-
-    private fun nuggetRecipe(material: HTMaterial, item: ItemConvertible) {
-        //1x Ingot -> 9x Nugget
-        if (!HTPartManager.hasDefaultItem(material, HTShape.INGOT)) return
-        HTRecipeManager.createVanillaRecipe(
-            ShapelessRecipeJsonBuilder.create(item, 9)
-                .input(HTShape.INGOT.getCommonTag(material))
-                .setBypassesValidation(true),
-            HTShape.NUGGET.getIdentifier(material).suffix("_shapeless")
-        )
+    private fun registerLootTables() {
+        HTPartManager.getDefaultItemTable().values()
+            .map(Item::asBlock)
+            .filterIsInstance<HTMaterialBlock>()
+            .forEach { block: HTMaterialBlock ->
+                val lootId: Identifier = block.lootTableId
+                if (RESOURCE_PACK.contains(
+                        ResourceType.SERVER_DATA,
+                        lootId.prefix("loot_tables/").suffix(".json")
+                    )
+                ) return@forEach
+                RESOURCE_PACK.addLootTable(lootId, BlockLootTableGenerator.drops(block))
+            }
     }
 
 }

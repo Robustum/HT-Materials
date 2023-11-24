@@ -9,7 +9,6 @@ import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperty
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.shape.HTShape
-import io.github.hiiragi283.material.common.HTLoadState
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.commonId
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
@@ -38,6 +37,8 @@ class HTMaterial private constructor(
 
         private val logger: Logger = LogManager.getLogger("HTMaterial")
 
+        internal var canModify: Boolean = true
+
         @JvmField
         val REGISTRY: SimpleRegistry<HTMaterial> = FabricRegistryBuilder.createSimple(
             HTMaterial::class.java,
@@ -50,11 +51,7 @@ class HTMaterial private constructor(
             preInit: HTMaterial.() -> Unit = {},
             init: HTMaterial.() -> Unit = {},
         ): HTMaterial = HTMaterial(Info(name), HTMaterialProperties(), HTMaterialFlags())
-            .also {
-                check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT) {
-                    "Cannot register material after Initialization!!"
-                }
-            }
+            .also { check(canModify) { "Cannot register material after Initialization!!" } }
             .apply(preInit)
             .apply(init)
             .also { mat ->
@@ -89,9 +86,7 @@ class HTMaterial private constructor(
     fun <T : HTMaterialProperty<T>> hasProperty(key: HTPropertyKey<T>): Boolean = key in properties
 
     fun modifyProperties(init: HTMaterialProperties.() -> Unit) {
-        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT) {
-            "Cannot modify material properties after Initialization!!"
-        }
+        check(canModify) { "Cannot modify material properties after Initialization!!" }
         properties.init()
     }
 
@@ -106,9 +101,7 @@ class HTMaterial private constructor(
     fun hasFlag(flag: HTMaterialFlag): Boolean = flag in flags
 
     fun modifyFlags(init: HTMaterialFlags.() -> Unit) {
-        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT) {
-            "Cannot modify material flags after Initialization!!"
-        }
+        check(canModify) { "Cannot modify material flags after Initialization!!" }
         flags.init()
     }
 
@@ -127,7 +120,7 @@ class HTMaterial private constructor(
     private lateinit var formulaCache: String
 
     override fun asFormula(): String {
-        check(HTMaterialsCommon.getLoadState() > HTLoadState.PRE_INIT) { "Cannot call #asFormula before Initialization!!" }
+        check(!canModify) { "Cannot call #asFormula before Initialization!!" }
         if (!this::formulaCache.isInitialized) {
             formulaCache = info.formula.asFormula()
         }
@@ -143,9 +136,7 @@ class HTMaterial private constructor(
     fun getTranslatedText(): TranslatableText = TranslatableText(info.translationKey)
 
     fun modifyInfo(init: Info.() -> Unit) {
-        check(HTMaterialsCommon.getLoadState() <= HTLoadState.PRE_INIT) {
-            "Cannot modify material infos after Initialization!!"
-        }
+        check(canModify) { "Cannot modify material infos after Initialization!!" }
         info.init()
     }
 

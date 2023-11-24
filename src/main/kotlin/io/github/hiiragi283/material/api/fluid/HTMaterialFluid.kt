@@ -4,7 +4,7 @@ import io.github.hiiragi283.material.api.item.HTMaterialItemConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
-import io.github.hiiragi283.material.common.HTItemGroup
+import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.prefix
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -67,7 +67,7 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
         private val blockSettings = FabricBlockSettings.copyOf(Blocks.WATER)
 
         private val itemSettings = FabricItemSettings()
-            .group(HTItemGroup.MATERIAL)
+            .group(HTMaterialsCommon.MATERIAL)
             .maxCount(1)
             .recipeRemainder(Items.BUCKET)
 

@@ -4,6 +4,8 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.isModLoaded
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
 
 object HTMaterialsAddons : HTMaterialsAddon {
@@ -26,10 +28,18 @@ object HTMaterialsAddons : HTMaterialsAddon {
         cache.forEach(HTMaterialsAddon::registerMaterials)
     }
 
+    override fun modifyMaterials() {
+        cache.forEach(HTMaterialsAddon::modifyMaterials)
+        HTMaterial.REGISTRY.forEach(HTMaterial::verify)
+        HTShape.canModify = false
+        HTMaterial.canModify = false
+    }
+
     override fun commonSetup() {
         cache.forEach(HTMaterialsAddon::commonSetup)
     }
 
+    @Environment(EnvType.CLIENT)
     override fun clientSetup() {
         cache.forEach(HTMaterialsAddon::clientSetup)
     }
