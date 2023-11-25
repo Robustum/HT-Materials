@@ -10,7 +10,7 @@ import net.minecraft.text.Text
 
 class HTMaterialBlockItem(
     private val block: HTMaterialBlock
-) : BlockItem(block, FabricItemSettings().group(HTMaterialsCommon.MATERIAL)),
+) : BlockItem(block, FabricItemSettings().group(HTMaterialsCommon.ITEM_GROUP)),
     HTMaterialItemConvertible by block {
 
     override fun getName(): Text = shapeHT.getTranslatedText(materialHT)

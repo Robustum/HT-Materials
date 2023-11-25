@@ -7,7 +7,7 @@ class HTStoneProperty : HTMaterialProperty<HTStoneProperty> {
     override val key: HTPropertyKey<HTStoneProperty> = HTPropertyKey.STONE
 
     override fun verify(material: HTMaterial) {
-
+        material.modifyProperties(HTMaterialProperties::setStone)
     }
 
 }

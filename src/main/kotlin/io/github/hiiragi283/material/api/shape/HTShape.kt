@@ -15,6 +15,7 @@ import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.SimpleRegistry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.util.function.Consumer
 import java.util.function.Predicate
 
 @Suppress("unused")
@@ -50,6 +51,15 @@ class HTShape private constructor(
             Registry.register(REGISTRY, commonId(name), it)
             logger.info("The Shape: $name registered!")
         }
+
+        @JvmName("create")
+        @JvmStatic
+        fun createJava(name: String, consumer: Consumer<Builder>): HTShape =
+            Builder(name).also(consumer::accept).build().also {
+                check(canModify) { "Cannot register shape after Initialization!!" }
+                Registry.register(REGISTRY, commonId(name), it)
+                logger.info("The Shape: $name registered!")
+            }
 
         //    Block    //
 

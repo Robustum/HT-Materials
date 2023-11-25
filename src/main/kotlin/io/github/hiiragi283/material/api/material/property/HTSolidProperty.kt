@@ -22,7 +22,7 @@ class HTSolidProperty private constructor(
     companion object {
 
         @JvmStatic
-        fun createDust(): HTSolidProperty = HTSolidProperty(
+        fun createSolid(): HTSolidProperty = HTSolidProperty(
             FabricBlockSettings.copyOf(Blocks.SAND),
             0,
             BlockTags.SHOVEL_MINEABLE

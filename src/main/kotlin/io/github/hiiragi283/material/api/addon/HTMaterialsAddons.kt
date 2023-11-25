@@ -33,6 +33,8 @@ object HTMaterialsAddons : HTMaterialsAddon {
         HTMaterial.REGISTRY.forEach(HTMaterial::verify)
         HTShape.canModify = false
         HTMaterial.canModify = false
+        HTMaterial.REGISTRY.forEach(HTMaterial::asFormula)
+        HTMaterial.REGISTRY.forEach(HTMaterial::asMolarMass)
     }
 
     override fun commonSetup() {

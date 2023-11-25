@@ -55,8 +55,13 @@ class HTFluidProperty : HTMaterialProperty<HTFluidProperty> {
             )
         )
         //Is gas
-        val state: String = if (attribute.isLighterThanAir(fluidVariant)) "Gas" else "Fluid"
-        lines.add(TranslatableText("tooltip.ht_materials.material.state", state))
+        val key = "tooltip.ht_materials.material.state.%s"
+            if (attribute.isLighterThanAir(fluidVariant)) {
+                key.format("gas")
+            } else {
+                key.format("fluid")
+            }
+        lines.add(TranslatableText("tooltip.ht_materials.material.state", TranslatableText(key)))
     }
 
     internal fun init(material: HTMaterial) {

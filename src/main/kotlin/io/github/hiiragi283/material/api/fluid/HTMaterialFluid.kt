@@ -16,10 +16,12 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
 import net.minecraft.item.BucketItem
 import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.state.property.Properties
 import net.minecraft.text.MutableText
+import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
@@ -67,7 +69,7 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
         private val blockSettings = FabricBlockSettings.copyOf(Blocks.WATER)
 
         private val itemSettings = FabricItemSettings()
-            .group(HTMaterialsCommon.MATERIAL)
+            .group(HTMaterialsCommon.ITEM_GROUP)
             .maxCount(1)
             .recipeRemainder(Items.BUCKET)
 
@@ -183,6 +185,10 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
             Registry.register(Registry.ITEM, getPart().getIdentifier(), this)
             HTPartManager.forceRegister(materialHT, shapeHT, this)
         }
+
+        override fun getName(): Text = shapeHT.getTranslatedText(materialHT)
+
+        override fun getName(stack: ItemStack): Text = shapeHT.getTranslatedText(materialHT)
 
     }
 

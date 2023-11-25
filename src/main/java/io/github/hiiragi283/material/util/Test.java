@@ -1,22 +1,21 @@
 package io.github.hiiragi283.material.util;
 
 import io.github.hiiragi283.material.api.material.HTMaterial;
-import io.github.hiiragi283.material.api.material.HTMaterialBuilder;
 import io.github.hiiragi283.material.api.shape.HTShape;
 import net.minecraft.util.registry.SimpleRegistry;
-
-import static io.github.hiiragi283.material.api.HTMaterialsAPI.funcWrapper;
 
 public class Test {
 
     public static void material() {
         SimpleRegistry<HTMaterial> registry = HTMaterial.REGISTRY;
-        HTMaterialBuilder.createMetal("test", funcWrapper(material -> {
-            material.modifyFlags(funcWrapper(flags -> {
-            }));
-            material.modifyInfo(funcWrapper(infos -> {
-            }));
-        }));
+        HTMaterial.create("test", material -> {
+            material.modifyProperties(properties -> {
+            });
+            material.modifyFlags(flags -> {
+            });
+            material.modifyInfo(info -> {
+            });
+        });
     }
 
     public static void shape() {

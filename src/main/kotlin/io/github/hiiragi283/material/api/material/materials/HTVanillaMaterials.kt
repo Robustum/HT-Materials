@@ -1,9 +1,11 @@
 package io.github.hiiragi283.material.api.material.materials
 
-import io.github.hiiragi283.material.api.material.HTMaterialBuilder
+import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.formula.FormulaConvertible
 import io.github.hiiragi283.material.api.material.formula.HTCommonFormula
+import io.github.hiiragi283.material.api.material.property.HTFluidProperty
+import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import net.minecraft.block.Blocks
 import net.minecraft.fluid.Fluids
@@ -14,51 +16,53 @@ object HTVanillaMaterials {
     //    Fluids    //
 
     @JvmField
-    val WATER = HTMaterialBuilder.createFluid("water") {
+    val WATER = HTMaterial.create("water") {
         modifyInfo {
             setColor(Blocks.WATER)
             formula = FormulaConvertible.of(HTElementMaterials.HYDROGEN to 2, HTElementMaterials.OXYGEN to 1)
         }
         modifyProperties {
-            get(HTPropertyKey.FLUID)?.apply { this.fluid = Fluids.WATER }
+            this += HTFluidProperty().apply { this.fluid = Fluids.WATER }
         }
     }
 
     @JvmField
-    val LAVA = HTMaterialBuilder.createFluid("lava") {
+    val LAVA = HTMaterial.create("lava") {
         modifyInfo {
             setColor(Blocks.LAVA)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
         modifyProperties {
-            get(HTPropertyKey.FLUID)?.apply { this.fluid = Fluids.LAVA }
+            this += HTFluidProperty().apply { this.fluid = Fluids.LAVA }
         }
     }
 
     //    Gems    //
 
     @JvmField
-    val AMETHYST = HTMaterialBuilder.createGem("amethyst") {
+    val AMETHYST = HTMaterial.create("amethyst") {
         modifyInfo {
             setColor(Blocks.AMETHYST_BLOCK)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
-        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 0 }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
         }
+        modifyProperties {
+            setGem()
+            setHarvestLevel(0)
+        }
     }
 
     @JvmField
-    val DIAMOND = HTMaterialBuilder.createGem("diamond") {
+    val DIAMOND = HTMaterial.create("diamond") {
         modifyInfo {
             setColor(Blocks.DIAMOND_BLOCK)
             formula = HTElementMaterials.CARBON
         }
-        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 3 }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
@@ -67,18 +71,30 @@ object HTVanillaMaterials {
                 HTMaterialFlag.GENERATE_ROD
             )
         }
+        modifyProperties {
+            setGem()
+            setHarvestLevel(3)
+        }
     }
 
     @JvmField
-    val ENDER_PEARL = HTMaterialBuilder.createGem("ender_pearl")
+    val ENDER_PEARL = HTMaterial.create("ender_pearl") {
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST
+            )
+        }
+        modifyProperties {
+            setGem()
+        }
+    }
 
     @JvmField
-    val EMERALD = HTMaterialBuilder.createGem("emerald") {
+    val EMERALD = HTMaterial.create("emerald") {
         modifyInfo {
             setColor(Blocks.EMERALD_BLOCK)
             formula
         }
-        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 2 }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
@@ -87,15 +103,18 @@ object HTVanillaMaterials {
                 HTMaterialFlag.GENERATE_ROD
             )
         }
+        modifyProperties {
+            setGem()
+            setHarvestLevel(2)
+        }
     }
 
     @JvmField
-    val LAPIS = HTMaterialBuilder.createGem("lapis") {
+    val LAPIS = HTMaterial.create("lapis") {
         modifyInfo {
             setColor(Blocks.LAPIS_BLOCK)
             formula
         }
-        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 1 }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
@@ -104,15 +123,18 @@ object HTVanillaMaterials {
                 HTMaterialFlag.GENERATE_ROD
             )
         }
+        modifyProperties {
+            setGem()
+            setHarvestLevel(1)
+        }
     }
 
     @JvmField
-    val PRISMARINE = HTMaterialBuilder.createGem("prismarine") {
+    val PRISMARINE = HTMaterial.create("prismarine") {
         modifyInfo {
             setColor(Blocks.PRISMARINE)
             formula
         }
-        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 0 }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_GEAR,
@@ -120,15 +142,18 @@ object HTVanillaMaterials {
                 HTMaterialFlag.GENERATE_ROD
             )
         }
+        modifyProperties {
+            setGem()
+            setHarvestLevel(0)
+        }
     }
 
     @JvmField
-    val QUARTZ = HTMaterialBuilder.createGem("quartz") {
+    val QUARTZ = HTMaterial.create("quartz") {
         modifyInfo {
             setColor(Blocks.QUARTZ_BLOCK)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
-        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 0 }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
@@ -136,16 +161,20 @@ object HTVanillaMaterials {
                 HTMaterialFlag.GENERATE_PLATE,
                 HTMaterialFlag.GENERATE_ROD
             )
+        }
+        modifyProperties {
+            setGem()
+            setHarvestLevel(0)
         }
     }
 
     //    Metals    //
 
     @JvmField
-    val NETHERITE = HTMaterialBuilder.createMetal("netherite") {
+    val NETHERITE = HTMaterial.create("netherite") {
         modifyInfo {
             setColor(Blocks.DEEPSLATE)
-            formula = FormulaConvertible.of("Nr")
+            formula = FormulaConvertible { "Nr" }
         }
         modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 3 }
         modifyFlags {
@@ -156,198 +185,302 @@ object HTVanillaMaterials {
                 HTMaterialFlag.GENERATE_ROD
             )
         }
+        modifyProperties(HTMaterialProperties::setMetal)
     }
 
     //    Solids    //
 
     @JvmField
-    val BRICK = HTMaterialBuilder.createSolid("brick") {
+    val BRICK = HTMaterial.create("brick") {
         modifyInfo {
             setColor(Blocks.BRICKS)
             formula
             ingotPerBlock = 4
         }
-        modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
+        modifyFlags {
+            addFlags(HTMaterialFlag.GENERATE_DUST)
+        }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
-    val CHARCOAL = HTMaterialBuilder.createSolid("charcoal") {
+    val CHARCOAL = HTMaterial.create("charcoal") {
         modifyInfo {
             setColor(Blocks.COAL_BLOCK)
             formula = HTElementMaterials.CARBON
         }
-        modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
+        modifyFlags {
+            addFlags(HTMaterialFlag.GENERATE_DUST)
+        }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
-    val CLAY = HTMaterialBuilder.createSolid("clay") {
+    val CLAY = HTMaterial.create("clay") {
         modifyInfo {
             setColor(Blocks.CLAY)
             formula
             ingotPerBlock = 4
         }
-        modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
+        modifyFlags {
+            addFlags(HTMaterialFlag.GENERATE_DUST)
+        }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
-    val COAL = HTMaterialBuilder.createSolid("coal") {
+    val COAL = HTMaterial.create("coal") {
         modifyInfo {
             setColor(Blocks.COAL_BLOCK)
             formula = HTElementMaterials.CARBON
         }
-        modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
+        modifyFlags {
+            addFlags(HTMaterialFlag.GENERATE_DUST)
+        }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
-    val CORAL = HTMaterialBuilder.createSolid("coral") {
+    val CORAL = HTMaterial.create("coral") {
         modifyInfo {
             setColor(Blocks.DEAD_FIRE_CORAL)
             formula
         }
         //modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
-    val GLASS = HTMaterialBuilder.createSolid("glass") {
+    val GLASS = HTMaterial.create("glass") {
         modifyInfo {
-            setColor(Blocks.GLASS)
             formula = HTCommonFormula.SILICON_DIOXIDE
             ingotPerBlock = 1
         }
-        modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
+        modifyFlags {
+            addFlags(HTMaterialFlag.GENERATE_DUST)
+        }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
-    val GLOWSTONE = HTMaterialBuilder.createSolid("glowstone") {
+    val GLOWSTONE = HTMaterial.create("glowstone") {
         modifyInfo {
             setColor(Blocks.GLOWSTONE)
             formula
             ingotPerBlock = 4
         }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
-    val NETHER_BRICK = HTMaterialBuilder.createSolid("nether_brick") {
+    val NETHER_BRICK = HTMaterial.create("nether_brick") {
         modifyInfo {
             setColor(Blocks.NETHER_BRICKS)
             formula
             ingotPerBlock = 4
         }
-        modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
+        modifyFlags {
+            addFlags(HTMaterialFlag.GENERATE_DUST)
+        }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
-    val REDSTONE = HTMaterialBuilder.createSolid("redstone") {
+    val REDSTONE = HTMaterial.create("redstone") {
         modifyInfo {
             setColor(Blocks.REDSTONE_BLOCK)
             formula
         }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     //    Stones    //
 
     @JvmField
-    val STONE = HTMaterialBuilder.createStone("stone") {
+    val STONE = HTMaterial.create("stone") {
         modifyInfo {
             setColor(Blocks.STONE)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
-        modifyFlags { addFlags(HTMaterialFlag.GENERATE_GEAR) }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEAR,
+                HTMaterialFlag.GENERATE_PLATE
+            )
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val GRANITE = HTMaterialBuilder.createStone("granite") {
+    val GRANITE = HTMaterial.create("granite") {
         modifyInfo {
             setColor(Blocks.GRANITE)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_PLATE
+            )
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val DIORITE = HTMaterialBuilder.createStone("diorite") {
+    val DIORITE = HTMaterial.create("diorite") {
         modifyInfo {
             setColor(Blocks.DIORITE)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_PLATE
+            )
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val ANDESITE = HTMaterialBuilder.createStone("andesite") {
+    val ANDESITE = HTMaterial.create("andesite") {
         modifyInfo {
             setColor(Blocks.ANDESITE)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_PLATE
+            )
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val DEEPSLATE = HTMaterialBuilder.createStone("deepslate") {
+    val DEEPSLATE = HTMaterial.create("deepslate") {
         modifyInfo {
             setColor(Blocks.DEEPSLATE)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_PLATE
+            )
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val CALCITE = HTMaterialBuilder.createStone("calcite") {
+    val CALCITE = HTMaterial.create("calcite") {
         modifyInfo {
             formula = FormulaConvertible.of(HTElementMaterials.CALCIUM to 1, HTCommonFormula.CARBONATE to 1)
         }
+        modifyFlags {
+            addFlags(HTMaterialFlag.GENERATE_DUST)
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val TUFF = HTMaterialBuilder.createStone("tuff") {
-        modifyInfo { setColor(Blocks.TUFF) }
+    val TUFF = HTMaterial.create("tuff") {
+        modifyInfo {
+            color = 0x4d5d53
+        }
+        modifyFlags {
+            addFlags(HTMaterialFlag.GENERATE_DUST)
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val DRIPSTONE = HTMaterialBuilder.createStone("dripstone") {
+    val DRIPSTONE = HTMaterial.create("dripstone") {
         modifyInfo {
             setColor(Blocks.DRIPSTONE_BLOCK)
             formula = FormulaConvertible.of(CALCITE to 1)
         }
+        modifyFlags {
+            addFlags(HTMaterialFlag.GENERATE_DUST)
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val OBSIDIAN = HTMaterialBuilder.createStone("obsidian") {
+    val OBSIDIAN = HTMaterial.create("obsidian") {
         modifyInfo {
-            setColor(Blocks.OBSIDIAN)
+            color = 0x4b0082
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_PLATE
+            )
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val NETHERRACK = HTMaterialBuilder.createStone("netherrack") {
+    val NETHERRACK = HTMaterial.create("netherrack") {
         modifyInfo {
             setColor(Blocks.NETHERRACK)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_PLATE
+            )
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val BASALT = HTMaterialBuilder.createStone("basalt") {
+    val BASALT = HTMaterial.create("basalt") {
         modifyInfo {
             setColor(Blocks.BASALT)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_PLATE
+            )
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     @JvmField
-    val END_STONE = HTMaterialBuilder.createStone("end_stone") {
+    val END_STONE = HTMaterial.create("end_stone") {
         modifyInfo {
             setColor(Blocks.END_STONE)
             formula = HTCommonFormula.SILICON_DIOXIDE
         }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_PLATE
+            )
+        }
+        modifyProperties(HTMaterialProperties::setStone)
     }
 
     //    Woods    //
 
     @JvmField
-    val WOOD = HTMaterialBuilder.createWood("wood") {
+    val WOOD = HTMaterial.create("wood") {
         modifyInfo {
             setColor(Blocks.OAK_PLANKS)
             formula = FormulaConvertible { "C, H, O" }
         }
-        modifyFlags { addFlags(HTMaterialFlag.GENERATE_GEAR) }
+        modifyFlags {
+            addFlags(
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEAR
+            )
+        }
+        modifyProperties(HTMaterialProperties::setWood)
     }
 
 }

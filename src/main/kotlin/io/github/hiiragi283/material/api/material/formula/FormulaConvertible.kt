@@ -10,9 +10,6 @@ fun interface FormulaConvertible {
         val EMPTY = FormulaConvertible { "" }
 
         @JvmStatic
-        fun of(symbol: String) = FormulaConvertible { symbol }
-
-        @JvmStatic
         fun of(vararg pair: Pair<FormulaConvertible, Int>) = of(pair.toMap())
 
         @JvmStatic

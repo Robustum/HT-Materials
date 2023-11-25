@@ -11,7 +11,7 @@ import net.minecraft.text.Text
 class HTMaterialItem(
     override val materialHT: HTMaterial,
     override val shapeHT: HTShape
-) : Item(FabricItemSettings().group(HTMaterialsCommon.MATERIAL)), HTMaterialItemConvertible {
+) : Item(FabricItemSettings().group(HTMaterialsCommon.ITEM_GROUP)), HTMaterialItemConvertible {
 
     override fun getName(): Text = shapeHT.getTranslatedText(materialHT)
 

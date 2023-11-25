@@ -15,5 +15,4 @@ object HTCreateAddon : HTMaterialsAddon {
         HTPartManager.register(HTVanillaMaterials.OBSIDIAN, HTShape.DUST, AllItems.POWDERED_OBSIDIAN.get())
     }
 
-
 }

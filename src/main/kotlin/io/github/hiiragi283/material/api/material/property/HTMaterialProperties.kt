@@ -1,6 +1,9 @@
 package io.github.hiiragi283.material.api.material.property
 
 import io.github.hiiragi283.material.api.material.HTMaterial
+import net.minecraft.block.Block
+import net.minecraft.tag.TagKey
+import java.util.function.Consumer
 
 class HTMaterialProperties {
 
@@ -20,6 +23,44 @@ class HTMaterialProperties {
     fun verify(material: HTMaterial) {
         map.toList().sortedBy { it.first.name }.let(map::putAll)
         map.values.forEach { it.verify(material) }
+    }
+
+    //    Util    //
+
+    fun setFluid(consumer: Consumer<HTFluidProperty>) {
+        this += HTFluidProperty().also(consumer::accept)
+    }
+
+    fun setGem() {
+        this += HTSolidProperty.createGem()
+        this += HTGemProperty()
+    }
+
+    fun setMetal() {
+        this += HTSolidProperty.createMetal()
+        this += HTMetalProperty()
+    }
+
+    fun setSolid() {
+        this += HTSolidProperty.createSolid()
+    }
+
+    fun setStone() {
+        this += HTSolidProperty.createStone()
+        this += HTMetalProperty()
+    }
+
+    fun setWood() {
+        this += HTSolidProperty.createWood()
+        this += HTMetalProperty()
+    }
+
+    fun setHarvestLevel(level: Int) {
+        get(HTPropertyKey.SOLID)?.harvestLevel = level
+    }
+
+    fun setHarvestTool(tool: TagKey<Block>) {
+        get(HTPropertyKey.SOLID)?.harvestTool = tool
     }
 
     //    Any    //

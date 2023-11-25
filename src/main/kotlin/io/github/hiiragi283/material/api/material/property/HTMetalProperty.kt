@@ -7,7 +7,7 @@ class HTMetalProperty : HTMaterialProperty<HTMetalProperty> {
     override val key: HTPropertyKey<HTMetalProperty> = HTPropertyKey.METAL
 
     override fun verify(material: HTMaterial) {
-        material.modifyProperties { this += HTSolidProperty.createMetal() }
+        material.modifyProperties(HTMaterialProperties::setMetal)
         if (material.hasProperty(HTPropertyKey.GEM)) {
             throw IllegalStateException("Material: has both Metal and Gem Property, which is not allowed!")
         }

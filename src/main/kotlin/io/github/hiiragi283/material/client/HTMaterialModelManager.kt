@@ -77,14 +77,7 @@ object HTMaterialModelManager {
         //Gem
         registerSimpleConsumer(HTShape.GEM, Identifier("item/quartz"))
         //Ingot
-        registerConsumer(HTShape.INGOT) { material: HTMaterial, shape: HTShape ->
-            addModel(
-                getItemModelId(material, shape),
-                ModelJsonBuilder.create(Models.GENERATED)
-                    .addTexture(TextureKey.LAYER0, HTMaterialsCommon.id("item/ingot"))
-                    .addTexture("layer1", HTMaterialsCommon.id("item/ingot_overlay"))
-            )
-        }
+        registerSimpleConsumer(HTShape.INGOT)
         //Nugget
         registerSimpleConsumer(HTShape.NUGGET)
         //Plate
