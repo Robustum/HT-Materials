@@ -87,7 +87,7 @@
   "ht_shape.tiny_dust": "%sの小さな粉",
   "ht_shape.wire": "%sのワイヤー",
   "itemGroup.ht_materials.material": "HT Materials",
-  "tooltip.ht_materials.material.fluid_amount": "§7- 液体量: %s Unit",
+  "tooltip.ht_materials.material.fluid_amount": "§7- 液体量: %s単位",
   "tooltip.ht_materials.material.formula": "§7- 化学式: %s",
   "tooltip.ht_materials.material.luminance": "§7- 明るさ: %s",
   "tooltip.ht_materials.material.mining_level": "§7- 採掘レベル: %s",
