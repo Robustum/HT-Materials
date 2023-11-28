@@ -35,7 +35,8 @@ object HTMaterialsCommon : ModInitializer {
 
     private val RESOURCE_PACK: RuntimeResourcePack = RuntimeResourcePack.create(id("runtime"))
 
-    private val logger: Logger = LogManager.getLogger(MOD_NAME)
+    @JvmField
+    val LOGGER: Logger = LogManager.getLogger(MOD_NAME)
 
     @JvmField
     val ITEM_GROUP: ItemGroup = FabricItemGroupBuilder.create(id("material"))
@@ -56,33 +57,33 @@ object HTMaterialsCommon : ModInitializer {
 
         //Register Materials and Shapes
         HTMaterialsAddons.registerShapes()
-        logger.info("HTShape loaded!")
+        LOGGER.info("HTShape loaded!")
         HTMaterialsAddons.registerMaterials()
-        logger.info("HTMaterial loaded!")
+        LOGGER.info("HTMaterial loaded!")
 
         //Modify and Verify Material Properties and Flags
         HTMaterialsAddons.modifyMaterials()
-        logger.info("All Materials Verified!")
+        LOGGER.info("All Materials Verified!")
 
         //Initialize Game Objects
         registerMaterialBlocks()
-        logger.info("All Material Blocks Registered!")
+        LOGGER.info("All Material Blocks Registered!")
         registerMaterialFluids()
-        logger.info("All Material Fluids Registered!")
+        LOGGER.info("All Material Fluids Registered!")
         registerMaterialItems()
-        logger.info("All Material Items Registered!")
+        LOGGER.info("All Material Items Registered!")
 
         //Register Common Events
         registerEvents()
-        logger.info("Common Events Registered!")
+        LOGGER.info("Common Events Registered!")
 
         RRPCallback.BEFORE_USER.register {
             //Register Loot Tables
             registerLootTables()
-            logger.info("Loot Tables Registered!")
+            LOGGER.info("Loot Tables Registered!")
             //Register Resource Pack
             it.add(RESOURCE_PACK)
-            logger.info("Dynamic Data Pack Registered!")
+            LOGGER.info("Dynamic Data Pack Registered!")
         }
 
     }

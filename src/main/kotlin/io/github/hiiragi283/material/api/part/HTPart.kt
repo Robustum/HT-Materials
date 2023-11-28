@@ -3,7 +3,6 @@ package io.github.hiiragi283.material.api.part
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.common.HTMaterialsCommon
-import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.tag.TagKey
@@ -24,7 +23,7 @@ data class HTPart(val material: HTMaterial, val shape: HTShape) {
 
     fun getCommonTag(): TagKey<Item> = shape.getCommonTag(material)
 
-    fun appendTooltip(stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
+    fun appendTooltip(stack: ItemStack, lines: MutableList<Text>) {
         //Title
         lines.add(TranslatableText("tooltip.ht_materials.material.title"))
         //Name
@@ -41,7 +40,7 @@ data class HTPart(val material: HTMaterial, val shape: HTShape) {
             lines.add(TranslatableText("tooltip.ht_materials.material.molar", molar))
         }
         //Tooltip from Properties
-        material.getProperties().forEach { it.appendTooltip(this, stack, context, lines) }
+        material.getProperties().forEach { it.appendTooltip(this, stack, lines) }
     }
 
 }

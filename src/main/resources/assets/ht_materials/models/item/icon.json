@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "ht_materials:icon_16"
+    "layer0": "ht_materials:icon"
   }
 }

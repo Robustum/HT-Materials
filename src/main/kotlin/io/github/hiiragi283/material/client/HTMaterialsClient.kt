@@ -15,17 +15,12 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.color.block.BlockColorProvider
 import net.minecraft.client.color.item.ItemColorProvider
-import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 
 @Environment(EnvType.CLIENT)
 object HTMaterialsClient : ClientModInitializer {
-
-    private val logger: Logger = LogManager.getLogger("${HTMaterialsCommon.MOD_NAME} Client")
 
     override fun onInitializeClient() {
 
@@ -34,23 +29,23 @@ object HTMaterialsClient : ClientModInitializer {
 
         //Register Block Color Provider
         registerBlockColorProvider()
-        logger.info("Block Color Provider Registered!")
+        HTMaterialsCommon.LOGGER.info("Block Color Provider Registered!")
 
         //Register Item Color Provider
         registerItemColorProvider()
-        logger.info("Item Color Provider Registered!")
+        HTMaterialsCommon.LOGGER.info("Item Color Provider Registered!")
 
         //Register Render Handler for Material Fluid
         registerFluidRenderHandler()
-        logger.info("Material Fluid Renderer Registered!")
+        HTMaterialsCommon.LOGGER.info("Material Fluid Renderer Registered!")
 
         //Register BlockStates and Models
         HTMaterialModelManager.register()
-        logger.info("BlockStates and Models Registered!")
+        HTMaterialsCommon.LOGGER.info("BlockStates and Models Registered!")
 
         //Register Client Events
         registerEvents()
-        logger.info("Client Events Registered!")
+        HTMaterialsCommon.LOGGER.info("Client Events Registered!")
 
     }
 
@@ -105,8 +100,8 @@ object HTMaterialsClient : ClientModInitializer {
 
     private fun registerEvents() {
 
-        ItemTooltipCallback.EVENT.register { stack: ItemStack, context: TooltipContext, lines: MutableList<Text> ->
-            HTPartManager.getPart(stack.item)?.appendTooltip(stack, context, lines)
+        ItemTooltipCallback.EVENT.register { stack: ItemStack, _, lines: MutableList<Text> ->
+            HTPartManager.getPart(stack.item)?.appendTooltip(stack, lines)
         }
 
     }

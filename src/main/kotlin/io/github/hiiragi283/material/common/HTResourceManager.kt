@@ -7,15 +7,11 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 import net.minecraft.resource.ResourceManager
 import net.minecraft.resource.ResourceType
 import net.minecraft.util.Identifier
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.function.BiConsumer
 
 object HTResourceManager {
-
-    private val logger: Logger = LogManager.getLogger("HTResourceManager")
 
     private val gson = Gson()
 
@@ -32,7 +28,7 @@ object HTResourceManager {
                             val jsonObject: JsonObject = gson.fromJson(inputStreamReader, JsonObject::class.java)
                             consumer.accept(identifier, jsonObject)
                         } catch (e: Exception) {
-                            logger.error(e)
+                            HTMaterialsCommon.LOGGER.error(e)
                         }
                     }
 

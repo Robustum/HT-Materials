@@ -1,25 +1,20 @@
 package io.github.hiiragi283.material.api.part
 
-import com.google.common.collect.HashBasedTable
-import com.google.common.collect.ImmutableTable
-import com.google.common.collect.Table
+import com.google.common.collect.*
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
 import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.isAir
 import net.minecraft.block.Blocks
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 import net.minecraft.util.registry.Registry
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import java.util.*
 
 object HTPartManager {
-
-    private val logger: Logger = LogManager.getLogger("HTPartManager")
 
     //    Item -> HTPart    //
 
@@ -57,14 +52,13 @@ object HTPartManager {
 
     //    HTMaterial, HTShape -> Collection<Item>    //
 
-    private val partToItems: Table<HTMaterial, HTShape, MutableSet<Item>> = HashBasedTable.create()
+    private val partToItems: Multimap<HTPart, Item> = HashMultimap.create()
 
     @JvmStatic
-    fun getPartToItemsTable(): ImmutableTable<HTMaterial, HTShape, Collection<Item>> =
-        ImmutableTable.copyOf(partToItems)
+    fun getPartToItemsMap(): ImmutableMultimap<HTPart, Item> = ImmutableMultimap.copyOf(partToItems)
 
     @JvmStatic
-    fun getItems(material: HTMaterial, shape: HTShape): Collection<Item> = partToItems.get(material, shape) ?: setOf()
+    fun getItems(material: HTMaterial, shape: HTShape): Collection<Item> = partToItems.get(HTPart(material, shape))
 
     //    Initialization    //
 
@@ -174,37 +168,33 @@ object HTPartManager {
     fun register(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
         //Check if the itemConvertible has non-air item
         val item: Item = checkItemNotAir(itemConvertible)
+        val part = HTPart(material, shape)
         //ItemConvertible -> HTPart
-        itemToPart.putIfAbsent(item, HTPart(material, shape))
+        itemToPart.putIfAbsent(item, part)
         //HTMaterial, HTShape -> ItemConvertible
         if (!partToItem.contains(material, shape)) {
             partToItem.put(material, shape, item)
-            logger.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
+            HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
         }
         //HTMaterial, HTShape -> Collection<ItemConvertible>
-        if (!partToItems.contains(material, shape)) {
-            partToItems.put(material, shape, mutableSetOf())
-        }
-        partToItems.get(material, shape)!!.add(item)
+        partToItems.put(part, item)
         //print info
-        logger.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
+        HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
     }
 
     internal fun forceRegister(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
         //Check if the itemConvertible has non-air item
         val item: Item = checkItemNotAir(itemConvertible)
+        val part = HTPart(material, shape)
         //ItemConvertible -> HTPart
-        itemToPart.putIfAbsent(item, HTPart(material, shape))
+        itemToPart.putIfAbsent(item, part)
         //HTMaterial, HTShape -> ItemConvertible
         partToItem.put(material, shape, item)
-        logger.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
+        HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
         //HTMaterial, HTShape -> Collection<ItemConvertible>
-        if (!partToItems.contains(material, shape)) {
-            partToItems.put(material, shape, mutableSetOf())
-        }
-        partToItems.get(material, shape)!!.add(item)
+        partToItems.put(part, item)
         //print info
-        logger.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
+        HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
     }
 
 }

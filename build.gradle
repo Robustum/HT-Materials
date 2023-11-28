@@ -98,6 +98,18 @@ dependencies {
 
 }
 
+loom {
+
+    accessWidenerPath = file("src/main/resources/ht_materials.accesswidener")
+
+    runs {
+        client {
+            vmArg("-Dmixin.debug.export=true")
+        }
+    }
+
+}
+
 processResources {
 
     inputs.property "version", version
@@ -143,7 +155,7 @@ java {
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${archivesBaseName}" }
     }
 }
 

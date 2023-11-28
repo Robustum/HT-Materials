@@ -12,19 +12,19 @@
     "sources": "https://github.com/Hiiragi283/HT-Materials"
   },
   "license": "MPL-2.0",
-  "icon": "assets/ht_materals/icon.png",
+  "icon": "assets/ht_materials/textures/icon.png",
   "environment": "*",
   "entrypoints": {
-    "client": [
-      {
-        "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.client.HTMaterialsClient"
-      }
-    ],
     "main": [
       {
         "adapter": "kotlin",
         "value": "io.github.hiiragi283.material.common.HTMaterialsCommon"
+      }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.client.HTMaterialsClient"
       }
     ],
     "ht_materials": [
@@ -35,6 +35,12 @@
       {
         "adapter": "kotlin",
         "value": "io.github.hiiragi283.material.addon.HTMIAddon"
+      }
+    ],
+    "rei_client": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.rei.HTReiPlugin"
       }
     ]
   },

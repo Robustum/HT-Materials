@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
-import net.minecraft.client.item.TooltipContext
 import net.minecraft.item.ItemStack
 import net.minecraft.tag.BlockTags
 import net.minecraft.tag.TagKey
@@ -66,7 +65,7 @@ class HTSolidProperty private constructor(
 
     fun getHarvestLevelTag(): TagKey<Block>? = harvestLevel.takeIf { it > 0 }?.let(MiningLevelManager::getBlockTag)
 
-    override fun appendTooltip(part: HTPart, stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
+    override fun appendTooltip(part: HTPart, stack: ItemStack, lines: MutableList<Text>) {
         //Mining Level
         harvestLevel.let { lines.add(TranslatableText("tooltip.ht_materials.material.mining_level", it)) }
         //Mining Tool

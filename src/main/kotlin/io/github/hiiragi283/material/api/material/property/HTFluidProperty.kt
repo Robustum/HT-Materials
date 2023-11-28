@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributeHandler
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes
-import net.minecraft.client.item.TooltipContext
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.ItemStack
 import net.minecraft.sound.SoundEvent
@@ -32,7 +31,7 @@ class HTFluidProperty : HTMaterialProperty<HTFluidProperty> {
 
     private val fluidVariant: FluidVariant by lazy { FluidVariant.of(fluid) }
 
-    override fun appendTooltip(part: HTPart, stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
+    override fun appendTooltip(part: HTPart, stack: ItemStack, lines: MutableList<Text>) {
         //Luminance
         lines.add(
             TranslatableText(
@@ -55,11 +54,11 @@ class HTFluidProperty : HTMaterialProperty<HTFluidProperty> {
             )
         )
         //Is gas
-        val key = "tooltip.ht_materials.material.state.%s"
+        var key = "tooltip.ht_materials.material.state.%s"
             if (attribute.isLighterThanAir(fluidVariant)) {
-                key.format("gas")
+                key = key.format("gas")
             } else {
-                key.format("fluid")
+                key = key.format("fluid")
             }
         lines.add(TranslatableText("tooltip.ht_materials.material.state", TranslatableText(key)))
     }

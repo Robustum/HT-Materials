@@ -13,8 +13,6 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.SimpleRegistry
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import java.util.function.Consumer
 import java.util.function.Predicate
 
@@ -29,8 +27,6 @@ class HTShape private constructor(
 ) {
 
     companion object {
-
-        private val logger: Logger = LogManager.getLogger("HTShape")
 
         internal var canModify: Boolean = true
 
@@ -49,7 +45,7 @@ class HTShape private constructor(
         fun create(name: String, init: Builder.() -> Unit = {}): HTShape = Builder(name).apply(init).build().also {
             check(canModify) { "Cannot register shape after Initialization!!" }
             Registry.register(REGISTRY, commonId(name), it)
-            logger.info("The Shape: $name registered!")
+            HTMaterialsCommon.LOGGER.info("The Shape: $name registered!")
         }
 
         @JvmName("create")
@@ -58,8 +54,15 @@ class HTShape private constructor(
             Builder(name).also(consumer::accept).build().also {
                 check(canModify) { "Cannot register shape after Initialization!!" }
                 Registry.register(REGISTRY, commonId(name), it)
-                logger.info("The Shape: $name registered!")
+                HTMaterialsCommon.LOGGER.info("The Shape: $name registered!")
             }
+
+        @JvmStatic
+        fun createOre(name: String) = create("${name}_ore") {
+            idFormat = "${name}_%s_ore"
+            forgeTag = "ores/%s"
+            fabricTag = "%s_ores"
+        }
 
         //    Block    //
 
@@ -72,6 +75,13 @@ class HTShape private constructor(
         }
 
         @JvmField
+        val FLUID = create("fluid") {
+            idFormat = "%s"
+            forgeTag = ""
+            fabricTag = ""
+        }
+
+        @JvmField
         val ORE = create("ore") {
             idFormat = "%s_ore"
             forgeTag = "ores/%s"
@@ -79,11 +89,31 @@ class HTShape private constructor(
         }
 
         @JvmField
-        val FLUID = create("fluid") {
-            idFormat = "%s"
-            forgeTag = ""
-            fabricTag = ""
-        }
+        val ORE_GRANITE = createOre("granite")
+
+        @JvmField
+        val ORE_DIORITE = createOre("diorite")
+
+        @JvmField
+        val ORE_ANDESITE = createOre("andesite")
+
+        @JvmField
+        val ORE_DEEPSLATE = createOre("deepslate")
+
+        @JvmField
+        val ORE_SAND = createOre("sand")
+
+        @JvmField
+        val ORE_RED_SAND = createOre("red_sand")
+
+        @JvmField
+        val ORE_GRAVEL = createOre("gravel")
+
+        @JvmField
+        val ORE_NETHERRACK = createOre("netherrack")
+
+        @JvmField
+        val ORE_END_STONE = createOre("end_stone")
 
         //    Item    //
 

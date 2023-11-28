@@ -7,9 +7,7 @@ import io.github.hiiragi283.material.api.part.HTPartManager;
 import io.github.hiiragi283.material.api.shape.HTShape;
 import io.github.hiiragi283.material.common.HTMaterialsCommon;
 import io.github.hiiragi283.material.common.util.HTUtil;
-import io.github.hiiragi283.material.common.util.TableUtil;
 import io.github.hiiragi283.material.util.HTTagLoader;
-import kotlin.Unit;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.resource.ResourceManager;
@@ -18,6 +16,7 @@ import net.minecraft.tag.TagGroupLoader;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,68 +51,84 @@ public class TagLoaderMixin<T> implements HTTagLoader<T> {
                         if (item == null) return;
                         Block block = HTUtil.asBlock(item);
                         if (block instanceof HTMaterialBlock materialBlock) {
-                            Optional.ofNullable(solidProperty.getHarvestTool()).ifPresent(tag -> ht_materials$registerTag(map, tag, Registry.BLOCK, materialBlock));
-                            Optional.ofNullable(solidProperty.getHarvestLevelTag()).ifPresent(tag -> ht_materials$registerTag(map, tag, Registry.BLOCK, materialBlock));
+                            Optional.ofNullable(solidProperty.getHarvestTool())
+                                    .map(tag -> ht_materials$getBuilder(map, tag))
+                                    .ifPresent(builder -> ht_materials$registerTag(builder, Registry.BLOCK, materialBlock));
+                            Optional.ofNullable(solidProperty.getHarvestLevelTag())
+                                    .map(tag -> ht_materials$getBuilder(map, tag))
+                                    .ifPresent(builder -> ht_materials$registerTag(builder, Registry.BLOCK, materialBlock));
                         }
                     });
                 }
+                HTMaterialsCommon.LOGGER.info("Registered Mining Tool & Harvest Level Tags!");
             }
             if (registry == Registry.ITEM) {
                 //Register items to HTPartManager
-                HTMaterial.REGISTRY.forEach(material -> HTShape.REGISTRY.forEach(shape -> {
+                /*HTMaterial.REGISTRY.forEach(material -> HTShape.REGISTRY.forEach(shape -> {
                     ht_materials$registerParts(map, shape.getForgeTag(material), material, shape);
                     ht_materials$registerParts(map, shape.getCommonTag(material), material, shape);
-                }));
+                }));*/
+                HTMaterialsCommon.LOGGER.info("Registered items from Tags to HTPartManager!");
                 //Register Tags from HTPartManager
-                TableUtil.forEach(HTPartManager.getPartToItemsTable(), cell -> {
-                    //Register ForgeTag and CommonTag
-                    HTMaterial material = cell.getRowKey();
-                    HTShape shape = cell.getColumnKey();
-                    Collection<Item> items = cell.getValue();
-                    ht_materials$registerTags(map, shape.getForgeTag(material), Registry.ITEM, items);
-                    ht_materials$registerTags(map, shape.getCommonTag(material), Registry.ITEM, items);
-                    //Sync ForgeTag and CommonTag entries
-                    Tag.Builder forgeTagBuilder = map.get(shape.getForgeTag(material).id());
-                    Tag.Builder commonTagBuilder = map.get(shape.getCommonTag(material).id());
-                    if (forgeTagBuilder != null && commonTagBuilder != null) {
-                        ht_materials$syncTags(commonTagBuilder, forgeTagBuilder);
-                        ht_materials$syncTags(forgeTagBuilder, commonTagBuilder);
-                    }
-                    return Unit.INSTANCE;
+                HTPartManager.getPartToItemsMap().forEach((part, item) -> {
+                    HTMaterial material = part.getMaterial();
+                    HTShape shape = part.getShape();
+                    ht_materials$registerTag(ht_materials$getBuilder(map, shape.getForgeTag(material)), Registry.ITEM, item);
+                    ht_materials$registerTag(ht_materials$getBuilder(map, shape.getCommonTag(material)), Registry.ITEM, item);
                 });
+                HTMaterialsCommon.LOGGER.info("Registered Tags for HTPartManager's Entries!");
+                //Sync ForgeTag and CommonTag entries
+                HTMaterial.REGISTRY.forEach(material -> HTShape.REGISTRY.forEach(shape -> {
+                    Tag.Builder forgeTagBuilder = ht_materials$getBuilder(map, shape.getForgeTag(material));
+                    Tag.Builder commonTagBuilder = ht_materials$getBuilder(map, shape.getCommonTag(material));
+                    ht_materials$syncTags(commonTagBuilder, forgeTagBuilder);
+                    ht_materials$syncTags(forgeTagBuilder, commonTagBuilder);
+                }));
+                HTMaterialsCommon.LOGGER.info("Synced Forge Tags and Common Tags!");
             }
         });
     }
 
+    @NotNull
+    @Unique
+    private Tag.Builder ht_materials$getBuilder(Map<Identifier, Tag.Builder> map, TagKey<?> tagKey) {
+        return map.computeIfAbsent(tagKey.id(), key -> Tag.Builder.create());
+    }
+
+    @NotNull
+    @Unique
+    private List<Tag.TrackedEntry> ht_materials$getEntries(Map<Identifier, Tag.Builder> map, TagKey<?> tagKey) {
+        return ht_materials$getEntries(ht_materials$getBuilder(map, tagKey));
+    }
+
+    @NotNull
+    @Unique
+    private List<Tag.TrackedEntry> ht_materials$getEntries(Tag.Builder builder) {
+        return ((TagBuilderMixin) builder).getEntries();
+    }
+
     @Unique
     private void ht_materials$registerParts(Map<Identifier, Tag.Builder> map, TagKey<Item> tagKey, HTMaterial material, HTShape shape) {
-        Optional.ofNullable(map.get(tagKey.id())).ifPresent(builder ->
-                ((TagBuilderMixin) builder)
-                        .getEntries().stream()
-                        .map(Tag.TrackedEntry::entry)
-                        .forEach(entry -> entry.forEachTagId(id -> {
-                            Item item = Registry.ITEM.get(id);
-                            if (!HTUtil.isAir(item)) {
-                                HTPartManager.register(material, shape, item);
-                            }
-                        }))
-        );
+        ht_materials$getEntries(map, tagKey).stream()
+                .map(Tag.TrackedEntry::entry)
+                .forEach(entry -> entry.forEachTagId(id -> {
+                    HTMaterialsCommon.LOGGER.info("Tag Entry: " + id);
+                    Item item = Registry.ITEM.get(id);
+                    if (!HTUtil.isAir(item)) {
+                        HTPartManager.register(material, shape, item);
+                    }
+                }));
+
     }
 
     @Unique
-    private <R> void ht_materials$registerTag(Map<Identifier, Tag.Builder> map, TagKey<R> tagKey, Registry<R> registry, R value) {
-        map.computeIfAbsent(tagKey.id(), key -> Tag.Builder.create()).add(registry.getId(value), HTMaterialsCommon.MOD_NAME);
-    }
-
-    @Unique
-    private <R> void ht_materials$registerTags(Map<Identifier, Tag.Builder> map, TagKey<R> tagKey, Registry<R> registry, Collection<R> collection) {
-        Tag.Builder builder = map.computeIfAbsent(tagKey.id(), key -> Tag.Builder.create());
-        collection.forEach(value -> builder.add(registry.getId(value), HTMaterialsCommon.MOD_NAME));
+    private <R> void ht_materials$registerTag(Tag.Builder builder, Registry<R> registry, R value) {
+        builder.add(registry.getId(value), HTMaterialsCommon.MOD_NAME);
     }
 
     @Unique
     private void ht_materials$syncTags(Tag.Builder parentBuilder, Tag.Builder childBuilder) {
-        ((TagBuilderMixin) childBuilder).getEntries().forEach(entry -> parentBuilder.add(entry.entry(), HTMaterialsCommon.MOD_NAME));
+        ht_materials$getEntries(childBuilder).forEach(entry -> parentBuilder.add(entry.entry(), HTMaterialsCommon.MOD_NAME));
     }
 
     //    HTTagLoader    //

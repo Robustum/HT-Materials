@@ -22,8 +22,6 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.SimpleRegistry
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 import java.awt.Color
 import java.util.*
 import java.util.function.Consumer
@@ -36,8 +34,6 @@ class HTMaterial private constructor(
 ) : FormulaConvertible, MolarMassConvertible {
 
     companion object {
-
-        private val logger: Logger = LogManager.getLogger("HTMaterial")
 
         internal var canModify: Boolean = true
 
@@ -54,7 +50,7 @@ class HTMaterial private constructor(
                 .apply(init)
                 .also { mat ->
                     Registry.register(REGISTRY, commonId(name), mat)
-                    logger.info("The Material: $mat registered!")
+                    HTMaterialsCommon.LOGGER.info("The Material: $mat registered!")
                 }
 
         @JvmName("create")
@@ -65,7 +61,7 @@ class HTMaterial private constructor(
                 .also(consumer::accept)
                 .also { mat ->
                     Registry.register(REGISTRY, commonId(name), mat)
-                    logger.info("The Material: $mat registered!")
+                    HTMaterialsCommon.LOGGER.info("The Material: $mat registered!")
                 }
 
         @JvmStatic

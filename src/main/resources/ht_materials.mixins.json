@@ -5,6 +5,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "MainMixin",
+    "ObjectEntryMixin",
+    "OptionalObjectEntryMixin",
+    "OptionalTagEntryMixin",
     "RecipeManagerMixin",
     "TagBuilderMixin",
     "TagLoaderMixin",

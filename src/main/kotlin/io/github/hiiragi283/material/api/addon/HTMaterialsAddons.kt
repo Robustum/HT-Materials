@@ -4,6 +4,7 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.isModLoaded
+import io.github.hiiragi283.material.util.HTJsonRecipes
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
@@ -39,6 +40,7 @@ object HTMaterialsAddons : HTMaterialsAddon {
 
     override fun commonSetup() {
         cache.forEach(HTMaterialsAddon::commonSetup)
+        HTJsonRecipes.registerRecipes()
     }
 
     @Environment(EnvType.CLIENT)
