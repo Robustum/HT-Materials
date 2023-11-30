@@ -3,6 +3,7 @@ package io.github.hiiragi283.material.api.material
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags
 import io.github.hiiragi283.material.api.material.formula.FormulaConvertible
+import io.github.hiiragi283.material.api.material.materials.HTCommonMaterials
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
 import io.github.hiiragi283.material.api.material.molar.MolarMassConvertible
@@ -23,56 +24,13 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.SimpleRegistry
 import java.awt.Color
-import java.util.*
-import java.util.function.Consumer
 
-@Suppress("unused", "UnstableApiUsage")
+@Suppress("UnstableApiUsage")
 class HTMaterial private constructor(
     private val info: Info,
     private val properties: HTMaterialProperties,
     private val flags: HTMaterialFlags
 ) : FormulaConvertible, MolarMassConvertible {
-
-    companion object {
-
-        internal var canModify: Boolean = true
-
-        @JvmField
-        val REGISTRY: SimpleRegistry<HTMaterial> = FabricRegistryBuilder.createSimple(
-            HTMaterial::class.java,
-            HTMaterialsCommon.id("material")
-        ).attribute(RegistryAttribute.SYNCED).buildAndRegister()
-
-        @JvmStatic
-        fun create(name: String, init: HTMaterial.() -> Unit = {}) =
-            HTMaterial(Info(name), HTMaterialProperties(), HTMaterialFlags())
-                .also { check(canModify) { "Cannot register material after Initialization!!" } }
-                .apply(init)
-                .also { mat ->
-                    Registry.register(REGISTRY, commonId(name), mat)
-                    HTMaterialsCommon.LOGGER.info("The Material: $mat registered!")
-                }
-
-        @JvmName("create")
-        @JvmStatic
-        fun createJava(name: String, consumer: Consumer<HTMaterial>) =
-            HTMaterial(Info(name), HTMaterialProperties(), HTMaterialFlags())
-                .also { check(canModify) { "Cannot register material after Initialization!!" } }
-                .also(consumer::accept)
-                .also { mat ->
-                    Registry.register(REGISTRY, commonId(name), mat)
-                    HTMaterialsCommon.LOGGER.info("The Material: $mat registered!")
-                }
-
-        @JvmStatic
-        fun getMaterial(name: String): HTMaterial? = REGISTRY.get(commonId(name))
-
-        init {
-            HTElementMaterials
-            HTVanillaMaterials
-        }
-
-    }
 
     fun verify() {
         properties.verify(this)
@@ -85,20 +43,11 @@ class HTMaterial private constructor(
 
     fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties[key]
 
-    fun <T : HTMaterialProperty<T>> getPropertyOptional(key: HTPropertyKey<T>): Optional<T> =
-        Optional.ofNullable(getProperty(key))
-
     fun <T : HTMaterialProperty<T>> hasProperty(key: HTPropertyKey<T>): Boolean = key in properties
 
     fun modifyProperties(init: HTMaterialProperties.() -> Unit) {
         check(canModify) { "Cannot modify material properties after Initialization!!" }
         properties.init()
-    }
-
-    @JvmName("modifyProperties")
-    fun modifyPropertiesJava(consumer: Consumer<HTMaterialProperties>) {
-        check(canModify) { "Cannot modify material properties after Initialization!!" }
-        consumer.accept(properties)
     }
 
     fun getDefaultShape(): HTShape? = when {
@@ -116,15 +65,7 @@ class HTMaterial private constructor(
         flags.init()
     }
 
-    @JvmName("modifyFlags")
-    fun modifyFlagsJava(consumer: Consumer<HTMaterialFlags>) {
-        check(canModify) { "Cannot modify material flags after Initialization!!" }
-        consumer.accept(flags)
-    }
-
     //    Info    //
-
-    fun getInfo(): Info = info.copy()
 
     fun getName(): String = info.name
 
@@ -145,12 +86,6 @@ class HTMaterial private constructor(
     fun modifyInfo(init: Info.() -> Unit) {
         check(canModify) { "Cannot modify material infos after Initialization!!" }
         info.init()
-    }
-
-    @JvmName("modifyInfo")
-    fun modifyInfoJava(consumer: Consumer<Info>) {
-        check(canModify) { "Cannot modify material infos after Initialization!!" }
-        consumer.accept(info)
     }
 
     private lateinit var formulaCache: String
@@ -176,12 +111,12 @@ class HTMaterial private constructor(
     }
 
     data class Info(
-        val name: String,
-        var color: Int = -1,
-        var formula: FormulaConvertible = FormulaConvertible.EMPTY,
-        var ingotPerBlock: Int = 9,
-        var molarMass: MolarMassConvertible = MolarMassConvertible.EMPTY,
-        var translationKey: String = "ht_material.$name"
+        @JvmField val name: String,
+        @JvmField var color: Int = -1,
+        @JvmField var formula: FormulaConvertible = FormulaConvertible.EMPTY,
+        @JvmField var ingotPerBlock: Int = 9,
+        @JvmField var molarMass: MolarMassConvertible = MolarMassConvertible.EMPTY,
+        @JvmField var translationKey: String = "ht_material.$name"
     ) {
 
         fun setColor(color: Color) {
@@ -209,5 +144,36 @@ class HTMaterial private constructor(
     override fun hashCode(): Int = getName().hashCode()
 
     override fun toString(): String = getName()
+
+    companion object {
+
+        internal var canModify: Boolean = true
+
+        @JvmField
+        val REGISTRY: SimpleRegistry<HTMaterial> = FabricRegistryBuilder.createSimple(
+            HTMaterial::class.java,
+            HTMaterialsCommon.id("material")
+        ).attribute(RegistryAttribute.SYNCED).buildAndRegister()
+
+        @JvmStatic
+        fun create(name: String, init: HTMaterial.() -> Unit = {}) =
+            HTMaterial(Info(name), HTMaterialProperties(), HTMaterialFlags())
+                .also { check(canModify) { "Cannot register material after Initialization!!" } }
+                .apply(init)
+                .also { mat ->
+                    Registry.register(REGISTRY, commonId(name), mat)
+                    HTMaterialsCommon.LOGGER.info("The Material: $mat registered!")
+                }
+
+        @JvmStatic
+        fun getMaterial(name: String): HTMaterial? = REGISTRY.get(commonId(name))
+
+        init {
+            HTElementMaterials
+            HTVanillaMaterials
+            HTCommonMaterials
+        }
+
+    }
 
 }

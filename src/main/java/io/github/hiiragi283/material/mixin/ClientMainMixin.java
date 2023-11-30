@@ -17,7 +17,6 @@ public class ClientMainMixin {
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/lang/Thread;currentThread()Ljava/lang/Thread;"))
     private void ht_materials$currentThread(RunArgs args, CallbackInfo ci) {
-        HTMaterialsAddons.INSTANCE.commonSetup();
         HTMaterialsAddons.INSTANCE.clientSetup();
         HTMaterialsCommon.LOGGER.info("HTMaterials Addons finished common & client setup!");
     }

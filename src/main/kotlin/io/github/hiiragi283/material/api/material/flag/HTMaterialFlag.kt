@@ -2,13 +2,55 @@ package io.github.hiiragi283.material.api.material.flag
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
-import java.util.*
 
 class HTMaterialFlag private constructor(
     val name: String,
     private val requiredFlags: Set<HTMaterialFlag>,
     private val requiredProperties: Set<HTPropertyKey<*>>
 ) {
+
+    init {
+        map.putIfAbsent(name, this)
+    }
+
+    fun verify(material: HTMaterial) {
+        requiredProperties.forEach { key: HTPropertyKey<*> ->
+            if (!material.hasProperty(key)) {
+                throw IllegalStateException("The material: $material has no property: ${key.name} but required for ${this.name}!")
+            }
+        }
+        requiredFlags.forEach { flag: HTMaterialFlag ->
+            if (!material.hasFlag(flag)) {
+                throw IllegalStateException("The material: $material has no flag: ${flag.name} but required for ${this.name}!")
+            }
+        }
+    }
+
+    //    Any    //
+
+    override fun equals(other: Any?): Boolean = when (other) {
+        null -> false
+        !is HTMaterialFlag -> false
+        else -> other.name == this.name
+    }
+
+    override fun hashCode(): Int = name.hashCode()
+
+    override fun toString(): String = name
+
+    //    Builder    //
+
+    class Builder(private val name: String) {
+
+        @JvmField
+        val requiredFlags: MutableSet<HTMaterialFlag> = mutableSetOf()
+
+        @JvmField
+        val requiredProperties: MutableSet<HTPropertyKey<*>> = mutableSetOf()
+
+        internal fun build(): HTMaterialFlag = HTMaterialFlag(name, requiredFlags, requiredProperties)
+
+    }
 
     companion object {
 
@@ -18,9 +60,6 @@ class HTMaterialFlag private constructor(
 
         @JvmField
         val REGISTRY: Map<String, HTMaterialFlag> = map
-
-        @JvmStatic
-        fun getOptional(name: String): Optional<HTMaterialFlag> = Optional.ofNullable(map[name])
 
         //    Builder    //
 
@@ -72,49 +111,6 @@ class HTMaterialFlag private constructor(
         val GENERATE_ROD = create("generate_rod") {
             requiredProperties.add(HTPropertyKey.SOLID)
         }
-
-        @JvmField
-        val FIREPROOF = create("fireproof")
-
-    }
-
-    init {
-        map.putIfAbsent(name, this)
-    }
-
-    fun verify(material: HTMaterial) {
-        requiredProperties.forEach { key: HTPropertyKey<*> ->
-            if (!material.hasProperty(key)) {
-                throw IllegalStateException("The material: $material has no property: ${key.name} but required for ${this.name}!")
-            }
-        }
-        requiredFlags.forEach { flag: HTMaterialFlag ->
-            if (!material.hasFlag(flag)) {
-                throw IllegalStateException("The material: $material has no flag: ${flag.name} but required for ${this.name}!")
-            }
-        }
-    }
-
-    //    Any    //
-
-    override fun equals(other: Any?): Boolean = when (other) {
-        null -> false
-        !is HTMaterialFlag -> false
-        else -> other.name == this.name
-    }
-
-    override fun hashCode(): Int = name.hashCode()
-
-    override fun toString(): String = name
-
-    //    Builder    //
-
-    class Builder(private val name: String) {
-
-        val requiredFlags: MutableSet<HTMaterialFlag> = mutableSetOf()
-        val requiredProperties: MutableSet<HTPropertyKey<*>> = mutableSetOf()
-
-        internal fun build(): HTMaterialFlag = HTMaterialFlag(name, requiredFlags, requiredProperties)
 
     }
 

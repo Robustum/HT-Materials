@@ -52,7 +52,7 @@ object HTMaterialModelManager {
                 getItemModelId(material, shape),
                 ModelJsonBuilder.create(Models.GENERATED)
                     .addTexture(TextureKey.LAYER0, Identifier("minecraft:item/bucket"))
-                //.addTexture("layer1", Identifier("minecraft:item/bucket"))
+                    .addTexture("layer1", HTMaterialsCommon.id("item/bucket"))
             )
         }
         //Dust
@@ -82,8 +82,6 @@ object HTMaterialModelManager {
         registerSimpleConsumer(HTShape.NUGGET)
         //Plate
         registerSimpleConsumer(HTShape.PLATE)
-        //Raw Ore
-        //Raw Block
         //Rod
         registerSimpleConsumer(HTShape.ROD)
     }

@@ -49,6 +49,15 @@ inline fun <R, C, V> Table<R, C, V>.forEach(action: (Table.Cell<R, C, V>) -> Uni
     for (cell in this.cellSet()) action(cell)
 }
 
+inline fun <R, C, V> Table<R, C, V>.computeIfAbsent(row: R, column: C, mapping: (R, C) -> V): V {
+    var result: V? = this.get(row, column)
+    if (result == null) {
+        this.put(row, column, mapping(row, column))
+        result = this.get(row, column)!!
+    }
+    return result
+}
+
 //    Cell    //
 
 fun <R, C, V> Table.Cell<R, C, V>.toTriple(): Triple<R, C, V> = Triple(rowKey, columnKey, value)

@@ -7,7 +7,9 @@ import io.github.hiiragi283.material.api.part.HTPartManager;
 import io.github.hiiragi283.material.api.shape.HTShape;
 import io.github.hiiragi283.material.common.HTMaterialsCommon;
 import io.github.hiiragi283.material.common.util.HTUtil;
+import io.github.hiiragi283.material.common.util.TableUtil;
 import io.github.hiiragi283.material.util.HTTagLoader;
+import kotlin.Unit;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.resource.ResourceManager;
@@ -24,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -63,18 +64,16 @@ public class TagLoaderMixin<T> implements HTTagLoader<T> {
                 HTMaterialsCommon.LOGGER.info("Registered Mining Tool & Harvest Level Tags!");
             }
             if (registry == Registry.ITEM) {
-                //Register items to HTPartManager
-                /*HTMaterial.REGISTRY.forEach(material -> HTShape.REGISTRY.forEach(shape -> {
-                    ht_materials$registerParts(map, shape.getForgeTag(material), material, shape);
-                    ht_materials$registerParts(map, shape.getCommonTag(material), material, shape);
-                }));*/
                 HTMaterialsCommon.LOGGER.info("Registered items from Tags to HTPartManager!");
                 //Register Tags from HTPartManager
-                HTPartManager.getPartToItemsMap().forEach((part, item) -> {
-                    HTMaterial material = part.getMaterial();
-                    HTShape shape = part.getShape();
-                    ht_materials$registerTag(ht_materials$getBuilder(map, shape.getForgeTag(material)), Registry.ITEM, item);
-                    ht_materials$registerTag(ht_materials$getBuilder(map, shape.getCommonTag(material)), Registry.ITEM, item);
+                TableUtil.forEach(HTPartManager.getPartToItemTable(), cell -> {
+                    HTMaterial material = cell.getRowKey();
+                    HTShape shape = cell.getColumnKey();
+                    cell.getValue().forEach(item -> {
+                        ht_materials$registerTag(ht_materials$getBuilder(map, shape.getForgeTag(material)), Registry.ITEM, item);
+                        ht_materials$registerTag(ht_materials$getBuilder(map, shape.getCommonTag(material)), Registry.ITEM, item);
+                    });
+                    return Unit.INSTANCE;
                 });
                 HTMaterialsCommon.LOGGER.info("Registered Tags for HTPartManager's Entries!");
                 //Sync ForgeTag and CommonTag entries
@@ -95,40 +94,14 @@ public class TagLoaderMixin<T> implements HTTagLoader<T> {
         return map.computeIfAbsent(tagKey.id(), key -> Tag.Builder.create());
     }
 
-    @NotNull
     @Unique
-    private List<Tag.TrackedEntry> ht_materials$getEntries(Map<Identifier, Tag.Builder> map, TagKey<?> tagKey) {
-        return ht_materials$getEntries(ht_materials$getBuilder(map, tagKey));
-    }
-
-    @NotNull
-    @Unique
-    private List<Tag.TrackedEntry> ht_materials$getEntries(Tag.Builder builder) {
-        return ((TagBuilderMixin) builder).getEntries();
-    }
-
-    @Unique
-    private void ht_materials$registerParts(Map<Identifier, Tag.Builder> map, TagKey<Item> tagKey, HTMaterial material, HTShape shape) {
-        ht_materials$getEntries(map, tagKey).stream()
-                .map(Tag.TrackedEntry::entry)
-                .forEach(entry -> entry.forEachTagId(id -> {
-                    HTMaterialsCommon.LOGGER.info("Tag Entry: " + id);
-                    Item item = Registry.ITEM.get(id);
-                    if (!HTUtil.isAir(item)) {
-                        HTPartManager.register(material, shape, item);
-                    }
-                }));
-
-    }
-
-    @Unique
-    private <R> void ht_materials$registerTag(Tag.Builder builder, Registry<R> registry, R value) {
+    synchronized private <R> void ht_materials$registerTag(Tag.Builder builder, Registry<R> registry, R value) {
         builder.add(registry.getId(value), HTMaterialsCommon.MOD_NAME);
     }
 
     @Unique
-    private void ht_materials$syncTags(Tag.Builder parentBuilder, Tag.Builder childBuilder) {
-        ht_materials$getEntries(childBuilder).forEach(entry -> parentBuilder.add(entry.entry(), HTMaterialsCommon.MOD_NAME));
+    synchronized private void ht_materials$syncTags(Tag.Builder parentBuilder, Tag.Builder childBuilder) {
+        ((TagBuilderMixin) childBuilder).getEntries().forEach(entry -> parentBuilder.add(entry.entry(), HTMaterialsCommon.MOD_NAME));
     }
 
     //    HTTagLoader    //

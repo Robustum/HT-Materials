@@ -8,32 +8,23 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
-import io.github.hiiragi283.material.common.util.asBlock
-import io.github.hiiragi283.material.common.util.prefix
-import io.github.hiiragi283.material.common.util.suffix
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.Items
-import net.minecraft.resource.ResourceType
 import net.minecraft.util.Identifier
 import net.minecraft.util.Rarity
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import pers.solid.brrp.v1.api.RuntimeResourcePack
-import pers.solid.brrp.v1.fabric.api.RRPCallback
 
 object HTMaterialsCommon : ModInitializer {
 
     const val MOD_ID: String = "ht_materials"
     const val MOD_NAME: String = "HT Materials"
-
-    private val RESOURCE_PACK: RuntimeResourcePack = RuntimeResourcePack.create(id("runtime"))
 
     @JvmField
     val LOGGER: Logger = LogManager.getLogger(MOD_NAME)
@@ -61,6 +52,10 @@ object HTMaterialsCommon : ModInitializer {
         HTMaterialsAddons.registerMaterials()
         LOGGER.info("HTMaterial loaded!")
 
+        //Modify Shape Predicates
+        HTMaterialsAddons.modifyShapes()
+        LOGGER.info("All Shapes Modified!")
+
         //Modify and Verify Material Properties and Flags
         HTMaterialsAddons.modifyMaterials()
         LOGGER.info("All Materials Verified!")
@@ -74,17 +69,8 @@ object HTMaterialsCommon : ModInitializer {
         LOGGER.info("All Material Items Registered!")
 
         //Register Common Events
-        registerEvents()
-        LOGGER.info("Common Events Registered!")
-
-        RRPCallback.BEFORE_USER.register {
-            //Register Loot Tables
-            registerLootTables()
-            LOGGER.info("Loot Tables Registered!")
-            //Register Resource Pack
-            it.add(RESOURCE_PACK)
-            LOGGER.info("Dynamic Data Pack Registered!")
-        }
+        //registerEvents()
+        //LOGGER.info("Common Events Registered!")
 
     }
 
@@ -132,25 +118,6 @@ object HTMaterialsCommon : ModInitializer {
 
     private fun registerMaterialFluids() {
         HTMaterial.REGISTRY.forEach { material -> material.getProperty(HTPropertyKey.FLUID)?.init(material) }
-    }
-
-    private fun registerEvents() {
-
-    }
-
-    private fun registerLootTables() {
-        HTPartManager.getDefaultItemTable().values()
-            .map(Item::asBlock)
-            .filterIsInstance<HTMaterialBlock>()
-            .forEach { block: HTMaterialBlock ->
-                val lootId: Identifier = block.lootTableId
-                if (RESOURCE_PACK.contains(
-                        ResourceType.SERVER_DATA,
-                        lootId.prefix("loot_tables/").suffix(".json")
-                    )
-                ) return@forEach
-                RESOURCE_PACK.addLootTable(lootId, BlockLootTableGenerator.drops(block))
-            }
     }
 
 }

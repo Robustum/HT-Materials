@@ -11,6 +11,8 @@ interface HTMaterialsAddon {
 
     fun registerMaterials() {}
 
+    fun modifyShapes() {}
+
     fun modifyMaterials() {}
 
     fun commonSetup() {}

@@ -2,18 +2,27 @@ package io.github.hiiragi283.material.api.material.property
 
 data class HTPropertyKey<T : HTMaterialProperty<T>>(val name: String, val clazz: Class<T>) {
 
+    init {
+        map.putIfAbsent(name, this)
+    }
+
+    //    Any    //
+
+    override fun toString(): String = name
+
     companion object {
 
         @JvmStatic
         inline fun <reified T : HTMaterialProperty<T>> create(name: String) = HTPropertyKey(name, T::class.java)
 
-        val REGISTRY: Map<String, HTPropertyKey<*>>
-            get() = map
         private val map: MutableMap<String, HTPropertyKey<*>> = mutableMapOf()
+
+        @JvmField
+        val REGISTRY: Map<String, HTPropertyKey<*>> = map
 
         @JvmStatic
         @Suppress("UNCHECKED_CAST")
-        fun <T : HTMaterialProperty<T>> getAs(name: String): T? = map[name] as? T
+        fun <T : HTMaterialProperty<T>> get(name: String): T? = map[name] as? T
 
         //    Keys    //
 
@@ -37,13 +46,5 @@ data class HTPropertyKey<T : HTMaterialProperty<T>>(val name: String, val clazz:
 
 
     }
-
-    init {
-        map.putIfAbsent(name, this)
-    }
-
-    //    Any    //
-
-    override fun toString(): String = name
 
 }

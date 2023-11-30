@@ -110,6 +110,9 @@ object HTVanillaMaterials {
     }
 
     @JvmField
+    val FLINT = HTMaterial.create("flint")
+
+    @JvmField
     val LAPIS = HTMaterial.create("lapis") {
         modifyInfo {
             setColor(Blocks.LAPIS_BLOCK)
