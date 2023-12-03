@@ -8,6 +8,7 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.api.shape.HTShapes
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
@@ -52,10 +53,6 @@ object HTMaterialsCommon : ModInitializer {
         HTMaterialsAddons.registerMaterials()
         LOGGER.info("HTMaterial loaded!")
 
-        //Modify Shape Predicates
-        HTMaterialsAddons.modifyShapes()
-        LOGGER.info("All Shapes Modified!")
-
         //Modify and Verify Material Properties and Flags
         HTMaterialsAddons.modifyMaterials()
         LOGGER.info("All Materials Verified!")
@@ -78,7 +75,7 @@ object HTMaterialsCommon : ModInitializer {
     fun id(path: String) = Identifier(MOD_ID, path)
 
     private fun registerMaterialBlocks() {
-        HTShape.REGISTRY
+        HTShapes.REGISTRY
             .forEach { shape: HTShape ->
             HTMaterial.REGISTRY
                 .filter { it.hasProperty(HTPropertyKey.SOLID) }
@@ -101,7 +98,7 @@ object HTMaterialsCommon : ModInitializer {
     }
 
     private fun registerMaterialItems() {
-        HTShape.REGISTRY.forEach { shape: HTShape ->
+        HTShapes.REGISTRY.forEach { shape: HTShape ->
             HTMaterial.REGISTRY
                 .filter(shape::canGenerateItem)
                 .forEach { material: HTMaterial ->

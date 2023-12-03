@@ -3,7 +3,7 @@ package io.github.hiiragi283.material.compat.rei
 import dev.architectury.fluid.FluidStack
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.part.HTPart
-import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import me.shedaniel.rei.api.client.entry.renderer.EntryRendererRegistry
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip
@@ -30,7 +30,7 @@ object HTReiPlugin : REIClientPlugin {
         registry.transformTooltip(VanillaEntryTypes.FLUID) { fluidStack: EntryStack<FluidStack>, _, tooltip: Tooltip? ->
             HTMaterial.getMaterial(Registry.FLUID.getId(fluidStack.value.fluid).path)?.run {
                 val tooltipDummy: MutableList<Text> = mutableListOf()
-                HTPart(this, HTShape.FLUID).appendTooltip(ItemStack.EMPTY, tooltipDummy)
+                HTPart(this, HTShapes.FLUID).appendTooltip(ItemStack.EMPTY, tooltipDummy)
                 tooltip?.addAllTexts(tooltipDummy)
             }
             return@transformTooltip tooltip

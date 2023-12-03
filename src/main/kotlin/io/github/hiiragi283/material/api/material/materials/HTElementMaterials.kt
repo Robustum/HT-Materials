@@ -8,7 +8,6 @@ import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.material.property.HTSolidProperty
 import net.minecraft.block.Blocks
 
-@Suppress("unused")
 object HTElementMaterials {
 
     //    1st Period    //
@@ -42,17 +41,6 @@ object HTElementMaterials {
         modifyInfo {
             formula = FormulaConvertible { "Li" }
         }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_BLOCk,
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_INGOT,
-                HTMaterialFlag.GENERATE_NUGGET,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
-        }
         modifyProperties(HTMaterialProperties::setMetal)
     }
 
@@ -61,17 +49,6 @@ object HTElementMaterials {
         modifyInfo {
             setColor(Blocks.SLIME_BLOCK)
             formula = FormulaConvertible { "Be" }
-        }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_BLOCk,
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_INGOT,
-                HTMaterialFlag.GENERATE_NUGGET,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
         }
         modifyProperties(HTMaterialProperties::setMetal)
     }
@@ -85,8 +62,7 @@ object HTElementMaterials {
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
+                HTMaterialFlag.GENERATE_PLATE
             )
         }
         modifyProperties { this += HTSolidProperty.createSolid() }
@@ -172,17 +148,6 @@ object HTElementMaterials {
         modifyInfo {
             formula = FormulaConvertible { "Ca" }
         }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_BLOCk,
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_INGOT,
-                HTMaterialFlag.GENERATE_NUGGET,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
-        }
         modifyProperties(HTMaterialProperties::setMetal)
     }
 
@@ -212,17 +177,6 @@ object HTElementMaterials {
             color = 0xffc0cb
             formula = FormulaConvertible { "Cr" }
         }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_BLOCk,
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_INGOT,
-                HTMaterialFlag.GENERATE_NUGGET,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
-        }
         modifyProperties(HTMaterialProperties::setMetal)
     }
 
@@ -231,17 +185,6 @@ object HTElementMaterials {
         modifyInfo {
             setColor(Blocks.GRAVEL)
             formula = FormulaConvertible { "Mn" }
-        }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_BLOCk,
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_INGOT,
-                HTMaterialFlag.GENERATE_NUGGET,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
         }
         modifyProperties(HTMaterialProperties::setMetal)
     }
@@ -349,17 +292,6 @@ object HTElementMaterials {
             setColor(Blocks.OAK_PLANKS)
             formula = FormulaConvertible { "Cd" }
         }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_BLOCk,
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_INGOT,
-                HTMaterialFlag.GENERATE_NUGGET,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
-        }
         modifyProperties(HTMaterialProperties::setMetal)
     }
 
@@ -387,17 +319,6 @@ object HTElementMaterials {
     val ANTIMONY = HTMaterial.create("antimony") {
         modifyInfo {
             formula = FormulaConvertible { "Sb" }
-        }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_BLOCk,
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_INGOT,
-                HTMaterialFlag.GENERATE_NUGGET,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
         }
         modifyProperties(HTMaterialProperties::setMetal)
     }
@@ -507,16 +428,6 @@ object HTElementMaterials {
             setColor(Blocks.LIME_CONCRETE)
             formula = FormulaConvertible { "U" }
         }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_BLOCk,
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_INGOT,
-                HTMaterialFlag.GENERATE_NUGGET,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
-        }
         modifyProperties(HTMaterialProperties::setMetal)
     }
 
@@ -525,16 +436,6 @@ object HTElementMaterials {
         modifyInfo {
             setColor(Blocks.MAGENTA_CONCRETE)
             formula = FormulaConvertible { "Pu" }
-        }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_BLOCk,
-                HTMaterialFlag.GENERATE_DUST,
-                HTMaterialFlag.GENERATE_INGOT,
-                HTMaterialFlag.GENERATE_NUGGET,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
         }
         modifyProperties(HTMaterialProperties::setMetal)
     }

@@ -4,6 +4,7 @@ import io.github.hiiragi283.material.api.item.HTMaterialItemConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.prefix
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
@@ -161,7 +162,7 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
 
         override val materialHT: HTMaterial = fluid.material
 
-        override val shapeHT: HTShape = HTShape.FLUID
+        override val shapeHT: HTShape = HTShapes.FLUID
 
         init {
             fluidBlock.putIfAbsent(fluid.material, this)
@@ -178,7 +179,7 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
 
         override val materialHT: HTMaterial = fluid.material
 
-        override val shapeHT: HTShape = HTShape.BUCKET
+        override val shapeHT: HTShape = HTShapes.BUCKET
 
         init {
             fluidBucket.putIfAbsent(fluid.material, this)
@@ -186,9 +187,9 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
             HTPartManager.forceRegister(materialHT, shapeHT, this)
         }
 
-        override fun getName(): Text = shapeHT.getTranslatedText(materialHT)
+        override fun getName(): Text = getPart().getTranslatedText()
 
-        override fun getName(stack: ItemStack): Text = shapeHT.getTranslatedText(materialHT)
+        override fun getName(stack: ItemStack): Text = getPart().getTranslatedText()
 
     }
 

@@ -13,8 +13,8 @@ class HTMaterialItem(
     override val shapeHT: HTShape
 ) : Item(FabricItemSettings().group(HTMaterialsCommon.ITEM_GROUP)), HTMaterialItemConvertible {
 
-    override fun getName(): Text = shapeHT.getTranslatedText(materialHT)
+    override fun getName(): Text = getPart().getTranslatedText()
 
-    override fun getName(stack: ItemStack): Text = shapeHT.getTranslatedText(materialHT)
+    override fun getName(stack: ItemStack): Text = getPart().getTranslatedText()
 
 }

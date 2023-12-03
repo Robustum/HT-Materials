@@ -5,9 +5,10 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.part.HTPartManager.hasDefaultItem
 import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.api.shape.HTShapes
+import io.github.hiiragi283.material.client.HTMaterialModelManager
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.HTRecipeManager
-import io.github.hiiragi283.material.common.HTRecipeManager.registerVanillaRecipe
 import io.github.hiiragi283.material.common.util.asBlock
 import io.github.hiiragi283.material.common.util.isModLoaded
 import io.github.hiiragi283.material.common.util.prefix
@@ -35,7 +36,7 @@ object HTMaterialsAddons : HTMaterialsAddon {
     override val modId: String = HTMaterialsCommon.MOD_ID
 
     override fun registerShapes() {
-        HTShape
+        HTShapes
         cache.forEach(HTMaterialsAddon::registerShapes)
     }
 
@@ -44,14 +45,10 @@ object HTMaterialsAddons : HTMaterialsAddon {
         cache.forEach(HTMaterialsAddon::registerMaterials)
     }
 
-    override fun modifyShapes() {
-        cache.forEach(HTMaterialsAddon::modifyShapes)
-    }
-
     override fun modifyMaterials() {
         cache.forEach(HTMaterialsAddon::modifyMaterials)
         HTMaterial.REGISTRY.forEach(HTMaterial::verify)
-        HTShape.canModify = false
+        HTShapes.canModify = false
         HTMaterial.canModify = false
         HTMaterial.REGISTRY.forEach(HTMaterial::asFormula)
         HTMaterial.REGISTRY.forEach(HTMaterial::asMolarMass)
@@ -93,9 +90,9 @@ object HTMaterialsAddons : HTMaterialsAddon {
     private fun registerRecipes() {
         HTMaterial.REGISTRY.forEach { material ->
             materialRecipe(material)
-            HTPartManager.getDefaultItem(material, HTShape.BLOCK)?.let { blockRecipe(material, it) }
-            HTPartManager.getDefaultItem(material, HTShape.INGOT)?.let { ingotRecipe(material, it) }
-            HTPartManager.getDefaultItem(material, HTShape.NUGGET)?.let { nuggetRecipe(material, it) }
+            HTPartManager.getDefaultItem(material, HTShapes.BLOCK)?.let { blockRecipe(material, it) }
+            HTPartManager.getDefaultItem(material, HTShapes.INGOT)?.let { ingotRecipe(material, it) }
+            HTPartManager.getDefaultItem(material, HTShapes.NUGGET)?.let { nuggetRecipe(material, it) }
         }
     }
 
@@ -103,10 +100,10 @@ object HTMaterialsAddons : HTMaterialsAddon {
         //1x Block -> 9x Ingot/Gem
         val shape: HTShape = material.getDefaultShape() ?: return
         val result: Item = HTPartManager.getDefaultItem(material, shape) ?: return
-        registerVanillaRecipe(
+        HTRecipeManager.registerVanillaRecipe(
             shape.getIdentifier(material).suffix("_shapeless"),
             ShapelessRecipeJsonBuilder.create(result, 9)
-                .input(HTShape.BLOCK.getCommonTag(material))
+                .input(HTShapes.BLOCK.getCommonTag(material))
                 .setBypassesValidation(true)
         )
     }
@@ -114,8 +111,8 @@ object HTMaterialsAddons : HTMaterialsAddon {
     private fun blockRecipe(material: HTMaterial, item: Item) {
         //9x Ingot/Gem -> 1x Block
         val shape: HTShape = material.getDefaultShape() ?: return
-        registerVanillaRecipe(
-            HTShape.BLOCK.getIdentifier(material).suffix("_shaped"),
+        HTRecipeManager.registerVanillaRecipe(
+            HTShapes.BLOCK.getIdentifier(material).suffix("_shaped"),
             ShapedRecipeJsonBuilder.create(item)
                 .patterns("AAA", "AAA", "AAA")
                 .input('A', shape.getCommonTag(material))
@@ -125,23 +122,23 @@ object HTMaterialsAddons : HTMaterialsAddon {
 
     private fun ingotRecipe(material: HTMaterial, item: Item) {
         //9x Nugget -> 1x Ingot
-        if (!hasDefaultItem(material, HTShape.NUGGET)) return
-        registerVanillaRecipe(
-            HTShape.INGOT.getIdentifier(material, HTMaterialsCommon.MOD_ID).suffix("_shaped"),
+        if (!hasDefaultItem(material, HTShapes.NUGGET)) return
+        HTRecipeManager.registerVanillaRecipe(
+            HTShapes.INGOT.getIdentifier(material, HTMaterialsCommon.MOD_ID).suffix("_shaped"),
             ShapedRecipeJsonBuilder.create(item)
                 .patterns("AAA", "AAA", "AAA")
-                .input('A', HTShape.NUGGET.getCommonTag(material))
+                .input('A', HTShapes.NUGGET.getCommonTag(material))
                 .setBypassesValidation(true)
         )
     }
 
     private fun nuggetRecipe(material: HTMaterial, item: Item) {
         //1x Ingot -> 9x Nugget
-        if (!hasDefaultItem(material, HTShape.INGOT)) return
-        registerVanillaRecipe(
-            HTShape.NUGGET.getIdentifier(material, HTMaterialsCommon.MOD_ID).suffix("_shapeless"),
+        if (!hasDefaultItem(material, HTShapes.INGOT)) return
+        HTRecipeManager.registerVanillaRecipe(
+            HTShapes.NUGGET.getIdentifier(material, HTMaterialsCommon.MOD_ID).suffix("_shapeless"),
             ShapelessRecipeJsonBuilder.create(item, 9)
-                .input(HTShape.INGOT.getCommonTag(material))
+                .input(HTShapes.INGOT.getCommonTag(material))
                 .setBypassesValidation(true)
         )
     }
@@ -150,6 +147,9 @@ object HTMaterialsAddons : HTMaterialsAddon {
     override fun clientSetup() {
         commonSetup()
         cache.forEach(HTMaterialsAddon::clientSetup)
+        //Register Models and BlockStates
+        HTMaterialModelManager.register()
+        HTMaterialsCommon.LOGGER.info("BlockStates and Models Registered!")
     }
 
 }

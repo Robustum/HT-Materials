@@ -3,6 +3,7 @@ package io.github.hiiragi283.material.api.addon
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 
+@JvmDefaultWithCompatibility
 interface HTMaterialsAddon {
 
     val modId: String
@@ -10,8 +11,6 @@ interface HTMaterialsAddon {
     fun registerShapes() {}
 
     fun registerMaterials() {}
-
-    fun modifyShapes() {}
 
     fun modifyMaterials() {}
 

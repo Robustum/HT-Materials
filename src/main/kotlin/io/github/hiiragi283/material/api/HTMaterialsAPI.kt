@@ -10,11 +10,11 @@ import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.part.HTPart
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.api.shape.HTShapes
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import java.util.*
 import java.util.function.Consumer
-import java.util.function.Predicate
 
 @Suppress("unused")
 object HTMaterialsAPI {
@@ -70,20 +70,7 @@ object HTMaterialsAPI {
     //    Shape    //
 
     @JvmStatic
-    fun createShape(name: String, init: Consumer<HTShape.Builder>): HTShape = HTShape.create(name) { init.accept(this) }
-
-    @JvmStatic
-    fun getShape(name: String): Optional<HTShape> = Optional.ofNullable(HTShape.getShape(name))
-
-    @JvmStatic
-    fun modifyBlockPredicate(shape: HTShape, predicate: Predicate<HTMaterial>) {
-        shape.modifyBlockPredicate(predicate)
-    }
-
-    @JvmStatic
-    fun modifyItemPredicate(shape: HTShape, predicate: Predicate<HTMaterial>) {
-        shape.modifyItemPredicate(predicate)
-    }
+    fun getShape(name: String): Optional<HTShape> = Optional.ofNullable(HTShapes.getShape(name))
 
     //    Part    //
 

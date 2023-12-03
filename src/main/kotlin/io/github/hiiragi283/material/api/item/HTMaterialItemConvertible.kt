@@ -5,6 +5,7 @@ import io.github.hiiragi283.material.api.part.HTPart
 import io.github.hiiragi283.material.api.shape.HTShape
 import net.minecraft.item.ItemConvertible
 
+@JvmDefaultWithCompatibility
 interface HTMaterialItemConvertible : ItemConvertible {
 
     val materialHT: HTMaterial

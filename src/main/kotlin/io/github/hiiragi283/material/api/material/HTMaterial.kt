@@ -11,8 +11,11 @@ import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperty
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.commonId
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
@@ -51,8 +54,8 @@ class HTMaterial private constructor(
     }
 
     fun getDefaultShape(): HTShape? = when {
-        hasProperty(HTPropertyKey.METAL) -> HTShape.INGOT
-        hasProperty(HTPropertyKey.GEM) -> HTShape.GEM
+        hasProperty(HTPropertyKey.METAL) -> HTShapes.INGOT
+        hasProperty(HTPropertyKey.GEM) -> HTShapes.GEM
         else -> null
     }
 
@@ -79,6 +82,7 @@ class HTMaterial private constructor(
 
     fun getFluidAmountPerIngot(): Long = FluidConstants.BLOCK / getIngotCountPerBlock()
 
+    @Environment(EnvType.CLIENT)
     fun getTranslatedName(): String = I18n.translate(info.translationKey)
 
     fun getTranslatedText(): TranslatableText = TranslatableText(info.translationKey)

@@ -13,9 +13,9 @@ class HTMaterialBlockItem(
 ) : BlockItem(block, FabricItemSettings().group(HTMaterialsCommon.ITEM_GROUP)),
     HTMaterialItemConvertible by block {
 
-    override fun getName(): Text = shapeHT.getTranslatedText(materialHT)
+    override fun getName(): Text = getPart().getTranslatedText()
 
-    override fun getName(stack: ItemStack): Text = shapeHT.getTranslatedText(materialHT)
+    override fun getName(stack: ItemStack): Text = getPart().getTranslatedText()
 
     override fun asItem(): Item = block.asItem()
 

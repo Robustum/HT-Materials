@@ -5,6 +5,7 @@ import io.github.hiiragi283.material.api.part.HTPart
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 
+@JvmDefaultWithCompatibility
 interface HTMaterialProperty<T : HTMaterialProperty<T>> {
 
     val key: HTPropertyKey<T>

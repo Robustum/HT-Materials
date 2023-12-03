@@ -3,6 +3,7 @@ package io.github.hiiragi283.material.client
 import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.prefix
 import net.fabricmc.api.EnvType
@@ -28,7 +29,7 @@ object HTMaterialModelManager {
 
     init {
         //Block
-        registerConsumer(HTShape.BLOCK) { material: HTMaterial, shape: HTShape ->
+        registerConsumer(HTShapes.BLOCK) { material: HTMaterial, shape: HTShape ->
             val block: Block = Blocks.AIR
             val blockModelId: Identifier = getBlockModelId(material, shape)
             val itemModelId: Identifier = getItemModelId(material, shape)
@@ -47,7 +48,7 @@ object HTMaterialModelManager {
             addModel(itemModelId, ModelJsonBuilder.create(blockModelId))
         }
         //Bucket
-        registerConsumer(HTShape.BUCKET) { material: HTMaterial, shape: HTShape ->
+        registerConsumer(HTShapes.BUCKET) { material: HTMaterial, shape: HTShape ->
             addModel(
                 getItemModelId(material, shape),
                 ModelJsonBuilder.create(Models.GENERATED)
@@ -56,9 +57,9 @@ object HTMaterialModelManager {
             )
         }
         //Dust
-        registerSimpleConsumer(HTShape.DUST, Identifier("item/sugar"))
+        registerSimpleConsumer(HTShapes.DUST, Identifier("item/sugar"))
         //Fluid
-        registerConsumer(HTShape.FLUID) { material: HTMaterial, shape: HTShape ->
+        registerConsumer(HTShapes.FLUID) { material: HTMaterial, shape: HTShape ->
             val block: HTMaterialFluid.Block = HTMaterialFluid.getBlock(material) ?: return@registerConsumer
             val modelId: Identifier = shape.getIdentifier(material).prefix("block/fluid/")
             //BlockState
@@ -73,17 +74,17 @@ object HTMaterialModelManager {
             )
         }
         //Gear
-        registerSimpleConsumer(HTShape.GEAR)
+        registerSimpleConsumer(HTShapes.GEAR)
         //Gem
-        registerSimpleConsumer(HTShape.GEM, Identifier("item/quartz"))
+        registerSimpleConsumer(HTShapes.GEM, Identifier("item/quartz"))
         //Ingot
-        registerSimpleConsumer(HTShape.INGOT)
+        registerSimpleConsumer(HTShapes.INGOT)
         //Nugget
-        registerSimpleConsumer(HTShape.NUGGET)
+        registerSimpleConsumer(HTShapes.NUGGET)
         //Plate
-        registerSimpleConsumer(HTShape.PLATE)
+        registerSimpleConsumer(HTShapes.PLATE)
         //Rod
-        registerSimpleConsumer(HTShape.ROD)
+        registerSimpleConsumer(HTShapes.ROD)
     }
 
     @JvmStatic
@@ -101,7 +102,8 @@ object HTMaterialModelManager {
         shape.getIdentifier(material).prefix("block/")
 
     @JvmStatic
-    fun getItemModelId(material: HTMaterial, shape: HTShape): Identifier = shape.getIdentifier(material).prefix("item/")
+    fun getItemModelId(material: HTMaterial, shape: HTShape): Identifier =
+        shape.getIdentifier(material).prefix("item/")
 
     @JvmStatic
     fun registerSimpleConsumer(shape: HTShape, textureId: Identifier = HTMaterialsCommon.id("item/${shape.name}")) {
@@ -123,9 +125,7 @@ object HTMaterialModelManager {
         RRPCallback.AFTER_VANILLA.register {
             //Register models to resource pack
             registry.forEach { (shape: HTShape, biConsumer: BiConsumer<HTMaterial, HTShape>) ->
-                HTMaterial.REGISTRY.forEach { material: HTMaterial ->
-                    biConsumer.accept(material, shape)
-                }
+                HTMaterial.REGISTRY.forEach { material: HTMaterial -> biConsumer.accept(material, shape) }
             }
             //Clear caches
             registry.clear()

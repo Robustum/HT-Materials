@@ -3,25 +3,23 @@ package io.github.hiiragi283.material.api.part
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.common.HTMaterialsCommon
-import net.minecraft.item.Item
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
+import net.minecraft.client.resource.language.I18n
 import net.minecraft.item.ItemStack
-import net.minecraft.tag.TagKey
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
 data class HTPart(val material: HTMaterial, val shape: HTShape) {
 
-    fun getTranslatedName(): String = shape.getTranslatedName(material)
+    @Environment(EnvType.CLIENT)
+    fun getTranslatedName(): String = I18n.translate("ht_shape.${shape.name}", material.getTranslatedName())
 
-    fun getTranslatedText(): TranslatableText = shape.getTranslatedText(material)
+    fun getTranslatedText(): TranslatableText = TranslatableText("ht_shape.${shape.name}", material.getTranslatedName())
 
     fun getIdentifier(namespace: String = HTMaterialsCommon.MOD_ID): Identifier =
         shape.getIdentifier(material, namespace)
-
-    fun getCommonId(): Identifier = shape.getCommonId(material)
-
-    fun getCommonTag(): TagKey<Item> = shape.getCommonTag(material)
 
     fun appendTooltip(stack: ItemStack, lines: MutableList<Text>) {
         //Title

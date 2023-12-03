@@ -10,7 +10,6 @@ import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import net.minecraft.block.Blocks
 import net.minecraft.fluid.Fluids
 
-@Suppress("unused")
 object HTVanillaMaterials {
 
     //    Fluids    //
@@ -79,6 +78,9 @@ object HTVanillaMaterials {
 
     @JvmField
     val ENDER_PEARL = HTMaterial.create("ender_pearl") {
+        modifyInfo {
+
+        }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST

@@ -13,6 +13,6 @@ class HTMaterialBlock(
     settings: FabricBlockSettings
 ) : Block(settings), HTMaterialItemConvertible {
 
-    override fun getName(): MutableText = shapeHT.getTranslatedText(materialHT)
+    override fun getName(): MutableText = getPart().getTranslatedText()
 
 }
