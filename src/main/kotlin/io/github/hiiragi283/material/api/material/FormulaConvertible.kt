@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material.api.material.formula
+package io.github.hiiragi283.material.api.material
 
 fun interface FormulaConvertible {
 

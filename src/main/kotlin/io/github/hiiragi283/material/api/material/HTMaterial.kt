@@ -2,11 +2,9 @@ package io.github.hiiragi283.material.api.material
 
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags
-import io.github.hiiragi283.material.api.material.formula.FormulaConvertible
 import io.github.hiiragi283.material.api.material.materials.HTCommonMaterials
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
-import io.github.hiiragi283.material.api.material.molar.MolarMassConvertible
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperty
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
@@ -19,8 +17,6 @@ import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
-import net.minecraft.block.Block
-import net.minecraft.block.MapColor
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
@@ -33,7 +29,7 @@ class HTMaterial private constructor(
     private val info: Info,
     private val properties: HTMaterialProperties,
     private val flags: HTMaterialFlags
-) : FormulaConvertible, MolarMassConvertible {
+) : ColorConvertible, FormulaConvertible, MolarMassConvertible {
 
     fun verify() {
         properties.verify(this)
@@ -76,8 +72,6 @@ class HTMaterial private constructor(
 
     fun getCommonId(): Identifier = commonId(getName())
 
-    fun getColor(): Int = info.color
-
     fun getIngotCountPerBlock(): Int = info.ingotPerBlock
 
     fun getFluidAmountPerIngot(): Long = FluidConstants.BLOCK / getIngotCountPerBlock()
@@ -92,6 +86,21 @@ class HTMaterial private constructor(
         info.init()
     }
 
+    //    ColorConvertible    //
+
+    private lateinit var colorCache: Color
+
+    override fun asColor(): Color {
+        check(!canModify) { "Cannot call #asFormula before Initialization!!" }
+        if (!this::colorCache.isInitialized) {
+            colorCache = info.color.asColor()
+            info.color = ColorConvertible.EMPTY
+        }
+        return colorCache
+    }
+
+    //    FormulaConvertible    //
+
     private lateinit var formulaCache: String
 
     override fun asFormula(): String {
@@ -103,11 +112,13 @@ class HTMaterial private constructor(
         return formulaCache
     }
 
-    private var molarCache: Int = 0
+    //    MolarMassConvertible    //
 
-    override fun asMolarMass(): Int {
+    private var molarCache: Double = 0.0
+
+    override fun asMolarMass(): Double {
         check(!canModify) { "Cannot call #asMolarMass before Initialization!!" }
-        if (molarCache == 0) {
+        if (molarCache <= 0.0) {
             molarCache = info.molarMass.asMolarMass()
             info.molarMass = MolarMassConvertible.EMPTY
         }
@@ -116,26 +127,12 @@ class HTMaterial private constructor(
 
     data class Info(
         @JvmField val name: String,
-        @JvmField var color: Int = -1,
+        @JvmField var color: ColorConvertible = ColorConvertible.EMPTY,
         @JvmField var formula: FormulaConvertible = FormulaConvertible.EMPTY,
         @JvmField var ingotPerBlock: Int = 9,
         @JvmField var molarMass: MolarMassConvertible = MolarMassConvertible.EMPTY,
         @JvmField var translationKey: String = "ht_material.$name"
-    ) {
-
-        fun setColor(color: Color) {
-            this.color = color.rgb
-        }
-
-        fun setColor(block: Block) {
-            setColor(block.defaultMapColor)
-        }
-
-        fun setColor(mapColor: MapColor) {
-            this.color = mapColor.color
-        }
-
-    }
+    )
 
     //    Any    //
 

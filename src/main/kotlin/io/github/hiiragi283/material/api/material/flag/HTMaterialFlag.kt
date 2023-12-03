@@ -93,7 +93,6 @@ class HTMaterialFlag private constructor(
         @JvmField
         val GENERATE_INGOT = create("generate_ingot") {
             requiredProperties.add(HTPropertyKey.SOLID)
-            requiredProperties.add(HTPropertyKey.METAL)
         }
 
         @JvmField

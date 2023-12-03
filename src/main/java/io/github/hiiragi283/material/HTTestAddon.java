@@ -8,7 +8,6 @@ import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials;
 import io.github.hiiragi283.material.api.material.property.HTWoodProperty;
 import io.github.hiiragi283.material.api.shape.HTShapes;
 import io.github.hiiragi283.material.common.HTMaterialsCommon;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +33,6 @@ public class HTTestAddon implements HTMaterialsAddon {
     public void modifyMaterials() {
         HTMaterialsAPI.modifyProperties(HTElementMaterials.ALUMINUM, properties -> properties.plusAssign(new HTWoodProperty()));
         HTMaterialsAPI.modifyFlags(HTElementMaterials.ALUMINUM, flags -> flags.addFlags(HTMaterialFlag.GENERATE_GEAR));
-        HTMaterialsAPI.modifyInfo(HTElementMaterials.ALUMINUM, info -> info.setColor(Blocks.WHITE_CONCRETE));
     }
 
     @Override

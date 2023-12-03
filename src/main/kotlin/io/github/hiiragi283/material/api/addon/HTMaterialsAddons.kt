@@ -50,6 +50,7 @@ object HTMaterialsAddons : HTMaterialsAddon {
         HTMaterial.REGISTRY.forEach(HTMaterial::verify)
         HTShapes.canModify = false
         HTMaterial.canModify = false
+        HTMaterial.REGISTRY.forEach(HTMaterial::asColor)
         HTMaterial.REGISTRY.forEach(HTMaterial::asFormula)
         HTMaterial.REGISTRY.forEach(HTMaterial::asMolarMass)
     }

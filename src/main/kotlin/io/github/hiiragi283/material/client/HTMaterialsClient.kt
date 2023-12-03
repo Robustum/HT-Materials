@@ -53,11 +53,11 @@ object HTMaterialsClient : ClientModInitializer {
             .filterIsInstance<HTMaterialBlockItem>()
             .forEach { item: HTMaterialBlockItem ->
                 ColorProviderRegistry.BLOCK.register(
-                    BlockColorProvider { _, _, _, tintIndex: Int -> if (tintIndex == 0) item.materialHT.getColor() else -1 },
+                    BlockColorProvider { _, _, _, tintIndex: Int -> if (tintIndex == 0) item.materialHT.asColor().rgb else -1 },
                     item.block
                 )
                 ColorProviderRegistry.ITEM.register(
-                    ItemColorProvider { _, tintIndex: Int -> if (tintIndex == 0) item.materialHT.getColor() else -1 },
+                    ItemColorProvider { _, tintIndex: Int -> if (tintIndex == 0) item.materialHT.asColor().rgb else -1 },
                     item
                 )
             }
@@ -69,14 +69,14 @@ object HTMaterialsClient : ClientModInitializer {
             .filterIsInstance<HTMaterialItem>()
             .forEach { item: HTMaterialItem ->
                 ColorProviderRegistry.ITEM.register(
-                    ItemColorProvider { _, tintIndex: Int -> if (tintIndex == 0) item.materialHT.getColor() else -1 },
+                    ItemColorProvider { _, tintIndex: Int -> if (tintIndex == 0) item.materialHT.asColor().rgb else -1 },
                     item
                 )
             }
         //Material Fluid Bucket
         HTMaterialFluid.getBuckets().forEach { bucket: HTMaterialFluid.Bucket ->
             ColorProviderRegistry.ITEM.register(
-                ItemColorProvider { _, tintIndex: Int -> if (tintIndex == 1) bucket.materialHT.getColor() else -1 },
+                ItemColorProvider { _, tintIndex: Int -> if (tintIndex == 1) bucket.materialHT.asColor().rgb else -1 },
                 bucket
             )
         }
@@ -91,7 +91,7 @@ object HTMaterialsClient : ClientModInitializer {
                 still, flowing, SimpleFluidRenderHandler(
                     Identifier("minecraft:block/white_concrete"),
                     Identifier("minecraft:block/white_concrete"),
-                    material.getColor()
+                    material.asColor().rgb
                 )
             )
             //Register Translucent Layer

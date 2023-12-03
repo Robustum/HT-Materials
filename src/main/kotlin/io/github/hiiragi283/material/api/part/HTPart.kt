@@ -34,7 +34,7 @@ data class HTPart(val material: HTMaterial, val shape: HTShape) {
         /*val fluidAmount: Long = material.getFluidAmountPerIngot() * stack.count
         lines.add(TranslatableText("tooltip.ht_materials.material.fluid_amount", fluidAmount))*/
         //Molar Mass
-        material.asMolarMass().takeIf { it > 0 }?.let { molar: Int ->
+        material.asMolarMass().takeIf { it > 0.0 }?.let { molar: Double ->
             lines.add(TranslatableText("tooltip.ht_materials.material.molar", molar))
         }
         //Tooltip from Properties

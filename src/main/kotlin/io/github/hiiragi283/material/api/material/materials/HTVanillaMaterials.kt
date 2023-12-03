@@ -1,14 +1,15 @@
 package io.github.hiiragi283.material.api.material.materials
 
+import io.github.hiiragi283.material.api.material.ColorConvertible
+import io.github.hiiragi283.material.api.material.FormulaConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.api.material.MolarMassConvertible
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
-import io.github.hiiragi283.material.api.material.formula.FormulaConvertible
-import io.github.hiiragi283.material.api.material.formula.HTCommonFormula
 import io.github.hiiragi283.material.api.material.property.HTFluidProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
-import io.github.hiiragi283.material.api.material.property.HTPropertyKey
-import net.minecraft.block.Blocks
+import io.github.hiiragi283.material.common.util.HTColor
 import net.minecraft.fluid.Fluids
+import java.awt.Color
 
 object HTVanillaMaterials {
 
@@ -17,8 +18,9 @@ object HTVanillaMaterials {
     @JvmField
     val WATER = HTMaterial.create("water") {
         modifyInfo {
-            setColor(Blocks.WATER)
+            color = ColorConvertible { HTColor.BLUE }
             formula = FormulaConvertible.of(HTElementMaterials.HYDROGEN to 2, HTElementMaterials.OXYGEN to 1)
+            molarMass = MolarMassConvertible.of(HTElementMaterials.HYDROGEN to 2, HTElementMaterials.OXYGEN to 1)
         }
         modifyProperties {
             this += HTFluidProperty().apply { this.fluid = Fluids.WATER }
@@ -28,8 +30,9 @@ object HTVanillaMaterials {
     @JvmField
     val LAVA = HTMaterial.create("lava") {
         modifyInfo {
-            setColor(Blocks.LAVA)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible.ofColor(HTColor.DARK_RED, HTColor.GOLD)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyProperties {
             this += HTFluidProperty().apply { this.fluid = Fluids.LAVA }
@@ -41,8 +44,10 @@ object HTVanillaMaterials {
     @JvmField
     val AMETHYST = HTMaterial.create("amethyst") {
         modifyInfo {
-            setColor(Blocks.AMETHYST_BLOCK)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible.ofColor(HTColor.BLUE, HTColor.LIGHT_PURPLE)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            ingotPerBlock = 4
         }
         modifyFlags {
             addFlags(
@@ -59,8 +64,9 @@ object HTVanillaMaterials {
     @JvmField
     val DIAMOND = HTMaterial.create("diamond") {
         modifyInfo {
-            setColor(Blocks.DIAMOND_BLOCK)
+            color = ColorConvertible { HTColor.AQUA }
             formula = HTElementMaterials.CARBON
+            molarMass = HTElementMaterials.CARBON
         }
         modifyFlags {
             addFlags(
@@ -79,23 +85,28 @@ object HTVanillaMaterials {
     @JvmField
     val ENDER_PEARL = HTMaterial.create("ender_pearl") {
         modifyInfo {
-
+            color = ColorConvertible.ofColor(HTColor.DARK_GREEN, HTColor.BLUE)
+            ingotPerBlock = 4
         }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_DUST
-            )
-        }
-        modifyProperties {
-            setGem()
-        }
+        modifyProperties(HTMaterialProperties::setGem)
     }
 
     @JvmField
     val EMERALD = HTMaterial.create("emerald") {
         modifyInfo {
-            setColor(Blocks.EMERALD_BLOCK)
-            formula
+            color = ColorConvertible { HTColor.GREEN }
+            formula = FormulaConvertible.of(
+                HTElementMaterials.BERYLLIUM to 3,
+                HTElementMaterials.ALUMINUM to 2,
+                HTElementMaterials.SILICON to 6,
+                HTElementMaterials.OXYGEN to 18
+            )
+            molarMass = MolarMassConvertible.of(
+                HTElementMaterials.BERYLLIUM to 3,
+                HTElementMaterials.ALUMINUM to 2,
+                HTElementMaterials.SILICON to 6,
+                HTElementMaterials.OXYGEN to 18
+            )
         }
         modifyFlags {
             addFlags(
@@ -112,13 +123,19 @@ object HTVanillaMaterials {
     }
 
     @JvmField
-    val FLINT = HTMaterial.create("flint")
+    val FLINT = HTMaterial.create("flint") {
+        modifyInfo {
+            color = ColorConvertible.ofColor(HTColor.BLACK to 3, HTColor.BLUE to 1)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+        }
+        modifyProperties(HTMaterialProperties::setSolid)
+    }
 
     @JvmField
     val LAPIS = HTMaterial.create("lapis") {
         modifyInfo {
-            setColor(Blocks.LAPIS_BLOCK)
-            formula
+            color = ColorConvertible { HTColor.BLUE }
         }
         modifyFlags {
             addFlags(
@@ -137,8 +154,7 @@ object HTVanillaMaterials {
     @JvmField
     val PRISMARINE = HTMaterial.create("prismarine") {
         modifyInfo {
-            setColor(Blocks.PRISMARINE)
-            formula
+            color = ColorConvertible.ofColor(HTColor.GREEN, HTColor.AQUA, HTColor.WHITE)
         }
         modifyFlags {
             addFlags(
@@ -156,8 +172,9 @@ object HTVanillaMaterials {
     @JvmField
     val QUARTZ = HTMaterial.create("quartz") {
         modifyInfo {
-            setColor(Blocks.QUARTZ_BLOCK)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            ingotPerBlock = 4
         }
         modifyFlags {
             addFlags(
@@ -178,10 +195,14 @@ object HTVanillaMaterials {
     @JvmField
     val NETHERITE = HTMaterial.create("netherite") {
         modifyInfo {
-            setColor(Blocks.DEEPSLATE)
+            color = ColorConvertible.ofColor(
+                HTColor.BLACK to 5,
+                HTColor.DARK_BLUE to 1,
+                HTColor.DARK_RED to 1,
+                HTColor.YELLOW to 1
+            )
             formula = FormulaConvertible { "Nr" }
         }
-        modifyProperties { get(HTPropertyKey.SOLID)?.harvestLevel = 3 }
         modifyFlags {
             addFlags(
                 HTMaterialFlag.GENERATE_DUST,
@@ -190,7 +211,10 @@ object HTVanillaMaterials {
                 HTMaterialFlag.GENERATE_ROD
             )
         }
-        modifyProperties(HTMaterialProperties::setMetal)
+        modifyProperties {
+            setMetal()
+            setHarvestLevel(3)
+        }
     }
 
     //    Solids    //
@@ -198,8 +222,7 @@ object HTVanillaMaterials {
     @JvmField
     val BRICK = HTMaterial.create("brick") {
         modifyInfo {
-            setColor(Blocks.BRICKS)
-            formula
+            color = ColorConvertible.ofColor(HTColor.DARK_RED to 2, HTColor.GOLD to 1, HTColor.DARK_GRAY to 2)
             ingotPerBlock = 4
         }
         modifyFlags {
@@ -211,8 +234,9 @@ object HTVanillaMaterials {
     @JvmField
     val CHARCOAL = HTMaterial.create("charcoal") {
         modifyInfo {
-            setColor(Blocks.COAL_BLOCK)
+            color = ColorConvertible.ofColor(HTColor.BLACK to 7, HTColor.YELLOW to 1)
             formula = HTElementMaterials.CARBON
+            molarMass = HTElementMaterials.CARBON
         }
         modifyFlags {
             addFlags(HTMaterialFlag.GENERATE_DUST)
@@ -223,8 +247,7 @@ object HTVanillaMaterials {
     @JvmField
     val CLAY = HTMaterial.create("clay") {
         modifyInfo {
-            setColor(Blocks.CLAY)
-            formula
+            color = ColorConvertible { Color(0xa4a8b8) }
             ingotPerBlock = 4
         }
         modifyFlags {
@@ -236,8 +259,9 @@ object HTVanillaMaterials {
     @JvmField
     val COAL = HTMaterial.create("coal") {
         modifyInfo {
-            setColor(Blocks.COAL_BLOCK)
+            color = HTElementMaterials.CARBON
             formula = HTElementMaterials.CARBON
+            molarMass = HTElementMaterials.CARBON
         }
         modifyFlags {
             addFlags(HTMaterialFlag.GENERATE_DUST)
@@ -248,17 +272,16 @@ object HTVanillaMaterials {
     @JvmField
     val CORAL = HTMaterial.create("coral") {
         modifyInfo {
-            setColor(Blocks.DEAD_FIRE_CORAL)
-            formula
+            color = ColorConvertible { HTColor.DARK_GRAY }
         }
-        //modifyFlags { addFlags(HTMaterialFlag.GENERATE_DUST) }
         modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
     val GLASS = HTMaterial.create("glass") {
         modifyInfo {
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
             ingotPerBlock = 1
         }
         modifyFlags {
@@ -270,8 +293,7 @@ object HTVanillaMaterials {
     @JvmField
     val GLOWSTONE = HTMaterial.create("glowstone") {
         modifyInfo {
-            setColor(Blocks.GLOWSTONE)
-            formula
+            color = ColorConvertible.ofColor(HTColor.GOLD to 1, HTColor.YELLOW to 2)
             ingotPerBlock = 4
         }
         modifyProperties(HTMaterialProperties::setSolid)
@@ -280,8 +302,9 @@ object HTVanillaMaterials {
     @JvmField
     val NETHER_BRICK = HTMaterial.create("nether_brick") {
         modifyInfo {
-            setColor(Blocks.NETHER_BRICKS)
-            formula
+            color = ColorConvertible.ofColor(HTColor.BLACK to 4, HTColor.DARK_RED to 1, HTColor.WHITE to 1)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
             ingotPerBlock = 4
         }
         modifyFlags {
@@ -293,8 +316,7 @@ object HTVanillaMaterials {
     @JvmField
     val REDSTONE = HTMaterial.create("redstone") {
         modifyInfo {
-            setColor(Blocks.REDSTONE_BLOCK)
-            formula
+            color = ColorConvertible { HTColor.DARK_RED }
         }
         modifyProperties(HTMaterialProperties::setSolid)
     }
@@ -304,8 +326,9 @@ object HTVanillaMaterials {
     @JvmField
     val STONE = HTMaterial.create("stone") {
         modifyInfo {
-            setColor(Blocks.STONE)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible { HTColor.DARK_GRAY }
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
             addFlags(
@@ -320,8 +343,9 @@ object HTVanillaMaterials {
     @JvmField
     val GRANITE = HTMaterial.create("granite") {
         modifyInfo {
-            setColor(Blocks.GRANITE)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible.ofColor(HTColor.DARK_RED to 1, HTColor.GRAY to 4, HTColor.RED to 1)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
             addFlags(
@@ -335,8 +359,9 @@ object HTVanillaMaterials {
     @JvmField
     val DIORITE = HTMaterial.create("diorite") {
         modifyInfo {
-            setColor(Blocks.DIORITE)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            ColorConvertible { HTColor.GRAY }
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
             addFlags(
@@ -350,8 +375,9 @@ object HTVanillaMaterials {
     @JvmField
     val ANDESITE = HTMaterial.create("andesite") {
         modifyInfo {
-            setColor(Blocks.ANDESITE)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible.ofColor(HTColor.DARK_GRAY to 7, HTColor.YELLOW to 1)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
             addFlags(
@@ -365,8 +391,9 @@ object HTVanillaMaterials {
     @JvmField
     val DEEPSLATE = HTMaterial.create("deepslate") {
         modifyInfo {
-            setColor(Blocks.DEEPSLATE)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible.ofColor(HTColor.BLACK, HTColor.DARK_GRAY)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
             addFlags(
@@ -380,7 +407,14 @@ object HTVanillaMaterials {
     @JvmField
     val CALCITE = HTMaterial.create("calcite") {
         modifyInfo {
-            formula = FormulaConvertible.of(HTElementMaterials.CALCIUM to 1, HTCommonFormula.CARBONATE to 1)
+            formula = FormulaConvertible.of(
+                HTElementMaterials.CALCIUM to 1,
+                FormulaConvertible.of(*HTAtomicGroups.CARBONATE) to 1
+            )
+            molarMass = MolarMassConvertible.of(
+                HTElementMaterials.CALCIUM to 1,
+                MolarMassConvertible.of(*HTAtomicGroups.CARBONATE) to 1
+            )
         }
         modifyFlags {
             addFlags(HTMaterialFlag.GENERATE_DUST)
@@ -391,7 +425,7 @@ object HTVanillaMaterials {
     @JvmField
     val TUFF = HTMaterial.create("tuff") {
         modifyInfo {
-            color = 0x4d5d53
+            color = ColorConvertible { Color(0x4d5d53) }
         }
         modifyFlags {
             addFlags(HTMaterialFlag.GENERATE_DUST)
@@ -402,8 +436,9 @@ object HTVanillaMaterials {
     @JvmField
     val DRIPSTONE = HTMaterial.create("dripstone") {
         modifyInfo {
-            setColor(Blocks.DRIPSTONE_BLOCK)
+            color = ColorConvertible.ofColor(HTColor.DARK_RED to 1, HTColor.GOLD to 1, HTColor.DARK_GRAY to 5)
             formula = FormulaConvertible.of(CALCITE to 1)
+            molarMass = MolarMassConvertible.of(CALCITE to 1)
         }
         modifyFlags {
             addFlags(HTMaterialFlag.GENERATE_DUST)
@@ -414,8 +449,14 @@ object HTVanillaMaterials {
     @JvmField
     val OBSIDIAN = HTMaterial.create("obsidian") {
         modifyInfo {
-            color = 0x4b0082
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible.ofColor(
+                HTColor.BLACK to 4,
+                HTColor.DARK_BLUE to 2,
+                HTColor.DARK_RED to 1,
+                HTColor.WHITE to 1
+            )
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
             addFlags(
@@ -429,8 +470,9 @@ object HTVanillaMaterials {
     @JvmField
     val NETHERRACK = HTMaterial.create("netherrack") {
         modifyInfo {
-            setColor(Blocks.NETHERRACK)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible.ofColor(HTColor.BLACK to 4, HTColor.DARK_RED to 1, HTColor.RED to 3)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
             addFlags(
@@ -444,8 +486,9 @@ object HTVanillaMaterials {
     @JvmField
     val BASALT = HTMaterial.create("basalt") {
         modifyInfo {
-            setColor(Blocks.BASALT)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible.ofColor(HTColor.BLACK, HTColor.GRAY)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
             addFlags(
@@ -459,8 +502,9 @@ object HTVanillaMaterials {
     @JvmField
     val END_STONE = HTMaterial.create("end_stone") {
         modifyInfo {
-            setColor(Blocks.END_STONE)
-            formula = HTCommonFormula.SILICON_DIOXIDE
+            color = ColorConvertible.ofColor(HTColor.YELLOW to 1, HTColor.WHITE to 3)
+            formula = FormulaConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
+            molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
             addFlags(
@@ -476,7 +520,7 @@ object HTVanillaMaterials {
     @JvmField
     val WOOD = HTMaterial.create("wood") {
         modifyInfo {
-            setColor(Blocks.OAK_PLANKS)
+            color = ColorConvertible.ofColor(HTColor.DARK_GRAY to 2, HTColor.RED to 1, HTColor.YELLOW to 1)
             formula = FormulaConvertible { "C, H, O" }
         }
         modifyFlags {
