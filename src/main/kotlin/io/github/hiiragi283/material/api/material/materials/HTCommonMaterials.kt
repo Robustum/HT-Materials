@@ -5,6 +5,7 @@ import io.github.hiiragi283.material.api.material.FormulaConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.MolarMassConvertible
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
+import io.github.hiiragi283.material.api.material.property.HTGemProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
 import io.github.hiiragi283.material.common.util.HTColor
 
@@ -21,7 +22,14 @@ object HTCommonMaterials {
             formula = FormulaConvertible.of(HTElementMaterials.MERCURY to 1, HTElementMaterials.SULFUR to 1)
             molarMass = MolarMassConvertible.of(HTElementMaterials.MERCURY to 1, HTElementMaterials.SULFUR to 1)
         }
-        modifyProperties(HTMaterialProperties::setGem)
+        modifyFlags {
+            addAll(
+                HTMaterialFlag.GENERATE_BLOCk,
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEM
+            )
+        }
+        modifyProperties { setGem(HTGemProperty.Type.EMERALD) }
     }
 
     @JvmField
@@ -32,13 +40,13 @@ object HTCommonMaterials {
             molarMass = HTElementMaterials.CARBON
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_GEM,
                 HTMaterialFlag.GENERATE_DUST,
             )
         }
-        modifyProperties(HTMaterialProperties::setGem)
+        modifyProperties { setGem(HTGemProperty.Type.COAL) }
     }
 
     @JvmField
@@ -46,7 +54,14 @@ object HTCommonMaterials {
         modifyInfo {
             color = ColorConvertible.ofColor(HTColor.DARK_GREEN, HTColor.GREEN)
         }
-        modifyProperties(HTMaterialProperties::setGem)
+        modifyFlags {
+            addAll(
+                HTMaterialFlag.GENERATE_BLOCk,
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEM
+            )
+        }
+        modifyProperties { setGem(HTGemProperty.Type.EMERALD) }
     }
 
     @JvmField
@@ -54,7 +69,14 @@ object HTCommonMaterials {
         modifyInfo {
             color = ColorConvertible.ofColor(HTColor.GREEN, HTColor.WHITE)
         }
-        modifyProperties(HTMaterialProperties::setGem)
+        modifyFlags {
+            addAll(
+                HTMaterialFlag.GENERATE_BLOCk,
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEM
+            )
+        }
+        modifyProperties { setGem(HTGemProperty.Type.RUBY) }
     }
 
     @JvmField
@@ -64,7 +86,16 @@ object HTCommonMaterials {
             formula = FormulaConvertible.of(*HTAtomicGroups.ALUMINUM_OXIDE)
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.ALUMINUM_OXIDE)
         }
-        modifyProperties(HTMaterialProperties::setGem)
+        modifyFlags {
+            addAll(
+                HTMaterialFlag.GENERATE_BLOCk,
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEM,
+                HTMaterialFlag.GENERATE_PLATE,
+                HTMaterialFlag.GENERATE_ROD
+            )
+        }
+        modifyProperties { setGem(HTGemProperty.Type.RUBY) }
     }
 
     @JvmField
@@ -73,7 +104,16 @@ object HTCommonMaterials {
             formula = FormulaConvertible.of(HTElementMaterials.SODIUM to 1, HTElementMaterials.CHLORINE to 1)
             molarMass = MolarMassConvertible.of(HTElementMaterials.SODIUM to 1, HTElementMaterials.CHLORINE to 1)
         }
-        modifyProperties(HTMaterialProperties::setGem)
+        modifyFlags {
+            addAll(
+                HTMaterialFlag.GENERATE_BLOCk,
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEM,
+                HTMaterialFlag.GENERATE_PLATE,
+                HTMaterialFlag.GENERATE_ROD
+            )
+        }
+        modifyProperties { setGem(HTGemProperty.Type.CUBIC) }
     }
 
     @JvmField
@@ -83,7 +123,16 @@ object HTCommonMaterials {
             formula = FormulaConvertible.of(*HTAtomicGroups.ALUMINUM_OXIDE)
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.ALUMINUM_OXIDE)
         }
-        modifyProperties(HTMaterialProperties::setGem)
+        modifyFlags {
+            addAll(
+                HTMaterialFlag.GENERATE_BLOCk,
+                HTMaterialFlag.GENERATE_DUST,
+                HTMaterialFlag.GENERATE_GEM,
+                HTMaterialFlag.GENERATE_PLATE,
+                HTMaterialFlag.GENERATE_ROD
+            )
+        }
+        modifyProperties { setGem(HTGemProperty.Type.RUBY) }
     }
 
     //    Metal    //
@@ -96,7 +145,7 @@ object HTCommonMaterials {
             molarMass = MolarMassConvertible.of(HTElementMaterials.COPPER to 3, HTElementMaterials.ZINC to 1)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -117,7 +166,7 @@ object HTCommonMaterials {
             molarMass = MolarMassConvertible.of(HTElementMaterials.COPPER to 3, HTElementMaterials.TIN to 1)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -138,7 +187,7 @@ object HTCommonMaterials {
             molarMass = MolarMassConvertible.of(HTElementMaterials.SILVER to 1, HTElementMaterials.GOLD to 1)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -159,7 +208,7 @@ object HTCommonMaterials {
             molarMass = MolarMassConvertible.of(HTElementMaterials.IRON to 1, HTElementMaterials.NICKEL to 2)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -190,7 +239,7 @@ object HTCommonMaterials {
             )
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -210,7 +259,7 @@ object HTCommonMaterials {
             formula = FormulaConvertible { "Fe, C" }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -231,7 +280,7 @@ object HTCommonMaterials {
             molarMass = MolarMassConvertible.of(HTElementMaterials.IRON to 1, HTElementMaterials.TUNGSTEN to 1)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -247,12 +296,12 @@ object HTCommonMaterials {
     //    Solids    //
 
     @JvmField
-    val ASH = HTMaterial.create("ash") {
+    val ASHES = HTMaterial.create("ashes") {
         modifyInfo {
             color = ColorConvertible { HTColor.DARK_GRAY }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
             )
         }
@@ -267,7 +316,7 @@ object HTCommonMaterials {
             //molarMass
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
             )
         }
@@ -280,7 +329,7 @@ object HTCommonMaterials {
             color = ColorConvertible.ofColor(HTColor.BLACK, HTColor.DARK_GRAY)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_INGOT,
@@ -295,7 +344,7 @@ object HTCommonMaterials {
     @JvmField
     val MARBLE = HTMaterial.create("marble") {
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST
             )
         }

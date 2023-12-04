@@ -5,7 +5,7 @@ import io.github.hiiragi283.material.api.material.FormulaConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.MolarMassConvertible
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
-import io.github.hiiragi283.material.api.material.property.HTFluidProperty
+import io.github.hiiragi283.material.api.material.property.HTGemProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
 import io.github.hiiragi283.material.common.util.HTColor
 import net.minecraft.fluid.Fluids
@@ -23,7 +23,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(HTElementMaterials.HYDROGEN to 2, HTElementMaterials.OXYGEN to 1)
         }
         modifyProperties {
-            this += HTFluidProperty().apply { this.fluid = Fluids.WATER }
+            setFluid { it.fluid = Fluids.WATER }
         }
     }
 
@@ -35,7 +35,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyProperties {
-            this += HTFluidProperty().apply { this.fluid = Fluids.LAVA }
+            setFluid { it.fluid = Fluids.LAVA }
         }
     }
 
@@ -50,13 +50,13 @@ object HTVanillaMaterials {
             ingotPerBlock = 4
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
         }
         modifyProperties {
-            setGem()
+            modifyProperties { setGem(HTGemProperty.Type.AMETHYST) }
             setHarvestLevel(0)
         }
     }
@@ -69,7 +69,7 @@ object HTVanillaMaterials {
             molarMass = HTElementMaterials.CARBON
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
                 HTMaterialFlag.GENERATE_PLATE,
@@ -77,7 +77,7 @@ object HTVanillaMaterials {
             )
         }
         modifyProperties {
-            setGem()
+            modifyProperties { setGem(HTGemProperty.Type.DIAMOND) }
             setHarvestLevel(3)
         }
     }
@@ -88,7 +88,6 @@ object HTVanillaMaterials {
             color = ColorConvertible.ofColor(HTColor.DARK_GREEN, HTColor.BLUE)
             ingotPerBlock = 4
         }
-        modifyProperties(HTMaterialProperties::setGem)
     }
 
     @JvmField
@@ -109,7 +108,7 @@ object HTVanillaMaterials {
             )
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
                 HTMaterialFlag.GENERATE_PLATE,
@@ -117,7 +116,7 @@ object HTVanillaMaterials {
             )
         }
         modifyProperties {
-            setGem()
+            modifyProperties { setGem(HTGemProperty.Type.EMERALD) }
             setHarvestLevel(2)
         }
     }
@@ -138,7 +137,7 @@ object HTVanillaMaterials {
             color = ColorConvertible { HTColor.BLUE }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
                 HTMaterialFlag.GENERATE_PLATE,
@@ -146,7 +145,7 @@ object HTVanillaMaterials {
             )
         }
         modifyProperties {
-            setGem()
+            modifyProperties { setGem(HTGemProperty.Type.LAPIS) }
             setHarvestLevel(1)
         }
     }
@@ -156,15 +155,7 @@ object HTVanillaMaterials {
         modifyInfo {
             color = ColorConvertible.ofColor(HTColor.GREEN, HTColor.AQUA, HTColor.WHITE)
         }
-        modifyFlags {
-            addFlags(
-                HTMaterialFlag.GENERATE_GEAR,
-                HTMaterialFlag.GENERATE_PLATE,
-                HTMaterialFlag.GENERATE_ROD
-            )
-        }
         modifyProperties {
-            setGem()
             setHarvestLevel(0)
         }
     }
@@ -177,7 +168,7 @@ object HTVanillaMaterials {
             ingotPerBlock = 4
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
                 HTMaterialFlag.GENERATE_PLATE,
@@ -185,7 +176,7 @@ object HTVanillaMaterials {
             )
         }
         modifyProperties {
-            setGem()
+            modifyProperties { setGem(HTGemProperty.Type.QUARTZ) }
             setHarvestLevel(0)
         }
     }
@@ -204,7 +195,7 @@ object HTVanillaMaterials {
             formula = FormulaConvertible { "Nr" }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
                 HTMaterialFlag.GENERATE_PLATE,
@@ -226,7 +217,7 @@ object HTVanillaMaterials {
             ingotPerBlock = 4
         }
         modifyFlags {
-            addFlags(HTMaterialFlag.GENERATE_DUST)
+            addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setSolid)
     }
@@ -239,7 +230,7 @@ object HTVanillaMaterials {
             molarMass = HTElementMaterials.CARBON
         }
         modifyFlags {
-            addFlags(HTMaterialFlag.GENERATE_DUST)
+            addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setSolid)
     }
@@ -251,7 +242,7 @@ object HTVanillaMaterials {
             ingotPerBlock = 4
         }
         modifyFlags {
-            addFlags(HTMaterialFlag.GENERATE_DUST)
+            addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setSolid)
     }
@@ -264,7 +255,7 @@ object HTVanillaMaterials {
             molarMass = HTElementMaterials.CARBON
         }
         modifyFlags {
-            addFlags(HTMaterialFlag.GENERATE_DUST)
+            addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setSolid)
     }
@@ -285,7 +276,7 @@ object HTVanillaMaterials {
             ingotPerBlock = 1
         }
         modifyFlags {
-            addFlags(HTMaterialFlag.GENERATE_DUST)
+            addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setSolid)
     }
@@ -308,7 +299,7 @@ object HTVanillaMaterials {
             ingotPerBlock = 4
         }
         modifyFlags {
-            addFlags(HTMaterialFlag.GENERATE_DUST)
+            addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setSolid)
     }
@@ -331,7 +322,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
                 HTMaterialFlag.GENERATE_PLATE
@@ -348,7 +339,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
@@ -364,7 +355,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
@@ -380,7 +371,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
@@ -396,7 +387,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
@@ -417,7 +408,7 @@ object HTVanillaMaterials {
             )
         }
         modifyFlags {
-            addFlags(HTMaterialFlag.GENERATE_DUST)
+            addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setStone)
     }
@@ -428,7 +419,7 @@ object HTVanillaMaterials {
             color = ColorConvertible { Color(0x4d5d53) }
         }
         modifyFlags {
-            addFlags(HTMaterialFlag.GENERATE_DUST)
+            addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setStone)
     }
@@ -441,7 +432,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(CALCITE to 1)
         }
         modifyFlags {
-            addFlags(HTMaterialFlag.GENERATE_DUST)
+            addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setStone)
     }
@@ -459,7 +450,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
@@ -475,7 +466,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
@@ -491,7 +482,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
@@ -507,7 +498,7 @@ object HTVanillaMaterials {
             molarMass = MolarMassConvertible.of(*HTAtomicGroups.SILICON_OXIDE)
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
@@ -524,7 +515,7 @@ object HTVanillaMaterials {
             formula = FormulaConvertible { "C, H, O" }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR
             )

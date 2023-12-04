@@ -5,66 +5,62 @@ import net.minecraft.block.Block
 import net.minecraft.tag.TagKey
 import java.util.function.Consumer
 
-class HTMaterialProperties {
+class HTMaterialProperties : MutableMap<HTPropertyKey<*>, HTMaterialProperty<*>> by hashMapOf() {
 
-    private val map: LinkedHashMap<HTPropertyKey<*>, HTMaterialProperty<*>> = linkedMapOf()
+    fun <T : HTMaterialProperty<T>> getAs(key: HTPropertyKey<T>): T? = key.clazz.cast(this[key])
 
-    val values: Collection<HTMaterialProperty<*>>
-        get() = map.values
-
-    operator fun <T : HTMaterialProperty<T>> get(key: HTPropertyKey<T>): T? = key.clazz.cast(map[key])
-
-    operator fun <T : HTMaterialProperty<T>> plusAssign(property: T) {
-        map.putIfAbsent(property.key, property)
+    private operator fun <T : HTMaterialProperty<T>> plusAssign(property: T) {
+        this.add(property)
     }
 
-    operator fun <T : HTMaterialProperty<T>> contains(key: HTPropertyKey<T>): Boolean = key in map
+    fun <T : HTMaterialProperty<T>> add(property: T) {
+        this.putIfAbsent(property.key, property)
+    }
 
     fun verify(material: HTMaterial) {
-        map.toList().sortedBy { it.first.name }.let(map::putAll)
-        map.values.forEach { it.verify(material) }
+        this.values.forEach { it.verify(material) }
     }
 
     //    Util    //
 
     fun setFluid(consumer: Consumer<HTFluidProperty>) {
-        this += HTFluidProperty().also(consumer::accept)
+        this.add(HTFluidProperty().also(consumer::accept))
     }
 
-    fun setGem() {
-        this += HTSolidProperty.createGem()
-        this += HTGemProperty()
+    fun setGem(type: HTGemProperty.Type) {
+        this.add(HTSolidProperty.createGem())
+        this.add(HTGemProperty(type))
     }
 
     fun setMetal() {
-        this += HTSolidProperty.createMetal()
-        this += HTMetalProperty()
+        this.add(HTSolidProperty.createMetal())
+        this.add(HTMetalProperty())
     }
 
     fun setSolid() {
-        this += HTSolidProperty.createSolid()
+        this.add(HTSolidProperty.createSolid())
     }
 
     fun setStone() {
-        this += HTSolidProperty.createStone()
-        this += HTMetalProperty()
+        this.add(HTSolidProperty.createStone())
+        this.add(HTMetalProperty())
     }
 
     fun setWood() {
-        this += HTSolidProperty.createWood()
-        this += HTMetalProperty()
+        this.add(HTSolidProperty.createWood())
+        this.add(HTMetalProperty())
     }
 
     fun setHarvestLevel(level: Int) {
-        get(HTPropertyKey.SOLID)?.harvestLevel = level
+        getAs(HTPropertyKey.SOLID)?.harvestLevel = level
     }
 
     fun setHarvestTool(tool: TagKey<Block>) {
-        get(HTPropertyKey.SOLID)?.harvestTool = tool
+        getAs(HTPropertyKey.SOLID)?.harvestTool = tool
     }
 
     //    Any    //
 
-    override fun toString(): String = map.keys.joinToString(separator = ", ")
+    override fun toString(): String = this.keys.joinToString(separator = ", ")
 
 }

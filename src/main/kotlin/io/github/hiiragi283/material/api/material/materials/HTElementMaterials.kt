@@ -6,7 +6,6 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.MolarMassConvertible
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperties
-import io.github.hiiragi283.material.api.material.property.HTSolidProperty
 import io.github.hiiragi283.material.common.util.HTColor
 import java.awt.Color
 
@@ -68,12 +67,12 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 12.0 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_PLATE
             )
         }
-        modifyProperties { this += HTSolidProperty.createSolid() }
+        modifyProperties(HTMaterialProperties::setSolid)
     }
 
     @JvmField
@@ -141,7 +140,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 27.0 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -226,7 +225,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 47.9 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -266,7 +265,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 55.8 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
                 HTMaterialFlag.GENERATE_PLATE,
@@ -294,7 +293,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 58.7 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -315,7 +314,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 63.5 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
                 HTMaterialFlag.GENERATE_NUGGET,
@@ -337,7 +336,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 65.4 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -360,7 +359,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 107.9 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -381,7 +380,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 118.7 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -404,7 +403,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 183.8 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -424,7 +423,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 192.2 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -445,7 +444,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 195.1 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
@@ -466,7 +465,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 197.0 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,
                 HTMaterialFlag.GENERATE_PLATE,
@@ -498,7 +497,7 @@ object HTElementMaterials {
             molarMass = MolarMassConvertible { 207.2 }
         }
         modifyFlags {
-            addFlags(
+            addAll(
                 HTMaterialFlag.GENERATE_BLOCk,
                 HTMaterialFlag.GENERATE_DUST,
                 HTMaterialFlag.GENERATE_GEAR,

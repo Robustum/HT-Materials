@@ -18,7 +18,7 @@ fun interface MolarMassConvertible {
             for ((molar: MolarMassConvertible, weight: Int) in map) {
                 result += molar.asMolarMass() * weight
             }
-            result
+            "%.1f".format(result).toDouble()
         }
 
     }

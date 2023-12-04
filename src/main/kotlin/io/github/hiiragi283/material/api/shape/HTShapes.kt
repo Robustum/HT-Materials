@@ -171,6 +171,9 @@ object HTShapes {
     val ROTOR: HTShape = HTSimpleShape.Item("rotor")
 
     @JvmField
+    val SMALL_DUST: HTShape = HTSimpleShape.Item("small_dust")
+
+    @JvmField
     val TINY_DUST: HTShape = HTSimpleShape.Item("tiny_dust")
 
     @JvmField

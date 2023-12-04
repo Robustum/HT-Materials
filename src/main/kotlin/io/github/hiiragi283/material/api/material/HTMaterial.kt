@@ -2,6 +2,7 @@ package io.github.hiiragi283.material.api.material
 
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags
+import io.github.hiiragi283.material.api.material.materials.HTAtomicGroups
 import io.github.hiiragi283.material.api.material.materials.HTCommonMaterials
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
@@ -40,7 +41,7 @@ class HTMaterial private constructor(
 
     fun getProperties(): Collection<HTMaterialProperty<*>> = properties.values
 
-    fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties[key]
+    fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties.getAs(key)
 
     fun <T : HTMaterialProperty<T>> hasProperty(key: HTPropertyKey<T>): Boolean = key in properties
 
@@ -171,6 +172,7 @@ class HTMaterial private constructor(
 
         init {
             HTElementMaterials
+            HTAtomicGroups
             HTVanillaMaterials
             HTCommonMaterials
         }

@@ -35,6 +35,10 @@
       {
         "adapter": "kotlin",
         "value": "io.github.hiiragi283.material.addon.HTMIAddon"
+      },
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.addon.HTTRAddon"
       }
     ],
     "rei_client": [

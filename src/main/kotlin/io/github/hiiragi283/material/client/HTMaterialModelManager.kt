@@ -2,6 +2,7 @@ package io.github.hiiragi283.material.client
 
 import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
 import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.common.HTMaterialsCommon
@@ -76,7 +77,15 @@ object HTMaterialModelManager {
         //Gear
         registerSimpleConsumer(HTShapes.GEAR)
         //Gem
-        registerSimpleConsumer(HTShapes.GEM, Identifier("item/quartz"))
+        registerConsumer(HTShapes.GEM) { material: HTMaterial, shape: HTShape ->
+            material.getProperty(HTPropertyKey.GEM)?.type?.let { type ->
+                addModel(
+                    getItemModelId(material, shape),
+                    ModelJsonBuilder.create(Models.GENERATED)
+                        .addTexture(TextureKey.LAYER0, type.textureId)
+                )
+            }
+        }
         //Ingot
         registerSimpleConsumer(HTShapes.INGOT)
         //Nugget

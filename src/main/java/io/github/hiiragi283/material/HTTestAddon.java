@@ -31,8 +31,8 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     @Override
     public void modifyMaterials() {
-        HTMaterialsAPI.modifyProperties(HTElementMaterials.ALUMINUM, properties -> properties.plusAssign(new HTWoodProperty()));
-        HTMaterialsAPI.modifyFlags(HTElementMaterials.ALUMINUM, flags -> flags.addFlags(HTMaterialFlag.GENERATE_GEAR));
+        HTMaterialsAPI.modifyProperties(HTElementMaterials.ALUMINUM, properties -> properties.add(new HTWoodProperty()));
+        HTMaterialsAPI.modifyFlags(HTElementMaterials.ALUMINUM, flags -> flags.addAll(HTMaterialFlag.GENERATE_GEAR));
     }
 
     @Override
