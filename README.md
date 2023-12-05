@@ -6,7 +6,7 @@ This is a simple Minecraft mod for **Fabric/Quilt 1.18.2** that provides _**Mate
 
 The Material System was invented to handle Tags more generally by decomposing them into `HTMaterial` and `HTShape`.  
 `HTMaterial` represents the material of objects: _Iron_, _Gold_, _Copper_, _Stone_, _Wood_, ...  
-`HTShape` represents the shape of objets: _Ingot_, _Nugget_, _Plate_, _Gear_, _Rod_, ...
+`HTShape` represents the shape of objects: _Ingot_, _Nugget_, _Plate_, _Gear_, _Rod_, ...
 
 ## Tag Sync
 
@@ -27,5 +27,5 @@ compatability between them. HT Materials synchronizes these different format aut
 
 ### Example
 
-- [fabric.mod.json](https://github.com/Hiiragi283/HT-Materials/blob/master/src/main/resources/fabric.mod.json)
-- [HTTestAddon](https://github.com/Hiiragi283/HT-Materials/blob/master/src/main/java/io/github/hiiragi283/material/HTTestAddon.java)
+- [fabric.mod.json](/src/main/resources/fabric.mod.json)
+- [HTTestAddon](/src/main/java/io/github/hiiragi283/material/HTTestAddon.java)
