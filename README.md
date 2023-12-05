@@ -8,11 +8,15 @@ The Material System was invented to handle Tags more generally by decomposing th
 `HTMaterial` represents the material of objects: _Iron_, _Gold_, _Copper_, _Stone_, _Wood_, ...  
 `HTShape` represents the shape of objects: _Ingot_, _Nugget_, _Plate_, _Gear_, _Rod_, ...
 
+![Material System](/images/material_system.png)
+
 ## Tag Sync
 
-Many Fabric mods follows `Conventional Tag` format such as `c:copper_ingots` or `c:raw_iron_ore`, but some mods
-especially Create follows `Forge Tag` format such as `c:ingots/copper` or `c:raw_materials/iron`. There is NO
+Many Fabric mods follows `Conventional Tag` format such as `c:zinc_ingots` or `c:raw_iron_ore`, but some mods
+especially Create follows `Forge Tag` format such as `c:ingots/zinc` or `c:raw_materials/iron`. There is NO
 compatability between them. HT Materials synchronizes these different format automatically by Material System.
+
+![Tag Sync1](/images/tag_sync.png)
 
 ## Creating Addon
 

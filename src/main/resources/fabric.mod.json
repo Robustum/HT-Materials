@@ -3,12 +3,14 @@
   "id": "ht_materials",
   "version": "${version}",
   "name": "HT Materials",
-  "description": "Add material system, Unify Forge Tag and Common Tag",
+  "description": "A simple Minecraft mod for Fabric/Quilt 1.18.2 that provides Material System and Tag Sync",
   "authors": [
     "Hiiragi283"
   ],
+  "contributors": [
+    "MrKono"
+  ],
   "contact": {
-    "issues": "https://github.com/Hiiragi283/HT-Materials/issues",
     "sources": "https://github.com/Hiiragi283/HT-Materials"
   },
   "license": "MPL-2.0",
