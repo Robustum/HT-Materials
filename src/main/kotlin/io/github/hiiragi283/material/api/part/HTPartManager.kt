@@ -1,6 +1,8 @@
 package io.github.hiiragi283.material.api.part
 
-import com.google.common.collect.*
+import com.google.common.collect.HashBasedTable
+import com.google.common.collect.ImmutableTable
+import com.google.common.collect.Table
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
@@ -14,8 +16,6 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 import net.minecraft.util.registry.Registry
-import net.minecraft.util.registry.RegistryEntry
-import java.util.*
 
 object HTPartManager {
 
@@ -60,8 +60,8 @@ object HTPartManager {
 
     init {
         //Amethyst
-        forceRegister(HTVanillaMaterials.AMETHYST, HTShapes.BLOCK, Items.AMETHYST_BLOCK)
-        forceRegister(HTVanillaMaterials.AMETHYST, HTShapes.GEM, Items.AMETHYST_SHARD)
+        //forceRegister(HTVanillaMaterials.AMETHYST, HTShapes.BLOCK, Items.AMETHYST_BLOCK)
+        //forceRegister(HTVanillaMaterials.AMETHYST, HTShapes.GEM, Items.AMETHYST_SHARD)
         //Andesite
         forceRegister(HTVanillaMaterials.ANDESITE, HTShapes.BLOCK, Items.ANDESITE)
         forceRegister(HTVanillaMaterials.ANDESITE, HTShapes.BLOCK, Items.POLISHED_ANDESITE)
@@ -72,7 +72,7 @@ object HTPartManager {
         forceRegister(HTVanillaMaterials.BRICK, HTShapes.BLOCK, Items.BRICKS)
         forceRegister(HTVanillaMaterials.BRICK, HTShapes.GEM, Items.BRICK)
         //Calcite
-        forceRegister(HTVanillaMaterials.CALCITE, HTShapes.BLOCK, Items.CALCITE)
+        //forceRegister(HTVanillaMaterials.CALCITE, HTShapes.BLOCK, Items.CALCITE)
         //Charcoal
         forceRegister(HTVanillaMaterials.CHARCOAL, HTShapes.GEM, Items.CHARCOAL)
         //Clay
@@ -82,13 +82,13 @@ object HTPartManager {
         forceRegister(HTVanillaMaterials.COAL, HTShapes.GEM, Items.COAL)
         forceRegister(HTVanillaMaterials.COAL, HTShapes.BLOCK, Items.COAL_BLOCK)
         //Copper
-        forceRegister(HTElementMaterials.COPPER, HTShapes.BLOCK, Items.COPPER_BLOCK)
+        /*forceRegister(HTElementMaterials.COPPER, HTShapes.BLOCK, Items.COPPER_BLOCK)
         forceRegister(HTElementMaterials.COPPER, HTShapes.INGOT, Items.COPPER_INGOT)
         forceRegister(HTElementMaterials.COPPER, HTShapes.ORE, Items.COPPER_ORE)
         forceRegister(HTElementMaterials.COPPER, HTShapes.RAW_BLOCK, Items.RAW_COPPER_BLOCK)
-        forceRegister(HTElementMaterials.COPPER, HTShapes.RAW_ORE, Items.RAW_COPPER)
+        forceRegister(HTElementMaterials.COPPER, HTShapes.RAW_ORE, Items.RAW_COPPER)*/
         //Deepslate
-        forceRegister(HTVanillaMaterials.DEEPSLATE, HTShapes.BLOCK, Items.DEEPSLATE)
+        //forceRegister(HTVanillaMaterials.DEEPSLATE, HTShapes.BLOCK, Items.DEEPSLATE)
         //Diamond
         forceRegister(HTVanillaMaterials.DIAMOND, HTShapes.BLOCK, Items.DIAMOND_BLOCK)
         forceRegister(HTVanillaMaterials.DIAMOND, HTShapes.GEM, Items.DIAMOND)
@@ -97,7 +97,7 @@ object HTPartManager {
         forceRegister(HTVanillaMaterials.DIORITE, HTShapes.BLOCK, Items.DIORITE)
         forceRegister(HTVanillaMaterials.DIORITE, HTShapes.BLOCK, Items.POLISHED_DIORITE)
         //Dripstone
-        forceRegister(HTVanillaMaterials.DRIPSTONE, HTShapes.BLOCK, Items.DRIPSTONE_BLOCK)
+        //forceRegister(HTVanillaMaterials.DRIPSTONE, HTShapes.BLOCK, Items.DRIPSTONE_BLOCK)
         //Emerald
         forceRegister(HTVanillaMaterials.EMERALD, HTShapes.BLOCK, Items.EMERALD_BLOCK)
         forceRegister(HTVanillaMaterials.EMERALD, HTShapes.GEM, Items.EMERALD)
@@ -113,8 +113,8 @@ object HTPartManager {
         forceRegister(HTElementMaterials.IRON, HTShapes.INGOT, Items.IRON_INGOT)
         forceRegister(HTElementMaterials.IRON, HTShapes.NUGGET, Items.IRON_NUGGET)
         forceRegister(HTElementMaterials.IRON, HTShapes.ORE, Items.IRON_ORE)
-        forceRegister(HTElementMaterials.IRON, HTShapes.RAW_BLOCK, Items.RAW_IRON_BLOCK)
-        forceRegister(HTElementMaterials.IRON, HTShapes.RAW_ORE, Items.RAW_IRON)
+        //forceRegister(HTElementMaterials.IRON, HTShapes.RAW_BLOCK, Items.RAW_IRON_BLOCK)
+        //forceRegister(HTElementMaterials.IRON, HTShapes.RAW_ORE, Items.RAW_IRON)
         //Glass
         forceRegister(HTVanillaMaterials.GLASS, HTShapes.BLOCK, Items.GLASS)
         //Glowstone
@@ -125,8 +125,8 @@ object HTPartManager {
         forceRegister(HTElementMaterials.GOLD, HTShapes.INGOT, Items.GOLD_INGOT)
         forceRegister(HTElementMaterials.GOLD, HTShapes.NUGGET, Items.GOLD_NUGGET)
         forceRegister(HTElementMaterials.GOLD, HTShapes.ORE, Items.GOLD_ORE)
-        forceRegister(HTElementMaterials.GOLD, HTShapes.RAW_BLOCK, Items.RAW_GOLD_BLOCK)
-        forceRegister(HTElementMaterials.GOLD, HTShapes.RAW_ORE, Items.RAW_GOLD)
+        //forceRegister(HTElementMaterials.GOLD, HTShapes.RAW_BLOCK, Items.RAW_GOLD_BLOCK)
+        //forceRegister(HTElementMaterials.GOLD, HTShapes.RAW_ORE, Items.RAW_GOLD)
         //Granite
         forceRegister(HTVanillaMaterials.GRANITE, HTShapes.BLOCK, Items.GRANITE)
         forceRegister(HTVanillaMaterials.GRANITE, HTShapes.BLOCK, Items.POLISHED_GRANITE)
@@ -160,7 +160,7 @@ object HTPartManager {
         //Stone
         forceRegister(HTVanillaMaterials.STONE, HTShapes.BLOCK, Items.STONE)
         //Tuff
-        forceRegister(HTVanillaMaterials.TUFF, HTShapes.BLOCK, Items.TUFF)
+        //forceRegister(HTVanillaMaterials.TUFF, HTShapes.BLOCK, Items.TUFF)
         //Water
         forceRegister(HTVanillaMaterials.WATER, HTShapes.BUCKET, Items.WATER_BUCKET)
         //Wood
@@ -181,9 +181,7 @@ object HTPartManager {
 
             HTMaterial.REGISTRY.forEach { material ->
                 HTShapes.REGISTRY.forEach { shape ->
-                    Registry.ITEM.getEntryList(shape.getCommonTag(material))
-                        .map { it.map(RegistryEntry<Item>::value) }
-                        .ifPresent { it.forEach { item -> register(material, shape, item) } }
+                    shape.getCommonTag(material).values().forEach { item: Item -> register(material, shape, item) }
                 }
             }
 

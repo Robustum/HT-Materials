@@ -54,7 +54,6 @@
     "ht_materials.mixins.json"
   ],
   "depends": {
-    "brrp_v1": ">=${brrp_version}",
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
     "minecraft": "${minecraft_version}",

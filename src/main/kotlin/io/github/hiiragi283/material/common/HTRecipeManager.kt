@@ -1,13 +1,8 @@
 package io.github.hiiragi283.material.common
 
-import aztech.modern_industrialization.recipe.json.MIRecipeJson
 import com.google.gson.JsonObject
-import net.minecraft.data.server.recipe.CraftingRecipeJsonBuilder
-import net.minecraft.data.server.recipe.RecipeJsonProvider
+import net.minecraft.data.server.recipe.*
 import net.minecraft.util.Identifier
-import reborncore.common.crafting.RebornRecipe
-import reborncore.common.crafting.serde.RebornRecipeSerde
-import java.util.function.Function
 
 object HTRecipeManager {
 
@@ -17,50 +12,28 @@ object HTRecipeManager {
     //    Vanilla    //
 
     @JvmStatic
-    fun registerVanillaRecipe(recipeId: Identifier, jsonBuilder: CraftingRecipeJsonBuilder) {
-        jsonBuilder.offerTo({ provider: RecipeJsonProvider ->
-            REGISTRY.putIfAbsent(recipeId, provider.toJson())
-        }, recipeId)
+    fun cooking(recipeId: Identifier, factory: CookingRecipeJsonFactory) {
+        factory.offerTo({ provider: RecipeJsonProvider -> REGISTRY.putIfAbsent(recipeId, provider.toJson()) }, recipeId)
     }
-
-    //    Create    //
-
-    fun registerCreateRecipe() {
-
-    }
-
-    //    Modern Industrialization    //
 
     @JvmStatic
-    fun <T : MIRecipeJson<*>> registerMIRecipe(recipeId: Identifier, recipeJson: MIRecipeJson<T>) {
-        REGISTRY.putIfAbsent(recipeId, recipeJson.toJsonObject())
+    fun shapedCrafting(recipeId: Identifier, factory: ShapedRecipeJsonFactory) {
+        factory.offerTo({ provider: RecipeJsonProvider -> REGISTRY.putIfAbsent(recipeId, provider.toJson()) }, recipeId)
     }
-
-    //    TechReborn    //
 
     @JvmStatic
-    fun <T : RebornRecipe> registerTRRecipe(
-        recipeId: Identifier,
-        rebornRecipeSerde: RebornRecipeSerde<T>,
-        function: Function<Identifier, T>
-    ) {
-        val jsonObject = JsonObject()
-        rebornRecipeSerde.toJson(function.apply(recipeId), jsonObject, true)
-        REGISTRY.putIfAbsent(recipeId, jsonObject)
+    fun shapelessCrafting(recipeId: Identifier, factory: ShapelessRecipeJsonFactory) {
+        factory.offerTo({ provider: RecipeJsonProvider -> REGISTRY.putIfAbsent(recipeId, provider.toJson()) }, recipeId)
     }
 
-    fun test() {
-        /*createTRRecipe(HTMaterialsCommon.id("test"), ModRecipes.ASSEMBLING_RECIPE_SERDE) {
-            AssemblingMachineRecipe(
-                ModRecipes.ASSEMBLING_MACHINE,
-                it,
-                listOf(TagIngredient(HTShape.INGOT.getCommonTag(HTElementMaterials.IRON), Optional.empty())),
-                listOf(),
-                32,
-                200
-            )
-        }*/
+    @JvmStatic
+    fun smithing(recipeId: Identifier, factory: SmithingRecipeJsonFactory) {
+        factory.offerTo({ provider: RecipeJsonProvider -> REGISTRY.putIfAbsent(recipeId, provider.toJson()) }, recipeId)
+    }
 
+    @JvmStatic
+    fun singleItem(recipeId: Identifier, factory: SingleItemRecipeJsonFactory) {
+        factory.offerTo({ provider: RecipeJsonProvider -> REGISTRY.putIfAbsent(recipeId, provider.toJson()) }, recipeId)
     }
 
 }

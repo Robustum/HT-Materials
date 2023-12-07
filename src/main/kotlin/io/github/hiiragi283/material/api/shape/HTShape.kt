@@ -3,10 +3,10 @@ package io.github.hiiragi283.material.api.shape
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import io.github.hiiragi283.material.common.util.commonId
+import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.item.Item
-import net.minecraft.tag.TagKey
+import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
 
 @JvmDefaultWithCompatibility
 interface HTShape {
@@ -30,13 +30,13 @@ interface HTShape {
 
     //    TagKey    //
 
-    fun getForgeTag(material: HTMaterial): TagKey<Item> =
-        TagKey.of(Registry.ITEM_KEY, commonId(getForgePath(material)))
+    fun getForgeTag(material: HTMaterial): Tag.Identified<Item> =
+        TagRegistry.item(commonId(getForgePath(material))) as Tag.Identified<Item>
 
     fun getForgePath(material: HTMaterial): String
 
-    fun getCommonTag(material: HTMaterial): TagKey<Item> =
-        TagKey.of(Registry.ITEM_KEY, commonId(getCommonPath(material)))
+    fun getCommonTag(material: HTMaterial): Tag.Identified<Item> =
+        TagRegistry.item(commonId(getCommonPath(material))) as Tag.Identified<Item>
 
     fun getCommonPath(material: HTMaterial): String
 

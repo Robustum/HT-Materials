@@ -2,20 +2,19 @@ package io.github.hiiragi283.material.api.material.property
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.part.HTPart
-import net.fabricmc.fabric.api.mininglevel.v1.MiningLevelManager
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.item.ItemStack
 import net.minecraft.tag.BlockTags
-import net.minecraft.tag.TagKey
+import net.minecraft.tag.Tag
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 
 class HTSolidProperty private constructor(
     val blockSettings: FabricBlockSettings,
     var harvestLevel: Int,
-    var harvestTool: TagKey<Block>?
+    var harvestTool: Tag.Identified<Block>?
 ) : HTMaterialProperty<HTSolidProperty> {
 
     companion object {
@@ -24,35 +23,35 @@ class HTSolidProperty private constructor(
         fun createSolid(): HTSolidProperty = HTSolidProperty(
             FabricBlockSettings.copyOf(Blocks.SAND),
             0,
-            BlockTags.SHOVEL_MINEABLE
+            BlockTags.ANVIL
         )
 
         @JvmStatic
         fun createGem(): HTSolidProperty = HTSolidProperty(
-            FabricBlockSettings.copyOf(Blocks.AMETHYST_BLOCK).requiresTool(),
+            FabricBlockSettings.copyOf(Blocks.DIAMOND_BLOCK).requiresTool(),
             1,
-            BlockTags.PICKAXE_MINEABLE
+            BlockTags.ANVIL
         )
 
         @JvmStatic
         fun createMetal(): HTSolidProperty = HTSolidProperty(
             FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).requiresTool(),
             1,
-            BlockTags.PICKAXE_MINEABLE
+            BlockTags.ANVIL
         )
 
         @JvmStatic
         fun createStone(): HTSolidProperty = HTSolidProperty(
             FabricBlockSettings.copyOf(Blocks.STONE).requiresTool(),
             0,
-            BlockTags.PICKAXE_MINEABLE
+            BlockTags.ANVIL
         )
 
         @JvmStatic
         fun createWood(): HTSolidProperty = HTSolidProperty(
             FabricBlockSettings.copyOf(Blocks.OAK_PLANKS),
             0,
-            BlockTags.AXE_MINEABLE
+            BlockTags.ANVIL
         )
 
     }
@@ -62,8 +61,6 @@ class HTSolidProperty private constructor(
     override fun verify(material: HTMaterial) {
 
     }
-
-    fun getHarvestLevelTag(): TagKey<Block>? = harvestLevel.takeIf { it > 0 }?.let(MiningLevelManager::getBlockTag)
 
     override fun appendTooltip(part: HTPart, stack: ItemStack, lines: MutableList<Text>) {
         //Mining Level

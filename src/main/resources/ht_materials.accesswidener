@@ -1,5 +1,0 @@
-accessWidener v2 named
-accessible class net/minecraft/tag/Tag$ObjectEntry
-accessible class net/minecraft/tag/Tag$OptionalObjectEntry
-accessible class net/minecraft/tag/Tag$OptionalTagEntry
-accessible class net/minecraft/tag/Tag$TagEntry

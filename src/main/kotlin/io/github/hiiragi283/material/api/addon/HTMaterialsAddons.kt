@@ -17,14 +17,15 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.data.server.BlockLootTableGenerator
-import net.minecraft.data.server.recipe.ShapedRecipeJsonBuilder
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder
+import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
 import net.minecraft.item.Item
 import net.minecraft.resource.ResourceType
 import net.minecraft.util.Identifier
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.fabric.api.RRPCallback
 
+@Suppress("UnstableApiUsage")
 object HTMaterialsAddons : HTMaterialsAddon {
 
     private var cache: List<HTMaterialsAddon> = FabricLoader.getInstance()
@@ -101,9 +102,9 @@ object HTMaterialsAddons : HTMaterialsAddon {
         //1x Block -> 9x Ingot/Gem
         val shape: HTShape = material.getDefaultShape() ?: return
         val result: Item = HTPartManager.getDefaultItem(material, shape) ?: return
-        HTRecipeManager.registerVanillaRecipe(
+        HTRecipeManager.shapelessCrafting(
             shape.getIdentifier(material).suffix("_shapeless"),
-            ShapelessRecipeJsonBuilder.create(result, 9)
+            ShapelessRecipeJsonFactory.create(result, 9)
                 .input(HTShapes.BLOCK.getCommonTag(material))
                 .setBypassesValidation(true)
         )
@@ -112,9 +113,9 @@ object HTMaterialsAddons : HTMaterialsAddon {
     private fun blockRecipe(material: HTMaterial, item: Item) {
         //9x Ingot/Gem -> 1x Block
         val shape: HTShape = material.getDefaultShape() ?: return
-        HTRecipeManager.registerVanillaRecipe(
+        HTRecipeManager.shapedCrafting(
             HTShapes.BLOCK.getIdentifier(material).suffix("_shaped"),
-            ShapedRecipeJsonBuilder.create(item)
+            ShapedRecipeJsonFactory.create(item)
                 .patterns("AAA", "AAA", "AAA")
                 .input('A', shape.getCommonTag(material))
                 .setBypassesValidation(true)
@@ -124,9 +125,9 @@ object HTMaterialsAddons : HTMaterialsAddon {
     private fun ingotRecipe(material: HTMaterial, item: Item) {
         //9x Nugget -> 1x Ingot
         if (!hasDefaultItem(material, HTShapes.NUGGET)) return
-        HTRecipeManager.registerVanillaRecipe(
+        HTRecipeManager.shapedCrafting(
             HTShapes.INGOT.getIdentifier(material, HTMaterialsCommon.MOD_ID).suffix("_shaped"),
-            ShapedRecipeJsonBuilder.create(item)
+            ShapedRecipeJsonFactory.create(item)
                 .patterns("AAA", "AAA", "AAA")
                 .input('A', HTShapes.NUGGET.getCommonTag(material))
                 .setBypassesValidation(true)
@@ -136,9 +137,9 @@ object HTMaterialsAddons : HTMaterialsAddon {
     private fun nuggetRecipe(material: HTMaterial, item: Item) {
         //1x Ingot -> 9x Nugget
         if (!hasDefaultItem(material, HTShapes.INGOT)) return
-        HTRecipeManager.registerVanillaRecipe(
+        HTRecipeManager.shapelessCrafting(
             HTShapes.NUGGET.getIdentifier(material, HTMaterialsCommon.MOD_ID).suffix("_shapeless"),
-            ShapelessRecipeJsonBuilder.create(item, 9)
+            ShapelessRecipeJsonFactory.create(item, 9)
                 .input(HTShapes.INGOT.getCommonTag(material))
                 .setBypassesValidation(true)
         )

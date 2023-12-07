@@ -2,6 +2,7 @@ package io.github.hiiragi283.material.compat.rei
 
 import io.github.hiiragi283.material.common.HTMaterialsCommon
 import me.shedaniel.clothconfig2.ClothConfigInitializer
+import me.shedaniel.clothconfig2.api.ScissorsHandler
 import me.shedaniel.clothconfig2.api.scroll.ScrollingContainer
 import me.shedaniel.math.Point
 import me.shedaniel.math.Rectangle
@@ -99,27 +100,23 @@ object HTMaterialCategory : DisplayCategory<HTMaterialDisplay> {
 
         override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
             scrolling.updatePosition(delta)
-            scissor(matrices, scrolling.scissorBounds).use {
-                for (y: Int in 0 until MathHelper.ceil(widgets.size / 8f)) {
-                    for (x: Int in 0..7) {
-                        val index: Int = y * 8 + x
-                        if (widgets.size <= index) break
-                        val widget: Slot = widgets[index]
-                        widget.bounds.setLocation(
-                            bounds.x + 1 + x * 18,
-                            bounds.y + 1 + y * 18 - scrolling.scrollAmountInt()
-                        )
-                        widget.render(matrices, mouseX, mouseY, delta)
-                    }
+            ScissorsHandler.INSTANCE.scissor(scrolling.scissorBounds)
+            (0 until MathHelper.ceil(widgets.size / 8f)).forEach { y: Int ->
+                for (x: Int in 0..7) {
+                    val index: Int = y * 8 + x
+                    if (widgets.size <= index) break
+                    val widget = widgets[index]
+                    widget.bounds.setLocation(
+                        bounds.x + 1 + x * 18,
+                        bounds.y + 1 + y * 18 - scrolling.scrollAmountInt()
+                    )
+                    widget.render(matrices, mouseX, mouseY, delta)
                 }
             }
-            scissor(matrices, scrolling.bounds).use {
-                scrolling.renderScrollBar(
-                    -0x1000000,
-                    1f,
-                    if (REIRuntime.getInstance().isDarkThemeEnabled) 0.8f else 1f
-                )
-            }
+            ScissorsHandler.INSTANCE.removeLastScissor()
+            ScissorsHandler.INSTANCE.scissor(scrolling.bounds)
+            scrolling.renderScrollBar(-0x1000000, 1f, if (REIRuntime.getInstance().isDarkThemeEnabled) 0.8f else 1f)
+            ScissorsHandler.INSTANCE.removeLastScissor()
         }
 
         override fun children(): List<Element> = widgets

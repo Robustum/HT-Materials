@@ -41,7 +41,7 @@ object HTVanillaMaterials {
 
     //    Gems    //
 
-    @JvmField
+    /*@JvmField
     val AMETHYST = HTMaterial.create("amethyst") {
         modifyInfo {
             color = ColorConvertible.ofColor(HTColor.BLUE, HTColor.LIGHT_PURPLE)
@@ -59,7 +59,7 @@ object HTVanillaMaterials {
             modifyProperties { setGem(HTGemProperty.Type.AMETHYST) }
             setHarvestLevel(0)
         }
-    }
+    }*/
 
     @JvmField
     val DIAMOND = HTMaterial.create("diamond") {
@@ -379,7 +379,7 @@ object HTVanillaMaterials {
         modifyProperties(HTMaterialProperties::setStone)
     }
 
-    @JvmField
+    /*@JvmField
     val DEEPSLATE = HTMaterial.create("deepslate") {
         modifyInfo {
             color = ColorConvertible.ofColor(HTColor.BLACK, HTColor.DARK_GRAY)
@@ -411,9 +411,9 @@ object HTVanillaMaterials {
             addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setStone)
-    }
+    }*/
 
-    @JvmField
+    /*@JvmField
     val TUFF = HTMaterial.create("tuff") {
         modifyInfo {
             color = ColorConvertible { Color(0x4d5d53) }
@@ -422,9 +422,9 @@ object HTVanillaMaterials {
             addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setStone)
-    }
+    }*/
 
-    @JvmField
+    /*@JvmField
     val DRIPSTONE = HTMaterial.create("dripstone") {
         modifyInfo {
             color = ColorConvertible.ofColor(HTColor.DARK_RED to 1, HTColor.GOLD to 1, HTColor.DARK_GRAY to 5)
@@ -435,7 +435,7 @@ object HTVanillaMaterials {
             addAll(HTMaterialFlag.GENERATE_DUST)
         }
         modifyProperties(HTMaterialProperties::setStone)
-    }
+    }*/
 
     @JvmField
     val OBSIDIAN = HTMaterial.create("obsidian") {

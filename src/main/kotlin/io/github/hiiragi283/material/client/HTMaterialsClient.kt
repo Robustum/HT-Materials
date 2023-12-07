@@ -9,17 +9,13 @@ import io.github.hiiragi283.material.common.HTMaterialsCommon
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
-import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.client.color.block.BlockColorProvider
 import net.minecraft.client.color.item.ItemColorProvider
-import net.minecraft.client.render.RenderLayer
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
-import net.minecraft.util.Identifier
 
 @Environment(EnvType.CLIENT)
 object HTMaterialsClient : ClientModInitializer {
@@ -83,19 +79,8 @@ object HTMaterialsClient : ClientModInitializer {
     }
 
     private fun registerFluidRenderHandler() {
-        HTMaterial.REGISTRY.forEach { material: HTMaterial ->
-            val flowing: HTMaterialFluid.Flowing = HTMaterialFluid.getFlowing(material) ?: return@forEach
-            val still: HTMaterialFluid.Still = HTMaterialFluid.getStill(material) ?: return@forEach
-            //Register Fluid Model
-            FluidRenderHandlerRegistry.INSTANCE.register(
-                still, flowing, SimpleFluidRenderHandler(
-                    Identifier("minecraft:block/white_concrete"),
-                    Identifier("minecraft:block/white_concrete"),
-                    material.asColor().rgb
-                )
-            )
-            //Register Translucent Layer
-            BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), still, flowing)
+        HTMaterial.REGISTRY.mapNotNull(HTMaterialFluid::getStill).forEach { fluid: HTMaterialFluid.Still ->
+            FluidRenderHandlerRegistry.INSTANCE.register(fluid, HTMaterialFluidRenderHandler(fluid))
         }
     }
 

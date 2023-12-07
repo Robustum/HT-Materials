@@ -11,10 +11,10 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
-import net.minecraft.data.client.BlockStateModelGenerator
-import net.minecraft.data.client.BlockStateSupplier
-import net.minecraft.data.client.Models
-import net.minecraft.data.client.TextureKey
+import net.minecraft.data.client.model.BlockStateModelGenerator
+import net.minecraft.data.client.model.BlockStateSupplier
+import net.minecraft.data.client.model.Models
+import net.minecraft.data.client.model.TextureKey
 import net.minecraft.util.Identifier
 import pers.solid.brrp.v1.api.RuntimeResourcePack
 import pers.solid.brrp.v1.fabric.api.RRPCallback

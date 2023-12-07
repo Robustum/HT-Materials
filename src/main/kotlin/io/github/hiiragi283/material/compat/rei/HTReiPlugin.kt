@@ -42,7 +42,7 @@ object HTReiPlugin : REIClientPlugin {
     }
 
     override fun registerDisplays(registry: DisplayRegistry) {
-        HTMaterial.REGISTRY.map(::HTMaterialDisplay).forEach(registry::add)
+        HTMaterial.REGISTRY.iterator().forEach { registry.add(HTMaterialDisplay(it)) }
     }
 
     override fun registerEntries(registry: EntryRegistry) {

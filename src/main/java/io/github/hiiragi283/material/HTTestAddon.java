@@ -4,11 +4,8 @@ import io.github.hiiragi283.material.api.HTMaterialsAPI;
 import io.github.hiiragi283.material.api.addon.HTMaterialsAddon;
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag;
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials;
-import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials;
 import io.github.hiiragi283.material.api.material.property.HTWoodProperty;
-import io.github.hiiragi283.material.api.shape.HTShapes;
 import io.github.hiiragi283.material.common.HTMaterialsCommon;
-import net.minecraft.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 public class HTTestAddon implements HTMaterialsAddon {
@@ -33,11 +30,6 @@ public class HTTestAddon implements HTMaterialsAddon {
     public void modifyMaterials() {
         HTMaterialsAPI.modifyProperties(HTElementMaterials.ALUMINUM, properties -> properties.add(new HTWoodProperty()));
         HTMaterialsAPI.modifyFlags(HTElementMaterials.ALUMINUM, flags -> flags.addAll(HTMaterialFlag.GENERATE_GEAR));
-    }
-
-    @Override
-    public void commonSetup() {
-        HTMaterialsAPI.registerItemToPart(HTVanillaMaterials.CALCITE, HTShapes.ROD, Items.BONE);
     }
 
 }
