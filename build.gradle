@@ -38,21 +38,9 @@ dependencies {
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    modImplementation("curse.maven:better-runtime-resource-pack-618156:4494718")
+    modImplementation("curse.maven:better-runtime-resource-pack-618156:4494718") { transitive = false }
 
     //REI
-    modImplementation("me.shedaniel:architectury-fabric:1.32.68") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:6.5.433") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modRuntimeOnly("com.terraformersmc:modmenu:1.16.23") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:4.17.101") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
 
 }
 

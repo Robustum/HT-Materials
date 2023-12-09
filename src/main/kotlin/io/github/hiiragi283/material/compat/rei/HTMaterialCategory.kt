@@ -1,34 +1,7 @@
 package io.github.hiiragi283.material.compat.rei
 
-import io.github.hiiragi283.material.common.HTMaterialsCommon
-import me.shedaniel.clothconfig2.ClothConfigInitializer
-import me.shedaniel.clothconfig2.api.ScissorsHandler
-import me.shedaniel.clothconfig2.api.scroll.ScrollingContainer
-import me.shedaniel.math.Point
-import me.shedaniel.math.Rectangle
-import me.shedaniel.rei.api.client.REIRuntime
-import me.shedaniel.rei.api.client.gui.Renderer
-import me.shedaniel.rei.api.client.gui.widgets.Slot
-import me.shedaniel.rei.api.client.gui.widgets.Widget
-import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
-import me.shedaniel.rei.api.client.gui.widgets.Widgets
-import me.shedaniel.rei.api.client.registry.display.DisplayCategory
-import me.shedaniel.rei.api.common.category.CategoryIdentifier
-import me.shedaniel.rei.api.common.util.EntryStacks
-import net.minecraft.client.gui.Element
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.item.Item
-import net.minecraft.item.Items
-import net.minecraft.text.LiteralText
-import net.minecraft.text.Text
-import net.minecraft.util.math.MathHelper
-
-/**
- * Reference: [me.shedaniel.rei.plugin.client.categories.beacon.DefaultBeaconPaymentCategory]
- */
-
 @Suppress("UnstableApiUsage")
-object HTMaterialCategory : DisplayCategory<HTMaterialDisplay> {
+object HTMaterialCategory /*: DisplayCategory<HTMaterialDisplay> {
 
     override fun getCategoryIdentifier(): CategoryIdentifier<HTMaterialDisplay> = HTReiPlugin.MATERIAL_ID
 
@@ -124,4 +97,4 @@ object HTMaterialCategory : DisplayCategory<HTMaterialDisplay> {
     }
 
 
-}
+}*/

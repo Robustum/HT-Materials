@@ -6,7 +6,8 @@
   "mixins": [
     "MainMixin",
     "RecipeManagerMixin",
-    "TagBuilderMixin"
+    "TagBuilderAccessor",
+    "TagGroupLoaderMixin"
   ],
   "client": [
     "ClientMainMixin"

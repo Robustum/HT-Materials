@@ -1,16 +1,12 @@
 package io.github.hiiragi283.material.api.part
 
-import com.google.common.collect.HashBasedTable
-import com.google.common.collect.ImmutableTable
-import com.google.common.collect.Table
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.common.HTMaterialsCommon
-import io.github.hiiragi283.material.common.util.computeIfAbsent
-import io.github.hiiragi283.material.common.util.isAir
+import io.github.hiiragi283.material.common.util.*
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
@@ -34,10 +30,10 @@ object HTPartManager {
 
     //    HTMaterial, HTShape -> Item    //
 
-    private val partToItem: Table<HTMaterial, HTShape, Item> = HashBasedTable.create()
+    private val partToItem: HTMutableTable<HTMaterial, HTShape, Item> = mutableTableOf()
 
     @JvmStatic
-    fun getDefaultItemTable(): ImmutableTable<HTMaterial, HTShape, Item> = ImmutableTable.copyOf(partToItem)
+    fun getDefaultItemTable(): HTTable<HTMaterial, HTShape, Item> = partToItem
 
     @JvmStatic
     fun getDefaultItem(material: HTMaterial, shape: HTShape): Item? = partToItem.get(material, shape)
@@ -47,11 +43,10 @@ object HTPartManager {
 
     //    HTMaterial, HTShape -> Collection<Item>    //
 
-    private val partToItems: Table<HTMaterial, HTShape, MutableSet<Item>> = HashBasedTable.create()
+    private val partToItems: HTMutableTable<HTMaterial, HTShape, MutableSet<Item>> = mutableTableOf()
 
     @JvmStatic
-    fun getPartToItemTable(): ImmutableTable<HTMaterial, HTShape, Collection<Item>> =
-        ImmutableTable.copyOf(partToItems)
+    fun getPartToItemTable(): HTTable<HTMaterial, HTShape, Collection<Item>> = tableOf(partToItems)
 
     @JvmStatic
     fun getItems(material: HTMaterial, shape: HTShape): Collection<Item> = partToItems.get(material, shape) ?: setOf()
