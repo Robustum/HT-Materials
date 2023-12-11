@@ -32,10 +32,6 @@
     "ht_materials": [
       {
         "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.addon.HTCreateAddon"
-      },
-      {
-        "adapter": "kotlin",
         "value": "io.github.hiiragi283.material.addon.HTMIAddon"
       },
       {

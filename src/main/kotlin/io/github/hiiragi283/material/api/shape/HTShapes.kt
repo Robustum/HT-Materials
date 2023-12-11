@@ -23,9 +23,7 @@ object HTShapes {
     //    Block    //
 
     @JvmField
-    val BLOCK: HTShape = object : HTShape {
-
-        override val name: String = "block"
+    val BLOCK: HTShape = object : HTShape("block") {
 
         override fun canGenerateBlock(material: HTMaterial): Boolean = material.hasFlag(HTMaterialFlag.GENERATE_BLOCk)
 
@@ -40,9 +38,7 @@ object HTShapes {
     }.register()
 
     @JvmField
-    val ORE: HTShape = object : HTShape {
-
-        override val name: String = "ore"
+    val ORE: HTShape = object : HTShape("ore") {
 
         override fun canGenerateBlock(material: HTMaterial): Boolean = false
 
@@ -60,9 +56,7 @@ object HTShapes {
 
     //DO NOT call register()!!
     @JvmField
-    val FLUID = object : HTShape {
-
-        override val name: String = "fluid"
+    val FLUID = object : HTShape("fluid") {
 
         override fun canGenerateBlock(material: HTMaterial): Boolean = false
 

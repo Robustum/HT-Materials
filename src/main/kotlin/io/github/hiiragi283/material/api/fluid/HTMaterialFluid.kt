@@ -30,7 +30,6 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 
-@Suppress("unused")
 abstract class HTMaterialFluid private constructor(val material: HTMaterial) : FlowableFluid() {
 
     companion object {
@@ -124,6 +123,7 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
                 material.getIdentifier().prefix("flowing_"),
                 this
             )
+            HTFluidManager.forceRegister(material, this)
         }
 
         override fun appendProperties(builder: StateManager.Builder<Fluid, FluidState>) {
@@ -148,6 +148,7 @@ abstract class HTMaterialFluid private constructor(val material: HTMaterial) : F
                 material.getIdentifier(),
                 this
             )
+            HTFluidManager.forceRegister(material, this)
         }
 
         override fun getLevel(state: FluidState): Int = 8

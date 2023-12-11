@@ -54,6 +54,45 @@ object HTPartManager {
     @JvmStatic
     fun getItems(material: HTMaterial, shape: HTShape): Collection<Item> = partToItems.get(material, shape) ?: setOf()
 
+    //    Registration    //
+
+    private fun checkItemNotAir(itemConvertible: ItemConvertible): Item = itemConvertible.asItem().also { item ->
+        check(!item.isAir()) { "The Entry: $itemConvertible has no valid Item!" }
+    }
+
+    @JvmStatic
+    @JvmSynthetic
+    fun register(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
+        //Check if the itemConvertible has non-air item
+        val item: Item = checkItemNotAir(itemConvertible)
+        //ItemConvertible -> HTPart
+        itemToPart.putIfAbsent(item, HTPart(material, shape))
+        //HTMaterial, HTShape -> ItemConvertible
+        if (!hasDefaultItem(material, shape)) {
+            partToItem.put(material, shape, item)
+            HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
+        }
+        //HTMaterial, HTShape -> Collection<ItemConvertible>
+        partToItems.computeIfAbsent(material, shape) { _, _ -> mutableSetOf() }.add(item)
+        //print info
+        HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
+    }
+
+    @JvmSynthetic
+    internal fun forceRegister(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
+        //Check if the itemConvertible has non-air item
+        val item: Item = checkItemNotAir(itemConvertible)
+        //ItemConvertible -> HTPart
+        itemToPart.putIfAbsent(item, HTPart(material, shape))
+        //HTMaterial, HTShape -> ItemConvertible
+        partToItem.put(material, shape, item)
+        HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
+        //HTMaterial, HTShape -> Collection<ItemConvertible>
+        partToItems.computeIfAbsent(material, shape) { _, _ -> mutableSetOf() }.add(item)
+        //print info
+        HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
+    }
+
     //    Initialization    //
 
     init {
@@ -187,45 +226,6 @@ object HTPartManager {
             HTMaterialsCommon.LOGGER.info("Registered items from Tags to HTPartManager!")
 
         }
-    }
-
-    //    Registration    //
-
-    private fun checkItemNotAir(itemConvertible: ItemConvertible): Item = itemConvertible.asItem().also { item ->
-        check(!item.isAir()) { "The Entry: $itemConvertible has no valid Item!" }
-    }
-
-    @JvmStatic
-    @JvmSynthetic
-    fun register(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
-        //Check if the itemConvertible has non-air item
-        val item: Item = checkItemNotAir(itemConvertible)
-        //ItemConvertible -> HTPart
-        itemToPart.putIfAbsent(item, HTPart(material, shape))
-        //HTMaterial, HTShape -> ItemConvertible
-        if (!partToItem.contains(material, shape)) {
-            partToItem.put(material, shape, item)
-            HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
-        }
-        //HTMaterial, HTShape -> Collection<ItemConvertible>
-        partToItems.computeIfAbsent(material, shape) { _, _ -> mutableSetOf() }.add(item)
-        //print info
-        HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
-    }
-
-    @JvmSynthetic
-    internal fun forceRegister(material: HTMaterial, shape: HTShape, itemConvertible: ItemConvertible) {
-        //Check if the itemConvertible has non-air item
-        val item: Item = checkItemNotAir(itemConvertible)
-        //ItemConvertible -> HTPart
-        itemToPart.putIfAbsent(item, HTPart(material, shape))
-        //HTMaterial, HTShape -> ItemConvertible
-        partToItem.put(material, shape, item)
-        HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
-        //HTMaterial, HTShape -> Collection<ItemConvertible>
-        partToItems.computeIfAbsent(material, shape) { _, _ -> mutableSetOf() }.add(item)
-        //print info
-        HTMaterialsCommon.LOGGER.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
     }
 
 }

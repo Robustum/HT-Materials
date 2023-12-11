@@ -19,6 +19,7 @@ import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
 import net.minecraft.client.resource.language.I18n
+import net.minecraft.fluid.Fluid
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
@@ -169,6 +170,9 @@ class HTMaterial private constructor(
 
         @JvmStatic
         fun getMaterial(name: String): HTMaterial? = REGISTRY.get(commonId(name))
+
+        @JvmStatic
+        fun getMaterial(fluid: Fluid): HTMaterial? = getMaterial(Registry.FLUID.getId(fluid).path)
 
         init {
             HTElementMaterials
