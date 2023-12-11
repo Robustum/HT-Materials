@@ -45,7 +45,7 @@ object HTMaterialsClient : ClientModInitializer {
 
     private fun registerBlockColorProvider() {
         //Material Blocks
-        HTPartManager.getDefaultItemTable().values
+        HTPartManager.getDefaultItemTable().values()
             .filterIsInstance<HTMaterialBlockItem>()
             .forEach { item: HTMaterialBlockItem ->
                 ColorProviderRegistry.BLOCK.register(
@@ -61,7 +61,7 @@ object HTMaterialsClient : ClientModInitializer {
 
     private fun registerItemColorProvider() {
         //Material Items
-        HTPartManager.getDefaultItemTable().values
+        HTPartManager.getDefaultItemTable().values()
             .filterIsInstance<HTMaterialItem>()
             .forEach { item: HTMaterialItem ->
                 ColorProviderRegistry.ITEM.register(

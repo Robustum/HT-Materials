@@ -1,8 +1,6 @@
 package io.github.hiiragi283.material.api.material.property
 
 import io.github.hiiragi283.material.api.material.HTMaterial
-import net.minecraft.block.Block
-import net.minecraft.tag.Tag
 import java.util.function.Consumer
 
 class HTMaterialProperties : MutableMap<HTPropertyKey<*>, HTMaterialProperty<*>> by hashMapOf() {
@@ -55,8 +53,8 @@ class HTMaterialProperties : MutableMap<HTPropertyKey<*>, HTMaterialProperty<*>>
         getAs(HTPropertyKey.SOLID)?.harvestLevel = level
     }
 
-    fun setHarvestTool(tool: Tag.Identified<Block>) {
-        getAs(HTPropertyKey.SOLID)?.harvestTool = tool
+    fun modifyBlockSettings(consumer: Consumer<HTSolidProperty>) {
+        getAs(HTPropertyKey.SOLID)?.let(consumer::accept)
     }
 
     //    Any    //

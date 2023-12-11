@@ -2,9 +2,15 @@
 
 package io.github.hiiragi283.material.common.util
 
-fun <R, C, V> tableOf(vararg triple: Triple<R, C, V>): HTTable<R, C, V> = HTTable.Impl(triple.toList())
+import com.google.common.collect.Table
 
-fun <R, C, V> tableOf(table: HTTable<out R, out C, out V>): HTTable<R, C, V> = HTTable.Impl(table.entries)
-
-fun <R, C, V> mutableTableOf(vararg triple: Triple<R, C, V>): HTMutableTable<R, C, V> =
-    HTMutableTable.Impl(triple.toList())
+inline fun <R : Any, C : Any, V : Any> Table<R, C, V>.computeIfAbsent(
+    rowKey: R,
+    columnKey: C,
+    mapping: (R, C) -> V
+): V {
+    if (!this.contains(rowKey, columnKey)) {
+        this.put(rowKey, columnKey, mapping(rowKey, columnKey))
+    }
+    return this.get(rowKey, columnKey)!!
+}

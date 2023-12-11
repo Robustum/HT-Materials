@@ -43,7 +43,7 @@
         "value": "io.github.hiiragi283.material.addon.HTTRAddon"
       }
     ],
-    "rei_client": [
+    "rei": [
       {
         "adapter": "kotlin",
         "value": "io.github.hiiragi283.material.compat.rei.HTReiPlugin"

@@ -75,7 +75,7 @@ object HTMaterialsAddons : HTMaterialsAddon {
     }
 
     private fun registerLootTables() {
-        HTPartManager.getDefaultItemTable().values
+        HTPartManager.getDefaultItemTable().values()
             .map(Item::asBlock)
             .filterIsInstance<HTMaterialBlock>()
             .forEach { block: HTMaterialBlock ->

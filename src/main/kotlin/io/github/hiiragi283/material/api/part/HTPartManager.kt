@@ -1,5 +1,8 @@
 package io.github.hiiragi283.material.api.part
 
+import com.google.common.collect.HashBasedTable
+import com.google.common.collect.ImmutableTable
+import com.google.common.collect.Table
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
@@ -19,8 +22,8 @@ object HTPartManager {
 
     private val itemToPart: MutableMap<Item, HTPart> = mutableMapOf()
 
-    @JvmField
-    val ITEM_TO_PART: Map<Item, HTPart> = itemToPart
+    @JvmStatic
+    fun getItemToPartMap(): Map<Item, HTPart> = itemToPart
 
     @JvmStatic
     fun getPart(itemConvertible: ItemConvertible): HTPart? = itemToPart[itemConvertible.asItem()]
@@ -30,10 +33,10 @@ object HTPartManager {
 
     //    HTMaterial, HTShape -> Item    //
 
-    private val partToItem: HTMutableTable<HTMaterial, HTShape, Item> = mutableTableOf()
+    private val partToItem: Table<HTMaterial, HTShape, Item> = HashBasedTable.create()
 
     @JvmStatic
-    fun getDefaultItemTable(): HTTable<HTMaterial, HTShape, Item> = partToItem
+    fun getDefaultItemTable(): ImmutableTable<HTMaterial, HTShape, Item> = ImmutableTable.copyOf(partToItem)
 
     @JvmStatic
     fun getDefaultItem(material: HTMaterial, shape: HTShape): Item? = partToItem.get(material, shape)
@@ -43,10 +46,10 @@ object HTPartManager {
 
     //    HTMaterial, HTShape -> Collection<Item>    //
 
-    private val partToItems: HTMutableTable<HTMaterial, HTShape, MutableSet<Item>> = mutableTableOf()
+    private val partToItems: Table<HTMaterial, HTShape, MutableSet<Item>> = HashBasedTable.create()
 
     @JvmStatic
-    fun getPartToItemTable(): HTTable<HTMaterial, HTShape, Collection<Item>> = tableOf(partToItems)
+    fun getPartToItemTable(): ImmutableTable<HTMaterial, HTShape, Collection<Item>> = ImmutableTable.copyOf(partToItems)
 
     @JvmStatic
     fun getItems(material: HTMaterial, shape: HTShape): Collection<Item> = partToItems.get(material, shape) ?: setOf()
@@ -171,6 +174,8 @@ object HTPartManager {
         //Event Registration
         ServerWorldEvents.LOAD.register { _, _ ->
 
+            HTMaterialsCommon.LOGGER.info("ServerWorldEvents invoked!")
+
             itemToPart.clear()
             partToItems.clear()
 
@@ -179,6 +184,7 @@ object HTPartManager {
                     shape.getCommonTag(material).values().forEach { item: Item -> register(material, shape, item) }
                 }
             }
+            HTMaterialsCommon.LOGGER.info("Registered items from Tags to HTPartManager!")
 
         }
     }
