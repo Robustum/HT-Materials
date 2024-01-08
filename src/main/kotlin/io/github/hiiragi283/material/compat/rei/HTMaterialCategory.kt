@@ -1,42 +1,37 @@
 package io.github.hiiragi283.material.compat.rei
 
-import io.github.hiiragi283.material.common.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterialsCommon
 import me.shedaniel.clothconfig2.ClothConfigInitializer
 import me.shedaniel.clothconfig2.api.ScissorsHandler
-import me.shedaniel.clothconfig2.api.scroll.ScrollingContainer
+import me.shedaniel.clothconfig2.api.ScrollingContainer
 import me.shedaniel.math.Point
 import me.shedaniel.math.Rectangle
-import me.shedaniel.rei.api.client.REIRuntime
-import me.shedaniel.rei.api.client.gui.Renderer
-import me.shedaniel.rei.api.client.gui.widgets.Slot
-import me.shedaniel.rei.api.client.gui.widgets.Widget
-import me.shedaniel.rei.api.client.gui.widgets.WidgetWithBounds
-import me.shedaniel.rei.api.client.gui.widgets.Widgets
-import me.shedaniel.rei.api.client.registry.display.DisplayCategory
-import me.shedaniel.rei.api.common.category.CategoryIdentifier
-import me.shedaniel.rei.api.common.util.EntryStacks
+import me.shedaniel.rei.api.EntryStack
+import me.shedaniel.rei.api.REIHelper
+import me.shedaniel.rei.api.RecipeCategory
+import me.shedaniel.rei.api.widgets.Slot
+import me.shedaniel.rei.api.widgets.Widgets
+import me.shedaniel.rei.gui.widget.Widget
+import me.shedaniel.rei.gui.widget.WidgetWithBounds
 import net.minecraft.client.gui.Element
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.item.Item
-import net.minecraft.item.Items
-import net.minecraft.text.LiteralText
-import net.minecraft.text.Text
+import net.minecraft.util.Identifier
 import net.minecraft.util.math.MathHelper
 
-@Suppress("UnstableApiUsage")
-object HTMaterialCategory : DisplayCategory<HTMaterialDisplay> {
 
-    override fun getCategoryIdentifier(): CategoryIdentifier<HTMaterialDisplay> = HTReiPlugin.MATERIAL_ID
+object HTMaterialCategory : RecipeCategory<HTMaterialDisplay> {
 
-    override fun getTitle(): Text = LiteralText(HTMaterialsCommon.MOD_NAME)
+    override fun getIdentifier(): Identifier = HMReiPlugin.MATERIAL
 
-    override fun getIcon(): Renderer = EntryStacks.of(HTMaterialsCommon.ICON)
+    override fun getLogo(): EntryStack = EntryStack.create(HTMaterialsCommon.ICON)
 
-    override fun setupDisplay(display: HTMaterialDisplay, bounds: Rectangle): MutableList<Widget> {
+    override fun getCategoryName(): String = HTMaterialsCommon.MOD_NAME
+
+    override fun setupDisplay(display: HTMaterialDisplay, bounds: Rectangle): List<Widget> {
         val widgets: MutableList<Widget> = mutableListOf()
         widgets += Widgets
             .createSlot(Point(bounds.centerX - 8, bounds.y + 3))
-            .entry(EntryStacks.of(display.getItemEntries().firstOrNull() ?: Items.AIR))
+            .entry(display.getEntries().firstOrNull() ?: EntryStack.empty())
         val rectangle = Rectangle(
             bounds.centerX - bounds.width / 2 - 1,
             bounds.y + 23,
@@ -46,12 +41,11 @@ object HTMaterialCategory : DisplayCategory<HTMaterialDisplay> {
         widgets += Widgets.createSlotBase(rectangle)
         widgets += HTScrollableSlotsWidget(
             rectangle,
-            display.getItemEntries().map { item: Item ->
+            display.getEntries().map { entry: EntryStack ->
                 Widgets.createSlot(Point(0, 0))
                     .disableBackground()
-                    .entry(EntryStacks.of(item))
-            }
-        )
+                    .entry(entry)
+            })
         return widgets
     }
 
@@ -104,14 +98,14 @@ object HTMaterialCategory : DisplayCategory<HTMaterialDisplay> {
                     val widget = widgets[index]
                     widget.bounds.setLocation(
                         bounds.x + 1 + x * 18,
-                        bounds.y + 1 + y * 18 - scrolling.scrollAmountInt()
+                        bounds.y + 1 + y * 18 - scrolling.scrollAmount.toInt()
                     )
                     widget.render(matrices, mouseX, mouseY, delta)
                 }
             }
             ScissorsHandler.INSTANCE.removeLastScissor()
             ScissorsHandler.INSTANCE.scissor(scrolling.bounds)
-            scrolling.renderScrollBar(-0x1000000, 1f, if (REIRuntime.getInstance().isDarkThemeEnabled) 0.8f else 1f)
+            scrolling.renderScrollBar(-0x1000000, 1f, if (REIHelper.getInstance().isDarkThemeEnabled) 0.8f else 1f)
             ScissorsHandler.INSTANCE.removeLastScissor()
         }
 

@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "item/bucket",
+    "layer1": "ht_materials:item/bucket"
+  }
+}

@@ -2,15 +2,17 @@
   "required": true,
   "minVersion": "0.8",
   "package": "io.github.hiiragi283.material.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "LootManagerMixin",
     "MainMixin",
     "RecipeManagerMixin",
     "TagBuilderAccessor",
     "TagGroupLoaderMixin"
   ],
   "client": [
-    "ClientMainMixin"
+    "MinecraftClientMixin",
+    "ModelLoaderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -10,16 +10,29 @@ fun interface MolarMassConvertible {
         val EMPTY = MolarMassConvertible { 0.0 }
 
         @JvmStatic
-        fun of(vararg pair: Pair<MolarMassConvertible, Int>) = of(pair.toMap())
+        fun of(vararg molars: MolarMassConvertible) = of(molars.associateWith { 1 })
 
         @JvmStatic
-        fun of(map: Map<MolarMassConvertible, Int>) = MolarMassConvertible {
-            var result = 0.0
-            for ((molar: MolarMassConvertible, weight: Int) in map) {
-                result += molar.asMolarMass() * weight
-            }
-            "%.1f".format(result).toDouble()
-        }
+        fun of(vararg pairs: Pair<MolarMassConvertible, Int>) = of(pairs.toMap())
+
+        @JvmStatic
+        fun of(map: Map<MolarMassConvertible, Int>) =
+            MolarMassConvertible { calculate(map.mapKeys { (molar: MolarMassConvertible, _) -> molar.asMolarMass() }) }
+
+        @JvmStatic
+        fun ofDouble(vararg molars: Double) = ofDouble(molars.associateWith { 1 })
+
+        @JvmStatic
+        fun ofDouble(vararg pairs: Pair<Double, Int>) = ofDouble(pairs.toMap())
+
+        @JvmStatic
+        fun ofDouble(map: Map<Double, Int>) = MolarMassConvertible { calculate(map) }
+
+        @JvmStatic
+        fun calculate(molars: Iterable<Double>) = calculate(molars.associateWith { 1 })
+
+        @JvmStatic
+        fun calculate(map: Map<Double, Int>): Double = map.map { (molar: Double, weight: Int) -> molar * weight }.sum()
 
     }
 

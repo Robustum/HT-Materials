@@ -1,20 +1,17 @@
 package io.github.hiiragi283.material.api.item
 
-import io.github.hiiragi283.material.api.material.HTMaterial
-import io.github.hiiragi283.material.api.part.HTPart
-import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.api.material.HTMaterialKey
+import io.github.hiiragi283.material.api.shape.HTShapeKey
 import net.minecraft.item.ItemConvertible
 
 @JvmDefaultWithCompatibility
 interface HTMaterialItemConvertible : ItemConvertible {
 
-    val materialHT: HTMaterial
-    val shapeHT: HTShape
+    val materialKey: HTMaterialKey
+    val shapeKey: HTShapeKey
 
-    fun getPart(): HTPart = HTPart(materialHT, shapeHT)
+    operator fun component1(): HTMaterialKey = materialKey
 
-    operator fun component1(): HTMaterial = materialHT
-
-    operator fun component2(): HTShape = shapeHT
+    operator fun component2(): HTShapeKey = shapeKey
 
 }

@@ -2,7 +2,6 @@ package io.github.hiiragi283.material.api.material
 
 import java.awt.Color
 
-@JvmDefaultWithCompatibility
 fun interface ColorConvertible {
 
     fun asColor(): Color
@@ -13,38 +12,47 @@ fun interface ColorConvertible {
         val EMPTY = ColorConvertible { Color.WHITE }
 
         @JvmStatic
-        fun ofColor(vararg colors: Color) = of(colors.toList().associate { ColorConvertible { it } to 1 })
+        fun of(vararg colors: ColorConvertible) = of(colors.associateWith { 1 })
 
         @JvmStatic
-        fun ofColor(vararg pair: Pair<Color, Int>) = of(pair.toMap().mapKeys { ColorConvertible(it::key) })
+        fun of(vararg pairs: Pair<ColorConvertible, Int>) = of(pairs.toMap())
 
         @JvmStatic
-        fun of(vararg colors: ColorConvertible) = of(colors.toList().associateWith { 1 })
+        fun of(map: Map<ColorConvertible, Int>) =
+            ofColor(map.mapKeys { (color: ColorConvertible, _) -> color.asColor() })
 
         @JvmStatic
-        fun of(vararg pair: Pair<ColorConvertible, Int>) = of(pair.toMap())
+        fun ofColor(vararg colors: Color) = ofColor(colors.associateWith { 1 })
 
         @JvmStatic
-        fun of(map: Map<ColorConvertible, Int>) = ColorConvertible {
+        fun ofColor(vararg pairs: Pair<Color, Int>) = ofColor(pairs.toMap())
+
+        @JvmStatic
+        fun ofColor(map: Map<Color, Int>) = ColorConvertible { average(map) }
+
+        @JvmStatic
+        fun average(colors: Iterable<Color>): Color = average(colors.associateWith { 1 })
+
+        @JvmStatic
+        fun average(map: Map<Color, Int>): Color {
             var redSum = 0
             var greenSum = 0
             var blueSum = 0
             var weightSum = 0
-            map.forEach { (color: ColorConvertible, weight: Int) ->
+            map.forEach { (color: Color, weight: Int) ->
                 //RGB値にweightをかけた値を加算していく
-                color.asColor().run {
+                color.run {
                     redSum += this.red * weight
                     greenSum += this.green * weight
                     blueSum += this.blue * weight
                 }
                 weightSum += weight
             }
-            if (weightSum > 0) {
+            return if (weightSum > 0) {
                 Color(redSum / weightSum, greenSum / weightSum, blueSum / weightSum)
             } else Color.WHITE
         }
 
     }
-
 
 }

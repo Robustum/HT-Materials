@@ -1,23 +1,35 @@
 package io.github.hiiragi283.material.api.material.flag
 
-import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 
-class HTMaterialFlags : MutableCollection<HTMaterialFlag> by mutableSetOf() {
+object HTMaterialFlags {
 
-    fun addAll(vararg flag: HTMaterialFlag) {
-        flag.forEach(this::add)
+    @JvmField
+    val GENERATE_BLOCk: HTMaterialFlag = HTMaterialFlag.create("generate_block")
+
+    @JvmField
+    val GENERATE_DUST: HTMaterialFlag = HTMaterialFlag.create("generate_dust")
+
+    @JvmField
+    val GENERATE_GEAR: HTMaterialFlag = HTMaterialFlag.create("generate_gear")
+
+    @JvmField
+    val GENERATE_GEM: HTMaterialFlag = HTMaterialFlag.create("generate_gem") {
+        requiredProperties.add(HTPropertyKey.GEM)
     }
 
-    fun removeAll(vararg flag: HTMaterialFlag) {
-        flag.forEach(this::remove)
+    @JvmField
+    val GENERATE_INGOT: HTMaterialFlag = HTMaterialFlag.create("generate_ingot")
+
+    @JvmField
+    val GENERATE_NUGGET: HTMaterialFlag = HTMaterialFlag.create("generate_nugget") {
+        requiredProperties.add(HTPropertyKey.METAL)
     }
 
-    fun verify(material: HTMaterial) {
-        this.forEach { it.verify(material) }
-    }
+    @JvmField
+    val GENERATE_PLATE: HTMaterialFlag = HTMaterialFlag.create("generate_plate")
 
-    //    Any    //
-
-    override fun toString(): String = this.joinToString(separator = ", ")
+    @JvmField
+    val GENERATE_ROD: HTMaterialFlag = HTMaterialFlag.create("generate_rod")
 
 }
