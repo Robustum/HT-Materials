@@ -1,11 +1,24 @@
 @file:JvmName("TableUtil")
-@file:Suppress("unused")
 
 package io.github.hiiragi283.material.util
 
 import com.google.common.collect.Table
 
 //    Table    //
+
+fun <R : Any, C : Any, V : Any> Table<R, C, V>.toList(): List<Triple<R, C, V>> {
+    if (size() == 0) return emptyList()
+    val iterator: Iterator<Table.Cell<R, C, V>> = cellSet().iterator()
+    if (!iterator.hasNext()) return emptyList()
+    val first: Table.Cell<R, C, V> = iterator.next()
+    if (!iterator.hasNext()) return listOfNotNull(first.toTriple())
+    val result = ArrayList<Triple<R, C, V>>(size())
+    first.toTriple()?.let(result::add)
+    do {
+        iterator.next().toTriple()?.let(result::add)
+    } while (iterator.hasNext())
+    return result
+}
 
 inline fun <R, C, V, T> Table<out R, out C, V>.mapNotNull(transform: (Table.Cell<out R, out C, V>) -> T): List<T> {
     return mapNotNullTo(ArrayList(size()), transform)
@@ -42,4 +55,11 @@ inline fun <R : Any, C : Any, V : Any> Table<R, C, V>.computeIfAbsent(row: R, co
         result = this.get(row, column)!!
     }
     return result
+}
+
+fun <R : Any, C : Any, V : Any> Table.Cell<R, C, V>.toTriple(): Triple<R, C, V>? {
+    val row: R? = this.rowKey
+    val column: C? = this.columnKey
+    val value: V? = this.value
+    return if (row == null || column == null || value == null) null else Triple(row, column, value)
 }

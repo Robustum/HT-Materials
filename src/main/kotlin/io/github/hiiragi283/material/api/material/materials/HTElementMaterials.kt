@@ -6,13 +6,14 @@ import io.github.hiiragi283.material.api.material.ColorConvertible
 import io.github.hiiragi283.material.api.material.FormulaConvertible
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.MolarMassConvertible
-import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
-import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags
+import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
+import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.api.material.property.HTFluidProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.material.api.material.property.HTMetalProperty
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
+import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.util.HTColor
 import java.awt.Color
 
@@ -202,6 +203,159 @@ object HTElementMaterials : HTMaterialsAddon {
         )
     }
 
+    override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {
+        //1st Period
+
+        //2nd Period
+        registry.getOrCreate(CARBON).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+        }
+        //3rd Period
+        registry.getOrCreate(ALUMINUM).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(SILICON).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(PHOSPHORUS).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(SULFUR).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        //4th Period
+        registry.getOrCreate(TITANIUM).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(IRON).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(NICKEL).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(COPPER).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(ZINC).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        //5th Period
+        registry.getOrCreate(SILVER).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(TIN).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        //6th Period
+        registry.getOrCreate(TUNGSTEN).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(IRIDIUM).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(PLATINUM).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(GOLD).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(LEAD).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        //7th Period
+        registry.getOrCreate(URANIUM).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(PLUTONIUM).apply {
+            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.INGOT))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+    }
+
     override fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
         //1st Period
         registry.getOrCreate(HYDROGEN).add(HTFluidProperty()) { this.isGas = true }
@@ -244,7 +398,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(PLUTONIUM).add(HTMetalProperty)
     }
 
-    override fun modifyMaterialFlag(registry: HTDefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder>) {
+    /*override fun modifyMaterialFlag(registry: HTDefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder>) {
         //1st Period
 
         //2nd Period
@@ -395,7 +549,7 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTMaterialFlags.GENERATE_PLATE)
             add(HTMaterialFlags.GENERATE_ROD)
         }
-    }
+    }*/
 
     override fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {
         //1st Period

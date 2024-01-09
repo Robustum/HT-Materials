@@ -2,10 +2,13 @@ package io.github.hiiragi283.material
 
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
-import io.github.hiiragi283.material.api.item.HTMaterialItem
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.part.HTPartManager
+import io.github.hiiragi283.material.api.part.getMaterial
+import io.github.hiiragi283.material.api.part.getPart
+import io.github.hiiragi283.material.client.HTColoredMaterialItem
+import io.github.hiiragi283.material.client.HTFluidRenderHandler
 import io.github.hiiragi283.material.util.getTransaction
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
@@ -57,14 +60,15 @@ object HTMaterialsClient : ClientModInitializer {
 
     private fun registerItemColorProvider() {
         //Material Items
-        HTPartManager.getDefaultItemTable().values()
-            .filterIsInstance<HTMaterialItem>()
-            .forEach { item: HTMaterialItem ->
-                val color: Int = item.materialKey.getMaterial().color.rgb
-                ColorProviderRegistry.ITEM.register(
-                    ItemColorProvider { _, tintIndex: Int -> if (tintIndex == 0) color else -1 },
-                    item
-                )
+        HTPartManager.getDefaultItems()
+            .filterIsInstance<HTColoredMaterialItem>()
+            .forEach { item: HTColoredMaterialItem ->
+                item.getMaterial()?.color?.rgb?.run {
+                    ColorProviderRegistry.ITEM.register(
+                        ItemColorProvider { _, tintIndex: Int -> if (tintIndex == 0) this else -1 },
+                        item
+                    )
+                }
             }
         //Material Fluid Bucket
         HTFluidManager.getDefaultFluidMap().values.filterIsInstance<HTMaterialFluid.Still>().forEach { fluid ->
@@ -81,7 +85,7 @@ object HTMaterialsClient : ClientModInitializer {
 
         ItemTooltipCallback.EVENT.register { stack: ItemStack, _, lines: MutableList<Text> ->
 
-            HTPartManager.getPart(stack.item)?.let {
+            stack.item.getPart()?.let {
                 HTMaterial.appendTooltip(it.getMaterial(), it.getShape(), stack, lines)
             }
 

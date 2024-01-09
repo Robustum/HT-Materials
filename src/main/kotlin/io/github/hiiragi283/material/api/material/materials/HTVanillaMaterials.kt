@@ -6,11 +6,12 @@ import io.github.hiiragi283.material.api.material.ColorConvertible
 import io.github.hiiragi283.material.api.material.FormulaConvertible
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.MolarMassConvertible
-import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
-import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags
+import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
+import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.api.material.property.*
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
+import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.util.HTColor
 import java.awt.Color
 
@@ -175,6 +176,123 @@ object HTVanillaMaterials : HTMaterialsAddon {
         )
     }
 
+    override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {
+        //Fluids
+        //Gems
+        registry.getOrCreate(AMETHYST).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+        }
+        registry.getOrCreate(DIAMOND).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(ENDER_PEARL).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(EMERALD).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(FLINT).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(LAPIS).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(QUARTZ).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        //Metals
+        registry.getOrCreate(NETHERITE).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.NUGGET))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        //Solids
+        registry.getOrCreate(BRICK).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(CHARCOAL).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(CLAY).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(COAL).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(GLASS).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(GLOWSTONE)
+        registry.getOrCreate(NETHER_BRICK).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(REDSTONE)
+        //Stones
+        registry.getOrCreate(STONE).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+            add(HTSimpleItemContent(HTShapes.ROD))
+        }
+        registry.getOrCreate(GRANITE).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(DIORITE).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(ANDESITE).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(DEEPSLATE).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(CALCITE).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(TUFF).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(OBSIDIAN).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(NETHERRACK).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(BASALT).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(END_STONE).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        //Woods
+        registry.getOrCreate(WOOD).apply {
+            add(HTSimpleItemContent(HTShapes.DUST))
+            add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.PLATE))
+        }
+    }
+
     override fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
         //Fluids
         registry.getOrCreate(WATER)
@@ -273,7 +391,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         }
     }
 
-    override fun modifyMaterialFlag(registry: HTDefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder>) {
+    /*override fun modifyMaterialFlag(registry: HTDefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder>) {
         //Fluids
         //Gems
         registry.getOrCreate(AMETHYST).apply {
@@ -388,7 +506,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
             add(HTMaterialFlags.GENERATE_GEAR)
             add(HTMaterialFlags.GENERATE_PLATE)
         }
-    }
+    }*/
 
     override fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {
         //Fluids

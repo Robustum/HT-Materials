@@ -1,5 +1,9 @@
 package io.github.hiiragi283.material
 
+import io.github.hiiragi283.material.api.material.HTMaterialKey
+import io.github.hiiragi283.material.api.material.content.HTMaterialContent
+import io.github.hiiragi283.material.api.part.HTPartManager
+import io.github.hiiragi283.material.api.shape.HTShapeKey
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
@@ -31,6 +35,7 @@ object HTMaterialsCommon : ModInitializer {
         HTMaterialsCore.createShape()
         //Register Materials
         HTMaterialsCore.registerMaterialKey()
+        HTMaterialsCore.modifyMaterialContent()
         HTMaterialsCore.modifyMaterialProperty()
         HTMaterialsCore.modifyMaterialFlag()
         HTMaterialsCore.modifyMaterialColor()
@@ -43,7 +48,14 @@ object HTMaterialsCommon : ModInitializer {
         Registry.register(Registry.ITEM, id("icon"), ICON)
         HTMaterialsCore.registerMaterialFluids()
         LOGGER.info("All Material Fluids Registered!")
-        HTMaterialsCore.registerMaterialItems()
+        //HTMaterialsCore.registerMaterialItems()
+        HTMaterialsCore.createTest(
+            HTMaterialContent.Type.ITEM,
+            Registry.ITEM
+        ) { materialKey: HTMaterialKey, shapeKey: HTShapeKey ->
+            //Register as Default Item
+            HTPartManager.forceRegister(materialKey, shapeKey, this)
+        }
         LOGGER.info("All Material Items Registered!")
     }
 

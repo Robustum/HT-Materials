@@ -14,12 +14,6 @@ class HTFluidProperty : HTMaterialProperty<HTFluidProperty> {
     var viscosity: Int = 1000
     var isGas: Boolean = false
 
-    override val key: HTPropertyKey<HTFluidProperty> = HTPropertyKey.FLUID
-
-    override fun verify(material: HTMaterial) {
-
-    }
-
     private lateinit var fluid: Fluid
 
     private val fluidVariant: FluidVariant by lazy { FluidVariant.of(fluid) }
@@ -71,6 +65,14 @@ class HTFluidProperty : HTMaterialProperty<HTFluidProperty> {
             })*/
             fluid = HTFluidManager.getDefaultFluid(key) ?: this
         }
+    }
+
+    //    HTMaterialProperty    //
+
+    override val key: HTPropertyKey<HTFluidProperty> = HTPropertyKey.FLUID
+
+    override fun verify(material: HTMaterial) {
+
     }
 
 }

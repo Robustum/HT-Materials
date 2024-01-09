@@ -1,17 +1,17 @@
 package io.github.hiiragi283.material.api.part
 
-import io.github.hiiragi283.material.api.item.HTMaterialItemConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import net.minecraft.item.Item
+import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 
 data class HTPart(
-    override val materialKey: HTMaterialKey,
-    override val shapeKey: HTShapeKey
-) : HTMaterialItemConvertible {
+    val materialKey: HTMaterialKey,
+    val shapeKey: HTShapeKey
+) : ItemConvertible {
 
     fun getMaterial(): HTMaterial = materialKey.getMaterial()
 

@@ -4,6 +4,7 @@ import io.github.hiiragi283.material.api.material.ColorConvertible
 import io.github.hiiragi283.material.api.material.FormulaConvertible
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.MolarMassConvertible
+import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
@@ -23,13 +24,15 @@ interface HTMaterialsAddon {
 
     val priority: Int
 
-    //    Pre Launch    //
+    //    Initialize    //
 
     fun registerShape(registry: HTObjectKeySet<HTShapeKey>) {}
 
     fun modifyShapePredicate(registry: HTDefaultedMap<HTShapeKey, HTShapePredicate.Builder>) {}
 
     fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {}
+
+    fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {}
 
     fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {}
 

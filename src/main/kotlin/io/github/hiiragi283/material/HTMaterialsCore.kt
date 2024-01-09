@@ -3,8 +3,9 @@ package io.github.hiiragi283.material
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.event.HTRecipeRegisterCallback
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
-import io.github.hiiragi283.material.api.item.HTMaterialItem
 import io.github.hiiragi283.material.api.material.*
+import io.github.hiiragi283.material.api.material.content.HTMaterialContent
+import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTComponentProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
@@ -29,7 +30,6 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.tag.Tag
-import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
@@ -71,6 +71,13 @@ internal object HTMaterialsCore {
 
     fun registerMaterialKey() {
         cache.forEach { it.registerMaterialKey(materialKeySet) }
+    }
+
+    private val contentMap: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder> =
+        HTDefaultedMap.create { HTMaterialContentMap.Builder() }
+
+    fun modifyMaterialContent() {
+        cache.forEach { it.modifyMaterialContent(contentMap) }
     }
 
     private val propertyMap: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> =
@@ -145,30 +152,26 @@ internal object HTMaterialsCore {
 
     //    Initialization    //
 
-    fun registerMaterialFluids() {
-        HTMaterial.REGISTRY.forEach { (key: HTMaterialKey, material: HTMaterial) ->
-            material.getProperty(HTPropertyKey.FLUID)?.init(key)
+    inline fun <C, T : HTMaterialContent<C>> createTest(
+        type: HTMaterialContent.Type,
+        registry: Registry<C>,
+        action: C.(HTMaterialKey, HTShapeKey) -> Unit = { _, _ -> }
+    ) {
+        for (materialKey: HTMaterialKey in HTMaterial.REGISTRY.keys) {
+            val contents: Iterable<T> = contentMap.getOrCreate(materialKey).build().getContents(type)
+            for (content: T in contents) {
+                val shapeKey: HTShapeKey = content.shapeKey
+                content.create(materialKey).run {
+                    Registry.register(registry, shapeKey.getIdentifier(materialKey), this)
+                    action(materialKey, shapeKey)
+                }
+            }
         }
     }
 
-    fun registerMaterialItems() {
-        HTShape.REGISTRY.forEach { (shapeKey: HTShapeKey, shape: HTShape) ->
-            HTMaterial.REGISTRY
-                .filter { shape.test(it.value) }
-                .filterNot { HTPartManager.hasDefaultItem(it.key, shapeKey) }
-                .keys
-                .forEach { materialKey: HTMaterialKey ->
-                    val id: Identifier = shapeKey.getIdentifier(materialKey)
-                    //Register Item
-                    Registry.register(
-                        Registry.ITEM,
-                        id,
-                        HTMaterialItem(materialKey, shapeKey)
-                    ).run {
-                        //Register as Default Item
-                        HTPartManager.forceRegister(materialKey, shapeKey, this)
-                    }
-                }
+    fun registerMaterialFluids() {
+        HTMaterial.REGISTRY.forEach { (key: HTMaterialKey, material: HTMaterial) ->
+            material.getProperty(HTPropertyKey.FLUID)?.init(key)
         }
     }
 
@@ -210,10 +213,10 @@ internal object HTMaterialsCore {
     }
 
     private fun registerRecipes() {
-        HTRecipeRegisterCallback.EVENT.register { hander ->
+        HTRecipeRegisterCallback.EVENT.register { handler ->
             HTMaterial.REGISTRY.keys.forEach { key: HTMaterialKey ->
-                HTPartManager.getDefaultItem(key, HTShapes.INGOT)?.let { ingotRecipe(key, it, hander) }
-                HTPartManager.getDefaultItem(key, HTShapes.NUGGET)?.let { nuggetRecipe(key, it, hander) }
+                HTPartManager.getDefaultItem(key, HTShapes.INGOT)?.let { ingotRecipe(key, it, handler) }
+                HTPartManager.getDefaultItem(key, HTShapes.NUGGET)?.let { nuggetRecipe(key, it, handler) }
             }
         }
     }

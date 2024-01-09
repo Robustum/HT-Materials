@@ -1,13 +1,7 @@
 package io.github.hiiragi283.material
 
-import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
-import io.github.hiiragi283.material.api.item.HTMaterialItem
-import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.material.property.HTPropertyKey
-import io.github.hiiragi283.material.api.shape.HTShapeKey
-import io.github.hiiragi283.material.api.shape.HTShapes
+import io.github.hiiragi283.material.client.HTCustomModelIdItem
 import io.github.hiiragi283.material.util.modify
-import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
@@ -37,19 +31,7 @@ object HTModelLoaderMixin {
 
     private fun modifyBlockModelId(id: Identifier): Identifier = id
 
-    private fun modifyItemModelId(id: Identifier): Identifier? = when (val item: Item = Registry.ITEM.get(id)) {
-        is HTMaterialItem -> {
-            val (material: HTMaterialKey, shape: HTShapeKey) = item
-            val modelName: String = material.getMaterial()
-                .getProperty(HTPropertyKey.GEM)
-                ?.let { "${it.name.lowercase()}_gem" }
-                ?.takeIf { shape == HTShapes.GEM }
-                ?: shape.toString()
-            HTMaterialsCommon.id("models/item/$modelName.json")
-        }
-
-        is HTMaterialFluid.Bucket -> HTMaterialsCommon.id("models/item/bucket.json")
-        else -> null
-    }
+    private fun modifyItemModelId(id: Identifier): Identifier? =
+        (Registry.ITEM.get(id) as? HTCustomModelIdItem)?.getModelId()
 
 }

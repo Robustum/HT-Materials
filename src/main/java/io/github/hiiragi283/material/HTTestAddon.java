@@ -2,8 +2,8 @@ package io.github.hiiragi283.material;
 
 import io.github.hiiragi283.material.api.HTMaterialsAddon;
 import io.github.hiiragi283.material.api.material.*;
-import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet;
-import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags;
+import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap;
+import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent;
 import io.github.hiiragi283.material.api.material.property.HTFluidProperty;
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap;
 import io.github.hiiragi283.material.api.material.property.HTMetalProperty;
@@ -12,7 +12,6 @@ import io.github.hiiragi283.material.api.registry.HTDefaultedTable;
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet;
 import io.github.hiiragi283.material.api.shape.HTShape;
 import io.github.hiiragi283.material.api.shape.HTShapeKey;
-import io.github.hiiragi283.material.api.shape.HTShapePredicate;
 import io.github.hiiragi283.material.api.shape.HTShapes;
 import io.github.hiiragi283.material.util.HTColor;
 import kotlin.Unit;
@@ -50,13 +49,6 @@ public class HTTestAddon implements HTMaterialsAddon {
         registry.add(DIRTY_DUST);
     }
 
-    @Override
-    public void modifyShapePredicate(@NotNull HTDefaultedMap<HTShapeKey, HTShapePredicate.Builder> registry) {
-        var builder = registry.getOrCreate(DIRTY_DUST);
-        builder.setDisabled(false);
-        builder.requiredFlags.add(HTMaterialFlags.GENERATE_DUST);
-    }
-
     //    HTMaterial    //
 
     public static final HTMaterialKey INFINITY = new HTMaterialKey("infinity");
@@ -67,6 +59,17 @@ public class HTTestAddon implements HTMaterialsAddon {
     }
 
     @Override
+    public void modifyMaterialContent(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder> registry) {
+        var builder = registry.getOrCreate(INFINITY);
+        builder.add(new HTSimpleItemContent(HTShapes.DUST));
+        builder.add(new HTSimpleItemContent(HTShapes.GEAR));
+        builder.add(new HTSimpleItemContent(HTShapes.INGOT));
+        builder.add(new HTSimpleItemContent(HTShapes.NUGGET));
+        builder.add(new HTSimpleItemContent(HTShapes.PLATE));
+        builder.add(new HTSimpleItemContent(HTShapes.ROD));
+    }
+
+    @Override
     public void modifyMaterialProperty(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> registry) {
         var builder = registry.getOrCreate(INFINITY);
         builder.add(HTMetalProperty.INSTANCE);
@@ -74,17 +77,6 @@ public class HTTestAddon implements HTMaterialsAddon {
             prop.setTemperature(32768);
             return Unit.INSTANCE;
         });
-    }
-
-    @Override
-    public void modifyMaterialFlag(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder> registry) {
-        var builder = registry.getOrCreate(INFINITY);
-        builder.add(HTMaterialFlags.GENERATE_DUST);
-        builder.add(HTMaterialFlags.GENERATE_GEAR);
-        builder.add(HTMaterialFlags.GENERATE_INGOT);
-        builder.add(HTMaterialFlags.GENERATE_NUGGET);
-        builder.add(HTMaterialFlags.GENERATE_PLATE);
-        builder.add(HTMaterialFlags.GENERATE_ROD);
     }
 
     @Override

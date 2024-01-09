@@ -3,6 +3,7 @@ package io.github.hiiragi283.material.api.fluid
 import io.github.hiiragi283.material.HTMaterialsCommon
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.shape.HTShapeKey
+import io.github.hiiragi283.material.client.HTCustomModelIdItem
 import io.github.hiiragi283.material.util.prefix
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
@@ -17,6 +18,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.text.Text
+import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.registry.Registry
@@ -91,16 +93,16 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
 
     //    Flowing    //
 
-    class Flowing internal constructor(material: HTMaterialKey) : HTMaterialFluid(material) {
+    class Flowing internal constructor(materialKey: HTMaterialKey) : HTMaterialFluid(materialKey) {
 
         init {
-            fluidFlowing.putIfAbsent(material, this)
+            fluidFlowing.putIfAbsent(materialKey, this)
             Registry.register(
                 Registry.FLUID,
-                material.getIdentifier().prefix("flowing_"),
+                materialKey.getIdentifier().prefix("flowing_"),
                 this
             )
-            HTFluidManager.forceRegister(material, this)
+            HTFluidManager.forceRegister(materialKey, this)
         }
 
         override fun appendProperties(builder: StateManager.Builder<Fluid, FluidState>) {
@@ -116,16 +118,16 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
 
     //    Still    //
 
-    class Still internal constructor(material: HTMaterialKey) : HTMaterialFluid(material) {
+    class Still internal constructor(materialKey: HTMaterialKey) : HTMaterialFluid(materialKey) {
 
         init {
-            fluidStill.putIfAbsent(material, this)
+            fluidStill.putIfAbsent(materialKey, this)
             Registry.register(
                 Registry.FLUID,
-                material.getIdentifier(),
+                materialKey.getIdentifier(),
                 this
             )
-            HTFluidManager.forceRegister(material, this)
+            HTFluidManager.forceRegister(materialKey, this)
         }
 
         override fun getLevel(state: FluidState): Int = 8
@@ -136,7 +138,7 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
 
     //    Bucket    //
 
-    class Bucket internal constructor(fluid: Still) : BucketItem(fluid, itemSettings) {
+    class Bucket internal constructor(fluid: Still) : BucketItem(fluid, itemSettings), HTCustomModelIdItem {
 
         private val materialKey = fluid.materialKey
 
@@ -152,6 +154,8 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
         override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
 
         override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
+
+        override fun getModelId(): Identifier = HTMaterialsCommon.id("models/item/bucket.json")
 
     }
 

@@ -5,7 +5,6 @@ import com.google.common.collect.Table
 import io.github.hiiragi283.material.api.registry.HTDefaultedTable
 import io.github.hiiragi283.material.util.computeIfAbsent
 import io.github.hiiragi283.material.util.forEach
-import java.util.function.Consumer
 
 internal class HTDefaultedTableImpl<R: Any, C: Any, V: Any>(private val mapping: (R, C) -> V) : HTDefaultedTable<R, C, V> {
 
@@ -13,9 +12,9 @@ internal class HTDefaultedTableImpl<R: Any, C: Any, V: Any>(private val mapping:
 
     override fun getOrCreate(rowKey: R, columnKey: C): V = backingTable.computeIfAbsent(rowKey, columnKey, mapping)
 
-    override fun forEach(consumer: Consumer<Table.Cell<R, C, V>>) = backingTable.forEach(consumer::accept)
-
     override fun forEach(action: (R, C, V) -> Unit) =
         backingTable.forEach { cell -> action(cell.rowKey!!, cell.columnKey!!, cell.value!!) }
+
+    override fun iterator(): Iterator<V> = backingTable.values().iterator()
 
 }

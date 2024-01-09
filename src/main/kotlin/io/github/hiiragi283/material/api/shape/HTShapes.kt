@@ -2,7 +2,6 @@ package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.HTMaterialsCommon
 import io.github.hiiragi283.material.api.HTMaterialsAddon
-import io.github.hiiragi283.material.api.material.flag.HTMaterialFlags
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 
@@ -68,31 +67,24 @@ object HTShapes : HTMaterialsAddon {
         //Item
         registry.getOrCreate(DUST).apply {
             disabled = false
-            requiredFlags.add(HTMaterialFlags.GENERATE_DUST)
         }
         registry.getOrCreate(GEAR).apply {
             disabled = false
-            requiredFlags.add(HTMaterialFlags.GENERATE_GEAR)
         }
         registry.getOrCreate(GEM).apply {
             disabled = false
-            requiredFlags.add(HTMaterialFlags.GENERATE_GEM)
         }
         registry.getOrCreate(INGOT).apply {
             disabled = false
-            requiredFlags.add(HTMaterialFlags.GENERATE_INGOT)
         }
         registry.getOrCreate(NUGGET).apply {
             disabled = false
-            requiredFlags.add(HTMaterialFlags.GENERATE_NUGGET)
         }
         registry.getOrCreate(PLATE).apply {
             disabled = false
-            requiredFlags.add(HTMaterialFlags.GENERATE_PLATE)
         }
         registry.getOrCreate(ROD).apply {
             disabled = false
-            requiredFlags.add(HTMaterialFlags.GENERATE_ROD)
         }
     }
 

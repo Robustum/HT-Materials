@@ -1,17 +1,16 @@
 package io.github.hiiragi283.material
 
-import com.google.common.collect.Table
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.part.HTPartManager
+import io.github.hiiragi283.material.api.part.getMaterialKey
+import io.github.hiiragi283.material.api.part.getShapeKey
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.mixin.TagBuilderAccessor
 import io.github.hiiragi283.material.util.HTMixinLogger
-import io.github.hiiragi283.material.util.forEach
 import net.minecraft.fluid.Fluid
-import net.minecraft.item.Item
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
@@ -44,17 +43,14 @@ internal object HTTagLoaderMixin {
     @JvmStatic
     fun itemTags(map: MutableMap<Identifier, Tag.Builder>) {
         //Register Tags from HTPartManager
-        HTPartManager.getPartToItemTable().forEach { cell: Table.Cell<HTMaterialKey, HTShapeKey, Collection<Item>> ->
-            val materialKey: HTMaterialKey = cell.rowKey ?: return@forEach
-            val shapeKey: HTShapeKey = cell.columnKey ?: return@forEach
-            val items: Collection<Item> = cell.value ?: return@forEach
-            items.forEach { item: Item ->
-                registerTag(
-                    getOrCreateBuilder(map, shapeKey.getCommonTag(materialKey).id),
-                    Registry.ITEM,
-                    item
-                )
-            }
+        HTPartManager.getAllItems().forEach { item ->
+            val materialKey: HTMaterialKey = item.getMaterialKey() ?: return@forEach
+            val shapeKey: HTShapeKey = item.getShapeKey() ?: return@forEach
+            registerTag(
+                getOrCreateBuilder(map, shapeKey.getCommonTag(materialKey).id),
+                Registry.ITEM,
+                item
+            )
         }
         HTMixinLogger.INSTANCE.info("Registered Tags for HTPartManager's Entries!")
         //Sync ForgeTag and CommonTag entries

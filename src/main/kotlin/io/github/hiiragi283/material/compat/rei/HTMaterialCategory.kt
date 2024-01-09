@@ -31,7 +31,7 @@ object HTMaterialCategory : RecipeCategory<HTMaterialDisplay> {
         val widgets: MutableList<Widget> = mutableListOf()
         widgets += Widgets
             .createSlot(Point(bounds.centerX - 8, bounds.y + 3))
-            .entry(display.getEntries().firstOrNull() ?: EntryStack.empty())
+            .entry(display.entries.firstOrNull() ?: EntryStack.empty())
         val rectangle = Rectangle(
             bounds.centerX - bounds.width / 2 - 1,
             bounds.y + 23,
@@ -41,7 +41,7 @@ object HTMaterialCategory : RecipeCategory<HTMaterialDisplay> {
         widgets += Widgets.createSlotBase(rectangle)
         widgets += HTScrollableSlotsWidget(
             rectangle,
-            display.getEntries().map { entry: EntryStack ->
+            display.entries.map { entry: EntryStack ->
                 Widgets.createSlot(Point(0, 0))
                     .disableBackground()
                     .entry(entry)

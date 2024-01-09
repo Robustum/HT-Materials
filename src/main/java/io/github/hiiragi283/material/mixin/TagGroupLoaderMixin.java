@@ -8,7 +8,6 @@ import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -25,16 +24,6 @@ public abstract class TagGroupLoaderMixin<T> {
     @Inject(method = "buildGroup", at = @At(value = "HEAD"))
     private void ht_materials$buildGroup(Map<Identifier, Tag.Builder> tags, CallbackInfoReturnable<TagGroup<T>> cir) {
         HTTagLoaderMixin.loadTags(tags, entryType);
-    }
-
-    @Unique
-    private <R> Tag.Builder ht_materials$getorCreateBuilder(Map<Identifier, Tag.Builder> tags, Tag.Identified<R> tag) {
-        return tags.computeIfAbsent(tag.getId(), key -> Tag.Builder.create());
-    }
-
-    @Unique
-    private void ht_materials$syncEntries(Tag.Builder parentBuilder, Tag.Builder childBuilder) {
-        ((TagBuilderAccessor) childBuilder).getEntries().forEach(parentBuilder::add);
     }
 
 }

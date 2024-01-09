@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material
+package io.github.hiiragi283.material.client
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler
