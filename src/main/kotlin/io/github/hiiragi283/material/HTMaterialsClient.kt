@@ -4,9 +4,8 @@ import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.part.HTPartManager
-import io.github.hiiragi283.material.api.part.getMaterial
 import io.github.hiiragi283.material.api.part.getPart
+import io.github.hiiragi283.material.client.HTColoredMaterialBlock
 import io.github.hiiragi283.material.client.HTColoredMaterialItem
 import io.github.hiiragi283.material.client.HTFluidRenderHandler
 import io.github.hiiragi283.material.util.getTransaction
@@ -20,9 +19,9 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView
-import net.minecraft.client.color.item.ItemColorProvider
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
+import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
@@ -37,6 +36,10 @@ object HTMaterialsClient : ClientModInitializer {
         //Register Render Handler for Material Fluid
         registerFluidRenderHandler()
         LOGGER.info("Material Fluid Renderer Registered!")
+
+        //Register Block Color Provider
+        registerBlockColorProvider()
+        LOGGER.info("Block Color Provider Registered!")
 
         //Register Item Color Provider
         registerItemColorProvider()
@@ -58,26 +61,19 @@ object HTMaterialsClient : ClientModInitializer {
         }
     }
 
-    private fun registerItemColorProvider() {
-        //Material Items
-        HTPartManager.getDefaultItems()
-            .filterIsInstance<HTColoredMaterialItem>()
-            .forEach { item: HTColoredMaterialItem ->
-                item.getMaterial()?.color?.rgb?.run {
-                    ColorProviderRegistry.ITEM.register(
-                        ItemColorProvider { _, tintIndex: Int -> if (tintIndex == 0) this else -1 },
-                        item
-                    )
-                }
+    private fun registerBlockColorProvider() {
+        Registry.BLOCK.forEach { block ->
+            if (block is HTColoredMaterialBlock) {
+                ColorProviderRegistry.BLOCK.register(block.getColorProvider(), block)
             }
-        //Material Fluid Bucket
-        HTFluidManager.getDefaultFluidMap().values.filterIsInstance<HTMaterialFluid.Still>().forEach { fluid ->
-            val color: Int = FluidRenderHandlerRegistry.INSTANCE.get(fluid)
-                ?.getFluidColor(null, null, fluid.defaultState) ?: -1
-            ColorProviderRegistry.ITEM.register(
-                ItemColorProvider { _: ItemStack, tintIndex: Int -> if (tintIndex == 1) color else -1 },
-                fluid.bucketItem
-            )
+        }
+    }
+
+    private fun registerItemColorProvider() {
+        Registry.ITEM.forEach { item ->
+            if (item is HTColoredMaterialItem) {
+                ColorProviderRegistry.ITEM.register(item.getColorProvider(), item)
+            }
         }
     }
 

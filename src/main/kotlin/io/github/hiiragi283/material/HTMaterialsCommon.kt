@@ -1,9 +1,5 @@
 package io.github.hiiragi283.material
 
-import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.material.content.HTMaterialContent
-import io.github.hiiragi283.material.api.part.HTPartManager
-import io.github.hiiragi283.material.api.shape.HTShapeKey
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
@@ -22,10 +18,10 @@ object HTMaterialsCommon : ModInitializer {
 
     private val LOGGER: Logger = LogManager.getLogger(MOD_NAME)
 
-    @get:JvmName("ITEM_GROUP")
+    @JvmField
     val ITEM_GROUP: ItemGroup = FabricItemGroupBuilder.create(id("material")).icon { ICON.defaultStack }.build()
 
-    @get:JvmName("ICON")
+    @JvmField
     val ICON: Item = Item(FabricItemSettings().group(ITEM_GROUP).rarity(Rarity.EPIC))
 
     override fun onInitialize() {
@@ -44,18 +40,12 @@ object HTMaterialsCommon : ModInitializer {
         HTMaterialsCore.createMaterial()
         HTMaterialsCore.verifyMaterial()
         //Initialize Game Objects
-        ITEM_GROUP
-        Registry.register(Registry.ITEM, id("icon"), ICON)
+        HTMaterialsCore.createContent(Registry.BLOCK_KEY)
+        LOGGER.info("All Material Blocks Registered!")
         HTMaterialsCore.registerMaterialFluids()
         LOGGER.info("All Material Fluids Registered!")
-        //HTMaterialsCore.registerMaterialItems()
-        HTMaterialsCore.createTest(
-            HTMaterialContent.Type.ITEM,
-            Registry.ITEM
-        ) { materialKey: HTMaterialKey, shapeKey: HTShapeKey ->
-            //Register as Default Item
-            HTPartManager.forceRegister(materialKey, shapeKey, this)
-        }
+        Registry.register(Registry.ITEM, id("icon"), ICON)
+        HTMaterialsCore.createContent(Registry.ITEM_KEY)
         LOGGER.info("All Material Items Registered!")
     }
 

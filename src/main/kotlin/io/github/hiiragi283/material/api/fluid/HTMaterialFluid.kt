@@ -3,12 +3,14 @@ package io.github.hiiragi283.material.api.fluid
 import io.github.hiiragi283.material.HTMaterialsCommon
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.shape.HTShapeKey
+import io.github.hiiragi283.material.client.HTColoredMaterialItem
 import io.github.hiiragi283.material.client.HTCustomModelIdItem
 import io.github.hiiragi283.material.util.prefix
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
+import net.minecraft.client.color.item.ItemColorProvider
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
@@ -138,7 +140,8 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
 
     //    Bucket    //
 
-    class Bucket internal constructor(fluid: Still) : BucketItem(fluid, itemSettings), HTCustomModelIdItem {
+    class Bucket internal constructor(fluid: Still) : BucketItem(fluid, itemSettings), HTColoredMaterialItem,
+        HTCustomModelIdItem {
 
         private val materialKey = fluid.materialKey
 
@@ -154,6 +157,10 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
         override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
 
         override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
+
+        override fun getColorProvider(): ItemColorProvider = ItemColorProvider { _: ItemStack, tintIndex: Int ->
+            if (tintIndex == 1) materialKey.getMaterial().color.rgb else -1
+        }
 
         override fun getModelId(): Identifier = HTMaterialsCommon.id("models/item/bucket.json")
 

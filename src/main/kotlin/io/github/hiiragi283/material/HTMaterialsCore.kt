@@ -1,6 +1,7 @@
 package io.github.hiiragi283.material
 
 import io.github.hiiragi283.material.api.HTMaterialsAddon
+import io.github.hiiragi283.material.api.event.HTLootTableRegisterCallback
 import io.github.hiiragi283.material.api.event.HTRecipeRegisterCallback
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.*
@@ -23,6 +24,7 @@ import io.github.hiiragi283.material.util.prefix
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.data.server.RecipesProvider
 import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
@@ -31,6 +33,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.tag.Tag
 import net.minecraft.util.registry.Registry
+import net.minecraft.util.registry.RegistryKey
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
@@ -152,18 +155,13 @@ internal object HTMaterialsCore {
 
     //    Initialization    //
 
-    inline fun <C, T : HTMaterialContent<C>> createTest(
-        type: HTMaterialContent.Type,
-        registry: Registry<C>,
-        action: C.(HTMaterialKey, HTShapeKey) -> Unit = { _, _ -> }
-    ) {
+    fun <T> createContent(registryKey: RegistryKey<T>) {
         for (materialKey: HTMaterialKey in HTMaterial.REGISTRY.keys) {
-            val contents: Iterable<T> = contentMap.getOrCreate(materialKey).build().getContents(type)
-            for (content: T in contents) {
-                val shapeKey: HTShapeKey = content.shapeKey
-                content.create(materialKey).run {
-                    Registry.register(registry, shapeKey.getIdentifier(materialKey), this)
-                    action(materialKey, shapeKey)
+            for (content: HTMaterialContent<T> in contentMap.getOrCreate(materialKey).build()
+                .getContents(registryKey)) {
+                content.create(materialKey)?.run {
+                    Registry.register(content.registry, content.getIdentifier(materialKey), this)
+                    content.onCreate(materialKey, this)
                 }
             }
         }
@@ -212,6 +210,19 @@ internal object HTMaterialsCore {
         }
     }
 
+    private fun registerLootTables() {
+        HTLootTableRegisterCallback.EVENT.register { handler ->
+            HTMaterial.REGISTRY.keys.forEach { key ->
+                HTPartManager.getDefaultItem(key, HTShapes.BLOCK)?.let {
+                    handler.addTable(
+                        HTShapes.BLOCK.getIdentifier(key).prefix("blocks/"),
+                        BlockLootTableGenerator.drops(it)
+                    )
+                }
+            }
+        }
+    }
+
     private fun registerRecipes() {
         HTRecipeRegisterCallback.EVENT.register { handler ->
             HTMaterial.REGISTRY.keys.forEach { key: HTMaterialKey ->
@@ -226,7 +237,7 @@ internal object HTMaterialsCore {
         if (!HTPartManager.hasDefaultItem(material, HTShapes.NUGGET)) return
         val nuggetTag: Tag<Item> = HTShapes.NUGGET.getCommonTag(material)
         handler.addShapedCrafting(
-            HTShapes.INGOT.getIdentifier(material, HTMaterialsCommon.MOD_ID).prefix("shaped/"),
+            HTShapes.INGOT.getIdentifier(material).prefix("shaped/"),
             ShapedRecipeJsonFactory.create(item)
                 .pattern("AAA")
                 .pattern("AAA")
@@ -241,7 +252,7 @@ internal object HTMaterialsCore {
         if (!HTPartManager.hasDefaultItem(material, HTShapes.INGOT)) return
         val ingotTag: Tag<Item> = HTShapes.INGOT.getCommonTag(material)
         handler.addShapelessCrafting(
-            HTShapes.NUGGET.getIdentifier(material, HTMaterialsCommon.MOD_ID).prefix("shapeless/"),
+            HTShapes.NUGGET.getIdentifier(material).prefix("shapeless/"),
             ShapelessRecipeJsonFactory.create(item, 9)
                 .input(ingotTag)
                 .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag))

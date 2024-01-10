@@ -20,7 +20,7 @@ fun interface HTRecipeRegisterCallback {
             }
     }
 
-    class Handler(val map: MutableMap<Identifier, JsonElement>) {
+    class Handler(private val map: MutableMap<Identifier, JsonElement>) {
 
         fun addShapedCrafting(recipeId: Identifier, builder: ShapedRecipeJsonFactory) {
             builder.offerTo({ provider: RecipeJsonProvider ->

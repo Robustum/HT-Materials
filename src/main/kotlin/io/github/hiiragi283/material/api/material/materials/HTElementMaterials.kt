@@ -8,6 +8,7 @@ import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.MolarMassConvertible
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
+import io.github.hiiragi283.material.api.material.content.HTStorageBlockContent
 import io.github.hiiragi283.material.api.material.property.HTFluidProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.material.api.material.property.HTMetalProperty
@@ -213,7 +214,7 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //3rd Period
         registry.getOrCreate(ALUMINUM).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -236,7 +237,7 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //4th Period
         registry.getOrCreate(TITANIUM).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -251,7 +252,7 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(NICKEL).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -267,7 +268,7 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(ZINC).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -277,7 +278,7 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //5th Period
         registry.getOrCreate(SILVER).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -286,7 +287,7 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(TIN).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -296,7 +297,7 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //6th Period
         registry.getOrCreate(TUNGSTEN).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -305,7 +306,7 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(IRIDIUM).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -314,7 +315,7 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(PLATINUM).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -329,7 +330,7 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(LEAD).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -339,7 +340,7 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //7th Period
         registry.getOrCreate(URANIUM).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.INGOT))
             add(HTSimpleItemContent(HTShapes.NUGGET))
@@ -347,7 +348,7 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(PLUTONIUM).apply {
-            add(HTSimpleItemContent(HTShapes.BLOCK))
+            add(HTStorageBlockContent())
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.INGOT))
             add(HTSimpleItemContent(HTShapes.NUGGET))

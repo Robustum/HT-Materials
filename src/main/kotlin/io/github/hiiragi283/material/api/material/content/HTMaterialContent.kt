@@ -1,38 +1,50 @@
 package io.github.hiiragi283.material.api.material.content
 
 import io.github.hiiragi283.material.api.material.HTMaterialKey
+import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShapeKey
-import net.minecraft.block.Block as MCBlock
-import net.minecraft.item.Item as MCItem
+import net.minecraft.block.Block
+import net.minecraft.fluid.Fluid
+import net.minecraft.item.Item
+import net.minecraft.util.Identifier
+import net.minecraft.util.registry.Registry
 
-sealed interface HTMaterialContent<T> {
+sealed class HTMaterialContent<T> {
 
-    val shapeKey: HTShapeKey
+    abstract val shapeKey: HTShapeKey
 
-    fun getContentType(): Type
+    abstract val registry: Registry<T>
 
-    fun create(materialKey: HTMaterialKey): T
+    abstract fun getIdentifier(materialKey: HTMaterialKey): Identifier
 
-    interface Block : HTMaterialContent<MCBlock> {
+    abstract fun create(materialKey: HTMaterialKey): T?
 
-        override fun getContentType(): Type = Type.BLOCK
+    open fun onCreate(materialKey: HTMaterialKey, created: T) {}
 
-    }
+    abstract class BLOCK : HTMaterialContent<Block>() {
 
-    /*interface Fluid : HTMaterialContent<MCFluid> {
+        final override val registry: Registry<Block> = Registry.BLOCK
 
-        override fun getContentType(): Type = Type.FLUID
-
-    }*/
-
-    interface Item : HTMaterialContent<MCItem> {
-
-        override fun getContentType(): Type = Type.ITEM
+        final override fun getIdentifier(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
 
     }
 
-    enum class Type {
-        BLOCK, FLUID, ITEM
+    abstract class FLUID : HTMaterialContent<Fluid>() {
+
+        final override val registry: Registry<Fluid> = Registry.FLUID
+
+    }
+
+    abstract class ITEM : HTMaterialContent<Item>() {
+
+        final override val registry: Registry<Item> = Registry.ITEM
+
+        final override fun getIdentifier(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
+
+        override fun onCreate(materialKey: HTMaterialKey, created: Item) {
+            HTPartManager.forceRegister(materialKey, shapeKey, created)
+        }
+
     }
 
 }
