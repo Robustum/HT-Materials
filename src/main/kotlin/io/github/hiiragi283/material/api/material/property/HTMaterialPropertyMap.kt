@@ -1,16 +1,8 @@
 package io.github.hiiragi283.material.api.material.property
 
-import io.github.hiiragi283.material.api.material.HTMaterial
-
 class HTMaterialPropertyMap private constructor(
     map: Map<HTPropertyKey<*>, HTMaterialProperty<*>>
 ) : Map<HTPropertyKey<*>, HTMaterialProperty<*>> by map {
-
-    fun <T : HTMaterialProperty<T>> getAs(key: HTPropertyKey<T>): T? = key.objClass.cast(this[key])
-
-    fun verify(material: HTMaterial) {
-        this.values.forEach { it.verify(material) }
-    }
 
     //    Any    //
 
@@ -18,17 +10,23 @@ class HTMaterialPropertyMap private constructor(
 
     //    Builder    //
 
-    class Builder : MutableMap<HTPropertyKey<*>, HTMaterialProperty<*>> by hashMapOf() {
+    class Builder {
+
+        private val backingMap: MutableMap<HTPropertyKey<*>, HTMaterialProperty<*>> = hashMapOf()
 
         @JvmOverloads
-        inline fun <T : HTMaterialProperty<T>> add(
+        fun <T : HTMaterialProperty<T>> add(
             property: T,
             action: T.() -> Unit = {}
         ) {
-            this[property.key] = property.apply(action)
+            backingMap[property.key] = property.apply(action)
         }
 
-        internal fun build(): HTMaterialPropertyMap = HTMaterialPropertyMap(this)
+        fun remove(key: HTPropertyKey<*>) {
+            backingMap.remove(key)
+        }
+
+        internal fun build() = HTMaterialPropertyMap(backingMap)
 
     }
 

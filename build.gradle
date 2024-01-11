@@ -23,6 +23,10 @@ repositories {
         url "https://api.modrinth.com/maven"
         content { includeGroup "maven.modrinth" }
     }
+    maven {
+        url "https://maven.saps.dev/minecraft"
+        content {includeGroup "dev.latvian.mods"}
+    }
     maven { url "https://maven.architectury.dev/" }
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/releases/" }
@@ -37,6 +41,12 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${project.fabric_version}")
     modImplementation("net.fabricmc:fabric-language-kotlin:${project.fabric_kotlin_version}")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+    //KubeJS
+    modImplementation("dev.latvian.mods:kubejs-fabric:1605.3.19-build.422") {
+        exclude(module: "fabric-api")
+        exclude(module: "fabric-loader")
+    }
 
     //REI
     modImplementation("me.shedaniel:RoughlyEnoughItems:5.12.385") {

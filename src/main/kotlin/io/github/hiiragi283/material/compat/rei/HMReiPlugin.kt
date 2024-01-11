@@ -16,17 +16,6 @@ object HMReiPlugin : REIPluginV0 {
 
     override fun getPluginIdentifier(): Identifier = HTMaterialsCommon.id("plugin")
 
-    /*override fun registerEntryRenderers(registry: EntryRendererRegistry) {
-        registry.transformTooltip(VanillaEntryTypes.FLUID) { fluidStack: EntryStack<FluidStack>, _, tooltip: Tooltip? ->
-            HTFluidManager.getMaterialKey(fluidStack.value.fluid)?.getMaterial()?.run {
-                val tooltipDummy: MutableList<Text> = mutableListOf()
-                HTMaterial.appendTooltip(this, null, ItemStack.EMPTY, tooltipDummy)
-                tooltip?.addAllTexts(tooltipDummy)
-            }
-            return@transformTooltip tooltip
-        }
-    }*/
-
     override fun registerPluginCategories(recipeHelper: RecipeHelper) {
         recipeHelper.registerCategory(HTMaterialCategory)
     }

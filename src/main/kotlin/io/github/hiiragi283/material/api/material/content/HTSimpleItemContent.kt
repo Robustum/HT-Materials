@@ -1,13 +1,13 @@
 package io.github.hiiragi283.material.api.material.content
 
 import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.api.client.HTColoredMaterialItem
+import io.github.hiiragi283.material.api.client.HTCustomModelIdItem
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.client.HTColoredMaterialItem
-import io.github.hiiragi283.material.client.HTCustomModelIdItem
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.client.color.item.ItemColorProvider
 import net.minecraft.item.Item
@@ -18,9 +18,9 @@ import net.minecraft.util.Identifier
 class HTSimpleItemContent(override val shapeKey: HTShapeKey) : HTMaterialContent.ITEM() {
 
     override fun create(materialKey: HTMaterialKey): Item? =
-        SimpleMaterialItem(materialKey, shapeKey).takeUnless { HTPartManager.hasDefaultItem(materialKey, shapeKey) }
+        ItemImpl(materialKey, shapeKey).takeUnless { HTPartManager.hasDefaultItem(materialKey, shapeKey) }
 
-    private class SimpleMaterialItem(
+    private class ItemImpl(
         private val materialKey: HTMaterialKey,
         private val shapeKey: HTShapeKey
     ) : Item(FabricItemSettings().group(HTMaterialsCommon.ITEM_GROUP)),

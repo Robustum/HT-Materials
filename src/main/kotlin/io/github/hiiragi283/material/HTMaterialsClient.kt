@@ -1,13 +1,13 @@
 package io.github.hiiragi283.material
 
+import io.github.hiiragi283.material.api.client.HTColoredMaterialBlock
+import io.github.hiiragi283.material.api.client.HTColoredMaterialItem
+import io.github.hiiragi283.material.api.client.HTFluidRenderHandler
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.part.getPart
-import io.github.hiiragi283.material.client.HTColoredMaterialBlock
-import io.github.hiiragi283.material.client.HTColoredMaterialItem
-import io.github.hiiragi283.material.client.HTFluidRenderHandler
 import io.github.hiiragi283.material.util.getTransaction
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType

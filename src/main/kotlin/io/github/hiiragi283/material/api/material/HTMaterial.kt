@@ -13,21 +13,20 @@ import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.awt.Color
 
 class HTMaterial private constructor(
     val key: HTMaterialKey,
-    val info: HTMaterialInfo,
+    val color: Color,
+    val formula: String,
+    val molar: Double,
     val properties: HTMaterialPropertyMap,
     val flags: HTMaterialFlagSet
 ) {
 
-    val color = info.color
-    val formula = info.formula
-    val molar = info.molar
-
     //    Properties    //
 
-    fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = properties.getAs(key)
+    fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = key.objClass.cast(properties[key])
 
     fun hasProperty(key: HTPropertyKey<*>): Boolean = key in properties
 
@@ -38,8 +37,8 @@ class HTMaterial private constructor(
     }
 
     fun verify() {
-        properties.verify(this)
-        flags.verify(this)
+        properties.values.forEach { it.verify(this) }
+        flags.forEach { it.verify(this) }
     }
 
     //    Flags    //
@@ -71,10 +70,12 @@ class HTMaterial private constructor(
         @JvmStatic
         internal fun create(
             key: HTMaterialKey,
-            info: HTMaterialInfo,
+            color: Color,
+            formula: String,
+            molar: Double,
             properties: HTMaterialPropertyMap,
             flags: HTMaterialFlagSet
-        ): HTMaterial = HTMaterial(key, info, properties, flags).also {
+        ): HTMaterial = HTMaterial(key, color, formula, molar, properties, flags).also {
             registry.putIfAbsent(key, it)
             LOGGER.info("Material: $key registered!")
         }

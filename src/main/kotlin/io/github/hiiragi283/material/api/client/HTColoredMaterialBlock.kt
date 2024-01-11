@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material.client
+package io.github.hiiragi283.material.api.client
 
 import net.minecraft.client.color.block.BlockColorProvider
 

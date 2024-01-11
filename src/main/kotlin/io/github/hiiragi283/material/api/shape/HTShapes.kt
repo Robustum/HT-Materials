@@ -2,7 +2,6 @@ package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.HTMaterialsCommon
 import io.github.hiiragi283.material.api.HTMaterialsAddon
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 
 object HTShapes : HTMaterialsAddon {
@@ -60,32 +59,6 @@ object HTShapes : HTMaterialsAddon {
             PLATE,
             ROD
         )
-    }
-
-    override fun modifyShapePredicate(registry: HTDefaultedMap<HTShapeKey, HTShapePredicate.Builder>) {
-        //Block
-        //Item
-        registry.getOrCreate(DUST).apply {
-            disabled = false
-        }
-        registry.getOrCreate(GEAR).apply {
-            disabled = false
-        }
-        registry.getOrCreate(GEM).apply {
-            disabled = false
-        }
-        registry.getOrCreate(INGOT).apply {
-            disabled = false
-        }
-        registry.getOrCreate(NUGGET).apply {
-            disabled = false
-        }
-        registry.getOrCreate(PLATE).apply {
-            disabled = false
-        }
-        registry.getOrCreate(ROD).apply {
-            disabled = false
-        }
     }
 
 }

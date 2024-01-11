@@ -17,6 +17,9 @@ import net.minecraft.util.registry.Registry
 
 internal object HTTagLoaderMixin {
 
+    private val Tag.Builder.entries: List<Tag.TrackedEntry>
+        get() = (this as TagBuilderAccessor).entries
+
     @JvmStatic
     fun loadTags(map: MutableMap<Identifier, Tag.Builder>, entryType: String) {
         when (entryType) {
@@ -26,6 +29,13 @@ internal object HTTagLoaderMixin {
             "item" -> itemTags(map)
             else -> {}
         }
+        //Remove Empty Builder
+        HashMap(map).forEach { (id: Identifier, builder: Tag.Builder) ->
+            if (builder.entries.isEmpty()) {
+                map.remove(id)
+            }
+        }
+        HTMixinLogger.INSTANCE.info("Removed empty tag builders!")
     }
 
     @JvmStatic
@@ -63,13 +73,6 @@ internal object HTTagLoaderMixin {
             }
         }
         HTMixinLogger.INSTANCE.info("Synced Forge Tags and Common Tags!")
-        //Remove Empty Builder
-        HashMap(map).forEach { (id: Identifier, builder: Tag.Builder) ->
-            if ((builder as TagBuilderAccessor).entries.isEmpty()) {
-                map.remove(id)
-            }
-        }
-        HTMixinLogger.INSTANCE.info("Removed empty tag builders!")
     }
 
     @JvmStatic
@@ -87,7 +90,7 @@ internal object HTTagLoaderMixin {
 
     @JvmStatic
     private fun syncBuilder(parentBuilder: Tag.Builder, childBuilder: Tag.Builder) {
-        (childBuilder as TagBuilderAccessor).entries.forEach(parentBuilder::add)
+        childBuilder.entries.forEach(parentBuilder::add)
     }
 
 }

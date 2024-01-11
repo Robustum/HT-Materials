@@ -27,7 +27,6 @@ object HTMaterialsCommon : ModInitializer {
     override fun onInitialize() {
         //Register Shapes
         HTMaterialsCore.registerShape()
-        HTMaterialsCore.modifyShapePredicate()
         HTMaterialsCore.createShape()
         //Register Materials
         HTMaterialsCore.registerMaterialKey()

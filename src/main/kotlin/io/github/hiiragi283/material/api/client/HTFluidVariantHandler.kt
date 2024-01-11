@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material.client
+package io.github.hiiragi283.material.api.client
 
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler

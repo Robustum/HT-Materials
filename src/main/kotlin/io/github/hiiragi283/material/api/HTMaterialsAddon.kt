@@ -11,7 +11,6 @@ import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTDefaultedTable
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapeKey
-import io.github.hiiragi283.material.api.shape.HTShapePredicate
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.fluid.Fluid
@@ -27,8 +26,6 @@ interface HTMaterialsAddon {
     //    Initialize    //
 
     fun registerShape(registry: HTObjectKeySet<HTShapeKey>) {}
-
-    fun modifyShapePredicate(registry: HTDefaultedMap<HTShapeKey, HTShapePredicate.Builder>) {}
 
     fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {}
 

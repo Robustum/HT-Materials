@@ -1,7 +1,7 @@
 package io.github.hiiragi283.material
 
-import io.github.hiiragi283.material.client.HTCustomBlockStateIdItem
-import io.github.hiiragi283.material.client.HTCustomModelIdItem
+import io.github.hiiragi283.material.api.client.HTCustomBlockStateIdItem
+import io.github.hiiragi283.material.api.client.HTCustomModelIdItem
 import io.github.hiiragi283.material.util.modify
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry

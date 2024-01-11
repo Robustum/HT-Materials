@@ -17,7 +17,6 @@ import io.github.hiiragi283.material.api.registry.HTDefaultedTable
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
-import io.github.hiiragi283.material.api.shape.HTShapePredicate
 import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.util.isModLoaded
 import io.github.hiiragi283.material.util.prefix
@@ -46,7 +45,7 @@ internal object HTMaterialsCore {
         .filter { isModLoaded(it.modId) }
         .sortedWith(compareBy(HTMaterialsAddon::priority).thenBy { it.javaClass.name })
 
-    //    Pre Launch - HTShape    //
+    //    Initialize - HTShape    //
 
     private val shapeKeySet: HTObjectKeySet<HTShapeKey> = HTObjectKeySet.create()
 
@@ -54,21 +53,13 @@ internal object HTMaterialsCore {
         cache.forEach { it.registerShape(shapeKeySet) }
     }
 
-    private val predicateMap: HTDefaultedMap<HTShapeKey, HTShapePredicate.Builder> =
-        HTDefaultedMap.create { HTShapePredicate.Builder() }
-
-    fun modifyShapePredicate() {
-        cache.forEach { it.modifyShapePredicate(predicateMap) }
-    }
-
     fun createShape() {
         shapeKeySet.forEach { key: HTShapeKey ->
-            val predicate: HTShapePredicate = predicateMap.getOrCreate(key).build()
-            HTShape.create(key, predicate)
+            HTShape.create(key)
         }
     }
 
-    //    Pre Launch - HTMaterial    //
+    //    Initialize - HTMaterial    //
 
     private val materialKeySet: HTObjectKeySet<HTMaterialKey> = HTObjectKeySet.create()
 
@@ -140,12 +131,14 @@ internal object HTMaterialsCore {
             val color: ColorConvertible = getColor(key, property)
             val formula: FormulaConvertible = getFormula(key, property)
             val molar: MolarMassConvertible = getMolar(key, property)
-            val info = HTMaterialInfo(
+            HTMaterial.create(
+                key,
                 color.asColor(),
                 formula.asFormula(),
-                "%.1f".format(molar.asMolarMass()).toDouble()
+                "%.1f".format(molar.asMolarMass()).toDouble(),
+                property,
+                flags
             )
-            HTMaterial.create(key, info, property, flags)
         }
     }
 
