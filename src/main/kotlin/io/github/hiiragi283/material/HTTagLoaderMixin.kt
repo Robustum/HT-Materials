@@ -64,8 +64,8 @@ internal object HTTagLoaderMixin {
         }
         HTMixinLogger.INSTANCE.info("Registered Tags for HTPartManager's Entries!")
         //Sync ForgeTag and CommonTag entries
-        HTMaterial.REGISTRY.keys.forEach { materialKey: HTMaterialKey ->
-            HTShape.REGISTRY.keys.forEach shape@{ shapeKey: HTShapeKey ->
+        HTMaterial.getMaterialKeys().forEach { materialKey: HTMaterialKey ->
+            HTShape.getShapeKeys().forEach shape@{ shapeKey: HTShapeKey ->
                 val forgeBuilder: Tag.Builder = getOrCreateBuilder(map, shapeKey.getForgeTag(materialKey))
                 val commonBuilder: Tag.Builder = getOrCreateBuilder(map, shapeKey.getCommonTag(materialKey))
                 syncBuilder(commonBuilder, forgeBuilder)

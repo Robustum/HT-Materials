@@ -37,8 +37,8 @@ object HMMIAddon : HTMaterialsAddon {
 
     override fun bindItemToPart(registry: HTDefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>>) {
         //Register Tags for ALL MI Material Items
-        HTMaterial.REGISTRY.keys.forEach { material: HTMaterialKey ->
-            HTShape.REGISTRY.keys.forEach { shape ->
+        HTMaterial.getMaterialKeys().forEach { material: HTMaterialKey ->
+            HTShape.getShapeKeys().forEach { shape ->
                 Registry.ITEM.get(shape.getIdentifier(material, modId)).run {
                     if (!this.isAir()) {
                         registry.getOrCreate(material, shape).add(this)

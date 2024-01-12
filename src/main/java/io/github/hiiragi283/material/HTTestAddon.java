@@ -110,8 +110,8 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     @Override
     public void commonSetup() {
-        HTShape.REGISTRY.keySet().forEach(key -> LOGGER.info("Shape: " + key));
-        HTMaterial.REGISTRY.keySet().forEach(key -> LOGGER.info("Material: " + key));
+        HTShape.getShapeKeys().forEach(key -> LOGGER.info("Shape: " + key));
+        HTMaterial.getMaterials().forEach(key -> LOGGER.info("Material: " + key));
     }
 
     @Environment(EnvType.CLIENT)

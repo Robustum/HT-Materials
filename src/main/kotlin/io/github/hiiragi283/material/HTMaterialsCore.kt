@@ -54,9 +54,7 @@ internal object HTMaterialsCore {
     }
 
     fun createShape() {
-        shapeKeySet.forEach { key: HTShapeKey ->
-            HTShape.create(key)
-        }
+        shapeKeySet.forEach(HTShape::create)
     }
 
     //    Initialize - HTMaterial    //
@@ -143,7 +141,7 @@ internal object HTMaterialsCore {
     }
 
     fun verifyMaterial() {
-        HTMaterial.REGISTRY.values.forEach(HTMaterial::verify)
+        HTMaterial.getMaterials().forEach(HTMaterial::verify)
     }
 
     //    Initialization    //
@@ -205,7 +203,7 @@ internal object HTMaterialsCore {
 
     private fun registerLootTables() {
         HTLootTableRegisterCallback.EVENT.register { handler ->
-            HTMaterial.REGISTRY.keys.forEach { key ->
+            HTMaterial.getMaterialKeys().forEach { key ->
                 HTPartManager.getDefaultItem(key, HTShapes.BLOCK)?.let {
                     handler.addTable(
                         HTShapes.BLOCK.getIdentifier(key).prefix("blocks/"),
@@ -218,7 +216,7 @@ internal object HTMaterialsCore {
 
     private fun registerRecipes() {
         HTRecipeRegisterCallback.EVENT.register { handler ->
-            HTMaterial.REGISTRY.keys.forEach { key: HTMaterialKey ->
+            HTMaterial.getMaterialKeys().forEach { key: HTMaterialKey ->
                 HTPartManager.getDefaultItem(key, HTShapes.INGOT)?.let { ingotRecipe(key, it, handler) }
                 HTPartManager.getDefaultItem(key, HTShapes.NUGGET)?.let { nuggetRecipe(key, it, handler) }
             }

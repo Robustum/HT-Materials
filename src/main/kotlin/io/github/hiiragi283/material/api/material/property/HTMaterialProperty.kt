@@ -1,7 +1,7 @@
 package io.github.hiiragi283.material.api.material.property
 
 import io.github.hiiragi283.material.api.material.HTMaterial
-import io.github.hiiragi283.material.api.shape.HTShape
+import io.github.hiiragi283.material.api.shape.HTShapeKey
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 
@@ -12,6 +12,6 @@ interface HTMaterialProperty<T : HTMaterialProperty<T>> {
 
     fun verify(material: HTMaterial)
 
-    fun appendTooltip(material: HTMaterial, shape: HTShape?, stack: ItemStack, lines: MutableList<Text>) {}
+    fun appendTooltip(material: HTMaterial, shapeKey: HTShapeKey?, stack: ItemStack, lines: MutableList<Text>) {}
 
 }

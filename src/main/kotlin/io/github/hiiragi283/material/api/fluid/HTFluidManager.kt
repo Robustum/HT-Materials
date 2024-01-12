@@ -117,7 +117,7 @@ object HTFluidManager {
     @JvmStatic
     internal fun registerAllFluids() {
         getAllModId().forEach { modid: String ->
-            HTMaterial.REGISTRY.keys.forEach { key ->
+            HTMaterial.getMaterialKeys().forEach { key ->
                 Registry.FLUID.get(Identifier(modid, key.name)).run {
                     if (this != Fluids.EMPTY) {
                         register(key, this)

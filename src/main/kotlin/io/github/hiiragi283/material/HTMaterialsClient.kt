@@ -82,7 +82,7 @@ object HTMaterialsClient : ClientModInitializer {
         ItemTooltipCallback.EVENT.register { stack: ItemStack, _, lines: MutableList<Text> ->
 
             stack.item.getPart()?.let {
-                HTMaterial.appendTooltip(it.getMaterial(), it.getShape(), stack, lines)
+                HTMaterial.appendTooltip(it.getMaterial(), it.shapeKey, stack, lines)
             }
 
             FluidStorage.ITEM.find(stack, ContainerItemContext.withInitial(stack))

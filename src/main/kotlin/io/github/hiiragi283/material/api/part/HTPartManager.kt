@@ -27,8 +27,6 @@ fun ItemConvertible.getMaterial(): HTMaterial? = getMaterialKey()?.getMaterial()
 
 fun ItemConvertible.getShapeKey(): HTShapeKey? = getPart()?.shapeKey
 
-fun ItemConvertible.getShape(): HTShape? = getShapeKey()?.getShape()
-
 object HTPartManager {
 
     private val LOGGER: Logger = LogManager.getLogger(this::class.java)
@@ -189,8 +187,8 @@ object HTPartManager {
             itemToPart.clear()
             partToItems.forEach { _, _, items -> items.removeAll { true } }
 
-            HTMaterial.REGISTRY.keys.forEach { material: HTMaterialKey ->
-                HTShape.REGISTRY.keys.forEach { shape: HTShapeKey ->
+            HTMaterial.getMaterialKeys().forEach { material: HTMaterialKey ->
+                HTShape.getShapeKeys().forEach { shape: HTShapeKey ->
                     shape.getCommonTag(material).values().forEach { item -> register(material, shape, item) }
                 }
             }

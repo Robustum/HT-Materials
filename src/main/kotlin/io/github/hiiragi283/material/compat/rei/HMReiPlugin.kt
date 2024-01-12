@@ -21,7 +21,7 @@ object HMReiPlugin : REIPluginV0 {
     }
 
     override fun registerRecipeDisplays(recipeHelper: RecipeHelper) {
-        HTMaterial.REGISTRY
+        HTMaterial.getMaterials()
             .map(::HTMaterialDisplay)
             .filterNot { it.entries.isEmpty() }
             .forEach(recipeHelper::registerDisplay)

@@ -5,7 +5,6 @@ import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.material.api.material.property.HTPropertyKey
-import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
 import net.minecraft.item.ItemStack
@@ -61,6 +60,12 @@ class HTMaterial private constructor(
         val REGISTRY: Map<HTMaterialKey, HTMaterial> = registry
 
         @JvmStatic
+        fun getMaterialKeys(): Collection<HTMaterialKey> = registry.keys
+
+        @JvmStatic
+        fun getMaterials(): Collection<HTMaterial> = registry.values
+
+        @JvmStatic
         fun getMaterial(key: HTMaterialKey): HTMaterial =
             registry[key] ?: throw IllegalStateException("Material: $key is not registered!")
 
@@ -82,11 +87,11 @@ class HTMaterial private constructor(
 
         private val shapeKey = HTShapeKey("fluid")
 
-        fun appendTooltip(material: HTMaterial, shape: HTShape?, stack: ItemStack, lines: MutableList<Text>) {
+        fun appendTooltip(material: HTMaterial, shapeKey: HTShapeKey?, stack: ItemStack, lines: MutableList<Text>) {
             //Title
             lines.add(TranslatableText("tooltip.ht_materials.material.title"))
             //Name
-            val name: String = shape?.key?.getTranslatedName(material.key) ?: material.key.getTranslatedName()
+            val name: String = shapeKey?.getTranslatedName(material.key) ?: material.key.getTranslatedName()
             lines.add(TranslatableText("tooltip.ht_materials.material.name", name))
             //Formula
             material.formula.takeIf(String::isNotEmpty)?.let { formula: String ->
@@ -97,7 +102,7 @@ class HTMaterial private constructor(
                 lines.add(TranslatableText("tooltip.ht_materials.material.molar", molar))
             }
             //Tooltip from Properties
-            material.properties.values.forEach { it.appendTooltip(material, shape, stack, lines) }
+            material.properties.values.forEach { it.appendTooltip(material, shapeKey, stack, lines) }
         }
 
     }

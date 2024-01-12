@@ -1,12 +1,9 @@
 package io.github.hiiragi283.material.api.shape
 
-import com.google.common.base.Predicates
-import io.github.hiiragi283.material.api.material.HTMaterial
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import java.util.function.Predicate
 
-class HTShape private constructor(val key: HTShapeKey) : Predicate<HTMaterial> by Predicates.alwaysTrue() {
+class HTShape private constructor(val key: HTShapeKey) {
 
     companion object {
 
@@ -18,6 +15,12 @@ class HTShape private constructor(val key: HTShapeKey) : Predicate<HTMaterial> b
 
         @JvmField
         val REGISTRY: Map<HTShapeKey, HTShape> = registry
+
+        @JvmStatic
+        fun getShapeKeys(): Collection<HTShapeKey> = registry.keys
+
+        @JvmStatic
+        fun getShapes(): Collection<HTShape> = registry.values
 
         @JvmStatic
         fun getShape(key: HTShapeKey): HTShape =
