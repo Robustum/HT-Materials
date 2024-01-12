@@ -1,9 +1,6 @@
 package io.github.hiiragi283.material.api
 
-import io.github.hiiragi283.material.api.material.ColorConvertible
-import io.github.hiiragi283.material.api.material.FormulaConvertible
-import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.material.MolarMassConvertible
+import io.github.hiiragi283.material.api.material.*
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
@@ -29,7 +26,7 @@ interface HTMaterialsAddon {
 
     fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {}
 
-    fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {}
+    fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {}
 
     fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {}
 
@@ -40,6 +37,8 @@ interface HTMaterialsAddon {
     fun modifyMaterialFormula(registry: MutableMap<HTMaterialKey, FormulaConvertible>) {}
 
     fun modifyMaterialMolar(registry: MutableMap<HTMaterialKey, MolarMassConvertible>) {}
+
+    fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {}
 
     //    Post Initialization    //
 

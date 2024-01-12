@@ -38,13 +38,7 @@ data class HTPropertyKey<T : HTMaterialProperty<T>>(
         val FLUID: HTPropertyKey<HTFluidProperty> = create("fluid")
 
         @JvmField
-        val GEM: HTPropertyKey<HTGemProperty> = create("gem")
-
-        @JvmField
         val HYDRATE: HTPropertyKey<HTHydrateProperty> = create("hydrate")
-
-        @JvmField
-        val METAL: HTPropertyKey<HTMetalProperty> = create("metal")
 
         @JvmField
         val MIXTURE: HTPropertyKey<HTMixtureProperty> = create("mixture")
@@ -53,10 +47,7 @@ data class HTPropertyKey<T : HTMaterialProperty<T>>(
         val POLYMER: HTPropertyKey<HTPolymerProperty> = create("polymer")
 
         @JvmField
-        val STONE: HTPropertyKey<HTStoneProperty> = create("stone")
-
-        @JvmField
-        val WOOD: HTPropertyKey<HTWoodProperty> = create("wood")
+        val STORAGE_BLOCK: HTPropertyKey<HTStorageBlockProperty> = create("storage_block")
 
     }
 

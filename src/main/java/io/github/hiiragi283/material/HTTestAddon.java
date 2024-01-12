@@ -6,7 +6,6 @@ import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap;
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent;
 import io.github.hiiragi283.material.api.material.property.HTFluidProperty;
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap;
-import io.github.hiiragi283.material.api.material.property.HTMetalProperty;
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap;
 import io.github.hiiragi283.material.api.registry.HTDefaultedTable;
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet;
@@ -32,7 +31,7 @@ public class HTTestAddon implements HTMaterialsAddon {
     @NotNull
     @Override
     public String getModId() {
-        return HTMaterialsCommon.MOD_ID;
+        return HTMaterials.MOD_ID;
     }
 
     @Override
@@ -59,7 +58,7 @@ public class HTTestAddon implements HTMaterialsAddon {
     }
 
     @Override
-    public void modifyMaterialContent(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder> registry) {
+    public void modifyMaterialContent(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialContentMap> registry) {
         var builder = registry.getOrCreate(INFINITY);
         builder.add(new HTSimpleItemContent(HTShapes.DUST));
         builder.add(new HTSimpleItemContent(HTShapes.GEAR));
@@ -72,7 +71,6 @@ public class HTTestAddon implements HTMaterialsAddon {
     @Override
     public void modifyMaterialProperty(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> registry) {
         var builder = registry.getOrCreate(INFINITY);
-        builder.add(HTMetalProperty.INSTANCE);
         builder.add(new HTFluidProperty(), prop -> {
             prop.setTemperature(32768);
             return Unit.INSTANCE;
@@ -92,6 +90,11 @@ public class HTTestAddon implements HTMaterialsAddon {
     @Override
     public void modifyMaterialMolar(@NotNull Map<HTMaterialKey, MolarMassConvertible> registry) {
         registry.put(INFINITY, () -> Double.MAX_VALUE);
+    }
+
+    @Override
+    public void modifyMaterialType(@NotNull Map<HTMaterialKey, HTMaterialType> registry) {
+        registry.put(INFINITY, HTMaterialType.Metal.INSTANCE);
     }
 
     //    Post Init    //

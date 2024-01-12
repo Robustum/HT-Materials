@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.api.shape
 
-import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.registry.HTObjectKey
 import io.github.hiiragi283.material.util.commonId
@@ -28,7 +28,7 @@ data class HTShapeKey @JvmOverloads constructor(
 
     //    Identifier    //
 
-    fun getIdentifier(material: HTMaterialKey, namespace: String = HTMaterialsCommon.MOD_ID): Identifier =
+    fun getIdentifier(material: HTMaterialKey, namespace: String = HTMaterials.MOD_ID): Identifier =
         Identifier(namespace, idPath.replace("%s", material.name))
 
     //    TagKey    //

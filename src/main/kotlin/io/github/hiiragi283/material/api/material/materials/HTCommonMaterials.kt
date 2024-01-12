@@ -1,11 +1,8 @@
 package io.github.hiiragi283.material.api.material.materials
 
-import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
-import io.github.hiiragi283.material.api.material.ColorConvertible
-import io.github.hiiragi283.material.api.material.FormulaConvertible
-import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.material.MolarMassConvertible
+import io.github.hiiragi283.material.api.material.*
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.api.material.content.HTStorageBlockContent
@@ -82,7 +79,7 @@ object HTCommonMaterials : HTMaterialsAddon {
 
     //    Register    //
 
-    override val modId: String = HTMaterialsCommon.MOD_ID
+    override val modId: String = HTMaterials.MOD_ID
 
     override val priority: Int = -90
 
@@ -120,7 +117,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         //Woods
     }
 
-    override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {
+    override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
         //Fluids
         //Gems
         registry.getOrCreate(CINNABAR).apply {
@@ -248,42 +245,33 @@ object HTCommonMaterials : HTMaterialsAddon {
         //Gems
         registry.getOrCreate(CINNABAR).apply {
             add(HTCompoundProperty(HTElementMaterials.MERCURY to 1, HTElementMaterials.SULFUR to 1))
-            add(HTGemProperty.EMERALD)
         }
         registry.getOrCreate(COKE).apply {
             add(HTCompoundProperty(HTElementMaterials.CARBON to 1))
-            add(HTGemProperty.COAL)
         }
-        registry.getOrCreate(OLIVINE).add(HTGemProperty.EMERALD)
-        registry.getOrCreate(PERIDOT).add(HTGemProperty.RUBY)
+        registry.getOrCreate(OLIVINE)
+        registry.getOrCreate(PERIDOT)
         registry.getOrCreate(RUBY).apply {
             add(HTCompoundProperty(*HTAtomicGroups.ALUMINUM_OXIDE))
-            add(HTGemProperty.RUBY)
         }
         registry.getOrCreate(SALT).apply {
             add(HTCompoundProperty(HTElementMaterials.SODIUM to 1, HTElementMaterials.CHLORINE to 1))
-            add(HTGemProperty.CUBIC)
         }
         registry.getOrCreate(SAPPHIRE).apply {
             add(HTCompoundProperty(*HTAtomicGroups.ALUMINUM_OXIDE))
-            add(HTGemProperty.RUBY)
         }
         //Metals
         registry.getOrCreate(BRASS).apply {
             add(HTCompoundProperty(HTElementMaterials.COPPER to 3, HTElementMaterials.ZINC to 1))
-            add(HTMetalProperty)
         }
         registry.getOrCreate(BRONZE).apply {
             add(HTCompoundProperty(HTElementMaterials.COPPER to 3, HTElementMaterials.TIN to 1))
-            add(HTMetalProperty)
         }
         registry.getOrCreate(ELECTRUM).apply {
             add(HTCompoundProperty(HTElementMaterials.SILVER to 1, HTElementMaterials.GOLD to 1))
-            add(HTMetalProperty)
         }
         registry.getOrCreate(INVAR).apply {
             add(HTCompoundProperty(HTElementMaterials.IRON to 2, HTElementMaterials.NICKEL to 1))
-            add(HTMetalProperty)
         }
         registry.getOrCreate(STAINLESS_STEEL).apply {
             add(
@@ -294,11 +282,9 @@ object HTCommonMaterials : HTMaterialsAddon {
                     HTElementMaterials.NICKEL to 1
                 )
             )
-            add(HTMetalProperty)
         }
         registry.getOrCreate(STEEl).apply {
             add(HTMixtureProperty(HTElementMaterials.IRON, HTElementMaterials.CARBON))
-            add(HTMetalProperty)
         }
         //Solids
         registry.getOrCreate(ASHES)
@@ -307,133 +293,9 @@ object HTCommonMaterials : HTMaterialsAddon {
         //Stones
         registry.getOrCreate(MARBLE).apply {
             add(HTCompoundProperty(HTElementMaterials.CALCIUM to 1, *HTAtomicGroups.CARBONATE))
-            add(HTStoneProperty)
         }
         //Woods
     }
-
-    /*override fun modifyMaterialFlag(registry: HTDefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder>) {
-        //Fluids
-        //Gems
-        registry.getOrCreate(CINNABAR).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEM)
-        }
-        registry.getOrCreate(COKE).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEM)
-        }
-        registry.getOrCreate(OLIVINE).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEM)
-        }
-        registry.getOrCreate(PERIDOT).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEM)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(RUBY).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEM)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(SALT).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEM)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-
-        registry.getOrCreate(SAPPHIRE).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEM)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        //Metals
-        registry.getOrCreate(BRASS).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(BRONZE).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(ELECTRUM).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(INVAR).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(STAINLESS_STEEL).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(STEEl).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        //Solids
-        registry.getOrCreate(ASHES).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-        }
-        registry.getOrCreate(BAUXITE).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-        }
-        registry.getOrCreate(RUBBER).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        //Stones
-        registry.getOrCreate(MARBLE).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-        }
-        //Woods
-    }*/
 
     override fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {
         //Fluids
@@ -493,6 +355,29 @@ object HTCommonMaterials : HTMaterialsAddon {
         //Metals
         //Solids
         //Stones
+        //Woods
+    }
+
+    override fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {
+        //Fluids
+        //Gems
+        registry[CINNABAR] = HTMaterialType.Gem.EMERALD
+        registry[COKE] = HTMaterialType.Gem.COAL
+        registry[OLIVINE] = HTMaterialType.Gem.EMERALD
+        registry[PERIDOT] = HTMaterialType.Gem.RUBY
+        registry[RUBY] = HTMaterialType.Gem.RUBY
+        registry[SALT] = HTMaterialType.Gem.CUBIC
+        registry[SAPPHIRE] = HTMaterialType.Gem.RUBY
+        //Metals
+        registry[BRASS] = HTMaterialType.Metal
+        registry[BRONZE] = HTMaterialType.Metal
+        registry[ELECTRUM] = HTMaterialType.Metal
+        registry[INVAR] = HTMaterialType.Metal
+        registry[STAINLESS_STEEL] = HTMaterialType.Metal
+        registry[STEEl] = HTMaterialType.Metal
+        //Solids
+        //Stones
+        registry[MARBLE] = HTMaterialType.Stone
         //Woods
     }
 

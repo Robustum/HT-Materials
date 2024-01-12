@@ -38,10 +38,10 @@ import org.apache.logging.log4j.Logger
 
 internal object HTMaterialsCore {
 
-    private val LOGGER: Logger = LogManager.getLogger("${HTMaterialsCommon.MOD_NAME}/Addons")
+    private val LOGGER: Logger = LogManager.getLogger("${HTMaterials.MOD_NAME}/Addons")
 
     private val cache: List<HTMaterialsAddon> = FabricLoader.getInstance()
-        .getEntrypoints(HTMaterialsCommon.MOD_ID, HTMaterialsAddon::class.java)
+        .getEntrypoints(HTMaterials.MOD_ID, HTMaterialsAddon::class.java)
         .filter { isModLoaded(it.modId) }
         .sortedWith(compareBy(HTMaterialsAddon::priority).thenBy { it.javaClass.name })
 
@@ -65,8 +65,8 @@ internal object HTMaterialsCore {
         cache.forEach { it.registerMaterialKey(materialKeySet) }
     }
 
-    private val contentMap: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder> =
-        HTDefaultedMap.create { HTMaterialContentMap.Builder() }
+    private val contentMap: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap> =
+        HTDefaultedMap.create { HTMaterialContentMap() }
 
     fun modifyMaterialContent() {
         cache.forEach { it.modifyMaterialContent(contentMap) }
@@ -104,6 +104,12 @@ internal object HTMaterialsCore {
         cache.forEach { it.modifyMaterialMolar(molarMap) }
     }
 
+    private val typeMap: MutableMap<HTMaterialKey, HTMaterialType> = hashMapOf()
+
+    fun modifyMaterialType() {
+        cache.forEach { it.modifyMaterialType(typeMap) }
+    }
+
     private fun getColor(key: HTMaterialKey, property: HTMaterialPropertyMap): ColorConvertible {
         var color: ColorConvertible? = property.values.filterIsInstance<HTComponentProperty<*>>().getOrNull(0)
         colorMap[key]?.let { color = it }
@@ -129,27 +135,31 @@ internal object HTMaterialsCore {
             val color: ColorConvertible = getColor(key, property)
             val formula: FormulaConvertible = getFormula(key, property)
             val molar: MolarMassConvertible = getMolar(key, property)
+            val type: HTMaterialType = typeMap.getOrDefault(key, HTMaterialType.Undefined)
             HTMaterial.create(
                 key,
+                property,
+                flags,
                 color.asColor(),
                 formula.asFormula(),
                 "%.1f".format(molar.asMolarMass()).toDouble(),
-                property,
-                flags
+                type
             )
         }
     }
 
     fun verifyMaterial() {
-        HTMaterial.getMaterials().forEach(HTMaterial::verify)
+        HTMaterial.getMaterials().forEach { material ->
+            material.properties.values.forEach { it.verify(material) }
+            material.flags.forEach { it.verify(material) }
+        }
     }
 
     //    Initialization    //
 
     fun <T> createContent(registryKey: RegistryKey<T>) {
         for (materialKey: HTMaterialKey in HTMaterial.REGISTRY.keys) {
-            for (content: HTMaterialContent<T> in contentMap.getOrCreate(materialKey).build()
-                .getContents(registryKey)) {
+            for (content: HTMaterialContent<T> in contentMap.getOrCreate(materialKey).getContents(registryKey)) {
                 content.create(materialKey)?.run {
                     Registry.register(content.registry, content.getIdentifier(materialKey), this)
                     content.onCreate(materialKey, this)
@@ -173,6 +183,9 @@ internal object HTMaterialsCore {
         bindFluidToPart()
 
         cache.forEach(HTMaterialsAddon::commonSetup)
+
+        registerLootTables()
+        LOGGER.info("LootTables Registered!")
 
         registerRecipes()
         LOGGER.info("Recipes Registered!")

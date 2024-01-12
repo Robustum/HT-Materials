@@ -1,0 +1,6 @@
+{
+  "parent": "ht_materials:block/all_tinted",
+  "textures": {
+    "all": "block/quartz_block_top"
+  }
+}

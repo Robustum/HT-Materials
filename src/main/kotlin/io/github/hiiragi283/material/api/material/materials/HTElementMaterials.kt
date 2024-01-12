@@ -1,17 +1,13 @@
 package io.github.hiiragi283.material.api.material.materials
 
-import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
-import io.github.hiiragi283.material.api.material.ColorConvertible
-import io.github.hiiragi283.material.api.material.FormulaConvertible
-import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.material.MolarMassConvertible
+import io.github.hiiragi283.material.api.material.*
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.api.material.content.HTStorageBlockContent
 import io.github.hiiragi283.material.api.material.property.HTFluidProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.material.api.material.property.HTMetalProperty
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapes
@@ -141,7 +137,7 @@ object HTElementMaterials : HTMaterialsAddon {
 
     //    Register    //
 
-    override val modId: String = HTMaterialsCommon.MOD_ID
+    override val modId: String = HTMaterials.MOD_ID
 
     override val priority: Int = -100
 
@@ -204,7 +200,7 @@ object HTElementMaterials : HTMaterialsAddon {
         )
     }
 
-    override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {
+    override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
         //1st Period
 
         //2nd Period
@@ -362,195 +358,42 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(HYDROGEN).add(HTFluidProperty()) { this.isGas = true }
         registry.getOrCreate(HELIUM).add(HTFluidProperty()) { this.isGas = true }
         //2nd Period
-        registry.getOrCreate(LITHIUM).add(HTMetalProperty)
-        registry.getOrCreate(BERYLLIUM).add(HTMetalProperty)
+        registry.getOrCreate(LITHIUM)
+        registry.getOrCreate(BERYLLIUM)
         registry.getOrCreate(NITROGEN).add(HTFluidProperty()) { this.isGas = true }
         registry.getOrCreate(OXYGEN).add(HTFluidProperty()) { this.isGas = true }
         registry.getOrCreate(FLUORINE).add(HTFluidProperty()) { this.isGas = true }
         //3rd Period
-        registry.getOrCreate(SODIUM).add(HTMetalProperty)
-        registry.getOrCreate(MAGNESIUM).add(HTMetalProperty)
-        registry.getOrCreate(ALUMINUM).add(HTMetalProperty)
-        registry.getOrCreate(SILICON).add(HTMetalProperty)
+        registry.getOrCreate(SODIUM)
+        registry.getOrCreate(MAGNESIUM)
+        registry.getOrCreate(ALUMINUM)
+        registry.getOrCreate(SILICON)
         registry.getOrCreate(SODIUM).add(HTFluidProperty()) { this.isGas = true }
         //4th Period
-        registry.getOrCreate(POTASSIUM).add(HTMetalProperty)
-        registry.getOrCreate(CALCIUM).add(HTMetalProperty)
-        registry.getOrCreate(TITANIUM).add(HTMetalProperty)
-        registry.getOrCreate(CHROMIUM).add(HTMetalProperty)
-        registry.getOrCreate(MANGANESE).add(HTMetalProperty)
-        registry.getOrCreate(IRON).add(HTMetalProperty)
-        registry.getOrCreate(COBALT).add(HTMetalProperty)
-        registry.getOrCreate(NICKEL).add(HTMetalProperty)
-        registry.getOrCreate(COPPER).add(HTMetalProperty)
-        registry.getOrCreate(ZINC).add(HTMetalProperty)
+        registry.getOrCreate(POTASSIUM)
+        registry.getOrCreate(CALCIUM)
+        registry.getOrCreate(TITANIUM)
+        registry.getOrCreate(CHROMIUM)
+        registry.getOrCreate(MANGANESE)
+        registry.getOrCreate(IRON)
+        registry.getOrCreate(COBALT)
+        registry.getOrCreate(NICKEL)
+        registry.getOrCreate(COPPER)
+        registry.getOrCreate(ZINC)
         //5th Period
-        registry.getOrCreate(SILVER).add(HTMetalProperty)
-        registry.getOrCreate(TIN).add(HTMetalProperty)
+        registry.getOrCreate(SILVER)
+        registry.getOrCreate(TIN)
         //6th Period
-        registry.getOrCreate(TUNGSTEN).add(HTMetalProperty)
-        registry.getOrCreate(IRIDIUM).add(HTMetalProperty)
-        registry.getOrCreate(PLATINUM).add(HTMetalProperty)
-        registry.getOrCreate(GOLD).add(HTMetalProperty)
+        registry.getOrCreate(TUNGSTEN)
+        registry.getOrCreate(IRIDIUM)
+        registry.getOrCreate(PLATINUM)
+        registry.getOrCreate(GOLD)
         registry.getOrCreate(MERCURY).add(HTFluidProperty())
-        registry.getOrCreate(LEAD).add(HTMetalProperty)
+        registry.getOrCreate(LEAD)
         //7th Period
-        registry.getOrCreate(URANIUM).add(HTMetalProperty)
-        registry.getOrCreate(PLUTONIUM).add(HTMetalProperty)
+        registry.getOrCreate(URANIUM)
+        registry.getOrCreate(PLUTONIUM)
     }
-
-    /*override fun modifyMaterialFlag(registry: HTDefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder>) {
-        //1st Period
-
-        //2nd Period
-        registry.getOrCreate(CARBON).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_PLATE)
-        }
-        //3rd Period
-        registry.getOrCreate(ALUMINUM).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(SILICON).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(PHOSPHORUS).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-        }
-        registry.getOrCreate(SULFUR).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-        }
-        //4th Period
-        registry.getOrCreate(TITANIUM).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(IRON).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(NICKEL).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(COPPER).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(ZINC).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        //5th Period
-        registry.getOrCreate(SILVER).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(TIN).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        //6th Period
-        registry.getOrCreate(TUNGSTEN).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(IRIDIUM).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(PLATINUM).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(GOLD).apply {
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(LEAD).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_GEAR)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        //7th Period
-        registry.getOrCreate(URANIUM).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-        registry.getOrCreate(PLUTONIUM).apply {
-            add(HTMaterialFlags.GENERATE_BLOCk)
-            add(HTMaterialFlags.GENERATE_DUST)
-            add(HTMaterialFlags.GENERATE_INGOT)
-            add(HTMaterialFlags.GENERATE_NUGGET)
-            add(HTMaterialFlags.GENERATE_PLATE)
-            add(HTMaterialFlags.GENERATE_ROD)
-        }
-    }*/
 
     override fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {
         //1st Period
@@ -685,6 +528,42 @@ object HTElementMaterials : HTMaterialsAddon {
         //7th Period
         registry[URANIUM] = MolarMassConvertible { 238.0 }
         registry[PLUTONIUM] = MolarMassConvertible { 244.1 }
+    }
+
+    override fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {
+        //1st Period
+        //2nd Period
+        registry[LITHIUM] = HTMaterialType.Metal
+        registry[BERYLLIUM] = HTMaterialType.Metal
+        //3rd Period
+        registry[SODIUM] = HTMaterialType.Metal
+        registry[MAGNESIUM] = HTMaterialType.Metal
+        registry[ALUMINUM] = HTMaterialType.Metal
+        registry[SILICON] = HTMaterialType.Metal
+        //4th Period
+        registry[POTASSIUM] = HTMaterialType.Metal
+        registry[CALCIUM] = HTMaterialType.Metal
+        registry[TITANIUM] = HTMaterialType.Metal
+        registry[CHROMIUM] = HTMaterialType.Metal
+        registry[MANGANESE] = HTMaterialType.Metal
+        registry[IRON] = HTMaterialType.Metal
+        registry[COBALT] = HTMaterialType.Metal
+        registry[NICKEL] = HTMaterialType.Metal
+        registry[COPPER] = HTMaterialType.Metal
+        registry[ZINC] = HTMaterialType.Metal
+        //5th Period
+        registry[SILICON] = HTMaterialType.Metal
+        registry[TIN] = HTMaterialType.Metal
+        //6th Period
+        registry[TUNGSTEN] = HTMaterialType.Metal
+        registry[IRIDIUM] = HTMaterialType.Metal
+        registry[PLATINUM] = HTMaterialType.Metal
+        registry[GOLD] = HTMaterialType.Metal
+        registry[MERCURY] = HTMaterialType.Metal
+        registry[LEAD] = HTMaterialType.Metal
+        //7th Period
+        registry[URANIUM] = HTMaterialType.Metal
+        registry[PLUTONIUM] = HTMaterialType.Metal
     }
 
 }

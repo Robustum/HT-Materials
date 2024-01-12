@@ -13,7 +13,7 @@ object HTModelLoaderMixin {
     private const val ITEM_PREFIX = "item/"
 
     @JvmStatic
-    fun modifyBlockStateId(id: Identifier): Identifier = if (id.namespace == HTMaterialsCommon.MOD_ID) {
+    fun modifyBlockStateId(id: Identifier): Identifier = if (id.namespace == HTMaterials.MOD_ID) {
         val path: String = id.path.removePrefix("blockstates/").removeSuffix(".json")
         val fixedId: Identifier = id.modify { path }
         (Registry.BLOCK.get(fixedId) as? HTCustomBlockStateIdItem)?.getBlockStateId() ?: id
@@ -21,7 +21,7 @@ object HTModelLoaderMixin {
 
     @JvmStatic
     fun modifyModelId(id: Identifier): Identifier {
-        if (id.namespace == HTMaterialsCommon.MOD_ID) {
+        if (id.namespace == HTMaterials.MOD_ID) {
             val path: String = id.path.removePrefix("models/").removeSuffix(".json")
             val fixedId: Identifier = id.modify { path }
             return when {

@@ -34,7 +34,7 @@ object HTResourceManager {
 
                 }
 
-                override fun getFabricId(): Identifier = HTMaterialsCommon.id(path)
+                override fun getFabricId(): Identifier = HTMaterials.id(path)
 
             }
         )

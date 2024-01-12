@@ -51,7 +51,7 @@ object HMMIAddon : HTMaterialsAddon {
     /*override fun commonSetup() {
         HTRecipeRegisterCallback.EVENT.register { handler ->
             handler.addMIRecipe(
-                HTMaterialsCommon.id("test_mi"),
+                HTMaterials.id("test_mi"),
                 MIRecipeJson.create(MIMachineRecipeTypes.MIXER, 32, 200)
                     .addItemInput(HTPartManager.getDefaultItem(HTElementMaterials.COPPER, HTShapes.DUST)!!, 3)
                     .addItemInput(HTPartManager.getDefaultItem(HTElementMaterials.TIN, HTShapes.DUST)!!, 1)

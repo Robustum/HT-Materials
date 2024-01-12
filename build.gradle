@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id 'fabric-loom' version '1.5-SNAPSHOT'
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '1.9.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.9.22'
 }
 
 version = project.mod_version
@@ -43,10 +43,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     //KubeJS
-    modImplementation("dev.latvian.mods:kubejs-fabric:1605.3.19-build.422") {
+    /*modImplementation("dev.latvian.mods:kubejs-fabric:1605.3.19-build.422") {
         exclude(module: "fabric-api")
         exclude(module: "fabric-loader")
-    }
+    }*/
 
     //REI
     modImplementation("me.shedaniel:RoughlyEnoughItems:5.12.385") {

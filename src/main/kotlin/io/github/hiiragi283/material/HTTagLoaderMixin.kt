@@ -85,7 +85,7 @@ internal object HTTagLoaderMixin {
 
     @JvmStatic
     private fun <T> registerTag(builder: Tag.Builder, registry: Registry<T>, value: T) {
-        builder.add(registry.getId(value), HTMaterialsCommon.MOD_NAME)
+        builder.add(registry.getId(value), HTMaterials.MOD_NAME)
     }
 
     @JvmStatic

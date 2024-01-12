@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.api.shape
 
-import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 
@@ -39,7 +39,7 @@ object HTShapes : HTMaterialsAddon {
 
     //    Register    //
 
-    override val modId: String = HTMaterialsCommon.MOD_ID
+    override val modId: String = HTMaterials.MOD_ID
 
     override val priority: Int = -200
 

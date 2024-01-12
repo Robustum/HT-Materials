@@ -11,7 +11,7 @@ import net.minecraft.util.registry.Registry
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
-object HTMaterialsCommon : ModInitializer {
+object HTMaterials : ModInitializer {
 
     const val MOD_ID: String = "ht_materials"
     const val MOD_NAME: String = "HT Materials"
@@ -36,6 +36,7 @@ object HTMaterialsCommon : ModInitializer {
         HTMaterialsCore.modifyMaterialColor()
         HTMaterialsCore.modifyMaterialFormula()
         HTMaterialsCore.modifyMaterialMolar()
+        HTMaterialsCore.modifyMaterialType()
         HTMaterialsCore.createMaterial()
         HTMaterialsCore.verifyMaterial()
         //Initialize Game Objects

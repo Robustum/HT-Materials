@@ -127,5 +127,6 @@
   "tooltip.ht_materials.material.state.gas": "Gas",
   "tooltip.ht_materials.material.temperature": "§7- Temperature: %s K",
   "tooltip.ht_materials.material.title": "§e=== Material Info === ",
+  "tooltip.ht_materials.material.type": "§7- Type: %s",
   "tooltip.ht_materials.material.viscosity": "§7- Viscosity: %s"
 }

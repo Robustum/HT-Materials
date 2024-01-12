@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.api.fluid
 
-import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.client.HTColoredMaterialItem
 import io.github.hiiragi283.material.api.client.HTCustomModelIdItem
 import io.github.hiiragi283.material.api.material.HTMaterialKey
@@ -53,7 +53,7 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
         private val blockSettings = FabricBlockSettings.copyOf(Blocks.WATER)
 
         private val itemSettings = FabricItemSettings()
-            .group(HTMaterialsCommon.ITEM_GROUP)
+            .group(HTMaterials.ITEM_GROUP)
             .maxCount(1)
             .recipeRemainder(Items.BUCKET)
 
@@ -162,7 +162,7 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
             if (tintIndex == 1) materialKey.getMaterial().color.rgb else -1
         }
 
-        override fun getModelId(): Identifier = HTMaterialsCommon.id("models/item/bucket.json")
+        override fun getModelId(): Identifier = HTMaterials.id("models/item/bucket.json")
 
     }
 

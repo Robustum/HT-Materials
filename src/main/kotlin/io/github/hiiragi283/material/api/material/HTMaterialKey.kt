@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.api.material
 
-import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.registry.HTObjectKey
 import io.github.hiiragi283.material.util.commonId
 import net.fabricmc.api.EnvType
@@ -19,7 +19,7 @@ data class HTMaterialKey(override val name: String) : HTObjectKey<HTMaterial> {
 
     //    Identifier    //
 
-    fun getIdentifier(namespace: String = HTMaterialsCommon.MOD_ID): Identifier = Identifier(namespace, name)
+    fun getIdentifier(namespace: String = HTMaterials.MOD_ID): Identifier = Identifier(namespace, name)
 
     fun getCommonId() = commonId(name)
 

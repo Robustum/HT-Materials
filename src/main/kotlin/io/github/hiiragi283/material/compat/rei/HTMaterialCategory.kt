@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.compat.rei
 
-import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterials
 import me.shedaniel.clothconfig2.ClothConfigInitializer
 import me.shedaniel.clothconfig2.api.ScissorsHandler
 import me.shedaniel.clothconfig2.api.ScrollingContainer
@@ -23,9 +23,9 @@ object HTMaterialCategory : RecipeCategory<HTMaterialDisplay> {
 
     override fun getIdentifier(): Identifier = HMReiPlugin.MATERIAL
 
-    override fun getLogo(): EntryStack = EntryStack.create(HTMaterialsCommon.ICON)
+    override fun getLogo(): EntryStack = EntryStack.create(HTMaterials.ICON)
 
-    override fun getCategoryName(): String = HTMaterialsCommon.MOD_NAME
+    override fun getCategoryName(): String = HTMaterials.MOD_NAME
 
     override fun setupDisplay(display: HTMaterialDisplay, bounds: Rectangle): List<Widget> {
         val widgets: MutableList<Widget> = mutableListOf()

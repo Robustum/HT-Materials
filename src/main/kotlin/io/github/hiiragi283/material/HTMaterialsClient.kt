@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger
 @Environment(EnvType.CLIENT)
 object HTMaterialsClient : ClientModInitializer {
 
-    private val LOGGER: Logger = LogManager.getLogger("${HTMaterialsCommon.MOD_NAME}/Client")
+    private val LOGGER: Logger = LogManager.getLogger("${HTMaterials.MOD_NAME}/Client")
 
     override fun onInitializeClient() {
 

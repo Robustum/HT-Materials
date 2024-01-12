@@ -1,10 +1,10 @@
 package io.github.hiiragi283.material.api.material.content
 
-import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.client.HTColoredMaterialItem
 import io.github.hiiragi283.material.api.client.HTCustomModelIdItem
 import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.material.property.HTPropertyKey
+import io.github.hiiragi283.material.api.material.HTMaterialType
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
@@ -23,7 +23,7 @@ class HTSimpleItemContent(override val shapeKey: HTShapeKey) : HTMaterialContent
     private class ItemImpl(
         private val materialKey: HTMaterialKey,
         private val shapeKey: HTShapeKey
-    ) : Item(FabricItemSettings().group(HTMaterialsCommon.ITEM_GROUP)),
+    ) : Item(FabricItemSettings().group(HTMaterials.ITEM_GROUP)),
         HTColoredMaterialItem,
         HTCustomModelIdItem {
 
@@ -36,12 +36,13 @@ class HTSimpleItemContent(override val shapeKey: HTShapeKey) : HTMaterialContent
         }
 
         override fun getModelId(): Identifier {
-            val modelName: String = materialKey.getMaterial()
-                .getProperty(HTPropertyKey.GEM)
-                ?.let { "${it.name.lowercase()}_gem" }
-                ?.takeIf { shapeKey == HTShapes.GEM }
-                ?: shapeKey.toString()
-            return HTMaterialsCommon.id("models/item/$modelName.json")
+            val type: HTMaterialType = materialKey.getMaterial().type
+            val modelName: String = if (type is HTMaterialType.Gem) {
+                if (shapeKey == HTShapes.GEM) {
+                    "${type.name.lowercase()}_gem"
+                } else shapeKey.toString()
+            } else shapeKey.toString()
+            return HTMaterials.id("models/item/$modelName.json")
         }
 
     }

@@ -127,5 +127,6 @@
   "tooltip.ht_materials.material.state.gas": "気体",
   "tooltip.ht_materials.material.temperature": "§7- 温度: %s K",
   "tooltip.ht_materials.material.title": "§e=== 素材情報 === ",
+  "tooltip.ht_materials.material.type": "§7- タイプ: %s",
   "tooltip.ht_materials.material.viscosity": "§7- 粘度: %s"
 }

@@ -16,11 +16,12 @@ import java.awt.Color
 
 class HTMaterial private constructor(
     val key: HTMaterialKey,
+    val properties: HTMaterialPropertyMap,
+    val flags: HTMaterialFlagSet,
     val color: Color,
     val formula: String,
     val molar: Double,
-    val properties: HTMaterialPropertyMap,
-    val flags: HTMaterialFlagSet
+    val type: HTMaterialType,
 ) {
 
     //    Properties    //
@@ -29,15 +30,19 @@ class HTMaterial private constructor(
 
     fun hasProperty(key: HTPropertyKey<*>): Boolean = key in properties
 
-    fun getDefaultShape(): HTShapeKey? = when {
-        hasProperty(HTPropertyKey.METAL) -> HTShapes.INGOT
-        hasProperty(HTPropertyKey.GEM) -> HTShapes.GEM
-        else -> null
-    }
-
-    fun verify() {
-        properties.values.forEach { it.verify(this) }
-        flags.forEach { it.verify(this) }
+    fun getDefaultShape(): HTShapeKey? = when (type) {
+        HTMaterialType.Gem.AMETHYST -> HTShapes.GEM
+        HTMaterialType.Gem.COAL -> HTShapes.GEM
+        HTMaterialType.Gem.CUBIC -> HTShapes.GEM
+        HTMaterialType.Gem.DIAMOND -> HTShapes.GEM
+        HTMaterialType.Gem.EMERALD -> HTShapes.GEM
+        HTMaterialType.Gem.LAPIS -> HTShapes.GEM
+        HTMaterialType.Gem.QUARTZ -> HTShapes.GEM
+        HTMaterialType.Gem.RUBY -> HTShapes.GEM
+        HTMaterialType.Metal -> HTShapes.INGOT
+        HTMaterialType.Stone -> null
+        HTMaterialType.Undefined -> null
+        HTMaterialType.Wood -> null
     }
 
     //    Flags    //
@@ -75,12 +80,13 @@ class HTMaterial private constructor(
         @JvmStatic
         internal fun create(
             key: HTMaterialKey,
+            properties: HTMaterialPropertyMap,
+            flags: HTMaterialFlagSet,
             color: Color,
             formula: String,
             molar: Double,
-            properties: HTMaterialPropertyMap,
-            flags: HTMaterialFlagSet
-        ): HTMaterial = HTMaterial(key, color, formula, molar, properties, flags).also {
+            type: HTMaterialType
+        ): HTMaterial = HTMaterial(key, properties, flags, color, formula, molar, type).also {
             registry.putIfAbsent(key, it)
             LOGGER.info("Material: $key registered!")
         }
@@ -93,6 +99,8 @@ class HTMaterial private constructor(
             //Name
             val name: String = shapeKey?.getTranslatedName(material.key) ?: material.key.getTranslatedName()
             lines.add(TranslatableText("tooltip.ht_materials.material.name", name))
+            //Type
+            lines.add(TranslatableText("tooltip.ht_materials.material.type", material.type))
             //Formula
             material.formula.takeIf(String::isNotEmpty)?.let { formula: String ->
                 lines.add(TranslatableText("tooltip.ht_materials.material.formula", formula))

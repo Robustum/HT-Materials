@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.api.event
 
-import io.github.hiiragi283.material.HTMaterialsCommon
+import io.github.hiiragi283.material.HTMaterials
 import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.EventFactory
 import org.apache.logging.log4j.LogManager
@@ -22,8 +22,8 @@ fun interface HTSortTestEvent {
 
         @JvmStatic
         fun registerPhase() {
-            EVENT.addPhaseOrdering(HTMaterialsCommon.id("before"), Event.DEFAULT_PHASE)
-            EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, HTMaterialsCommon.id("after"))
+            EVENT.addPhaseOrdering(HTMaterials.id("before"), Event.DEFAULT_PHASE)
+            EVENT.addPhaseOrdering(Event.DEFAULT_PHASE, HTMaterials.id("after"))
 
             EVENT.register { LOGGER.info("after!") }
             EVENT.register { LOGGER.info("before!") }
