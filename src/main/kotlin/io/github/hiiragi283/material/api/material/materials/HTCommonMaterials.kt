@@ -10,7 +10,8 @@ import io.github.hiiragi283.material.api.material.property.*
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.util.HTColor
+import io.github.hiiragi283.material.api.util.HTColor
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 
 object HTCommonMaterials : HTMaterialsAddon {
 
@@ -121,44 +122,76 @@ object HTCommonMaterials : HTMaterialsAddon {
         //Fluids
         //Gems
         registry.getOrCreate(CINNABAR).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEM))
         }
         registry.getOrCreate(COKE).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEM))
         }
         registry.getOrCreate(OLIVINE).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEM))
         }
         registry.getOrCreate(PERIDOT).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEM))
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(RUBY).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEM))
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(SALT).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.SHOVELS
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEM))
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
         }
-
         registry.getOrCreate(SAPPHIRE).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEM))
             add(HTSimpleItemContent(HTShapes.PLATE))
@@ -166,7 +199,12 @@ object HTCommonMaterials : HTMaterialsAddon {
         }
         //Metals
         registry.getOrCreate(BRASS).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -175,7 +213,12 @@ object HTCommonMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(BRONZE).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -184,7 +227,12 @@ object HTCommonMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(ELECTRUM).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 2
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -193,7 +241,12 @@ object HTCommonMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(INVAR).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 2
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -202,7 +255,12 @@ object HTCommonMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(STAINLESS_STEEL).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 2
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -211,7 +269,12 @@ object HTCommonMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(STEEl).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 2
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))

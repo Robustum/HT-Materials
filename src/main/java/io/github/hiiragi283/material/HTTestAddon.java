@@ -12,7 +12,7 @@ import io.github.hiiragi283.material.api.registry.HTObjectKeySet;
 import io.github.hiiragi283.material.api.shape.HTShape;
 import io.github.hiiragi283.material.api.shape.HTShapeKey;
 import io.github.hiiragi283.material.api.shape.HTShapes;
-import io.github.hiiragi283.material.util.HTColor;
+import io.github.hiiragi283.material.api.util.HTColor;
 import kotlin.Unit;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

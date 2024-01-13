@@ -1,6 +1,8 @@
-package io.github.hiiragi283.material.api.client
+package io.github.hiiragi283.material.api.util
 
 import io.github.hiiragi283.material.api.material.HTMaterial
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.texture.Sprite
@@ -10,6 +12,7 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.BlockRenderView
 
+@Environment(EnvType.CLIENT)
 @Suppress("DEPRECATION")
 class HTFluidRenderHandler(val material: HTMaterial) : FluidRenderHandler {
 

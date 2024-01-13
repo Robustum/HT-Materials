@@ -11,7 +11,7 @@ import io.github.hiiragi283.material.api.material.property.HTMixtureProperty
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.util.HTColor
+import io.github.hiiragi283.material.api.util.HTColor
 import java.awt.Color
 
 object HTVanillaMaterials : HTMaterialsAddon {

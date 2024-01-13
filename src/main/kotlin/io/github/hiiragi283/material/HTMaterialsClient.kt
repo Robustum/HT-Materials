@@ -1,13 +1,13 @@
 package io.github.hiiragi283.material
 
-import io.github.hiiragi283.material.api.client.HTColoredMaterialBlock
-import io.github.hiiragi283.material.api.client.HTColoredMaterialItem
-import io.github.hiiragi283.material.api.client.HTFluidRenderHandler
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.part.getPart
+import io.github.hiiragi283.material.api.util.HTCustomColoredBlock
+import io.github.hiiragi283.material.api.util.HTCustomColoredItem
+import io.github.hiiragi283.material.api.util.HTFluidRenderHandler
 import io.github.hiiragi283.material.util.getTransaction
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
@@ -53,7 +53,6 @@ object HTMaterialsClient : ClientModInitializer {
 
     private fun registerFluidRenderHandler() {
         HTMaterial.REGISTRY.forEach { (key: HTMaterialKey, material: HTMaterial) ->
-            //Register Fluid Renderer
             HTMaterialFluid.getFluid(key)?.let { fluid: HTMaterialFluid ->
                 FluidRenderHandlerRegistry.INSTANCE.register(fluid.still, HTFluidRenderHandler(material))
                 FluidRenderHandlerRegistry.INSTANCE.register(fluid.flowing, HTFluidRenderHandler(material))
@@ -63,7 +62,7 @@ object HTMaterialsClient : ClientModInitializer {
 
     private fun registerBlockColorProvider() {
         Registry.BLOCK.forEach { block ->
-            if (block is HTColoredMaterialBlock) {
+            if (block is HTCustomColoredBlock) {
                 ColorProviderRegistry.BLOCK.register(block.getColorProvider(), block)
             }
         }
@@ -71,7 +70,7 @@ object HTMaterialsClient : ClientModInitializer {
 
     private fun registerItemColorProvider() {
         Registry.ITEM.forEach { item ->
-            if (item is HTColoredMaterialItem) {
+            if (item is HTCustomColoredItem) {
                 ColorProviderRegistry.ITEM.register(item.getColorProvider(), item)
             }
         }

@@ -1,7 +1,7 @@
 package io.github.hiiragi283.material
 
-import io.github.hiiragi283.material.api.client.HTCustomBlockStateIdItem
-import io.github.hiiragi283.material.api.client.HTCustomModelIdItem
+import io.github.hiiragi283.material.api.util.HTCustomBlockStateBlock
+import io.github.hiiragi283.material.api.util.HTCustomModelItem
 import io.github.hiiragi283.material.util.modify
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
@@ -16,7 +16,7 @@ object HTModelLoaderMixin {
     fun modifyBlockStateId(id: Identifier): Identifier = if (id.namespace == HTMaterials.MOD_ID) {
         val path: String = id.path.removePrefix("blockstates/").removeSuffix(".json")
         val fixedId: Identifier = id.modify { path }
-        (Registry.BLOCK.get(fixedId) as? HTCustomBlockStateIdItem)?.getBlockStateId() ?: id
+        (Registry.BLOCK.get(fixedId) as? HTCustomBlockStateBlock)?.getBlockStateId() ?: id
     } else id
 
     @JvmStatic
@@ -38,6 +38,6 @@ object HTModelLoaderMixin {
     }
 
     private fun <T> getModelId(registry: Registry<T>, id: Identifier): Identifier? =
-        (registry.get(id) as? HTCustomModelIdItem)?.getModelId()
+        (registry.get(id) as? HTCustomModelItem)?.getModelId()
 
 }

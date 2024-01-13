@@ -11,7 +11,8 @@ import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.util.HTColor
+import io.github.hiiragi283.material.api.util.HTColor
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import java.awt.Color
 
 object HTElementMaterials : HTMaterialsAddon {
@@ -210,7 +211,12 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //3rd Period
         registry.getOrCreate(ALUMINUM).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -233,7 +239,12 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //4th Period
         registry.getOrCreate(TITANIUM).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 3
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -248,7 +259,12 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(NICKEL).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 2
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -264,7 +280,12 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(ZINC).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -274,7 +295,12 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //5th Period
         registry.getOrCreate(SILVER).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 2
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -283,7 +309,12 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(TIN).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -293,7 +324,12 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //6th Period
         registry.getOrCreate(TUNGSTEN).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 3
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -302,7 +338,12 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(IRIDIUM).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 3
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -311,7 +352,12 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(PLATINUM).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 3
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -326,7 +372,12 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(LEAD).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -336,7 +387,12 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         //7th Period
         registry.getOrCreate(URANIUM).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 2
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.INGOT))
             add(HTSimpleItemContent(HTShapes.NUGGET))
@@ -344,7 +400,12 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(PLUTONIUM).apply {
-            add(HTStorageBlockContent())
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 2
+                )
+            )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.INGOT))
             add(HTSimpleItemContent(HTShapes.NUGGET))

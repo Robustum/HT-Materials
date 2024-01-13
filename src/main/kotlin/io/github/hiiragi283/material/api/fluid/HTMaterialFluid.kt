@@ -1,11 +1,15 @@
 package io.github.hiiragi283.material.api.fluid
 
 import io.github.hiiragi283.material.HTMaterials
-import io.github.hiiragi283.material.api.client.HTColoredMaterialItem
-import io.github.hiiragi283.material.api.client.HTCustomModelIdItem
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.shape.HTShapeKey
+import io.github.hiiragi283.material.api.util.HTCustomColoredItem
+import io.github.hiiragi283.material.api.util.HTCustomModelItem
 import io.github.hiiragi283.material.util.prefix
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
+import net.fabricmc.api.EnvironmentInterface
+import net.fabricmc.api.EnvironmentInterfaces
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.BlockState
@@ -140,8 +144,14 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
 
     //    Bucket    //
 
-    class Bucket internal constructor(fluid: Still) : BucketItem(fluid, itemSettings), HTColoredMaterialItem,
-        HTCustomModelIdItem {
+    @EnvironmentInterfaces(
+        value = [
+            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomColoredItem::class),
+            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomModelItem::class)
+        ]
+    )
+    class Bucket internal constructor(fluid: Still) : BucketItem(fluid, itemSettings), HTCustomColoredItem,
+        HTCustomModelItem {
 
         private val materialKey = fluid.materialKey
 
@@ -158,10 +168,12 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
 
         override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
 
+        @Environment(EnvType.CLIENT)
         override fun getColorProvider(): ItemColorProvider = ItemColorProvider { _: ItemStack, tintIndex: Int ->
             if (tintIndex == 1) materialKey.getMaterial().color.rgb else -1
         }
 
+        @Environment(EnvType.CLIENT)
         override fun getModelId(): Identifier = HTMaterials.id("models/item/bucket.json")
 
     }

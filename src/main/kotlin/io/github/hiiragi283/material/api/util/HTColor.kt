@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material.util
+package io.github.hiiragi283.material.api.util
 
 import java.awt.Color
 

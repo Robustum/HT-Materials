@@ -3,7 +3,7 @@
   "id": "ht_materials",
   "version": "${version}",
   "name": "HT Materials",
-  "description": "A simple Minecraft mod for Fabric/Quilt 1.18.2 that provides Material System and Tag Sync",
+  "description": "A simple Minecraft mod for Fabric/Quilt that provides Material System and Tag Sync",
   "authors": [
     "Hiiragi283"
   ],
@@ -11,6 +11,7 @@
     "MrKono"
   ],
   "contact": {
+    "issues": "https://github.com/Hiiragi283/HT-Materials/issues",
     "sources": "https://github.com/Hiiragi283/HT-Materials"
   },
   "license": "MPL-2.0",

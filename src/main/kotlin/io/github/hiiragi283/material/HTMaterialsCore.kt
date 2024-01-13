@@ -1,7 +1,6 @@
 package io.github.hiiragi283.material
 
 import io.github.hiiragi283.material.api.HTMaterialsAddon
-import io.github.hiiragi283.material.api.event.HTLootTableRegisterCallback
 import io.github.hiiragi283.material.api.event.HTRecipeRegisterCallback
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.*
@@ -23,7 +22,6 @@ import io.github.hiiragi283.material.util.prefix
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.data.server.RecipesProvider
 import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
@@ -184,9 +182,6 @@ internal object HTMaterialsCore {
 
         cache.forEach(HTMaterialsAddon::commonSetup)
 
-        registerLootTables()
-        LOGGER.info("LootTables Registered!")
-
         registerRecipes()
         LOGGER.info("Recipes Registered!")
 
@@ -211,19 +206,6 @@ internal object HTMaterialsCore {
         cache.forEach { it.bindFluidToPart(fluidMap) }
         fluidMap.forEach { materialKey: HTMaterialKey, fluids: MutableCollection<Fluid> ->
             fluids.forEach { fluid: Fluid -> HTFluidManager.register(materialKey, fluid) }
-        }
-    }
-
-    private fun registerLootTables() {
-        HTLootTableRegisterCallback.EVENT.register { handler ->
-            HTMaterial.getMaterialKeys().forEach { key ->
-                HTPartManager.getDefaultItem(key, HTShapes.BLOCK)?.let {
-                    handler.addTable(
-                        HTShapes.BLOCK.getIdentifier(key).prefix("blocks/"),
-                        BlockLootTableGenerator.drops(it)
-                    )
-                }
-            }
         }
     }
 
