@@ -21,8 +21,8 @@ public class LootManagerMixin {
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At(value = "HEAD"))
     private void ht_materials$apply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
         Registry.BLOCK.forEach(block -> {
-            if (block instanceof HTCustomLootTableBlock lootTableBlock) {
-                map.put(block.getLootTableId(), LootManager.toJson(lootTableBlock.getLootTable().build()));
+            if (block instanceof HTCustomLootTableBlock) {
+                map.put(block.getLootTableId(), LootManager.toJson(((HTCustomLootTableBlock) block).getLootTable().build()));
             }
         });
         HTMixinLogger.INSTANCE.info("HTMaterials registered loot tables!");

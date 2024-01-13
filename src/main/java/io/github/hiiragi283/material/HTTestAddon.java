@@ -59,7 +59,7 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     @Override
     public void modifyMaterialContent(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialContentMap> registry) {
-        var builder = registry.getOrCreate(INFINITY);
+        HTMaterialContentMap builder = registry.getOrCreate(INFINITY);
         builder.add(new HTSimpleItemContent(HTShapes.DUST));
         builder.add(new HTSimpleItemContent(HTShapes.GEAR));
         builder.add(new HTSimpleItemContent(HTShapes.INGOT));
@@ -70,7 +70,7 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     @Override
     public void modifyMaterialProperty(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> registry) {
-        var builder = registry.getOrCreate(INFINITY);
+        HTMaterialPropertyMap.Builder builder = registry.getOrCreate(INFINITY);
         builder.add(new HTFluidProperty(), prop -> {
             prop.setTemperature(32768);
             return Unit.INSTANCE;
