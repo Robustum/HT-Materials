@@ -4,6 +4,7 @@ plugins {
     id 'fabric-loom' version '1.5-SNAPSHOT'
     id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm' version '1.9.22'
+    id 'org.jlleitschuh.gradle.ktlint' version '12.1.0'
 }
 
 version = project.mod_version
@@ -145,5 +146,19 @@ publishing {
         // Notice: This block does NOT have the same function as the block in the top level.
         // The repositories here will be used for publishing your artifact, not for
         // retrieving dependencies.
+    }
+}
+
+ktlint {
+    debug = false
+    verbose = false
+    reporters {
+        reporter "plain"
+        reporter "html"
+        reporter "sarif"
+    }
+    filter {
+        exclude("**/generated/**")
+        include("**/kotlin/**")
     }
 }
