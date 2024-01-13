@@ -13,7 +13,6 @@ import net.minecraft.util.registry.Registry
 
 @Suppress("unused")
 object HMMIAddon : HTMaterialsAddon {
-
     override val modId: String = "modern_industrialization"
 
     override val priority: Int = 0
@@ -31,12 +30,12 @@ object HMMIAddon : HTMaterialsAddon {
             "ring",
             "rotor",
             "tiny_dust",
-            "wire"
+            "wire",
         ).map(::HTShapeKey).forEach(registry::add)
     }
 
     override fun bindItemToPart(registry: HTDefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>>) {
-        //Register Tags for ALL MI Material Items
+        // Register Tags for ALL MI Material Items
         HTMaterial.getMaterialKeys().forEach { material: HTMaterialKey ->
             HTShape.getShapeKeys().forEach { shape ->
                 Registry.ITEM.get(shape.getIdentifier(material, modId)).run {
@@ -59,5 +58,4 @@ object HMMIAddon : HTMaterialsAddon {
                 )
         }
     }*/
-
 }

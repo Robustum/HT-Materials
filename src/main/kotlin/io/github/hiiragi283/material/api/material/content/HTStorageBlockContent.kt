@@ -31,9 +31,8 @@ import net.minecraft.util.registry.Registry
 class HTStorageBlockContent(
     private val strength: Float = 5.0f,
     private val toolTag: Tag<Item>? = null,
-    private val toolLevel: Int = 0
+    private val toolLevel: Int = 0,
 ) : HTMaterialContent.BLOCK() {
-
     private fun getBlockSetting(type: HTMaterialType): FabricBlockSettings {
         val material: Material = when (type) {
             HTMaterialType.Gem.AMETHYST -> Material.STONE
@@ -75,7 +74,6 @@ class HTStorageBlockContent(
             HTMaterialType.Undefined -> "solid"
             HTMaterialType.Wood -> "solid"
         }
-
     }
 
     //    HTMaterialContent    //
@@ -85,7 +83,7 @@ class HTStorageBlockContent(
     override fun create(materialKey: HTMaterialKey): Block? = BlockImpl(
         materialKey,
         shapeKey,
-        getBlockSetting(materialKey.getMaterial().type)
+        getBlockSetting(materialKey.getMaterial().type),
     ).takeUnless { HTPartManager.hasDefaultItem(materialKey, shapeKey) }
 
     override fun onCreate(materialKey: HTMaterialKey, created: Block) {
@@ -100,15 +98,14 @@ class HTStorageBlockContent(
     @EnvironmentInterfaces(
         value = [
             EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomBlockStateBlock::class),
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomColoredBlock::class)
-        ]
+            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomColoredBlock::class),
+        ],
     )
     private class BlockImpl(
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
-        settings: Settings
+        settings: Settings,
     ) : Block(settings), HTCustomBlockStateBlock, HTCustomColoredBlock, HTCustomLootTableBlock {
-
         override fun getName(): MutableText = shapeKey.getTranslatedText(materialKey)
 
         @Environment(EnvType.CLIENT)
@@ -121,7 +118,6 @@ class HTStorageBlockContent(
         }
 
         override fun getLootTable(): LootTable.Builder = BlockLootTableGenerator.drops(this)
-
     }
 
     //    BlockItem    //
@@ -129,18 +125,19 @@ class HTStorageBlockContent(
     @EnvironmentInterfaces(
         value = [
             EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomColoredItem::class),
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomModelItem::class)
-        ]
+            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomModelItem::class),
+        ],
     )
     private class BlockItemImpl(
         block: Block,
         val materialKey: HTMaterialKey,
-        val shapeKey: HTShapeKey
+        val shapeKey: HTShapeKey,
     ) : BlockItem(
-        block,
-        FabricItemSettings().group(HTMaterials.ITEM_GROUP)
-    ), HTCustomColoredItem, HTCustomModelItem {
-
+            block,
+            FabricItemSettings().group(HTMaterials.ITEM_GROUP),
+        ),
+        HTCustomColoredItem,
+        HTCustomModelItem {
         override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
 
         override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
@@ -153,7 +150,5 @@ class HTStorageBlockContent(
         @Environment(EnvType.CLIENT)
         override fun getModelId(): Identifier =
             HTMaterials.id("models/block/storage/${getResourcePath(materialKey.getMaterial().type)}.json")
-
     }
-
 }

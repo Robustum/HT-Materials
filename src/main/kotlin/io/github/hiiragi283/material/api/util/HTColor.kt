@@ -3,8 +3,7 @@ package io.github.hiiragi283.material.api.util
 import java.awt.Color
 
 object HTColor {
-
-    //Minecraftのカラーコードと同じ色
+    // Minecraftのカラーコードと同じ色
     @JvmField
     val BLACK = Color(0x00, 0x00, 0x00)
 
@@ -52,5 +51,4 @@ object HTColor {
 
     @JvmField
     val WHITE = Color(0xFF, 0xFF, 0xFF)
-
 }

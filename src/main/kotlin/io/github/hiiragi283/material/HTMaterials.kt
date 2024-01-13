@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
 object HTMaterials : ModInitializer {
-
     const val MOD_ID: String = "ht_materials"
     const val MOD_NAME: String = "HT Materials"
 
@@ -25,10 +24,10 @@ object HTMaterials : ModInitializer {
     val ICON: Item = Item(FabricItemSettings().group(ITEM_GROUP).rarity(Rarity.EPIC))
 
     override fun onInitialize() {
-        //Register Shapes
+        // Register Shapes
         HTMaterialsCore.registerShape()
         HTMaterialsCore.createShape()
-        //Register Materials
+        // Register Materials
         HTMaterialsCore.registerMaterialKey()
         HTMaterialsCore.modifyMaterialContent()
         HTMaterialsCore.modifyMaterialProperty()
@@ -39,7 +38,7 @@ object HTMaterials : ModInitializer {
         HTMaterialsCore.modifyMaterialType()
         HTMaterialsCore.createMaterial()
         HTMaterialsCore.verifyMaterial()
-        //Initialize Game Objects
+        // Initialize Game Objects
         HTMaterialsCore.createContent(Registry.BLOCK_KEY)
         LOGGER.info("All Material Blocks Registered!")
         HTMaterialsCore.registerMaterialFluids()
@@ -51,5 +50,4 @@ object HTMaterials : ModInitializer {
 
     @JvmStatic
     fun id(path: String) = Identifier(MOD_ID, path)
-
 }

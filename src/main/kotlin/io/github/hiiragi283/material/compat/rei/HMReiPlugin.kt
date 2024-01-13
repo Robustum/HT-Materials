@@ -11,7 +11,6 @@ import net.minecraft.util.Identifier
 
 @Environment(EnvType.CLIENT)
 object HMReiPlugin : REIPluginV0 {
-
     val MATERIAL: Identifier = HTMaterials.id("material")
 
     override fun getPluginIdentifier(): Identifier = HTMaterials.id("plugin")
@@ -30,5 +29,4 @@ object HMReiPlugin : REIPluginV0 {
     override fun registerOthers(recipeHelper: RecipeHelper) {
         recipeHelper.registerWorkingStations(MATERIAL, EntryStack.create(HTMaterials.ICON))
     }
-
 }

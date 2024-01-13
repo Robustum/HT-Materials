@@ -15,7 +15,6 @@ import net.minecraft.item.ItemConvertible
 
 @JvmDefaultWithCompatibility
 interface HTMaterialsAddon {
-
     val modId: String
 
     val priority: Int
@@ -51,5 +50,4 @@ interface HTMaterialsAddon {
     @Environment(EnvType.CLIENT)
     fun clientSetup() {
     }
-
 }

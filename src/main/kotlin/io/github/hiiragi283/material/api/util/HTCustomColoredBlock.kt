@@ -6,7 +6,5 @@ import net.minecraft.client.color.block.BlockColorProvider
 
 @Environment(EnvType.CLIENT)
 interface HTCustomColoredBlock {
-
     fun getColorProvider(): BlockColorProvider
-
 }

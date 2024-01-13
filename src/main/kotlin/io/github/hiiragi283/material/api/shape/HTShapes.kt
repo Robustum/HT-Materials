@@ -5,7 +5,6 @@ import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 
 object HTShapes : HTMaterialsAddon {
-
     //    Block    //
 
     @JvmField
@@ -44,12 +43,12 @@ object HTShapes : HTMaterialsAddon {
     override val priority: Int = -200
 
     override fun registerShape(registry: HTObjectKeySet<HTShapeKey>) {
-        //Block
+        // Block
         registry.addAll(
             BLOCK,
-            ORE
+            ORE,
         )
-        //Item
+        // Item
         registry.addAll(
             DUST,
             GEAR,
@@ -57,8 +56,7 @@ object HTShapes : HTMaterialsAddon {
             INGOT,
             NUGGET,
             PLATE,
-            ROD
+            ROD,
         )
     }
-
 }

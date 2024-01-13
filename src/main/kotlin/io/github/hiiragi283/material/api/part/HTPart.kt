@@ -9,13 +9,11 @@ import net.minecraft.item.Items
 
 data class HTPart(
     val materialKey: HTMaterialKey,
-    val shapeKey: HTShapeKey
+    val shapeKey: HTShapeKey,
 ) : ItemConvertible {
-
     fun getMaterial(): HTMaterial = materialKey.getMaterial()
 
     fun getMaterialOrNull(): HTMaterial? = materialKey.getMaterialOrNull()
 
     override fun asItem(): Item = HTPartManager.getDefaultItem(materialKey, shapeKey) ?: Items.AIR
-
 }

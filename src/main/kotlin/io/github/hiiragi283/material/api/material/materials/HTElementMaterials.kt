@@ -16,7 +16,6 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import java.awt.Color
 
 object HTElementMaterials : HTMaterialsAddon {
-
     //    1st Period    //
 
     @JvmField
@@ -143,21 +142,21 @@ object HTElementMaterials : HTMaterialsAddon {
     override val priority: Int = -100
 
     override fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {
-        //1st Period
+        // 1st Period
         registry.addAll(
             HYDROGEN,
-            HELIUM
+            HELIUM,
         )
-        //2nd Period
+        // 2nd Period
         registry.addAll(
             LITHIUM,
             BERYLLIUM,
             CARBON,
             NITROGEN,
             OXYGEN,
-            FLUORINE
+            FLUORINE,
         )
-        //3rd Period
+        // 3rd Period
         registry.addAll(
             SODIUM,
             MAGNESIUM,
@@ -165,9 +164,9 @@ object HTElementMaterials : HTMaterialsAddon {
             SILICON,
             PHOSPHORUS,
             SULFUR,
-            CHLORINE
+            CHLORINE,
         )
-        //4th Period
+        // 4th Period
         registry.addAll(
             POTASSIUM,
             CALCIUM,
@@ -178,44 +177,44 @@ object HTElementMaterials : HTMaterialsAddon {
             COBALT,
             NICKEL,
             COPPER,
-            ZINC
+            ZINC,
         )
-        //5th Period
+        // 5th Period
         registry.addAll(
             SILVER,
-            TIN
+            TIN,
         )
-        //6th Period
+        // 6th Period
         registry.addAll(
             TUNGSTEN,
             IRIDIUM,
             PLATINUM,
             GOLD,
             MERCURY,
-            LEAD
+            LEAD,
         )
-        //7th Period
+        // 7th Period
         registry.addAll(
             URANIUM,
-            PLUTONIUM
+            PLUTONIUM,
         )
     }
 
     override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
-        //1st Period
+        // 1st Period
 
-        //2nd Period
+        // 2nd Period
         registry.getOrCreate(CARBON).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.PLATE))
         }
-        //3rd Period
+        // 3rd Period
         registry.getOrCreate(ALUMINUM).apply {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 1
-                )
+                    toolLevel = 1,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -237,13 +236,13 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(SULFUR).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
         }
-        //4th Period
+        // 4th Period
         registry.getOrCreate(TITANIUM).apply {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 3
-                )
+                    toolLevel = 3,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -262,8 +261,8 @@ object HTElementMaterials : HTMaterialsAddon {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 2
-                )
+                    toolLevel = 2,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -283,8 +282,8 @@ object HTElementMaterials : HTMaterialsAddon {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 1
-                )
+                    toolLevel = 1,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -293,13 +292,13 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
         }
-        //5th Period
+        // 5th Period
         registry.getOrCreate(SILVER).apply {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 2
-                )
+                    toolLevel = 2,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -312,8 +311,8 @@ object HTElementMaterials : HTMaterialsAddon {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 1
-                )
+                    toolLevel = 1,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -322,13 +321,13 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
         }
-        //6th Period
+        // 6th Period
         registry.getOrCreate(TUNGSTEN).apply {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 3
-                )
+                    toolLevel = 3,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -341,8 +340,8 @@ object HTElementMaterials : HTMaterialsAddon {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 3
-                )
+                    toolLevel = 3,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -355,8 +354,8 @@ object HTElementMaterials : HTMaterialsAddon {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 3
-                )
+                    toolLevel = 3,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -375,8 +374,8 @@ object HTElementMaterials : HTMaterialsAddon {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 1
-                )
+                    toolLevel = 1,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -385,13 +384,13 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
         }
-        //7th Period
+        // 7th Period
         registry.getOrCreate(URANIUM).apply {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 2
-                )
+                    toolLevel = 2,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -403,8 +402,8 @@ object HTElementMaterials : HTMaterialsAddon {
             add(
                 HTStorageBlockContent(
                     toolTag = FabricToolTags.PICKAXES,
-                    toolLevel = 2
-                )
+                    toolLevel = 2,
+                ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.INGOT))
@@ -415,22 +414,22 @@ object HTElementMaterials : HTMaterialsAddon {
     }
 
     override fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
-        //1st Period
+        // 1st Period
         registry.getOrCreate(HYDROGEN).add(HTFluidProperty()) { this.isGas = true }
         registry.getOrCreate(HELIUM).add(HTFluidProperty()) { this.isGas = true }
-        //2nd Period
+        // 2nd Period
         registry.getOrCreate(LITHIUM)
         registry.getOrCreate(BERYLLIUM)
         registry.getOrCreate(NITROGEN).add(HTFluidProperty()) { this.isGas = true }
         registry.getOrCreate(OXYGEN).add(HTFluidProperty()) { this.isGas = true }
         registry.getOrCreate(FLUORINE).add(HTFluidProperty()) { this.isGas = true }
-        //3rd Period
+        // 3rd Period
         registry.getOrCreate(SODIUM)
         registry.getOrCreate(MAGNESIUM)
         registry.getOrCreate(ALUMINUM)
         registry.getOrCreate(SILICON)
         registry.getOrCreate(SODIUM).add(HTFluidProperty()) { this.isGas = true }
-        //4th Period
+        // 4th Period
         registry.getOrCreate(POTASSIUM)
         registry.getOrCreate(CALCIUM)
         registry.getOrCreate(TITANIUM)
@@ -441,33 +440,33 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(NICKEL)
         registry.getOrCreate(COPPER)
         registry.getOrCreate(ZINC)
-        //5th Period
+        // 5th Period
         registry.getOrCreate(SILVER)
         registry.getOrCreate(TIN)
-        //6th Period
+        // 6th Period
         registry.getOrCreate(TUNGSTEN)
         registry.getOrCreate(IRIDIUM)
         registry.getOrCreate(PLATINUM)
         registry.getOrCreate(GOLD)
         registry.getOrCreate(MERCURY).add(HTFluidProperty())
         registry.getOrCreate(LEAD)
-        //7th Period
+        // 7th Period
         registry.getOrCreate(URANIUM)
         registry.getOrCreate(PLUTONIUM)
     }
 
     override fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {
-        //1st Period
+        // 1st Period
         registry[HYDROGEN] = ColorConvertible { HTColor.BLUE }
         registry[HELIUM] = ColorConvertible { HTColor.YELLOW }
-        //2nd Period
+        // 2nd Period
         registry[LITHIUM] = ColorConvertible { HTColor.GRAY }
         registry[BERYLLIUM] = ColorConvertible { HTColor.DARK_GREEN }
         registry[CARBON] = ColorConvertible.ofColor(HTColor.BLACK, HTColor.DARK_GRAY)
         registry[NITROGEN] = ColorConvertible { HTColor.AQUA }
         registry[OXYGEN] = ColorConvertible { HTColor.WHITE }
         registry[FLUORINE] = ColorConvertible { HTColor.GREEN }
-        //3rd Period
+        // 3rd Period
         registry[SODIUM] = ColorConvertible.ofColor(HTColor.DARK_BLUE to 1, HTColor.BLUE to 4)
         registry[MAGNESIUM] = ColorConvertible { HTColor.GRAY }
         registry[ALUMINUM] = ColorConvertible.ofColor(HTColor.BLUE to 1, HTColor.WHITE to 5)
@@ -475,7 +474,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry[PHOSPHORUS] = ColorConvertible { HTColor.YELLOW }
         registry[SULFUR] = ColorConvertible.ofColor(HTColor.GOLD, HTColor.YELLOW)
         registry[CHLORINE] = ColorConvertible { HTColor.YELLOW }
-        //4th Period
+        // 4th Period
         registry[POTASSIUM] = ColorConvertible.ofColor(HTColor.DARK_BLUE to 2, HTColor.BLUE to 3)
         registry[CALCIUM] = ColorConvertible { HTColor.GRAY }
         registry[TITANIUM] = ColorConvertible.ofColor(HTColor.GOLD to 1, HTColor.WHITE to 2)
@@ -486,33 +485,33 @@ object HTElementMaterials : HTMaterialsAddon {
         registry[NICKEL] = ColorConvertible.ofColor(HTColor.GOLD to 2, HTColor.GREEN to 1, HTColor.WHITE to 1)
         registry[COPPER] = ColorConvertible.ofColor(HTColor.GOLD, HTColor.RED)
         registry[ZINC] = ColorConvertible.ofColor(HTColor.GREEN to 1, HTColor.WHITE to 2)
-        //5th Period
+        // 5th Period
         registry[SILVER] = ColorConvertible.ofColor(HTColor.AQUA to 1, HTColor.WHITE to 3)
         registry[TIN] = ColorConvertible.ofColor(HTColor.BLUE to 1, HTColor.AQUA to 1, HTColor.WHITE to 3)
-        //6th Period
+        // 6th Period
         registry[TUNGSTEN] = ColorConvertible.ofColor(HTColor.BLACK to 2, HTColor.DARK_GRAY to 1)
         registry[IRIDIUM] = ColorConvertible { HTColor.WHITE }
         registry[PLATINUM] = ColorConvertible { Color(0x87cefa) }
         registry[GOLD] = ColorConvertible.ofColor(HTColor.GOLD, HTColor.YELLOW)
         registry[MERCURY] = ColorConvertible { HTColor.WHITE }
         registry[LEAD] = ColorConvertible.ofColor(HTColor.DARK_BLUE, HTColor.DARK_GRAY, HTColor.WHITE)
-        //7th Period
+        // 7th Period
         registry[URANIUM] = ColorConvertible { HTColor.GREEN }
         registry[PLUTONIUM] = ColorConvertible { HTColor.RED }
     }
 
     override fun modifyMaterialFormula(registry: MutableMap<HTMaterialKey, FormulaConvertible>) {
-        //1st Period
+        // 1st Period
         registry[HYDROGEN] = FormulaConvertible { "H" }
         registry[HELIUM] = FormulaConvertible { "He" }
-        //2nd Period
+        // 2nd Period
         registry[LITHIUM] = FormulaConvertible { "Li" }
         registry[BERYLLIUM] = FormulaConvertible { "Be" }
         registry[CARBON] = FormulaConvertible { "C" }
         registry[NITROGEN] = FormulaConvertible { "N" }
         registry[OXYGEN] = FormulaConvertible { "O" }
         registry[FLUORINE] = FormulaConvertible { "F" }
-        //3rd Period
+        // 3rd Period
         registry[SODIUM] = FormulaConvertible { "Na" }
         registry[MAGNESIUM] = FormulaConvertible { "Mg" }
         registry[ALUMINUM] = FormulaConvertible { "Al" }
@@ -520,7 +519,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry[PHOSPHORUS] = FormulaConvertible { "P" }
         registry[SULFUR] = FormulaConvertible { "S" }
         registry[CHLORINE] = FormulaConvertible { "Cl" }
-        //4th Period
+        // 4th Period
         registry[POTASSIUM] = FormulaConvertible { "K" }
         registry[CALCIUM] = FormulaConvertible { "Ca" }
         registry[TITANIUM] = FormulaConvertible { "Ti" }
@@ -531,33 +530,33 @@ object HTElementMaterials : HTMaterialsAddon {
         registry[NICKEL] = FormulaConvertible { "Ni" }
         registry[COPPER] = FormulaConvertible { "Cu" }
         registry[ZINC] = FormulaConvertible { "Zn" }
-        //5th Period
+        // 5th Period
         registry[SILVER] = FormulaConvertible { "Ag" }
         registry[TIN] = FormulaConvertible { "Sn" }
-        //6th Period
+        // 6th Period
         registry[TUNGSTEN] = FormulaConvertible { "W" }
         registry[IRIDIUM] = FormulaConvertible { "Ir" }
         registry[PLATINUM] = FormulaConvertible { "Pt" }
         registry[GOLD] = FormulaConvertible { "Au" }
         registry[MERCURY] = FormulaConvertible { "Hg" }
         registry[LEAD] = FormulaConvertible { "Pb" }
-        //7th Period
+        // 7th Period
         registry[URANIUM] = FormulaConvertible { "U" }
         registry[PLUTONIUM] = FormulaConvertible { "Pu" }
     }
 
     override fun modifyMaterialMolar(registry: MutableMap<HTMaterialKey, MolarMassConvertible>) {
-        //1st Period
+        // 1st Period
         registry[HYDROGEN] = MolarMassConvertible { 1.0 }
         registry[HELIUM] = MolarMassConvertible { 4.0 }
-        //2nd Period
+        // 2nd Period
         registry[LITHIUM] = MolarMassConvertible { 6.9 }
         registry[BERYLLIUM] = MolarMassConvertible { 9.0 }
         registry[CARBON] = MolarMassConvertible { 12.0 }
         registry[NITROGEN] = MolarMassConvertible { 14.0 }
         registry[OXYGEN] = MolarMassConvertible { 16.0 }
         registry[FLUORINE] = MolarMassConvertible { 19.0 }
-        //3rd Period
+        // 3rd Period
         registry[SODIUM] = MolarMassConvertible { 23.0 }
         registry[MAGNESIUM] = MolarMassConvertible { 24.3 }
         registry[ALUMINUM] = MolarMassConvertible { 27.0 }
@@ -565,7 +564,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry[PHOSPHORUS] = MolarMassConvertible { 31.0 }
         registry[SULFUR] = MolarMassConvertible { 32.1 }
         registry[CHLORINE] = MolarMassConvertible { 35.5 }
-        //4th Period
+        // 4th Period
         registry[POTASSIUM] = MolarMassConvertible { 39.1 }
         registry[CALCIUM] = MolarMassConvertible { 40.1 }
         registry[TITANIUM] = MolarMassConvertible { 47.9 }
@@ -576,32 +575,32 @@ object HTElementMaterials : HTMaterialsAddon {
         registry[NICKEL] = MolarMassConvertible { 58.7 }
         registry[COPPER] = MolarMassConvertible { 63.5 }
         registry[ZINC] = MolarMassConvertible { 65.4 }
-        //5th Period
+        // 5th Period
         registry[SILVER] = MolarMassConvertible { 107.9 }
         registry[TIN] = MolarMassConvertible { 118.7 }
-        //6th Period
+        // 6th Period
         registry[TUNGSTEN] = MolarMassConvertible { 183.8 }
         registry[IRIDIUM] = MolarMassConvertible { 192.2 }
         registry[PLATINUM] = MolarMassConvertible { 195.1 }
         registry[GOLD] = MolarMassConvertible { 197.0 }
         registry[MERCURY] = MolarMassConvertible { 200.6 }
         registry[LEAD] = MolarMassConvertible { 207.2 }
-        //7th Period
+        // 7th Period
         registry[URANIUM] = MolarMassConvertible { 238.0 }
         registry[PLUTONIUM] = MolarMassConvertible { 244.1 }
     }
 
     override fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {
-        //1st Period
-        //2nd Period
+        // 1st Period
+        // 2nd Period
         registry[LITHIUM] = HTMaterialType.Metal
         registry[BERYLLIUM] = HTMaterialType.Metal
-        //3rd Period
+        // 3rd Period
         registry[SODIUM] = HTMaterialType.Metal
         registry[MAGNESIUM] = HTMaterialType.Metal
         registry[ALUMINUM] = HTMaterialType.Metal
         registry[SILICON] = HTMaterialType.Metal
-        //4th Period
+        // 4th Period
         registry[POTASSIUM] = HTMaterialType.Metal
         registry[CALCIUM] = HTMaterialType.Metal
         registry[TITANIUM] = HTMaterialType.Metal
@@ -612,19 +611,18 @@ object HTElementMaterials : HTMaterialsAddon {
         registry[NICKEL] = HTMaterialType.Metal
         registry[COPPER] = HTMaterialType.Metal
         registry[ZINC] = HTMaterialType.Metal
-        //5th Period
+        // 5th Period
         registry[SILICON] = HTMaterialType.Metal
         registry[TIN] = HTMaterialType.Metal
-        //6th Period
+        // 6th Period
         registry[TUNGSTEN] = HTMaterialType.Metal
         registry[IRIDIUM] = HTMaterialType.Metal
         registry[PLATINUM] = HTMaterialType.Metal
         registry[GOLD] = HTMaterialType.Metal
         registry[MERCURY] = HTMaterialType.Metal
         registry[LEAD] = HTMaterialType.Metal
-        //7th Period
+        // 7th Period
         registry[URANIUM] = HTMaterialType.Metal
         registry[PLUTONIUM] = HTMaterialType.Metal
     }
-
 }

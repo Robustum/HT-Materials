@@ -6,9 +6,11 @@ import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.MolarMassConvertible
 
 @JvmDefaultWithCompatibility
-interface HTComponentProperty<T : HTComponentProperty<T>> : HTMaterialProperty<T>, ColorConvertible, FormulaConvertible,
+interface HTComponentProperty<T : HTComponentProperty<T>> :
+    HTMaterialProperty<T>,
+    ColorConvertible,
+    FormulaConvertible,
     MolarMassConvertible {
-
     override fun verify(material: HTMaterial) {
         material.properties.values.forEach {
             if (it.key != key && it is ColorConvertible) {
@@ -18,9 +20,10 @@ interface HTComponentProperty<T : HTComponentProperty<T>> : HTMaterialProperty<T
                 throw IllegalStateException("Material: ${material.key} cannot have two or more properties implemented FormulaConvertible!")
             }
             if (it.key != key && it is MolarMassConvertible) {
-                throw IllegalStateException("Material: ${material.key} cannot have two or more properties implemented MolarMassConvertible!")
+                throw IllegalStateException(
+                    "Material: ${material.key} cannot have two or more properties implemented MolarMassConvertible!",
+                )
             }
         }
     }
-
 }

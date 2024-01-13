@@ -7,7 +7,6 @@ import io.github.hiiragi283.material.api.material.HTMaterialKey
 import net.minecraft.fluid.Fluid
 
 class HTFluidProperty : HTMaterialProperty<HTFluidProperty> {
-
     var temperature: Int = 300
     var viscosity: Int = 1000
     var isGas: Boolean = false
@@ -28,7 +27,5 @@ class HTFluidProperty : HTMaterialProperty<HTFluidProperty> {
     override val key: HTPropertyKey<HTFluidProperty> = HTPropertyKey.FLUID
 
     override fun verify(material: HTMaterial) {
-
     }
-
 }

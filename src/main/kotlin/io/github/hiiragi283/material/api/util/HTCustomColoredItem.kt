@@ -6,7 +6,5 @@ import net.minecraft.client.color.item.ItemColorProvider
 
 @Environment(EnvType.CLIENT)
 interface HTCustomColoredItem {
-
     fun getColorProvider(): ItemColorProvider
-
 }

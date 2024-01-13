@@ -28,27 +28,24 @@ import org.apache.logging.log4j.Logger
 @Suppress("unused", "UnstableApiUsage")
 @Environment(EnvType.CLIENT)
 object HTMaterialsClient : ClientModInitializer {
-
     private val LOGGER: Logger = LogManager.getLogger("${HTMaterials.MOD_NAME}/Client")
 
     override fun onInitializeClient() {
-
-        //Register Render Handler for Material Fluid
+        // Register Render Handler for Material Fluid
         registerFluidRenderHandler()
         LOGGER.info("Material Fluid Renderer Registered!")
 
-        //Register Block Color Provider
+        // Register Block Color Provider
         registerBlockColorProvider()
         LOGGER.info("Block Color Provider Registered!")
 
-        //Register Item Color Provider
+        // Register Item Color Provider
         registerItemColorProvider()
         LOGGER.info("Item Color Provider Registered!")
 
-        //Register Client Events
+        // Register Client Events
         registerEvents()
         LOGGER.info("Client Events Registered!")
-
     }
 
     private fun registerFluidRenderHandler() {
@@ -77,7 +74,6 @@ object HTMaterialsClient : ClientModInitializer {
     }
 
     private fun registerEvents() {
-
         ItemTooltipCallback.EVENT.register { stack: ItemStack, _, lines: MutableList<Text> ->
 
             stack.item.getPart()?.let {
@@ -90,9 +86,6 @@ object HTMaterialsClient : ClientModInitializer {
                 ?.map(FluidVariant::getFluid)
                 ?.mapNotNull(HTFluidManager::getMaterialKey)
                 ?.forEach { HTMaterial.appendTooltip(it.getMaterial(), null, stack, lines) }
-
         }
-
     }
-
 }

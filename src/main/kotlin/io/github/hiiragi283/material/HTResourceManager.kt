@@ -12,15 +12,12 @@ import java.io.InputStreamReader
 import java.util.function.BiConsumer
 
 object HTResourceManager {
-
     private val gson = Gson()
 
     fun register(path: String, consumer: BiConsumer<Identifier, JsonObject>) {
         ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(
             object : SimpleSynchronousResourceReloadListener {
-
                 override fun reload(manager: ResourceManager) {
-
                     manager.findResources("") { it.endsWith(".json") }.forEach { identifier: Identifier ->
                         try {
                             val inputStream: InputStream = manager.getResource(identifier).inputStream
@@ -31,13 +28,10 @@ object HTResourceManager {
                             e.printStackTrace()
                         }
                     }
-
                 }
 
                 override fun getFabricId(): Identifier = HTMaterials.id(path)
-
-            }
+            },
         )
     }
-
 }

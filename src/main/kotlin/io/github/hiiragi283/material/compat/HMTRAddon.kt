@@ -12,7 +12,6 @@ import techreborn.init.TRContent
 
 @Suppress("unused")
 object HMTRAddon : HTMaterialsAddon {
-
     override val modId: String = "techreborn"
 
     override val priority: Int = 0
@@ -31,5 +30,4 @@ object HMTRAddon : HTMaterialsAddon {
         registry.getOrCreate(HTElementMaterials.PHOSPHORUS, HTShapeKey("small_dust"))
             .add(TRContent.SmallDusts.PHOSPHOROUS)
     }
-
 }

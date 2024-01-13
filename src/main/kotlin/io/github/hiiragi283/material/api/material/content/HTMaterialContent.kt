@@ -10,7 +10,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
 sealed class HTMaterialContent<T> {
-
     abstract val shapeKey: HTShapeKey
 
     abstract val registry: Registry<T>
@@ -22,21 +21,16 @@ sealed class HTMaterialContent<T> {
     open fun onCreate(materialKey: HTMaterialKey, created: T) {}
 
     abstract class BLOCK : HTMaterialContent<Block>() {
-
         final override val registry: Registry<Block> = Registry.BLOCK
 
         final override fun getIdentifier(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
-
     }
 
     abstract class FLUID : HTMaterialContent<Fluid>() {
-
         final override val registry: Registry<Fluid> = Registry.FLUID
-
     }
 
     abstract class ITEM : HTMaterialContent<Item>() {
-
         final override val registry: Registry<Item> = Registry.ITEM
 
         final override fun getIdentifier(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
@@ -44,7 +38,5 @@ sealed class HTMaterialContent<T> {
         override fun onCreate(materialKey: HTMaterialKey, created: Item) {
             HTPartManager.forceRegister(materialKey, shapeKey, created)
         }
-
     }
-
 }

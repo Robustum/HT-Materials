@@ -7,7 +7,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
 object HTModelLoaderMixin {
-
     private const val BLOCK_PREFIX = "block/"
 
     private const val ITEM_PREFIX = "item/"
@@ -17,7 +16,9 @@ object HTModelLoaderMixin {
         val path: String = id.path.removePrefix("blockstates/").removeSuffix(".json")
         val fixedId: Identifier = id.modify { path }
         (Registry.BLOCK.get(fixedId) as? HTCustomBlockStateBlock)?.getBlockStateId() ?: id
-    } else id
+    } else {
+        id
+    }
 
     @JvmStatic
     fun modifyModelId(id: Identifier): Identifier {
@@ -27,17 +28,19 @@ object HTModelLoaderMixin {
             return when {
                 path.startsWith(BLOCK_PREFIX) -> getModelId(
                     Registry.BLOCK,
-                    fixedId.modify { it.removePrefix(BLOCK_PREFIX) })
+                    fixedId.modify { it.removePrefix(BLOCK_PREFIX) },
+                )
 
                 path.startsWith(ITEM_PREFIX) -> getModelId(
                     Registry.ITEM,
-                    fixedId.modify { it.removePrefix(ITEM_PREFIX) })
+                    fixedId.modify { it.removePrefix(ITEM_PREFIX) },
+                )
                 else -> null
             } ?: id
-        } else return id
+        } else {
+            return id
+        }
     }
 
-    private fun <T> getModelId(registry: Registry<T>, id: Identifier): Identifier? =
-        (registry.get(id) as? HTCustomModelItem)?.getModelId()
-
+    private fun <T> getModelId(registry: Registry<T>, id: Identifier): Identifier? = (registry.get(id) as? HTCustomModelItem)?.getModelId()
 }

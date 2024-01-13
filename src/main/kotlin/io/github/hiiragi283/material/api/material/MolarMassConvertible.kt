@@ -1,11 +1,9 @@
 package io.github.hiiragi283.material.api.material
 
 fun interface MolarMassConvertible {
-
     fun asMolarMass(): Double
 
     companion object {
-
         @JvmField
         val EMPTY = MolarMassConvertible { 0.0 }
 
@@ -33,7 +31,5 @@ fun interface MolarMassConvertible {
 
         @JvmStatic
         fun calculate(map: Map<Double, Int>): Double = map.map { (molar: Double, weight: Int) -> molar * weight }.sum()
-
     }
-
 }

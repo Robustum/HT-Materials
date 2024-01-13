@@ -16,7 +16,6 @@ import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
 internal object HTTagLoaderMixin {
-
     private val Tag.Builder.entries: List<Tag.TrackedEntry>
         get() = (this as TagBuilderAccessor).entries
 
@@ -29,7 +28,7 @@ internal object HTTagLoaderMixin {
             "item" -> itemTags(map)
             else -> {}
         }
-        //Remove Empty Builder
+        // Remove Empty Builder
         HashMap(map).forEach { (id: Identifier, builder: Tag.Builder) ->
             if (builder.entries.isEmpty()) {
                 map.remove(id)
@@ -40,30 +39,30 @@ internal object HTTagLoaderMixin {
 
     @JvmStatic
     fun fluidTags(map: MutableMap<Identifier, Tag.Builder>) {
-        //Register Tags from HTFluidManager
+        // Register Tags from HTFluidManager
         HTFluidManager.getMaterialToFluidsMap().forEach { key: HTMaterialKey, fluid: Fluid ->
             registerTag(
                 getOrCreateBuilder(map, key.getCommonId()),
                 Registry.FLUID,
-                fluid
+                fluid,
             )
         }
     }
 
     @JvmStatic
     fun itemTags(map: MutableMap<Identifier, Tag.Builder>) {
-        //Register Tags from HTPartManager
+        // Register Tags from HTPartManager
         HTPartManager.getAllItems().forEach { item ->
             val materialKey: HTMaterialKey = item.getMaterialKey() ?: return@forEach
             val shapeKey: HTShapeKey = item.getShapeKey() ?: return@forEach
             registerTag(
                 getOrCreateBuilder(map, shapeKey.getCommonTag(materialKey).id),
                 Registry.ITEM,
-                item
+                item,
             )
         }
         HTMixinLogger.INSTANCE.info("Registered Tags for HTPartManager's Entries!")
-        //Sync ForgeTag and CommonTag entries
+        // Sync ForgeTag and CommonTag entries
         HTMaterial.getMaterialKeys().forEach { materialKey: HTMaterialKey ->
             HTShape.getShapeKeys().forEach shape@{ shapeKey: HTShapeKey ->
                 val forgeBuilder: Tag.Builder = getOrCreateBuilder(map, shapeKey.getForgeTag(materialKey))
@@ -92,5 +91,4 @@ internal object HTTagLoaderMixin {
     private fun syncBuilder(parentBuilder: Tag.Builder, childBuilder: Tag.Builder) {
         childBuilder.entries.forEach(parentBuilder::add)
     }
-
 }

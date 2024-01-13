@@ -30,7 +30,7 @@ inline fun <R, C, V, T> Table<out R, out C, V>.map(transform: (Table.Cell<out R,
 
 inline fun <R, C, V, T, U : MutableCollection<in T>> Table<out R, out C, V>.mapNotNullTo(
     destination: U,
-    transform: (Table.Cell<out R, out C, V>) -> T
+    transform: (Table.Cell<out R, out C, V>) -> T,
 ): U {
     forEach { cell -> transform(cell)?.let { destination.add(it) } }
     return destination
@@ -38,7 +38,7 @@ inline fun <R, C, V, T, U : MutableCollection<in T>> Table<out R, out C, V>.mapN
 
 inline fun <R, C, V, T, U : MutableCollection<in T>> Table<out R, out C, V>.mapTo(
     destination: U,
-    transform: (Table.Cell<out R, out C, V>) -> T
+    transform: (Table.Cell<out R, out C, V>) -> T,
 ): U {
     for (cell in cellSet()) destination.add(transform(cell))
     return destination

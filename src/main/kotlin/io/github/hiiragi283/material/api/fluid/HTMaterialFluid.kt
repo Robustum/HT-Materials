@@ -33,9 +33,7 @@ import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 
 abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKey) : FlowableFluid() {
-
     companion object {
-
         private val fluidFlowing: MutableMap<HTMaterialKey, Flowing> = mutableMapOf()
 
         private val fluidStill: MutableMap<HTMaterialKey, Still> = mutableMapOf()
@@ -60,7 +58,6 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
             .group(HTMaterials.ITEM_GROUP)
             .maxCount(1)
             .recipeRemainder(Items.BUCKET)
-
     }
 
     //    FlowableFluid    //
@@ -78,7 +75,7 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
         world: BlockView,
         pos: BlockPos,
         fluid: Fluid,
-        direction: Direction
+        direction: Direction,
     ): Boolean = false
 
     override fun getFlowSpeed(world: WorldView): Int = 4
@@ -100,13 +97,12 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
     //    Flowing    //
 
     class Flowing internal constructor(materialKey: HTMaterialKey) : HTMaterialFluid(materialKey) {
-
         init {
             fluidFlowing.putIfAbsent(materialKey, this)
             Registry.register(
                 Registry.FLUID,
                 materialKey.getIdentifier().prefix("flowing_"),
-                this
+                this,
             )
             HTFluidManager.forceRegister(materialKey, this)
         }
@@ -119,19 +115,17 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
         override fun getLevel(state: FluidState): Int = state.get(LEVEL)
 
         override fun isStill(state: FluidState): Boolean = false
-
     }
 
     //    Still    //
 
     class Still internal constructor(materialKey: HTMaterialKey) : HTMaterialFluid(materialKey) {
-
         init {
             fluidStill.putIfAbsent(materialKey, this)
             Registry.register(
                 Registry.FLUID,
                 materialKey.getIdentifier(),
-                this
+                this,
             )
             HTFluidManager.forceRegister(materialKey, this)
         }
@@ -139,7 +133,6 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
         override fun getLevel(state: FluidState): Int = 8
 
         override fun isStill(state: FluidState): Boolean = true
-
     }
 
     //    Bucket    //
@@ -147,35 +140,34 @@ abstract class HTMaterialFluid private constructor(val materialKey: HTMaterialKe
     @EnvironmentInterfaces(
         value = [
             EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomColoredItem::class),
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomModelItem::class)
-        ]
+            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomModelItem::class),
+        ],
     )
-    class Bucket internal constructor(fluid: Still) : BucketItem(fluid, itemSettings), HTCustomColoredItem,
+    class Bucket internal constructor(fluid: Still) :
+        BucketItem(fluid, itemSettings),
+        HTCustomColoredItem,
         HTCustomModelItem {
+            private val materialKey = fluid.materialKey
 
-        private val materialKey = fluid.materialKey
+            companion object {
+                private val shapeKey = HTShapeKey("bucket")
+            }
 
-        companion object {
-            private val shapeKey = HTShapeKey("bucket")
+            init {
+                fluidBucket.putIfAbsent(fluid.materialKey, this)
+                Registry.register(Registry.ITEM, shapeKey.getIdentifier(fluid.materialKey), this)
+            }
+
+            override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
+
+            override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
+
+            @Environment(EnvType.CLIENT)
+            override fun getColorProvider(): ItemColorProvider = ItemColorProvider { _: ItemStack, tintIndex: Int ->
+                if (tintIndex == 1) materialKey.getMaterial().color.rgb else -1
+            }
+
+            @Environment(EnvType.CLIENT)
+            override fun getModelId(): Identifier = HTMaterials.id("models/item/bucket.json")
         }
-
-        init {
-            fluidBucket.putIfAbsent(fluid.materialKey, this)
-            Registry.register(Registry.ITEM, shapeKey.getIdentifier(fluid.materialKey), this)
-        }
-
-        override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
-
-        override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
-
-        @Environment(EnvType.CLIENT)
-        override fun getColorProvider(): ItemColorProvider = ItemColorProvider { _: ItemStack, tintIndex: Int ->
-            if (tintIndex == 1) materialKey.getMaterial().color.rgb else -1
-        }
-
-        @Environment(EnvType.CLIENT)
-        override fun getModelId(): Identifier = HTMaterials.id("models/item/bucket.json")
-
-    }
-
 }

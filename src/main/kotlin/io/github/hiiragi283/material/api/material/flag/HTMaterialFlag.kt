@@ -6,9 +6,8 @@ import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 class HTMaterialFlag private constructor(
     val name: String,
     private val requiredFlags: Set<HTMaterialFlag>,
-    private val requiredProperties: Set<HTPropertyKey<*>>
+    private val requiredProperties: Set<HTPropertyKey<*>>,
 ) {
-
     init {
         registry.putIfAbsent(name, this)
     }
@@ -41,7 +40,6 @@ class HTMaterialFlag private constructor(
     //    Builder    //
 
     class Builder(private val name: String) {
-
         @JvmField
         val requiredFlags: MutableSet<HTMaterialFlag> = mutableSetOf()
 
@@ -49,11 +47,9 @@ class HTMaterialFlag private constructor(
         val requiredProperties: MutableSet<HTPropertyKey<*>> = mutableSetOf()
 
         internal fun build(): HTMaterialFlag = HTMaterialFlag(name, requiredFlags, requiredProperties)
-
     }
 
     companion object {
-
         //    Registry    //
 
         private val registry: MutableMap<String, HTMaterialFlag> = hashMapOf()
@@ -64,9 +60,6 @@ class HTMaterialFlag private constructor(
         //    Builder    //
 
         @JvmStatic
-        fun create(name: String, init: Builder.() -> Unit = {}): HTMaterialFlag =
-            Builder(name).apply(init).build()
-
+        fun create(name: String, init: Builder.() -> Unit = {}): HTMaterialFlag = Builder(name).apply(init).build()
     }
-
 }

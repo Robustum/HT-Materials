@@ -23,7 +23,6 @@ class HTMaterial private constructor(
     val molar: Double,
     val type: HTMaterialType,
 ) {
-
     //    Properties    //
 
     fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = key.objClass.cast(properties[key])
@@ -54,7 +53,6 @@ class HTMaterial private constructor(
     override fun toString(): String = key.toString()
 
     companion object {
-
         private val LOGGER: Logger = LogManager.getLogger(HTMaterial::class.java)
 
         //    Registry    //
@@ -71,8 +69,7 @@ class HTMaterial private constructor(
         fun getMaterials(): Collection<HTMaterial> = registry.values
 
         @JvmStatic
-        fun getMaterial(key: HTMaterialKey): HTMaterial =
-            registry[key] ?: throw IllegalStateException("Material: $key is not registered!")
+        fun getMaterial(key: HTMaterialKey): HTMaterial = registry[key] ?: throw IllegalStateException("Material: $key is not registered!")
 
         @JvmStatic
         fun getMaterialOrNull(key: HTMaterialKey): HTMaterial? = registry[key]
@@ -85,7 +82,7 @@ class HTMaterial private constructor(
             color: Color,
             formula: String,
             molar: Double,
-            type: HTMaterialType
+            type: HTMaterialType,
         ): HTMaterial = HTMaterial(key, properties, flags, color, formula, molar, type).also {
             registry.putIfAbsent(key, it)
             LOGGER.info("Material: $key registered!")
@@ -93,26 +90,29 @@ class HTMaterial private constructor(
 
         private val shapeKey = HTShapeKey("fluid")
 
-        fun appendTooltip(material: HTMaterial, shapeKey: HTShapeKey?, stack: ItemStack, lines: MutableList<Text>) {
-            //Title
+        fun appendTooltip(
+            material: HTMaterial,
+            shapeKey: HTShapeKey?,
+            stack: ItemStack,
+            lines: MutableList<Text>,
+        ) {
+            // Title
             lines.add(TranslatableText("tooltip.ht_materials.material.title"))
-            //Name
+            // Name
             val name: String = shapeKey?.getTranslatedName(material.key) ?: material.key.getTranslatedName()
             lines.add(TranslatableText("tooltip.ht_materials.material.name", name))
-            //Type
+            // Type
             lines.add(TranslatableText("tooltip.ht_materials.material.type", material.type))
-            //Formula
+            // Formula
             material.formula.takeIf(String::isNotEmpty)?.let { formula: String ->
                 lines.add(TranslatableText("tooltip.ht_materials.material.formula", formula))
             }
-            //Molar Mass
+            // Molar Mass
             material.molar.takeIf { it > 0.0 }?.let { molar: Double ->
                 lines.add(TranslatableText("tooltip.ht_materials.material.molar", molar))
             }
-            //Tooltip from Properties
+            // Tooltip from Properties
             material.properties.values.forEach { it.appendTooltip(material, shapeKey, stack, lines) }
         }
-
     }
-
 }

@@ -3,7 +3,6 @@ package io.github.hiiragi283.material.api.registry
 import io.github.hiiragi283.material.impl.registry.HTObjectKeySetImpl
 
 interface HTObjectKeySet<T : HTObjectKey<*>> : Iterable<T> {
-
     fun add(key: T): Boolean
 
     fun addAll(keys: Iterable<T>) {
@@ -18,5 +17,4 @@ interface HTObjectKeySet<T : HTObjectKey<*>> : Iterable<T> {
         @JvmStatic
         fun <T : HTObjectKey<*>> create(): HTObjectKeySet<T> = HTObjectKeySetImpl()
     }
-
 }

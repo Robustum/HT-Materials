@@ -15,7 +15,6 @@ import net.minecraft.world.BlockRenderView
 @Environment(EnvType.CLIENT)
 @Suppress("DEPRECATION")
 class HTFluidRenderHandler(val material: HTMaterial) : FluidRenderHandler {
-
     private lateinit var sprites: Array<Sprite>
 
     override fun getFluidSprites(view: BlockRenderView?, pos: BlockPos?, state: FluidState): Array<Sprite> {
@@ -28,5 +27,4 @@ class HTFluidRenderHandler(val material: HTMaterial) : FluidRenderHandler {
     }
 
     override fun getFluidColor(view: BlockRenderView?, pos: BlockPos?, state: FluidState): Int = material.color.rgb
-
 }

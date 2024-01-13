@@ -9,7 +9,6 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
 import net.minecraft.util.Identifier
 
 fun interface HTRecipeRegisterCallback {
-
     fun onRecipeRegister(handler: Handler)
 
     companion object {
@@ -21,12 +20,11 @@ fun interface HTRecipeRegisterCallback {
     }
 
     class Handler(private val map: MutableMap<Identifier, JsonElement>) {
-
         fun addShapedCrafting(recipeId: Identifier, builder: ShapedRecipeJsonFactory) {
             builder.offerTo({ provider: RecipeJsonProvider ->
                 map.putIfAbsent(
                     provider.recipeId,
-                    provider.toJson()
+                    provider.toJson(),
                 )
             }, recipeId)
         }
@@ -35,7 +33,7 @@ fun interface HTRecipeRegisterCallback {
             builder.offerTo({ provider: RecipeJsonProvider ->
                 map.putIfAbsent(
                     provider.recipeId,
-                    provider.toJson()
+                    provider.toJson(),
                 )
             }, recipeId)
         }
@@ -47,7 +45,5 @@ fun interface HTRecipeRegisterCallback {
         fun remove(recipeId: Identifier) {
             map.remove(recipeId)
         }
-
     }
-
 }

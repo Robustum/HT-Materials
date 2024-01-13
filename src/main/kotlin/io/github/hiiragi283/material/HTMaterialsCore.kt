@@ -35,7 +35,6 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
 internal object HTMaterialsCore {
-
     private val LOGGER: Logger = LogManager.getLogger("${HTMaterials.MOD_NAME}/Addons")
 
     private val cache: List<HTMaterialsAddon> = FabricLoader.getInstance()
@@ -141,7 +140,7 @@ internal object HTMaterialsCore {
                 color.asColor(),
                 formula.asFormula(),
                 "%.1f".format(molar.asMolarMass()).toDouble(),
-                type
+                type,
             )
         }
     }
@@ -175,8 +174,7 @@ internal object HTMaterialsCore {
     //    Post Initialization    //
 
     fun commonSetup() {
-
-        //Bind Game Objects to HTPart
+        // Bind Game Objects to HTPart
         bindItemToPart()
         bindFluidToPart()
 
@@ -219,7 +217,7 @@ internal object HTMaterialsCore {
     }
 
     private fun ingotRecipe(material: HTMaterialKey, item: Item, handler: HTRecipeRegisterCallback.Handler) {
-        //9x Nugget -> 1x Ingot
+        // 9x Nugget -> 1x Ingot
         if (!HTPartManager.hasDefaultItem(material, HTShapes.NUGGET)) return
         val nuggetTag: Tag<Item> = HTShapes.NUGGET.getCommonTag(material)
         handler.addShapedCrafting(
@@ -229,19 +227,19 @@ internal object HTMaterialsCore {
                 .pattern("AAA")
                 .pattern("AAA")
                 .input('A', nuggetTag)
-                .criterion("has_nugget", RecipesProvider.conditionsFromTag(nuggetTag))
+                .criterion("has_nugget", RecipesProvider.conditionsFromTag(nuggetTag)),
         )
     }
 
     private fun nuggetRecipe(material: HTMaterialKey, item: Item, handler: HTRecipeRegisterCallback.Handler) {
-        //1x Ingot -> 9x Nugget
+        // 1x Ingot -> 9x Nugget
         if (!HTPartManager.hasDefaultItem(material, HTShapes.INGOT)) return
         val ingotTag: Tag<Item> = HTShapes.INGOT.getCommonTag(material)
         handler.addShapelessCrafting(
             HTShapes.NUGGET.getIdentifier(material).prefix("shapeless/"),
             ShapelessRecipeJsonFactory.create(item, 9)
                 .input(ingotTag)
-                .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag))
+                .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag)),
         )
     }
 
@@ -251,5 +249,4 @@ internal object HTMaterialsCore {
         cache.forEach(HTMaterialsAddon::clientSetup)
         LOGGER.info("BlockStates and Models Registered!")
     }
-
 }

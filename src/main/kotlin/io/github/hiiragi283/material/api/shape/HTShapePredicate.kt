@@ -11,9 +11,8 @@ class HTShapePredicate private constructor(
     private val blackList: MutableList<HTMaterialKey>,
     private val whiteList: MutableList<HTMaterialKey>,
     private val requiredFlags: MutableList<HTMaterialFlag>,
-    private val requiredProperties: MutableList<HTPropertyKey<*>>
+    private val requiredProperties: MutableList<HTPropertyKey<*>>,
 ) : Predicate<HTMaterial> {
-
     override fun test(material: HTMaterial): Boolean {
         val key: HTMaterialKey = material.key
         return when {
@@ -26,7 +25,6 @@ class HTShapePredicate private constructor(
     }
 
     class Builder {
-
         @JvmField
         val blackList: MutableList<HTMaterialKey> = mutableListOf()
 
@@ -42,7 +40,5 @@ class HTShapePredicate private constructor(
         var disabled: Boolean = true
 
         internal fun build() = HTShapePredicate(disabled, blackList, whiteList, requiredFlags, requiredProperties)
-
     }
-
 }

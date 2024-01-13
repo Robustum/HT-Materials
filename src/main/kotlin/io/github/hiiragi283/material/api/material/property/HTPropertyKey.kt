@@ -4,9 +4,8 @@ import io.github.hiiragi283.material.api.registry.HTObjectKey
 
 data class HTPropertyKey<T : HTMaterialProperty<T>>(
     override val name: String,
-    override val objClass: Class<T>
+    override val objClass: Class<T>,
 ) : HTObjectKey<T> {
-
     init {
         map.putIfAbsent(name, this)
     }
@@ -16,7 +15,6 @@ data class HTPropertyKey<T : HTMaterialProperty<T>>(
     override fun toString(): String = name
 
     companion object {
-
         @JvmStatic
         inline fun <reified T : HTMaterialProperty<T>> create(name: String) = HTPropertyKey(name, T::class.java)
 
@@ -48,7 +46,5 @@ data class HTPropertyKey<T : HTMaterialProperty<T>>(
 
         @JvmField
         val STORAGE_BLOCK: HTPropertyKey<HTStorageBlockProperty> = create("storage_block")
-
     }
-
 }

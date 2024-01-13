@@ -10,7 +10,6 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
 data class HTMaterialKey(override val name: String) : HTObjectKey<HTMaterial> {
-
     override val objClass: Class<HTMaterial> = HTMaterial::class.java
 
     fun getMaterial(): HTMaterial = HTMaterial.getMaterial(this)
@@ -35,5 +34,4 @@ data class HTMaterialKey(override val name: String) : HTObjectKey<HTMaterial> {
     //    Any    //
 
     override fun toString(): String = name
-
 }

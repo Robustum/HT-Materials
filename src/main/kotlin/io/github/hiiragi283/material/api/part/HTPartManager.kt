@@ -28,7 +28,6 @@ fun ItemConvertible.getMaterial(): HTMaterial? = getMaterialKey()?.getMaterial()
 fun ItemConvertible.getShapeKey(): HTShapeKey? = getPart()?.shapeKey
 
 object HTPartManager {
-
     private val LOGGER: Logger = LogManager.getLogger(this::class.java)
 
     //    Item -> HTPart    //
@@ -66,35 +65,34 @@ object HTPartManager {
     fun getAllItems(): Collection<Item> = partToItems.flatten().toSet()
 
     @JvmStatic
-    fun getItems(material: HTMaterialKey, shape: HTShapeKey): Collection<Item> =
-        partToItems.getOrCreate(material, shape)
+    fun getItems(material: HTMaterialKey, shape: HTShapeKey): Collection<Item> = partToItems.getOrCreate(material, shape)
 
     //    Initialization    //
 
     init {
-        //Amethyst
-        //forceRegister(HTVanillaMaterials.AMETHYST, HTShapes.BLOCK, Items.AMETHYST_BLOCK)
-        //forceRegister(HTVanillaMaterials.AMETHYST, HTShapes.GEM, Items.AMETHYST_SHARD)
-        //Andesite
+        // Amethyst
+        // forceRegister(HTVanillaMaterials.AMETHYST, HTShapes.BLOCK, Items.AMETHYST_BLOCK)
+        // forceRegister(HTVanillaMaterials.AMETHYST, HTShapes.GEM, Items.AMETHYST_SHARD)
+        // Andesite
         forceRegister(HTVanillaMaterials.ANDESITE, HTShapes.BLOCK, Items.ANDESITE)
         forceRegister(HTVanillaMaterials.ANDESITE, HTShapes.BLOCK, Items.POLISHED_ANDESITE)
-        //Basalt
+        // Basalt
         forceRegister(HTVanillaMaterials.BASALT, HTShapes.BLOCK, Items.BASALT)
         forceRegister(HTVanillaMaterials.BASALT, HTShapes.BLOCK, Items.POLISHED_BASALT)
-        //Brick
+        // Brick
         forceRegister(HTVanillaMaterials.BRICK, HTShapes.BLOCK, Items.BRICKS)
         forceRegister(HTVanillaMaterials.BRICK, HTShapes.GEM, Items.BRICK)
-        //Calcite
-        //forceRegister(HTVanillaMaterials.CALCITE, HTShapes.BLOCK, Items.CALCITE)
-        //Charcoal
+        // Calcite
+        // forceRegister(HTVanillaMaterials.CALCITE, HTShapes.BLOCK, Items.CALCITE)
+        // Charcoal
         forceRegister(HTVanillaMaterials.CHARCOAL, HTShapes.GEM, Items.CHARCOAL)
-        //Clay
+        // Clay
         forceRegister(HTVanillaMaterials.CLAY, HTShapes.BLOCK, Items.CLAY)
         forceRegister(HTVanillaMaterials.CLAY, HTShapes.GEM, Items.CLAY_BALL)
-        //Coal
+        // Coal
         forceRegister(HTVanillaMaterials.COAL, HTShapes.GEM, Items.COAL)
         forceRegister(HTVanillaMaterials.COAL, HTShapes.BLOCK, Items.COAL_BLOCK)
-        //Copper
+        // Copper
         /*forceRegister(HTElementMaterials.COPPER, HTShapes.BLOCK, Items.COPPER_BLOCK)
         forceRegister(HTElementMaterials.COPPER, HTShapes.INGOT, Items.COPPER_INGOT)
         forceRegister(HTElementMaterials.COPPER, HTShapes.ORE, Items.COPPER_ORE)
@@ -102,77 +100,77 @@ object HTPartManager {
         forceRegister(HTElementMaterials.COPPER, HTShapes.RAW_ORE, Items.RAW_COPPER)
         //Deepslate
         forceRegister(HTVanillaMaterials.DEEPSLATE, HTShapes.BLOCK, Items.DEEPSLATE)*/
-        //Diamond
+        // Diamond
         forceRegister(HTVanillaMaterials.DIAMOND, HTShapes.BLOCK, Items.DIAMOND_BLOCK)
         forceRegister(HTVanillaMaterials.DIAMOND, HTShapes.GEM, Items.DIAMOND)
         forceRegister(HTVanillaMaterials.DIAMOND, HTShapes.ORE, Items.DIAMOND_ORE)
-        //Diorite
+        // Diorite
         forceRegister(HTVanillaMaterials.DIORITE, HTShapes.BLOCK, Items.DIORITE)
         forceRegister(HTVanillaMaterials.DIORITE, HTShapes.BLOCK, Items.POLISHED_DIORITE)
-        //Dripstone
-        //forceRegister(HTVanillaMaterials.DRIPSTONE, HTShapes.BLOCK, Items.DRIPSTONE_BLOCK)
-        //Emerald
+        // Dripstone
+        // forceRegister(HTVanillaMaterials.DRIPSTONE, HTShapes.BLOCK, Items.DRIPSTONE_BLOCK)
+        // Emerald
         forceRegister(HTVanillaMaterials.EMERALD, HTShapes.BLOCK, Items.EMERALD_BLOCK)
         forceRegister(HTVanillaMaterials.EMERALD, HTShapes.GEM, Items.EMERALD)
         forceRegister(HTVanillaMaterials.EMERALD, HTShapes.ORE, Items.EMERALD_ORE)
-        //End Stone
+        // End Stone
         forceRegister(HTVanillaMaterials.END_STONE, HTShapes.BLOCK, Items.END_STONE)
-        //Ender Pearl
+        // Ender Pearl
         forceRegister(HTVanillaMaterials.ENDER_PEARL, HTShapes.GEM, Items.ENDER_PEARL)
-        //Flint
+        // Flint
         forceRegister(HTVanillaMaterials.FLINT, HTShapes.GEM, Items.FLINT)
-        //Iron
+        // Iron
         forceRegister(HTElementMaterials.IRON, HTShapes.BLOCK, Items.IRON_BLOCK)
         forceRegister(HTElementMaterials.IRON, HTShapes.INGOT, Items.IRON_INGOT)
         forceRegister(HTElementMaterials.IRON, HTShapes.NUGGET, Items.IRON_NUGGET)
         forceRegister(HTElementMaterials.IRON, HTShapes.ORE, Items.IRON_ORE)
-        //forceRegister(HTElementMaterials.IRON, HTShapes.RAW_BLOCK, Items.RAW_IRON_BLOCK)
-        //forceRegister(HTElementMaterials.IRON, HTShapes.RAW_ORE, Items.RAW_IRON)
-        //Glass
+        // forceRegister(HTElementMaterials.IRON, HTShapes.RAW_BLOCK, Items.RAW_IRON_BLOCK)
+        // forceRegister(HTElementMaterials.IRON, HTShapes.RAW_ORE, Items.RAW_IRON)
+        // Glass
         forceRegister(HTVanillaMaterials.GLASS, HTShapes.BLOCK, Items.GLASS)
-        //Glowstone
+        // Glowstone
         forceRegister(HTVanillaMaterials.GLOWSTONE, HTShapes.BLOCK, Items.GLOWSTONE)
         forceRegister(HTVanillaMaterials.GLOWSTONE, HTShapes.DUST, Items.GLOWSTONE_DUST)
-        //Gold
+        // Gold
         forceRegister(HTElementMaterials.GOLD, HTShapes.BLOCK, Items.GOLD_BLOCK)
         forceRegister(HTElementMaterials.GOLD, HTShapes.INGOT, Items.GOLD_INGOT)
         forceRegister(HTElementMaterials.GOLD, HTShapes.NUGGET, Items.GOLD_NUGGET)
         forceRegister(HTElementMaterials.GOLD, HTShapes.ORE, Items.GOLD_ORE)
-        //forceRegister(HTElementMaterials.GOLD, HTShapes.RAW_BLOCK, Items.RAW_GOLD_BLOCK)
-        //forceRegister(HTElementMaterials.GOLD, HTShapes.RAW_ORE, Items.RAW_GOLD)
-        //Granite
+        // forceRegister(HTElementMaterials.GOLD, HTShapes.RAW_BLOCK, Items.RAW_GOLD_BLOCK)
+        // forceRegister(HTElementMaterials.GOLD, HTShapes.RAW_ORE, Items.RAW_GOLD)
+        // Granite
         forceRegister(HTVanillaMaterials.GRANITE, HTShapes.BLOCK, Items.GRANITE)
         forceRegister(HTVanillaMaterials.GRANITE, HTShapes.BLOCK, Items.POLISHED_GRANITE)
-        //Lapis
+        // Lapis
         forceRegister(HTVanillaMaterials.LAPIS, HTShapes.BLOCK, Items.LAPIS_BLOCK)
         forceRegister(HTVanillaMaterials.LAPIS, HTShapes.GEM, Items.LAPIS_LAZULI)
         forceRegister(HTVanillaMaterials.LAPIS, HTShapes.ORE, Items.LAPIS_ORE)
-        //Nether Brick
+        // Nether Brick
         forceRegister(HTVanillaMaterials.NETHER_BRICK, HTShapes.BLOCK, Items.NETHER_BRICKS)
         forceRegister(HTVanillaMaterials.NETHER_BRICK, HTShapes.GEM, Items.NETHER_BRICK)
-        //Netherite
+        // Netherite
         forceRegister(HTVanillaMaterials.NETHERITE, HTShapes.BLOCK, Items.NETHERITE_BLOCK)
         forceRegister(HTVanillaMaterials.NETHERITE, HTShapes.INGOT, Items.NETHERITE_INGOT)
-        //Netherrack
+        // Netherrack
         forceRegister(HTVanillaMaterials.NETHERRACK, HTShapes.BLOCK, Items.NETHERRACK)
-        //Obsidian
+        // Obsidian
         forceRegister(HTVanillaMaterials.OBSIDIAN, HTShapes.BLOCK, Items.OBSIDIAN)
-        //Prismarine
-        //forceRegister(HTVanillaMaterials.PRISMARINE, HTShapes.DUST, Items.PRISMARINE_CRYSTALS)
-        //forceRegister(HTVanillaMaterials.PRISMARINE, HTShapes.GEM, Items.PRISMARINE_SHARD)
-        //Quartz
+        // Prismarine
+        // forceRegister(HTVanillaMaterials.PRISMARINE, HTShapes.DUST, Items.PRISMARINE_CRYSTALS)
+        // forceRegister(HTVanillaMaterials.PRISMARINE, HTShapes.GEM, Items.PRISMARINE_SHARD)
+        // Quartz
         forceRegister(HTVanillaMaterials.QUARTZ, HTShapes.BLOCK, Items.QUARTZ_BLOCK)
         forceRegister(HTVanillaMaterials.QUARTZ, HTShapes.GEM, Items.QUARTZ)
         forceRegister(HTVanillaMaterials.QUARTZ, HTShapes.ORE, Items.NETHER_QUARTZ_ORE)
-        //Redstone
+        // Redstone
         forceRegister(HTVanillaMaterials.REDSTONE, HTShapes.BLOCK, Items.REDSTONE_BLOCK)
         forceRegister(HTVanillaMaterials.REDSTONE, HTShapes.DUST, Items.REDSTONE)
         forceRegister(HTVanillaMaterials.REDSTONE, HTShapes.ORE, Items.REDSTONE_ORE)
-        //Stone
+        // Stone
         forceRegister(HTVanillaMaterials.STONE, HTShapes.BLOCK, Items.STONE)
-        //Tuff
-        //forceRegister(HTVanillaMaterials.TUFF, HTShapes.BLOCK, Items.TUFF)
-        //Wood
+        // Tuff
+        // forceRegister(HTVanillaMaterials.TUFF, HTShapes.BLOCK, Items.TUFF)
+        // Wood
         forceRegister(HTVanillaMaterials.WOOD, HTShapes.BLOCK, Items.OAK_PLANKS)
         forceRegister(HTVanillaMaterials.WOOD, HTShapes.BLOCK, Items.BIRCH_PLANKS)
         forceRegister(HTVanillaMaterials.WOOD, HTShapes.BLOCK, Items.SPRUCE_PLANKS)
@@ -181,7 +179,7 @@ object HTPartManager {
         forceRegister(HTVanillaMaterials.WOOD, HTShapes.BLOCK, Items.DARK_OAK_PLANKS)
         forceRegister(HTVanillaMaterials.WOOD, HTShapes.BLOCK, Items.CRIMSON_HYPHAE)
         forceRegister(HTVanillaMaterials.WOOD, HTShapes.BLOCK, Items.WARPED_HYPHAE)
-        //Event
+        // Event
         ServerWorldEvents.LOAD.register { _, _ ->
 
             itemToPart.clear()
@@ -192,7 +190,6 @@ object HTPartManager {
                     shape.getCommonTag(material).values().forEach { item -> register(material, shape, item) }
                 }
             }
-
         }
     }
 
@@ -201,24 +198,24 @@ object HTPartManager {
     @JvmStatic
     @JvmSynthetic
     internal fun register(material: HTMaterialKey, shape: HTShapeKey, itemConvertible: ItemConvertible) {
-        //Check if the itemConvertible has non-air item
+        // Check if the itemConvertible has non-air item
         val item: Item = itemConvertible.checkItemNotAir()
-        //Remove existing entry
+        // Remove existing entry
         getPart(item)?.run {
             itemToPart.remove(item)
             partToItem.remove(this.materialKey, this.shapeKey)
             partToItems.getOrCreate(this.materialKey, this.shapeKey).remove(item)
         }
-        //ItemConvertible -> HTPart
+        // ItemConvertible -> HTPart
         itemToPart.putIfAbsent(item, HTPart(material, shape))
-        //HTMaterial, HTShape -> ItemConvertible
+        // HTMaterial, HTShape -> ItemConvertible
         if (!partToItem.contains(material, shape)) {
             partToItem.put(material, shape, item)
             LOGGER.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
         }
-        //HTMaterial, HTShape -> Collection<ItemConvertible>
+        // HTMaterial, HTShape -> Collection<ItemConvertible>
         partToItems.getOrCreate(material, shape).add(item)
-        //print info
+        // print info
         LOGGER.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
     }
 
@@ -226,9 +223,8 @@ object HTPartManager {
     @JvmSynthetic
     internal fun forceRegister(material: HTMaterialKey, shape: HTShapeKey, itemConvertible: ItemConvertible) {
         register(material, shape, itemConvertible)
-        //Check if the itemConvertible has non-air item
+        // Check if the itemConvertible has non-air item
         val item: Item = itemConvertible.checkItemNotAir()
         partToItem.put(material, shape, item)
     }
-
 }

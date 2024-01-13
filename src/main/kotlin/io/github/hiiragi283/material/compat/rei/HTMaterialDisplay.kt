@@ -12,7 +12,6 @@ import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 
 class HTMaterialDisplay(val material: HTMaterial, val key: HTMaterialKey = material.key) : RecipeDisplay {
-
     val entries: List<EntryStack> = buildList {
         addAll(getItemEntries().map(EntryStack::create))
         addAll(getFluidEntries().map(EntryStack::create))
@@ -27,5 +26,4 @@ class HTMaterialDisplay(val material: HTMaterial, val key: HTMaterialKey = mater
     fun getFluidEntries(): Collection<Fluid> = HTFluidManager.getFluids(key)
 
     fun getItemEntries(): Collection<Item> = HTPartManager.getAllItems().filter { it.getMaterialKey() == key }
-
 }

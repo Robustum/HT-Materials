@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
 object HTFluidManager {
-
     private val LOGGER: Logger = LogManager.getLogger(this::class.java)
 
     //    Fluid -> HTMaterialKey    //
@@ -50,8 +49,7 @@ object HTFluidManager {
     private val materialToFluids: Multimap<HTMaterialKey, Fluid> = HashMultimap.create()
 
     @JvmStatic
-    fun getMaterialToFluidsMap(): ImmutableMultimap<HTMaterialKey, Fluid> =
-        ImmutableMultimap.copyOf(materialToFluids)
+    fun getMaterialToFluidsMap(): ImmutableMultimap<HTMaterialKey, Fluid> = ImmutableMultimap.copyOf(materialToFluids)
 
     @JvmStatic
     fun getFluids(material: HTMaterialKey): Collection<Fluid> = materialToFluids[material] ?: setOf()
@@ -76,40 +74,40 @@ object HTFluidManager {
 
     @JvmSynthetic
     private fun registerInternal(material: HTMaterialKey, fluid: Fluid) {
-        //Fluid -> HTMaterialKey
+        // Fluid -> HTMaterialKey
         fluidToMaterial.putIfAbsent(fluid, material)
-        //HTMaterial -> Fluid
+        // HTMaterial -> Fluid
         if (!hasDefaultFluid(material)) {
             materialToFluid[material] = fluid
             LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
         }
-        //HTMaterial -> Collection<Fluid>
+        // HTMaterial -> Collection<Fluid>
         materialToFluids.put(material, fluid)
-        //print info
+        // print info
         LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
     }
 
     @JvmStatic
     @JvmSynthetic
     internal fun forceRegister(material: HTMaterialKey, fluid: Fluid) {
-        //Fluid -> HTMaterialKey
+        // Fluid -> HTMaterialKey
         fluidToMaterial.putIfAbsent(fluid, material)
-        //HTMaterial -> Fluid
+        // HTMaterial -> Fluid
         materialToFluid[material] = fluid
         LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
-        //HTMaterial -> Collection<Fluid>
+        // HTMaterial -> Collection<Fluid>
         materialToFluids.put(material, fluid)
-        //print info
+        // print info
         LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
     }
 
     //    Initialization    //
 
     init {
-        //Water
+        // Water
         forceRegister(HTVanillaMaterials.WATER, Fluids.WATER)
         forceRegister(HTVanillaMaterials.WATER, Fluids.FLOWING_WATER)
-        //Lava
+        // Lava
         forceRegister(HTVanillaMaterials.LAVA, Fluids.LAVA)
         forceRegister(HTVanillaMaterials.LAVA, Fluids.FLOWING_LAVA)
     }
@@ -126,5 +124,4 @@ object HTFluidManager {
             }
         }
     }
-
 }

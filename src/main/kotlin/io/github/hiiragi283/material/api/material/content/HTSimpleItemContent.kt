@@ -20,22 +20,21 @@ import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
 class HTSimpleItemContent(override val shapeKey: HTShapeKey) : HTMaterialContent.ITEM() {
-
     override fun create(materialKey: HTMaterialKey): Item? =
         ItemImpl(materialKey, shapeKey).takeUnless { HTPartManager.hasDefaultItem(materialKey, shapeKey) }
 
     @EnvironmentInterfaces(
         value = [
             EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomColoredItem::class),
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomModelItem::class)
-        ]
+            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomModelItem::class),
+        ],
     )
     private class ItemImpl(
         private val materialKey: HTMaterialKey,
-        private val shapeKey: HTShapeKey
+        private val shapeKey: HTShapeKey,
     ) : Item(FabricItemSettings().group(HTMaterials.ITEM_GROUP)),
-        HTCustomColoredItem, HTCustomModelItem {
-
+        HTCustomColoredItem,
+        HTCustomModelItem {
         override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
 
         override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
@@ -51,11 +50,13 @@ class HTSimpleItemContent(override val shapeKey: HTShapeKey) : HTMaterialContent
             val modelName: String = if (type is HTMaterialType.Gem) {
                 if (shapeKey == HTShapes.GEM) {
                     "${type.name.lowercase()}_gem"
-                } else shapeKey.toString()
-            } else shapeKey.toString()
+                } else {
+                    shapeKey.toString()
+                }
+            } else {
+                shapeKey.toString()
+            }
             return HTMaterials.id("models/item/$modelName.json")
         }
-
     }
-
 }

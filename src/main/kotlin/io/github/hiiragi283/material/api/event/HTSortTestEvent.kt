@@ -7,11 +7,9 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
 fun interface HTSortTestEvent {
-
     fun call()
 
     companion object {
-
         @JvmField
         val EVENT: Event<HTSortTestEvent> = EventFactory.createArrayBacked(HTSortTestEvent::class.java) { callbacks ->
             HTSortTestEvent { callbacks.forEach { it.call() } }
@@ -28,9 +26,6 @@ fun interface HTSortTestEvent {
             EVENT.register { LOGGER.info("after!") }
             EVENT.register { LOGGER.info("before!") }
             EVENT.register { LOGGER.info("default!") }
-
         }
-
     }
-
 }

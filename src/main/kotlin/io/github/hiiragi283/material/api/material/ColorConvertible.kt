@@ -3,11 +3,9 @@ package io.github.hiiragi283.material.api.material
 import java.awt.Color
 
 fun interface ColorConvertible {
-
     fun asColor(): Color
 
     companion object {
-
         @JvmField
         val EMPTY = ColorConvertible { Color.WHITE }
 
@@ -18,8 +16,7 @@ fun interface ColorConvertible {
         fun of(vararg pairs: Pair<ColorConvertible, Int>) = of(pairs.toMap())
 
         @JvmStatic
-        fun of(map: Map<ColorConvertible, Int>) =
-            ofColor(map.mapKeys { (color: ColorConvertible, _) -> color.asColor() })
+        fun of(map: Map<ColorConvertible, Int>) = ofColor(map.mapKeys { (color: ColorConvertible, _) -> color.asColor() })
 
         @JvmStatic
         fun ofColor(vararg colors: Color) = ofColor(colors.associateWith { 1 })
@@ -40,7 +37,7 @@ fun interface ColorConvertible {
             var blueSum = 0
             var weightSum = 0
             map.forEach { (color: Color, weight: Int) ->
-                //RGB値にweightをかけた値を加算していく
+                // RGB値にweightをかけた値を加算していく
                 color.run {
                     redSum += this.red * weight
                     greenSum += this.green * weight
@@ -50,9 +47,9 @@ fun interface ColorConvertible {
             }
             return if (weightSum > 0) {
                 Color(redSum / weightSum, greenSum / weightSum, blueSum / weightSum)
-            } else Color.WHITE
+            } else {
+                Color.WHITE
+            }
         }
-
     }
-
 }

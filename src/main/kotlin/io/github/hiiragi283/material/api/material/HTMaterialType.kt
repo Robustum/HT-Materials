@@ -1,7 +1,6 @@
 package io.github.hiiragi283.material.api.material
 
 sealed interface HTMaterialType {
-
     data object Undefined : HTMaterialType
 
     enum class Gem : HTMaterialType {
@@ -12,7 +11,7 @@ sealed interface HTMaterialType {
         EMERALD,
         LAPIS,
         QUARTZ,
-        RUBY;
+        RUBY,
     }
 
     data object Metal : HTMaterialType
@@ -20,5 +19,4 @@ sealed interface HTMaterialType {
     data object Stone : HTMaterialType
 
     data object Wood : HTMaterialType
-
 }

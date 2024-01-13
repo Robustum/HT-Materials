@@ -6,7 +6,5 @@ import net.minecraft.util.Identifier
 
 @Environment(EnvType.CLIENT)
 interface HTCustomBlockStateBlock {
-
     fun getBlockStateId(): Identifier
-
 }

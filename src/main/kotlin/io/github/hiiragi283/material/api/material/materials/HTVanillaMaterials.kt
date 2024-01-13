@@ -15,7 +15,6 @@ import io.github.hiiragi283.material.api.util.HTColor
 import java.awt.Color
 
 object HTVanillaMaterials : HTMaterialsAddon {
-
     //    Fluids    //
 
     @JvmField
@@ -125,12 +124,12 @@ object HTVanillaMaterials : HTMaterialsAddon {
     override val priority: Int = -90
 
     override fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {
-        //Fluids
+        // Fluids
         registry.addAll(
             WATER,
-            LAVA
+            LAVA,
         )
-        //Gems
+        // Gems
         registry.addAll(
             AMETHYST,
             DIAMOND,
@@ -138,13 +137,13 @@ object HTVanillaMaterials : HTMaterialsAddon {
             EMERALD,
             FLINT,
             LAPIS,
-            QUARTZ
+            QUARTZ,
         )
-        //Metals
+        // Metals
         registry.addAll(
-            NETHERITE
+            NETHERITE,
         )
-        //Solids
+        // Solids
         registry.addAll(
             BRICK,
             CHARCOAL,
@@ -153,9 +152,9 @@ object HTVanillaMaterials : HTMaterialsAddon {
             GLASS,
             GLOWSTONE,
             NETHER_BRICK,
-            REDSTONE
+            REDSTONE,
         )
-        //Stones
+        // Stones
         registry.addAll(
             STONE,
             GRANITE,
@@ -167,17 +166,17 @@ object HTVanillaMaterials : HTMaterialsAddon {
             OBSIDIAN,
             NETHERRACK,
             BASALT,
-            END_STONE
+            END_STONE,
         )
-        //Woods
+        // Woods
         registry.addAll(
-            WOOD
+            WOOD,
         )
     }
 
     override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
-        //Fluids
-        //Gems
+        // Fluids
+        // Gems
         registry.getOrCreate(AMETHYST).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.PLATE))
@@ -212,7 +211,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
         }
-        //Metals
+        // Metals
         registry.getOrCreate(NETHERITE).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -220,7 +219,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
         }
-        //Solids
+        // Solids
         registry.getOrCreate(BRICK).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.PLATE))
@@ -247,7 +246,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(REDSTONE)
-        //Stones
+        // Stones
         registry.getOrCreate(STONE).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -284,7 +283,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry.getOrCreate(END_STONE).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
         }
-        //Woods
+        // Woods
         registry.getOrCreate(WOOD).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
@@ -293,12 +292,12 @@ object HTVanillaMaterials : HTMaterialsAddon {
     }
 
     override fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
-        //Fluids
+        // Fluids
         registry.getOrCreate(WATER)
             .add(HTCompoundProperty(HTElementMaterials.HYDROGEN to 2, HTElementMaterials.OXYGEN to 1))
         registry.getOrCreate(LAVA)
             .add(HTCompoundProperty(*HTAtomicGroups.SILICON_OXIDE))
-        //Gems
+        // Gems
         registry.getOrCreate(AMETHYST).apply {
             add(HTCompoundProperty(*HTAtomicGroups.SILICON_OXIDE))
         }
@@ -312,8 +311,8 @@ object HTVanillaMaterials : HTMaterialsAddon {
                     HTElementMaterials.BERYLLIUM to 3,
                     HTElementMaterials.ALUMINUM to 2,
                     HTElementMaterials.SILICON to 6,
-                    HTElementMaterials.OXYGEN to 18
-                )
+                    HTElementMaterials.OXYGEN to 18,
+                ),
             )
         }
         registry.getOrCreate(FLINT).apply {
@@ -323,9 +322,9 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry.getOrCreate(QUARTZ).apply {
             add(HTCompoundProperty(HTElementMaterials.CARBON to 1))
         }
-        //Metals
+        // Metals
         registry.getOrCreate(NETHERITE)
-        //Solids
+        // Solids
         registry.getOrCreate(BRICK)
         registry.getOrCreate(CHARCOAL).add(HTCompoundProperty(HTElementMaterials.CARBON to 1))
         registry.getOrCreate(CLAY)
@@ -334,7 +333,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry.getOrCreate(GLOWSTONE)
         registry.getOrCreate(NETHER_BRICK)
         registry.getOrCreate(REDSTONE)
-        //Stones
+        // Stones
         registry.getOrCreate(STONE).apply {
             add(HTCompoundProperty(*HTAtomicGroups.SILICON_OXIDE))
         }
@@ -368,17 +367,17 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry.getOrCreate(END_STONE).apply {
             add(HTCompoundProperty(*HTAtomicGroups.SILICON_OXIDE))
         }
-        //Woods
+        // Woods
         registry.getOrCreate(WOOD).apply {
             add(HTMixtureProperty(HTElementMaterials.CARBON, HTElementMaterials.HYDROGEN, HTElementMaterials.OXYGEN))
         }
     }
 
     override fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {
-        //Fluids
+        // Fluids
         registry[WATER] = ColorConvertible { HTColor.BLUE }
         registry[LAVA] = ColorConvertible.ofColor(HTColor.DARK_RED, HTColor.GOLD)
-        //Gems
+        // Gems
         registry[AMETHYST] = ColorConvertible.ofColor(HTColor.BLUE, HTColor.LIGHT_PURPLE)
         registry[DIAMOND] = ColorConvertible { HTColor.AQUA }
         registry[ENDER_PEARL] = ColorConvertible.ofColor(HTColor.DARK_GREEN, HTColor.BLUE)
@@ -386,14 +385,14 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[FLINT] = ColorConvertible.ofColor(HTColor.BLACK to 3, HTColor.BLUE to 1)
         registry[LAPIS] = ColorConvertible { HTColor.BLUE }
         registry[QUARTZ] = ColorConvertible { HTColor.WHITE }
-        //Metals
+        // Metals
         registry[NETHERITE] = ColorConvertible.ofColor(
             HTColor.BLACK to 5,
             HTColor.DARK_BLUE to 1,
             HTColor.DARK_RED to 1,
-            HTColor.YELLOW to 1
+            HTColor.YELLOW to 1,
         )
-        //Solids
+        // Solids
         registry[BRICK] = ColorConvertible.ofColor(HTColor.DARK_RED to 2, HTColor.GOLD to 1, HTColor.DARK_GRAY to 2)
         registry[CHARCOAL] = ColorConvertible.ofColor(HTColor.BLACK to 7, HTColor.YELLOW to 1)
         registry[CLAY] = ColorConvertible { Color(0xa4a8b8) }
@@ -402,7 +401,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[GLOWSTONE] = ColorConvertible.ofColor(HTColor.GOLD to 1, HTColor.YELLOW to 2)
         registry[NETHER_BRICK] = ColorConvertible.ofColor(HTColor.BLACK to 4, HTColor.DARK_RED to 1, HTColor.WHITE to 1)
         registry[REDSTONE] = ColorConvertible { HTColor.DARK_RED }
-        //Stones
+        // Stones
         registry[STONE] = ColorConvertible { HTColor.DARK_GRAY }
         registry[GRANITE] = ColorConvertible.ofColor(HTColor.DARK_RED to 1, HTColor.GRAY to 4, HTColor.RED to 1)
         registry[DIORITE] = ColorConvertible { HTColor.GRAY }
@@ -414,20 +413,20 @@ object HTVanillaMaterials : HTMaterialsAddon {
             HTColor.BLACK to 4,
             HTColor.DARK_BLUE to 2,
             HTColor.DARK_RED to 1,
-            HTColor.WHITE to 1
+            HTColor.WHITE to 1,
         )
         registry[NETHERRACK] = ColorConvertible.ofColor(HTColor.BLACK to 4, HTColor.DARK_RED to 1, HTColor.RED to 3)
         registry[BASALT] = ColorConvertible.ofColor(HTColor.BLACK, HTColor.GRAY)
         registry[END_STONE] = ColorConvertible.ofColor(HTColor.YELLOW to 1, HTColor.WHITE to 3)
-        //Woods
+        // Woods
         registry[WOOD] = ColorConvertible.ofColor(HTColor.DARK_GRAY to 2, HTColor.RED to 1, HTColor.YELLOW to 1)
     }
 
     override fun modifyMaterialFormula(registry: MutableMap<HTMaterialKey, FormulaConvertible>) {
-        //Fluids
+        // Fluids
         registry[WATER]
         registry[LAVA]
-        //Gems
+        // Gems
         registry[AMETHYST]
         registry[DIAMOND]
         registry[ENDER_PEARL]
@@ -435,9 +434,9 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[FLINT]
         registry[LAPIS]
         registry[QUARTZ]
-        //Metals
+        // Metals
         registry[NETHERITE] = FormulaConvertible { "Nr" }
-        //Solids
+        // Solids
         registry[BRICK]
         registry[CHARCOAL]
         registry[CLAY]
@@ -446,7 +445,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[GLOWSTONE]
         registry[NETHER_BRICK]
         registry[REDSTONE]
-        //Stones
+        // Stones
         registry[STONE]
         registry[GRANITE]
         registry[DIORITE]
@@ -458,15 +457,15 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[NETHERRACK]
         registry[BASALT]
         registry[END_STONE]
-        //Wood
+        // Wood
         registry[WOOD] = FormulaConvertible { "C, H, O" }
     }
 
     override fun modifyMaterialMolar(registry: MutableMap<HTMaterialKey, MolarMassConvertible>) {
-        //Fluids
+        // Fluids
         registry[WATER]
         registry[LAVA]
-        //Gems
+        // Gems
         registry[AMETHYST]
         registry[DIAMOND]
         registry[ENDER_PEARL]
@@ -474,9 +473,9 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[FLINT]
         registry[LAPIS]
         registry[QUARTZ]
-        //Metals
+        // Metals
         registry[NETHERITE]
-        //Solids
+        // Solids
         registry[BRICK]
         registry[CHARCOAL]
         registry[CLAY]
@@ -485,7 +484,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[GLOWSTONE]
         registry[NETHER_BRICK]
         registry[REDSTONE]
-        //Stones
+        // Stones
         registry[STONE]
         registry[GRANITE]
         registry[DIORITE]
@@ -497,24 +496,24 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[NETHERRACK]
         registry[BASALT]
         registry[END_STONE]
-        //Wood
+        // Wood
         registry[WOOD]
     }
 
     override fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {
-        //Fluids
+        // Fluids
         registry[WATER]
         registry[LAVA]
-        //Gems
+        // Gems
         registry[AMETHYST] = HTMaterialType.Gem.AMETHYST
         registry[DIAMOND] = HTMaterialType.Gem.DIAMOND
         registry[ENDER_PEARL]
         registry[EMERALD] = HTMaterialType.Gem.EMERALD
         registry[LAPIS] = HTMaterialType.Gem.LAPIS
         registry[QUARTZ] = HTMaterialType.Gem.QUARTZ
-        //Metals
+        // Metals
         registry[NETHERITE] = HTMaterialType.Metal
-        //Solids
+        // Solids
         registry[BRICK]
         registry[CHARCOAL]
         registry[CLAY]
@@ -523,7 +522,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[GLOWSTONE]
         registry[NETHER_BRICK]
         registry[REDSTONE]
-        //Stones
+        // Stones
         registry[STONE] = HTMaterialType.Stone
         registry[GRANITE] = HTMaterialType.Stone
         registry[DIORITE] = HTMaterialType.Stone
@@ -535,8 +534,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         registry[NETHERRACK] = HTMaterialType.Stone
         registry[BASALT] = HTMaterialType.Stone
         registry[END_STONE] = HTMaterialType.Stone
-        //Wood
+        // Wood
         registry[WOOD] = HTMaterialType.Wood
     }
-
 }

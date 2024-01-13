@@ -10,7 +10,5 @@ import net.minecraft.text.Text
 @Environment(EnvType.CLIENT)
 @Suppress("UnstableApiUsage")
 class HTFluidVariantHandler(val materialKey: HTMaterialKey) : FluidVariantRenderHandler {
-
     override fun getName(fluidVariant: FluidVariant): Text = materialKey.getTranslatedText()
-
 }
