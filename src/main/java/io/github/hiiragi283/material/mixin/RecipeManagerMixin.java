@@ -1,7 +1,7 @@
 package io.github.hiiragi283.material.mixin;
 
 import com.google.gson.JsonElement;
-import io.github.hiiragi283.material.api.event.HTRecipeRegisterCallback;
+import io.github.hiiragi283.material.HTRecipeManager;
 import io.github.hiiragi283.material.util.HTMixinLogger;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;
@@ -19,7 +19,7 @@ public abstract class RecipeManagerMixin {
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
     private void ht_materials$apply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
-        HTRecipeRegisterCallback.EVENT.invoker().onRecipeRegister(new HTRecipeRegisterCallback.Handler(map));
+        HTRecipeManager.addRecipes(map);
         HTMixinLogger.INSTANCE.info("HTMaterials registered recipes!");
     }
 
