@@ -28,6 +28,10 @@ repositories {
         url "https://maven.saps.dev/minecraft"
         content {includeGroup "dev.latvian.mods"}
     }
+    maven {
+        url 'https://maven.blamejared.com'
+        content { includeGroup "vazkii.patchouli" }
+    }
     maven { url "https://maven.architectury.dev/" }
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/releases/" }
@@ -56,17 +60,21 @@ dependencies {
     }
 
     //TechReborn
-    modImplementation("RebornCore:RebornCore-1.16:+") {
+    modApi("TechReborn:TechReborn-1.16:+") {
         exclude(module: "fabric-api")
         exclude(module: "fabric-loader")
     }
 
-    modImplementation("TechReborn:TechReborn-1.16:+") {
-        exclude(module: "energy")
+    //Modern Industrialization (Alpha)
+    /*modApi("curse.maven:modern-industrialization-405388:3386664") {
         exclude(module: "fabric-api")
         exclude(module: "fabric-loader")
-        exclude(module: "RebornCore-1.16")
     }
+
+    modImplementation("vazkii.patchouli:Patchouli:1.16.2-44-FABRIC") {
+        exclude(module: "fabric-api")
+        exclude(module: "fabric-loader")
+    }*/
 
 }
 
