@@ -26,7 +26,6 @@ import net.minecraft.tag.Tag
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
 
 class HTStorageBlockContent(
     private val strength: Float = 5.0f,
@@ -86,12 +85,10 @@ class HTStorageBlockContent(
         getBlockSetting(materialKey.getMaterial().type),
     ).takeUnless { HTPartManager.hasDefaultItem(materialKey, shapeKey) }
 
-    override fun onCreate(materialKey: HTMaterialKey, created: Block) {
-        BlockItemImpl(created, materialKey, shapeKey).run {
-            Registry.register(Registry.ITEM, getIdentifier(materialKey), this)
-            HTPartManager.forceRegister(materialKey, shapeKey, this)
+    override fun createBlockItem(block: Block, materialKey: HTMaterialKey): BlockItem =
+        BlockItemImpl(block, materialKey, shapeKey).also {
+            HTPartManager.forceRegister(materialKey, shapeKey, it)
         }
-    }
 
     //    Block    //
 

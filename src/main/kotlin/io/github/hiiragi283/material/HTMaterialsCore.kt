@@ -149,12 +149,57 @@ internal object HTMaterialsCore {
     fun <T> createContent(registryKey: RegistryKey<T>) {
         for (materialKey: HTMaterialKey in HTMaterial.REGISTRY.keys) {
             for (content: HTMaterialContent<T> in contentMap.getOrCreate(materialKey).getContents(registryKey)) {
+                when (content) {
+                    is HTMaterialContent.BLOCK -> createBlock(content, materialKey)
+                    is HTMaterialContent.FLUID -> createFluid(content, materialKey)
+                    is HTMaterialContent.ITEM -> createItem(content, materialKey)
+                }
                 content.create(materialKey)?.run {
                     Registry.register(content.registry, content.getIdentifier(materialKey), this)
                     content.onCreate(materialKey, this)
                 }
             }
         }
+    }
+
+    private fun createBlock(content: HTMaterialContent.BLOCK, materialKey: HTMaterialKey) {
+        //Register Block
+        content.create(materialKey)
+            ?.let { Registry.register(content.registry, content.getIdentifier(materialKey), it) }
+            ?.run {
+                //Register BlockItem if exists
+                content.createBlockItem(this, materialKey)
+                    ?.let { Registry.register(Registry.ITEM, content.getIdentifier(materialKey), it) }
+                content.onCreate(materialKey, this)
+            }
+    }
+
+    private fun createFluid(content: HTMaterialContent.FLUID, materialKey: HTMaterialKey) {
+        //Register Flowing Fluid if exists
+        content.createFlowing(materialKey)
+            ?.let { Registry.register(content.registry, content.getIdentifier(materialKey), it) }
+        //Register Still Fluid
+        Registry.register(
+            content.registry,
+            content.getIdentifier(materialKey),
+            content.createStill(materialKey)
+        ).run {
+            //Register FluidBlock if exists
+            content.createFluidBlock(this, materialKey)?.let {
+                Registry.register(Registry.BLOCK, content.getBlockIdentifier(materialKey), it)
+            }
+            //Register BucketItem if exists
+            content.createFluidBucket(this, materialKey)?.let {
+                Registry.register(Registry.ITEM, content.getBucketIdentifier(materialKey), it)
+            }
+        }
+    }
+
+    private fun createItem(content: HTMaterialContent.ITEM, materialKey: HTMaterialKey) {
+        //Register Item
+        content.create(materialKey)
+            ?.let { Registry.register(content.registry, content.getIdentifier(materialKey), it) }
+            ?.run { content.onCreate(materialKey, this) }
     }
 
     fun registerMaterialFluids() {

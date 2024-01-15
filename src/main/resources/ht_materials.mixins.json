@@ -3,7 +3,7 @@
   "minVersion": "0.8",
   "package": "io.github.hiiragi283.material.mixin",
   "compatibilityLevel": "JAVA_8",
-  "plugin" : "io.github.hiiragi283.material.mixin.HTMixinConfig",
+  "plugin": "io.github.hiiragi283.material.mixin.HTMixinConfig",
   "mixins": [
     "LootManagerMixin",
     "MainMixin",

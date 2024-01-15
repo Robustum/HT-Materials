@@ -15,7 +15,7 @@ import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
-object HTRecipeManager {
+object HTRecipeManagerMixin {
     @JvmStatic
     fun addRecipes(map: MutableMap<Identifier, JsonElement>) {
         HTMaterial.getMaterialKeys().forEach { key: HTMaterialKey ->

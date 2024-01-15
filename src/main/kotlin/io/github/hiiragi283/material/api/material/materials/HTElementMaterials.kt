@@ -272,8 +272,16 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.ROD))
         }
         registry.getOrCreate(COPPER).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags.PICKAXES,
+                    toolLevel = 1,
+                ),
+            )
+
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.GEAR))
+            add(HTSimpleItemContent(HTShapes.INGOT))
             add(HTSimpleItemContent(HTShapes.NUGGET))
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
