@@ -85,10 +85,9 @@ class HTStorageBlockContent(
         getBlockSetting(materialKey.getMaterial().type),
     ).takeUnless { HTPartManager.hasDefaultItem(materialKey, shapeKey) }
 
-    override fun createBlockItem(block: Block, materialKey: HTMaterialKey): BlockItem =
-        BlockItemImpl(block, materialKey, shapeKey).also {
-            HTPartManager.forceRegister(materialKey, shapeKey, it)
-        }
+    override fun createBlockItem(block: Block, materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey).also {
+        HTPartManager.forceRegister(materialKey, shapeKey, it)
+    }
 
     //    Block    //
 

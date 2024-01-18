@@ -67,9 +67,9 @@
     "ht_materials.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": ">=0.15.0",
     "fabric": "*",
-    "minecraft": "${minecraft_version}",
+    "minecraft": "1.16.5",
     "fabric-language-kotlin": "*"
   },
   "accessWidener": "ht_materials.accesswidener"

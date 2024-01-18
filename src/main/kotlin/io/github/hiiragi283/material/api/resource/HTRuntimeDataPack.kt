@@ -73,7 +73,7 @@ object HTRuntimeDataPack : ResourcePack {
         namespace: String,
         prefix: String,
         maxDepth: Int,
-        pathFilter: Predicate<String>
+        pathFilter: Predicate<String>,
     ): Collection<Identifier> = when {
         type != ResourceType.SERVER_DATA -> setOf()
         namespace !in DOMAINS -> setOf()
@@ -83,8 +83,7 @@ object HTRuntimeDataPack : ResourcePack {
 
     override fun contains(type: ResourceType, id: Identifier): Boolean = type == ResourceType.SERVER_DATA && id in DATA
 
-    override fun getNamespaces(type: ResourceType): Set<String> =
-        if (type == ResourceType.SERVER_DATA) DOMAINS else setOf()
+    override fun getNamespaces(type: ResourceType): Set<String> = if (type == ResourceType.SERVER_DATA) DOMAINS else setOf()
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
@@ -92,5 +91,4 @@ object HTRuntimeDataPack : ResourcePack {
         if (metaReader is PackResourceMetadataReader) PackResourceMetadata(LiteralText(""), 6) as? T else null
 
     override fun getName(): String = "${HTMaterials.MOD_NAME}'s Runtime Data Pack"
-
 }

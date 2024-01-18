@@ -163,11 +163,11 @@ internal object HTMaterialsCore {
     }
 
     private fun createBlock(content: HTMaterialContent.BLOCK, materialKey: HTMaterialKey) {
-        //Register Block
+        // Register Block
         content.create(materialKey)
             ?.let { Registry.register(content.registry, content.getIdentifier(materialKey), it) }
             ?.run {
-                //Register BlockItem if exists
+                // Register BlockItem if exists
                 content.createBlockItem(this, materialKey)
                     ?.let { Registry.register(Registry.ITEM, content.getIdentifier(materialKey), it) }
                 content.onCreate(materialKey, this)
@@ -175,20 +175,20 @@ internal object HTMaterialsCore {
     }
 
     private fun createFluid(content: HTMaterialContent.FLUID, materialKey: HTMaterialKey) {
-        //Register Flowing Fluid if exists
+        // Register Flowing Fluid if exists
         content.createFlowing(materialKey)
             ?.let { Registry.register(content.registry, content.getIdentifier(materialKey), it) }
-        //Register Still Fluid
+        // Register Still Fluid
         Registry.register(
             content.registry,
             content.getIdentifier(materialKey),
-            content.createStill(materialKey)
+            content.createStill(materialKey),
         ).run {
-            //Register FluidBlock if exists
+            // Register FluidBlock if exists
             content.createFluidBlock(this, materialKey)?.let {
                 Registry.register(Registry.BLOCK, content.getBlockIdentifier(materialKey), it)
             }
-            //Register BucketItem if exists
+            // Register BucketItem if exists
             content.createFluidBucket(this, materialKey)?.let {
                 Registry.register(Registry.ITEM, content.getBucketIdentifier(materialKey), it)
             }
@@ -196,7 +196,7 @@ internal object HTMaterialsCore {
     }
 
     private fun createItem(content: HTMaterialContent.ITEM, materialKey: HTMaterialKey) {
-        //Register Item
+        // Register Item
         content.create(materialKey)
             ?.let { Registry.register(content.registry, content.getIdentifier(materialKey), it) }
             ?.run { content.onCreate(materialKey, this) }

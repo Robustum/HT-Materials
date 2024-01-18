@@ -2,9 +2,7 @@ package io.github.hiiragi283.material.api.resource
 
 import com.google.gson.JsonObject
 import io.github.hiiragi283.material.HTMaterials
-import net.minecraft.data.client.model.BlockStateModelGenerator
 import net.minecraft.data.client.model.BlockStateSupplier
-import net.minecraft.data.client.model.Model
 import net.minecraft.resource.ResourcePack
 import net.minecraft.resource.ResourceType
 import net.minecraft.resource.metadata.PackResourceMetadata
@@ -52,7 +50,7 @@ object HTRuntimeResourcePack : ResourcePack {
         namespace: String,
         prefix: String,
         maxDepth: Int,
-        pathFilter: Predicate<String>
+        pathFilter: Predicate<String>,
     ): Collection<Identifier> = when {
         type != ResourceType.CLIENT_RESOURCES -> setOf()
         namespace !in DOMAINS -> setOf()
@@ -60,11 +58,9 @@ object HTRuntimeResourcePack : ResourcePack {
             .filter { id: Identifier -> pathFilter.test(id.path) }
     }
 
-    override fun contains(type: ResourceType, id: Identifier): Boolean =
-        type == ResourceType.CLIENT_RESOURCES && id in DATA
+    override fun contains(type: ResourceType, id: Identifier): Boolean = type == ResourceType.CLIENT_RESOURCES && id in DATA
 
-    override fun getNamespaces(type: ResourceType): Set<String> =
-        if (type == ResourceType.CLIENT_RESOURCES) DOMAINS else setOf()
+    override fun getNamespaces(type: ResourceType): Set<String> = if (type == ResourceType.CLIENT_RESOURCES) DOMAINS else setOf()
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
@@ -72,5 +68,4 @@ object HTRuntimeResourcePack : ResourcePack {
         if (metaReader is PackResourceMetadataReader) PackResourceMetadata(LiteralText(""), 6) as? T else null
 
     override fun getName(): String = "${HTMaterials.MOD_NAME}'s Runtime Data Pack"
-
 }
