@@ -8,7 +8,6 @@ import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTComponentProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTDefaultedTable
@@ -146,7 +145,7 @@ internal object HTMaterialsCore {
 
     //    Initialization    //
 
-    fun <T> createContent(registryKey: RegistryKey<T>) {
+    fun <T> createContent(registryKey: RegistryKey<Registry<T>>) {
         for (materialKey: HTMaterialKey in HTMaterial.REGISTRY.keys) {
             for (content: HTMaterialContent<T> in contentMap.getOrCreate(materialKey).getContents(registryKey)) {
                 when (content) {
@@ -154,18 +153,14 @@ internal object HTMaterialsCore {
                     is HTMaterialContent.FLUID -> createFluid(content, materialKey)
                     is HTMaterialContent.ITEM -> createItem(content, materialKey)
                 }
-                content.create(materialKey)?.run {
-                    Registry.register(content.registry, content.getIdentifier(materialKey), this)
-                    content.onCreate(materialKey, this)
-                }
             }
         }
     }
 
     private fun createBlock(content: HTMaterialContent.BLOCK, materialKey: HTMaterialKey) {
         // Register Block
-        content.create(materialKey)
-            ?.let { Registry.register(content.registry, content.getIdentifier(materialKey), it) }
+        content.createBlock(materialKey)
+            ?.let { Registry.register(Registry.BLOCK, content.getIdentifier(materialKey), it) }
             ?.run {
                 // Register BlockItem if exists
                 content.createBlockItem(this, materialKey)
@@ -177,10 +172,10 @@ internal object HTMaterialsCore {
     private fun createFluid(content: HTMaterialContent.FLUID, materialKey: HTMaterialKey) {
         // Register Flowing Fluid if exists
         content.createFlowing(materialKey)
-            ?.let { Registry.register(content.registry, content.getIdentifier(materialKey), it) }
+            ?.let { Registry.register(Registry.FLUID, content.getFlowingFluidIdentifier(materialKey), it) }
         // Register Still Fluid
         Registry.register(
-            content.registry,
+            Registry.FLUID,
             content.getIdentifier(materialKey),
             content.createStill(materialKey),
         ).run {
@@ -192,20 +187,15 @@ internal object HTMaterialsCore {
             content.createFluidBucket(this, materialKey)?.let {
                 Registry.register(Registry.ITEM, content.getBucketIdentifier(materialKey), it)
             }
+            content.onCreate(materialKey, this)
         }
     }
 
     private fun createItem(content: HTMaterialContent.ITEM, materialKey: HTMaterialKey) {
         // Register Item
-        content.create(materialKey)
-            ?.let { Registry.register(content.registry, content.getIdentifier(materialKey), it) }
+        content.createItem(materialKey)
+            ?.let { Registry.register(Registry.ITEM, content.getIdentifier(materialKey), it) }
             ?.run { content.onCreate(materialKey, this) }
-    }
-
-    fun registerMaterialFluids() {
-        HTMaterial.REGISTRY.forEach { (key: HTMaterialKey, material: HTMaterial) ->
-            material.getProperty(HTPropertyKey.FLUID)?.init(key)
-        }
     }
 
     //    Post Initialization    //

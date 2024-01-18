@@ -3,8 +3,8 @@ package io.github.hiiragi283.material;
 import io.github.hiiragi283.material.api.HTMaterialsAddon;
 import io.github.hiiragi283.material.api.material.*;
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap;
+import io.github.hiiragi283.material.api.material.content.HTSimpleFluidContent;
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent;
-import io.github.hiiragi283.material.api.material.property.HTFluidProperty;
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap;
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap;
 import io.github.hiiragi283.material.api.registry.HTDefaultedTable;
@@ -13,7 +13,6 @@ import io.github.hiiragi283.material.api.shape.HTShape;
 import io.github.hiiragi283.material.api.shape.HTShapeKey;
 import io.github.hiiragi283.material.api.shape.HTShapes;
 import io.github.hiiragi283.material.api.util.HTColor;
-import kotlin.Unit;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.fluid.Fluid;
@@ -60,6 +59,7 @@ public class HTTestAddon implements HTMaterialsAddon {
     @Override
     public void modifyMaterialContent(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialContentMap> registry) {
         HTMaterialContentMap builder = registry.getOrCreate(INFINITY);
+        builder.add(new HTSimpleFluidContent());
         builder.add(new HTSimpleItemContent(HTShapes.DUST));
         builder.add(new HTSimpleItemContent(HTShapes.GEAR));
         builder.add(new HTSimpleItemContent(HTShapes.INGOT));
@@ -71,10 +71,10 @@ public class HTTestAddon implements HTMaterialsAddon {
     @Override
     public void modifyMaterialProperty(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> registry) {
         HTMaterialPropertyMap.Builder builder = registry.getOrCreate(INFINITY);
-        builder.add(new HTFluidProperty(), prop -> {
+        /*builder.add(new HTFluidProperty(), prop -> {
             prop.setTemperature(32768);
             return Unit.INSTANCE;
-        });
+        });*/
     }
 
     @Override

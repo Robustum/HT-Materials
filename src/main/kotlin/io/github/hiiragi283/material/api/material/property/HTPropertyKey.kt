@@ -33,9 +33,6 @@ data class HTPropertyKey<T : HTMaterialProperty<T>>(
         val COMPOUND: HTPropertyKey<HTCompoundProperty> = create("component")
 
         @JvmField
-        val FLUID: HTPropertyKey<HTFluidProperty> = create("fluid")
-
-        @JvmField
         val HYDRATE: HTPropertyKey<HTHydrateProperty> = create("hydrate")
 
         @JvmField

@@ -19,8 +19,8 @@ import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
-class HTSimpleItemContent(override val shapeKey: HTShapeKey) : HTMaterialContent.ITEM() {
-    override fun create(materialKey: HTMaterialKey): Item? =
+class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.ITEM(shapeKey) {
+    override fun createItem(materialKey: HTMaterialKey): Item? =
         ItemImpl(materialKey, shapeKey).takeUnless { HTPartManager.hasDefaultItem(materialKey, shapeKey) }
 
     @EnvironmentInterfaces(

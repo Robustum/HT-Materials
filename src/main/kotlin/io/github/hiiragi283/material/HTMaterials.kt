@@ -41,7 +41,7 @@ object HTMaterials : ModInitializer {
         // Initialize Game Objects
         HTMaterialsCore.createContent(Registry.BLOCK_KEY)
         LOGGER.info("All Material Blocks Registered!")
-        HTMaterialsCore.registerMaterialFluids()
+        HTMaterialsCore.createContent(Registry.FLUID_KEY)
         LOGGER.info("All Material Fluids Registered!")
         Registry.register(Registry.ITEM, id("icon"), ICON)
         HTMaterialsCore.createContent(Registry.ITEM_KEY)

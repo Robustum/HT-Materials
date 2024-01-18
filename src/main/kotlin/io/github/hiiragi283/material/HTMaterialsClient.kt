@@ -1,13 +1,11 @@
 package io.github.hiiragi283.material
 
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
-import io.github.hiiragi283.material.api.fluid.HTMaterialFluid
 import io.github.hiiragi283.material.api.material.HTMaterial
-import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.part.getPart
 import io.github.hiiragi283.material.api.util.HTCustomColoredBlock
 import io.github.hiiragi283.material.api.util.HTCustomColoredItem
-import io.github.hiiragi283.material.api.util.HTFluidRenderHandler
+import io.github.hiiragi283.material.api.util.HTCustomFluidRenderFluid
 import io.github.hiiragi283.material.util.getTransaction
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.EnvType
@@ -19,6 +17,7 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView
+import net.minecraft.fluid.FlowableFluid
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.registry.Registry
@@ -49,10 +48,10 @@ object HTMaterialsClient : ClientModInitializer {
     }
 
     private fun registerFluidRenderHandler() {
-        HTMaterial.REGISTRY.forEach { (key: HTMaterialKey, material: HTMaterial) ->
-            HTMaterialFluid.getFluid(key)?.let { fluid: HTMaterialFluid ->
-                FluidRenderHandlerRegistry.INSTANCE.register(fluid.still, HTFluidRenderHandler(material))
-                FluidRenderHandlerRegistry.INSTANCE.register(fluid.flowing, HTFluidRenderHandler(material))
+        Registry.FLUID.forEach { fluid ->
+            if (fluid is FlowableFluid && fluid is HTCustomFluidRenderFluid) {
+                FluidRenderHandlerRegistry.INSTANCE.register(fluid.still, fluid.getFluidRenderHandler())
+                FluidRenderHandlerRegistry.INSTANCE.register(fluid.flowing, fluid.getFluidRenderHandler())
             }
         }
     }

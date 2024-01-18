@@ -9,21 +9,19 @@ class HTMaterialContentMap {
     private val fluidMap: MutableMap<HTShapeKey, HTMaterialContent<*>> = hashMapOf()
     private val itemMap: MutableMap<HTShapeKey, HTMaterialContent<*>> = hashMapOf()
 
-    private fun <T> getMap(registryKey: RegistryKey<T>): MutableMap<HTShapeKey, HTMaterialContent<*>>? = when (registryKey) {
+    private fun <T> getMap(registryKey: RegistryKey<Registry<T>>): MutableMap<HTShapeKey, HTMaterialContent<*>> = when (registryKey) {
         Registry.BLOCK_KEY -> blockMap
         Registry.FLUID_KEY -> fluidMap
         Registry.ITEM_KEY -> itemMap
-        else -> null
+        else -> mutableMapOf()
     }
 
     fun <T> add(content: HTMaterialContent<T>) {
-        getMap(content.registry.key)?.put(content.shapeKey, content)
+        getMap(content.registryKey)[content.shapeKey] = content
     }
 
-    fun <T> remove(shapeKey: HTShapeKey, registryKey: RegistryKey<T>) {
-        getMap(registryKey)?.remove(shapeKey)
-    }
+    fun <T> remove(registryKey: RegistryKey<Registry<T>>, shapeKey: HTShapeKey) = getMap(registryKey).remove(shapeKey)
 
-    internal fun <T> getContents(registryKey: RegistryKey<T>): Collection<HTMaterialContent<T>> =
-        getMap(registryKey)?.values?.filterIsInstance<HTMaterialContent<T>>() ?: setOf()
+    internal fun <T> getContents(registryKey: RegistryKey<Registry<T>>): Collection<HTMaterialContent<T>> =
+        getMap(registryKey).values.filterIsInstance<HTMaterialContent<T>>()
 }

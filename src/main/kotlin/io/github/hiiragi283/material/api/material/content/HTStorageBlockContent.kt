@@ -31,7 +31,7 @@ class HTStorageBlockContent(
     private val strength: Float = 5.0f,
     private val toolTag: Tag<Item>? = null,
     private val toolLevel: Int = 0,
-) : HTMaterialContent.BLOCK() {
+) : HTMaterialContent.BLOCK(HTShapes.BLOCK) {
     private fun getBlockSetting(type: HTMaterialType): FabricBlockSettings {
         val material: Material = when (type) {
             HTMaterialType.Gem.AMETHYST -> Material.STONE
@@ -77,9 +77,7 @@ class HTStorageBlockContent(
 
     //    HTMaterialContent    //
 
-    override val shapeKey: HTShapeKey = HTShapes.BLOCK
-
-    override fun create(materialKey: HTMaterialKey): Block? = BlockImpl(
+    override fun createBlock(materialKey: HTMaterialKey): Block? = BlockImpl(
         materialKey,
         shapeKey,
         getBlockSetting(materialKey.getMaterial().type),

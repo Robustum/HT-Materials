@@ -12,36 +12,29 @@ import net.minecraft.item.BucketItem
 import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
+import net.minecraft.util.registry.RegistryKey
 
-sealed class HTMaterialContent<T> {
-    abstract val shapeKey: HTShapeKey
-
-    abstract val registry: Registry<T>
-
+sealed class HTMaterialContent<T>(val shapeKey: HTShapeKey, val registryKey: RegistryKey<Registry<T>>) {
     abstract fun getIdentifier(materialKey: HTMaterialKey): Identifier
-
-    abstract fun create(materialKey: HTMaterialKey): T?
 
     open fun onCreate(materialKey: HTMaterialKey, created: T) {}
 
     //    Block    //
 
-    abstract class BLOCK : HTMaterialContent<Block>() {
-        final override val registry: Registry<Block> = Registry.BLOCK
-
+    abstract class BLOCK(shapeKey: HTShapeKey) : HTMaterialContent<Block>(shapeKey, Registry.BLOCK_KEY) {
         final override fun getIdentifier(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
+
+        abstract fun createBlock(materialKey: HTMaterialKey): Block?
 
         abstract fun createBlockItem(block: Block, materialKey: HTMaterialKey): BlockItem?
     }
 
     //    Fluid    //
 
-    abstract class FLUID : HTMaterialContent<Fluid>() {
-        final override val registry: Registry<Fluid> = Registry.FLUID
-
-        final override fun create(materialKey: HTMaterialKey): Fluid? = null
-
+    abstract class FLUID(shapeKey: HTShapeKey) : HTMaterialContent<Fluid>(shapeKey, Registry.FLUID_KEY) {
         abstract fun createStill(materialKey: HTMaterialKey): FlowableFluid
+
+        abstract fun getFlowingFluidIdentifier(materialKey: HTMaterialKey): Identifier
 
         abstract fun createFlowing(materialKey: HTMaterialKey): FlowableFluid?
 
@@ -56,10 +49,10 @@ sealed class HTMaterialContent<T> {
 
     //    Item    //
 
-    abstract class ITEM : HTMaterialContent<Item>() {
-        final override val registry: Registry<Item> = Registry.ITEM
-
+    abstract class ITEM(shapeKey: HTShapeKey) : HTMaterialContent<Item>(shapeKey, Registry.ITEM_KEY) {
         final override fun getIdentifier(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
+
+        abstract fun createItem(materialKey: HTMaterialKey): Item?
 
         override fun onCreate(materialKey: HTMaterialKey, created: Item) {
             HTPartManager.forceRegister(materialKey, shapeKey, created)

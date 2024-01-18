@@ -4,9 +4,9 @@ import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.material.*
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
+import io.github.hiiragi283.material.api.material.content.HTSimpleFluidContent
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.api.material.content.HTStorageBlockContent
-import io.github.hiiragi283.material.api.material.property.HTFluidProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
@@ -202,11 +202,25 @@ object HTElementMaterials : HTMaterialsAddon {
 
     override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
         // 1st Period
-
+        registry.getOrCreate(HYDROGEN).apply {
+            add(HTSimpleFluidContent())
+        }
+        registry.getOrCreate(HELIUM).apply {
+            add(HTSimpleFluidContent())
+        }
         // 2nd Period
         registry.getOrCreate(CARBON).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
             add(HTSimpleItemContent(HTShapes.PLATE))
+        }
+        registry.getOrCreate(NITROGEN).apply {
+            add(HTSimpleFluidContent())
+        }
+        registry.getOrCreate(OXYGEN).apply {
+            add(HTSimpleFluidContent())
+        }
+        registry.getOrCreate(FLUORINE).apply {
+            add(HTSimpleFluidContent())
         }
         // 3rd Period
         registry.getOrCreate(ALUMINUM).apply {
@@ -235,6 +249,9 @@ object HTElementMaterials : HTMaterialsAddon {
         }
         registry.getOrCreate(SULFUR).apply {
             add(HTSimpleItemContent(HTShapes.DUST))
+        }
+        registry.getOrCreate(CHLORINE).apply {
+            add(HTSimpleFluidContent())
         }
         // 4th Period
         registry.getOrCreate(TITANIUM).apply {
@@ -378,6 +395,9 @@ object HTElementMaterials : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapes.PLATE))
             add(HTSimpleItemContent(HTShapes.ROD))
         }
+        registry.getOrCreate(MERCURY).apply {
+            add(HTSimpleFluidContent())
+        }
         registry.getOrCreate(LEAD).apply {
             add(
                 HTStorageBlockContent(
@@ -423,20 +443,20 @@ object HTElementMaterials : HTMaterialsAddon {
 
     override fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
         // 1st Period
-        registry.getOrCreate(HYDROGEN).add(HTFluidProperty()) { this.isGas = true }
-        registry.getOrCreate(HELIUM).add(HTFluidProperty()) { this.isGas = true }
+        registry.getOrCreate(HYDROGEN) // .add(HTFluidProperty()) { this.isGas = true }
+        registry.getOrCreate(HELIUM) // .add(HTFluidProperty()) { this.isGas = true }
         // 2nd Period
         registry.getOrCreate(LITHIUM)
         registry.getOrCreate(BERYLLIUM)
-        registry.getOrCreate(NITROGEN).add(HTFluidProperty()) { this.isGas = true }
-        registry.getOrCreate(OXYGEN).add(HTFluidProperty()) { this.isGas = true }
-        registry.getOrCreate(FLUORINE).add(HTFluidProperty()) { this.isGas = true }
+        registry.getOrCreate(NITROGEN) // .add(HTFluidProperty()) { this.isGas = true }
+        registry.getOrCreate(OXYGEN) // .add(HTFluidProperty()) { this.isGas = true }
+        registry.getOrCreate(FLUORINE) // .add(HTFluidProperty()) { this.isGas = true }
         // 3rd Period
         registry.getOrCreate(SODIUM)
         registry.getOrCreate(MAGNESIUM)
         registry.getOrCreate(ALUMINUM)
         registry.getOrCreate(SILICON)
-        registry.getOrCreate(SODIUM).add(HTFluidProperty()) { this.isGas = true }
+        registry.getOrCreate(CHLORINE) // .add(HTFluidProperty()) { this.isGas = true }
         // 4th Period
         registry.getOrCreate(POTASSIUM)
         registry.getOrCreate(CALCIUM)
@@ -456,7 +476,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(IRIDIUM)
         registry.getOrCreate(PLATINUM)
         registry.getOrCreate(GOLD)
-        registry.getOrCreate(MERCURY).add(HTFluidProperty())
+        registry.getOrCreate(MERCURY) // .add(HTFluidProperty())
         registry.getOrCreate(LEAD)
         // 7th Period
         registry.getOrCreate(URANIUM)
