@@ -41,6 +41,7 @@ loom {
     accessWidenerPath = file("src/main/resources/ht_materials.accesswidener")
     runs {
         getByName("client") {
+            programArg("--username=Developer")
             vmArg("-Dmixin.debug.export=true")
         }
         getByName("server") {
