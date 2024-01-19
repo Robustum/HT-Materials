@@ -57,22 +57,19 @@ class HTMaterial private constructor(
 
         //    Registry    //
 
-        private val registry: MutableMap<HTMaterialKey, HTMaterial> = linkedMapOf()
-
-        @JvmField
-        val REGISTRY: Map<HTMaterialKey, HTMaterial> = registry
+        private val REGISTRY: MutableMap<HTMaterialKey, HTMaterial> = linkedMapOf()
 
         @JvmStatic
-        fun getMaterialKeys(): Collection<HTMaterialKey> = registry.keys
+        fun getMaterialKeys(): Collection<HTMaterialKey> = REGISTRY.keys
 
         @JvmStatic
-        fun getMaterials(): Collection<HTMaterial> = registry.values
+        fun getMaterials(): Collection<HTMaterial> = REGISTRY.values
 
         @JvmStatic
-        fun getMaterial(key: HTMaterialKey): HTMaterial = registry[key] ?: throw IllegalStateException("Material: $key is not registered!")
+        fun getMaterial(key: HTMaterialKey): HTMaterial = REGISTRY[key] ?: throw IllegalStateException("Material: $key is not registered!")
 
         @JvmStatic
-        fun getMaterialOrNull(key: HTMaterialKey): HTMaterial? = registry[key]
+        fun getMaterialOrNull(key: HTMaterialKey): HTMaterial? = REGISTRY[key]
 
         @JvmStatic
         internal fun create(
@@ -84,7 +81,7 @@ class HTMaterial private constructor(
             molar: Double,
             type: HTMaterialType,
         ): HTMaterial = HTMaterial(key, properties, flags, color, formula, molar, type).also {
-            registry.putIfAbsent(key, it)
+            REGISTRY.putIfAbsent(key, it)
             LOGGER.info("Material: $key registered!")
         }
 

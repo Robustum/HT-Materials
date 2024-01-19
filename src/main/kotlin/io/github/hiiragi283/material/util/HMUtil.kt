@@ -2,6 +2,7 @@
 
 package io.github.hiiragi283.material.util
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
@@ -54,6 +55,14 @@ fun Identifier.modify(function: Function<String, String>) = Identifier(this.name
 //    Json    //
 
 fun buildJson(builderAction: JsonObject.() -> Unit): JsonObject = JsonObject().apply(builderAction)
+
+fun JsonObject.addArray(property: String, builderAction: JsonArray.() -> Unit) {
+    this.add(property, JsonArray().apply(builderAction))
+}
+
+fun JsonObject.addObject(property: String, builderAction: JsonObject.() -> Unit) {
+    this.add(property, buildJson(builderAction))
+}
 
 //    Loader    //
 

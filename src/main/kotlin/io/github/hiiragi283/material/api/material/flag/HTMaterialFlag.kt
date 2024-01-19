@@ -9,7 +9,7 @@ class HTMaterialFlag private constructor(
     private val requiredProperties: Set<HTPropertyKey<*>>,
 ) {
     init {
-        registry.putIfAbsent(name, this)
+        REGISTRY.putIfAbsent(name, this)
     }
 
     fun verify(material: HTMaterial) {
@@ -41,10 +41,10 @@ class HTMaterialFlag private constructor(
 
     class Builder(private val name: String) {
         @JvmField
-        val requiredFlags: MutableSet<HTMaterialFlag> = mutableSetOf()
+        val requiredFlags: MutableSet<HTMaterialFlag> = hashSetOf()
 
         @JvmField
-        val requiredProperties: MutableSet<HTPropertyKey<*>> = mutableSetOf()
+        val requiredProperties: MutableSet<HTPropertyKey<*>> = hashSetOf()
 
         internal fun build(): HTMaterialFlag = HTMaterialFlag(name, requiredFlags, requiredProperties)
     }
@@ -52,10 +52,10 @@ class HTMaterialFlag private constructor(
     companion object {
         //    Registry    //
 
-        private val registry: MutableMap<String, HTMaterialFlag> = hashMapOf()
+        private val REGISTRY: MutableMap<String, HTMaterialFlag> = hashMapOf()
 
         @JvmStatic
-        fun getFlag(key: String): HTMaterialFlag? = registry[key]
+        fun getFlag(key: String): HTMaterialFlag? = REGISTRY[key]
 
         //    Builder    //
 

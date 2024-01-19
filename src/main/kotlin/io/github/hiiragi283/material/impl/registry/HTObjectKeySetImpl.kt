@@ -4,7 +4,7 @@ import io.github.hiiragi283.material.api.registry.HTObjectKey
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 
 internal class HTObjectKeySetImpl<T : HTObjectKey<*>> : HTObjectKeySet<T> {
-    private val backingSet: MutableSet<T> = linkedSetOf()
+    private val backingSet: MutableSet<T> = hashSetOf()
 
     override fun add(key: T): Boolean = backingSet.add(key)
 

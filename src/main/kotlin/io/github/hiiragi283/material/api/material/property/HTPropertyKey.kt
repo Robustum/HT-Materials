@@ -7,7 +7,7 @@ data class HTPropertyKey<T : HTMaterialProperty<T>>(
     override val objClass: Class<T>,
 ) : HTObjectKey<T> {
     init {
-        map.putIfAbsent(name, this)
+        REGISTRY.putIfAbsent(name, this)
     }
 
     //    Any    //
@@ -18,10 +18,7 @@ data class HTPropertyKey<T : HTMaterialProperty<T>>(
         @JvmStatic
         inline fun <reified T : HTMaterialProperty<T>> create(name: String) = HTPropertyKey(name, T::class.java)
 
-        private val map: MutableMap<String, HTPropertyKey<*>> = mutableMapOf()
-
-        @JvmField
-        val REGISTRY: Map<String, HTPropertyKey<*>> = map
+        private val REGISTRY: MutableMap<String, HTPropertyKey<*>> = hashMapOf()
 
         @JvmStatic
         @Suppress("UNCHECKED_CAST")

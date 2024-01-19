@@ -32,40 +32,37 @@ object HTPartManager {
 
     //    Item -> HTPart    //
 
-    private val itemToPart: MutableMap<Item, HTPart> = mutableMapOf()
-
-    @JvmField
-    val ITEM_TO_PART: Map<Item, HTPart> = itemToPart
+    private val ITEM_TO_PART: MutableMap<Item, HTPart> = hashMapOf()
 
     @JvmStatic
-    fun getPart(itemConvertible: ItemConvertible): HTPart? = itemToPart[itemConvertible.asItem()]
+    fun getPart(itemConvertible: ItemConvertible): HTPart? = ITEM_TO_PART[itemConvertible.asItem()]
 
     @JvmStatic
-    fun hasPart(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in itemToPart
+    fun hasPart(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in ITEM_TO_PART
 
     //    HTMaterialKey, HTShapeKey -> Item    //
 
-    private val partToItem: Table<HTMaterialKey, HTShapeKey, Item> = HashBasedTable.create()
+    private val PART_TO_ITEM: Table<HTMaterialKey, HTShapeKey, Item> = HashBasedTable.create()
 
     @JvmStatic
-    fun getDefaultItems(): Collection<Item> = partToItem.values()
+    fun getDefaultItems(): Collection<Item> = PART_TO_ITEM.values()
 
     @JvmStatic
-    fun getDefaultItem(material: HTMaterialKey, shape: HTShapeKey): Item? = partToItem.get(material, shape)
+    fun getDefaultItem(material: HTMaterialKey, shape: HTShapeKey): Item? = PART_TO_ITEM.get(material, shape)
 
     @JvmStatic
-    fun hasDefaultItem(material: HTMaterialKey, shape: HTShapeKey): Boolean = partToItem.contains(material, shape)
+    fun hasDefaultItem(material: HTMaterialKey, shape: HTShapeKey): Boolean = PART_TO_ITEM.contains(material, shape)
 
     //    HTMaterialKey, HTShapeKey -> Collection<Item>    //
 
-    private val partToItems: HTDefaultedTable<HTMaterialKey, HTShapeKey, MutableSet<Item>> =
+    private val PART_TO_ITEMS: HTDefaultedTable<HTMaterialKey, HTShapeKey, MutableSet<Item>> =
         HTDefaultedTable.create { _, _ -> mutableSetOf() }
 
     @JvmStatic
-    fun getAllItems(): Collection<Item> = partToItems.flatten().toSet()
+    fun getAllItems(): Collection<Item> = PART_TO_ITEMS.flatten().toSet()
 
     @JvmStatic
-    fun getItems(material: HTMaterialKey, shape: HTShapeKey): Collection<Item> = partToItems.getOrCreate(material, shape)
+    fun getItems(material: HTMaterialKey, shape: HTShapeKey): Collection<Item> = PART_TO_ITEMS.getOrCreate(material, shape)
 
     //    Initialization    //
 
@@ -182,8 +179,8 @@ object HTPartManager {
         // Event
         ServerWorldEvents.LOAD.register { _, _ ->
 
-            itemToPart.clear()
-            partToItems.forEach { _, _, items -> items.removeAll { true } }
+            ITEM_TO_PART.clear()
+            PART_TO_ITEMS.forEach { _, _, items -> items.removeAll { true } }
 
             HTMaterial.getMaterialKeys().forEach { material: HTMaterialKey ->
                 HTShape.getShapeKeys().forEach { shape: HTShapeKey ->
@@ -202,19 +199,19 @@ object HTPartManager {
         val item: Item = itemConvertible.checkItemNotAir()
         // Remove existing entry
         getPart(item)?.run {
-            itemToPart.remove(item)
-            partToItem.remove(this.materialKey, this.shapeKey)
-            partToItems.getOrCreate(this.materialKey, this.shapeKey).remove(item)
+            ITEM_TO_PART.remove(item)
+            PART_TO_ITEM.remove(this.materialKey, this.shapeKey)
+            PART_TO_ITEMS.getOrCreate(this.materialKey, this.shapeKey).remove(item)
         }
         // ItemConvertible -> HTPart
-        itemToPart.putIfAbsent(item, HTPart(material, shape))
+        ITEM_TO_PART.putIfAbsent(item, HTPart(material, shape))
         // HTMaterial, HTShape -> ItemConvertible
-        if (!partToItem.contains(material, shape)) {
-            partToItem.put(material, shape, item)
+        if (!PART_TO_ITEM.contains(material, shape)) {
+            PART_TO_ITEM.put(material, shape, item)
             LOGGER.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
         }
         // HTMaterial, HTShape -> Collection<ItemConvertible>
-        partToItems.getOrCreate(material, shape).add(item)
+        PART_TO_ITEMS.getOrCreate(material, shape).add(item)
         // print info
         LOGGER.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
     }
@@ -225,6 +222,6 @@ object HTPartManager {
         register(material, shape, itemConvertible)
         // Check if the itemConvertible has non-air item
         val item: Item = itemConvertible.checkItemNotAir()
-        partToItem.put(material, shape, item)
+        PART_TO_ITEM.put(material, shape, item)
     }
 }

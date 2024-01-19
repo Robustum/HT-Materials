@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.color.block.BlockColorProvider
 
-@Environment(EnvType.CLIENT)
 interface HTCustomColoredBlock {
+    @Environment(EnvType.CLIENT)
     fun getColorProvider(): BlockColorProvider
 }

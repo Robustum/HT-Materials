@@ -3,16 +3,16 @@ package io.github.hiiragi283.material.api.material.content
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.HTMaterialKey
+import io.github.hiiragi283.material.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.util.HTCustomColoredItem
 import io.github.hiiragi283.material.api.util.HTCustomFluidRenderFluid
-import io.github.hiiragi283.material.api.util.HTCustomModelItem
 import io.github.hiiragi283.material.api.util.HTFluidRenderHandler
+import io.github.hiiragi283.material.util.addObject
+import io.github.hiiragi283.material.util.buildJson
 import io.github.hiiragi283.material.util.prefix
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.api.EnvironmentInterface
-import net.fabricmc.api.EnvironmentInterfaces
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.block.Block
@@ -48,7 +48,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
     override fun createFluidBlock(fluid: FlowableFluid, materialKey: HTMaterialKey): FluidBlock? = null
 
-    override fun getBucketIdentifier(materialKey: HTMaterialKey): Identifier = bucketShapeKey.getIdentifier(materialKey)
+    override fun getBucketIdentifier(materialKey: HTMaterialKey): Identifier = BUCKET_SHAPE_KEY.getIdentifier(materialKey)
 
     override fun createFluidBucket(fluid: FlowableFluid, materialKey: HTMaterialKey): BucketItem = BucketImpl(fluid, materialKey)
 
@@ -59,6 +59,17 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
             HTFluidManager.forceRegister(materialKey, created.flowing)
             HTFluidManager.forceRegister(materialKey, created.still)
         }
+        // Model
+        HTRuntimeResourcePack.addModel(
+            created.bucketItem,
+            buildJson {
+                addProperty("parent", "item/generated")
+                addObject("textures") {
+                    addProperty("layer0", "item/bucket")
+                    addProperty("layer1", "ht_materials:item/bucket")
+                }
+            },
+        )
     }
 
     //    Fluid    //
@@ -127,6 +138,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
             return bucketCache
         }
 
+        @Environment(EnvType.CLIENT)
         override fun getFluidRenderHandler(): FluidRenderHandler = HTFluidRenderHandler(materialKey.getMaterial())
 
         //    Flowing    //
@@ -153,30 +165,20 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
     //    Bucket    //
 
-    @EnvironmentInterfaces(
-        value = [
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomColoredItem::class),
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomModelItem::class),
-        ],
-    )
     private class BucketImpl(fluid: Fluid, private val materialKey: HTMaterialKey) :
-        BucketItem(fluid, itemSettings),
-        HTCustomColoredItem,
-        HTCustomModelItem {
-        override fun getName(): Text = bucketShapeKey.getTranslatedText(materialKey)
+        BucketItem(fluid, ITEM_SETTINGS),
+        HTCustomColoredItem {
+        override fun getName(): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)
 
-        override fun getName(stack: ItemStack): Text = bucketShapeKey.getTranslatedText(materialKey)
+        override fun getName(stack: ItemStack): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)
 
         @Environment(EnvType.CLIENT)
         override fun getColorProvider(): ItemColorProvider = ItemColorProvider { _: ItemStack, tintIndex: Int ->
             if (tintIndex == 1) materialKey.getMaterial().color.rgb else -1
         }
-
-        @Environment(EnvType.CLIENT)
-        override fun getModelId(): Identifier = HTMaterials.id("models/item/bucket.json")
     }
 }
 
-private val bucketShapeKey: HTShapeKey = HTShapeKey("bucket")
+private val BUCKET_SHAPE_KEY: HTShapeKey = HTShapeKey("bucket")
 
-private val itemSettings = FabricItemSettings().group(HTMaterials.ITEM_GROUP).maxCount(1).recipeRemainder(Items.BUCKET)
+private val ITEM_SETTINGS = FabricItemSettings().group(HTMaterials.ITEM_GROUP).maxCount(1).recipeRemainder(Items.BUCKET)

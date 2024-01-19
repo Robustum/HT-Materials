@@ -4,13 +4,16 @@ import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.HTMaterialType
 import io.github.hiiragi283.material.api.part.HTPartManager
+import io.github.hiiragi283.material.api.resource.HTRuntimeDataManager
+import io.github.hiiragi283.material.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.api.util.*
+import io.github.hiiragi283.material.api.util.HTCustomColoredBlock
+import io.github.hiiragi283.material.api.util.HTCustomColoredItem
+import io.github.hiiragi283.material.util.addObject
+import io.github.hiiragi283.material.util.buildJson
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.api.EnvironmentInterface
-import net.fabricmc.api.EnvironmentInterfaces
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
@@ -21,7 +24,6 @@ import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.loot.LootTable
 import net.minecraft.tag.Tag
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
@@ -87,41 +89,42 @@ class HTStorageBlockContent(
         HTPartManager.forceRegister(materialKey, shapeKey, it)
     }
 
+    override fun onCreate(materialKey: HTMaterialKey, created: Block) {
+        // LootTable
+        HTRuntimeDataManager.addBlockLootTable(created, BlockLootTableGenerator.drops(created))
+        // BlockState
+        val modelId: Identifier = HTMaterials.id("block/storage/${getResourcePath(materialKey.getMaterial().type)}")
+        HTRuntimeResourcePack.addBlockState(
+            created,
+            buildJson {
+                addObject("variants") {
+                    addObject("") {
+                        addProperty("model", modelId.toString())
+                    }
+                }
+            },
+        )
+        // Model
+        HTRuntimeResourcePack.addModel(created.asItem(), buildJson { addProperty("parent", modelId.toString()) })
+    }
+
     //    Block    //
 
-    @EnvironmentInterfaces(
-        value = [
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomBlockStateBlock::class),
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomColoredBlock::class),
-        ],
-    )
     private class BlockImpl(
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
         settings: Settings,
-    ) : Block(settings), HTCustomBlockStateBlock, HTCustomColoredBlock, HTCustomLootTableBlock {
+    ) : Block(settings), HTCustomColoredBlock {
         override fun getName(): MutableText = shapeKey.getTranslatedText(materialKey)
-
-        @Environment(EnvType.CLIENT)
-        override fun getBlockStateId(): Identifier =
-            HTMaterials.id("blockstates/storage/${getResourcePath(materialKey.getMaterial().type)}.json")
 
         @Environment(EnvType.CLIENT)
         override fun getColorProvider(): BlockColorProvider = BlockColorProvider { _, _, _, _ ->
             materialKey.getMaterial().color.rgb
         }
-
-        override fun getLootTable(): LootTable.Builder = BlockLootTableGenerator.drops(this)
     }
 
     //    BlockItem    //
 
-    @EnvironmentInterfaces(
-        value = [
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomColoredItem::class),
-            EnvironmentInterface(value = EnvType.CLIENT, itf = HTCustomModelItem::class),
-        ],
-    )
     private class BlockItemImpl(
         block: Block,
         val materialKey: HTMaterialKey,
@@ -130,8 +133,7 @@ class HTStorageBlockContent(
             block,
             FabricItemSettings().group(HTMaterials.ITEM_GROUP),
         ),
-        HTCustomColoredItem,
-        HTCustomModelItem {
+        HTCustomColoredItem {
         override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
 
         override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
@@ -140,9 +142,5 @@ class HTStorageBlockContent(
         override fun getColorProvider(): ItemColorProvider = ItemColorProvider { _, tintIndex: Int ->
             if (tintIndex == 0) materialKey.getMaterial().color.rgb else -1
         }
-
-        @Environment(EnvType.CLIENT)
-        override fun getModelId(): Identifier =
-            HTMaterials.id("models/block/storage/${getResourcePath(materialKey.getMaterial().type)}.json")
     }
 }

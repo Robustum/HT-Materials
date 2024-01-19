@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.mixin;
 
-import io.github.hiiragi283.material.HTTagLoaderMixin;
+import io.github.hiiragi283.material.impl.mixin.HTTagLoaderMixin;
 import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagGroup;
 import net.minecraft.tag.TagGroupLoader;

@@ -1,5 +1,6 @@
-package io.github.hiiragi283.material
+package io.github.hiiragi283.material.impl.mixin
 
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey

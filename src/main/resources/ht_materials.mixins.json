@@ -8,13 +8,13 @@
     "LootManagerMixin",
     "MainMixin",
     "RecipeManagerMixin",
+    "ServerAdvancementLoaderMixin",
     "TagBuilderAccessor",
     "TagGroupLoaderMixin"
   ],
   "client": [
     "FluidEntryStackMixin",
-    "MinecraftClientMixin",
-    "ModelLoaderMixin"
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

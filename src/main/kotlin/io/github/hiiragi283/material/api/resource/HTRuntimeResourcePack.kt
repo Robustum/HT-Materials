@@ -1,8 +1,12 @@
 package io.github.hiiragi283.material.api.resource
 
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import io.github.hiiragi283.material.HTMaterials
-import net.minecraft.data.client.model.BlockStateSupplier
+import io.github.hiiragi283.material.util.modify
+import net.minecraft.block.Block
+import net.minecraft.data.client.model.*
+import net.minecraft.item.Item
 import net.minecraft.resource.ResourcePack
 import net.minecraft.resource.ResourceType
 import net.minecraft.resource.metadata.PackResourceMetadata
@@ -10,6 +14,7 @@ import net.minecraft.resource.metadata.PackResourceMetadataReader
 import net.minecraft.resource.metadata.ResourceMetadataReader
 import net.minecraft.text.LiteralText
 import net.minecraft.util.Identifier
+import net.minecraft.util.registry.Registry
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
@@ -19,16 +24,35 @@ import java.util.function.Predicate
 
 object HTRuntimeResourcePack : ResourcePack {
     private val DOMAINS: Set<String> = setOf("minecraft", "c", HTMaterials.MOD_ID)
-    private val DATA: ConcurrentMap<Identifier, JsonObject> = ConcurrentHashMap()
+    private val DATA: ConcurrentMap<Identifier, JsonElement> = ConcurrentHashMap()
+
+    private fun getBlockStateId(block: Block): Identifier = Registry.BLOCK.getId(block).modify { "blockstates/$it.json" }
 
     @JvmStatic
-    fun addBlockState(id: Identifier, blockStateSupplier: BlockStateSupplier) {
-        DATA[id] = blockStateSupplier.get().asJsonObject
+    fun addBlockState(block: Block, blockStateSupplier: BlockStateSupplier) {
+        DATA[getBlockStateId(block)] = blockStateSupplier.get()
     }
 
     @JvmStatic
-    fun addModel(id: Identifier) {
-        DATA[id]
+    fun addBlockState(block: Block, json: JsonObject) {
+        DATA[getBlockStateId(block)] = json
+    }
+
+    @JvmStatic
+    fun addModel(item: Item, texture: Texture = Texture.layer0(item), model: Model = Models.GENERATED) {
+        model.upload(ModelIds.getItemModelId(item).modify { "models/$it.json" }, texture) { id, supplier ->
+            DATA[id] = supplier.get()
+        }
+    }
+
+    @JvmStatic
+    fun addModel(block: Block, json: JsonObject) {
+        DATA[ModelIds.getBlockModelId(block).modify { "models/$it.json" }] = json
+    }
+
+    @JvmStatic
+    fun addModel(item: Item, json: JsonObject) {
+        DATA[ModelIds.getItemModelId(item).modify { "models/$it.json" }] = json
     }
 
     //    ResourcePack    //
@@ -40,7 +64,7 @@ object HTRuntimeResourcePack : ResourcePack {
 
     @Throws(IOException::class)
     override fun open(type: ResourceType, id: Identifier): InputStream? = DATA[id]
-        ?.let(JsonObject::toString)
+        ?.let(JsonElement::toString)
         ?.let(String::toByteArray)
         ?.let(::ByteArrayInputStream)
         ?.takeIf { type == ResourceType.CLIENT_RESOURCES }

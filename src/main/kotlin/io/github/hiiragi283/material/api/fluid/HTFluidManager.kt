@@ -20,39 +20,39 @@ object HTFluidManager {
 
     //    Fluid -> HTMaterialKey    //
 
-    private val fluidToMaterial: MutableMap<Fluid, HTMaterialKey> = mutableMapOf()
+    private val FLUID_TO_MAT: MutableMap<Fluid, HTMaterialKey> = hashMapOf()
 
     @JvmStatic
-    fun getFluidToMaterialMap(): Map<Fluid, HTMaterialKey> = fluidToMaterial
+    fun getFluidToMaterialMap(): Map<Fluid, HTMaterialKey> = FLUID_TO_MAT
 
     @JvmStatic
-    fun getMaterialKey(fluid: Fluid): HTMaterialKey? = fluidToMaterial[fluid]
+    fun getMaterialKey(fluid: Fluid): HTMaterialKey? = FLUID_TO_MAT[fluid]
 
     @JvmStatic
-    fun hasMaterialKey(fluid: Fluid): Boolean = fluid in fluidToMaterial
+    fun hasMaterialKey(fluid: Fluid): Boolean = fluid in FLUID_TO_MAT
 
     //    HTMaterialKey -> Fluid    //
 
-    private val materialToFluid: MutableMap<HTMaterialKey, Fluid> = mutableMapOf()
+    private val MAT_TO_FLUID: MutableMap<HTMaterialKey, Fluid> = hashMapOf()
 
     @JvmStatic
-    fun getDefaultFluidMap(): Map<HTMaterialKey, Fluid> = materialToFluid
+    fun getDefaultFluidMap(): Map<HTMaterialKey, Fluid> = MAT_TO_FLUID
 
     @JvmStatic
-    fun getDefaultFluid(material: HTMaterialKey): Fluid? = materialToFluid[material]
+    fun getDefaultFluid(material: HTMaterialKey): Fluid? = MAT_TO_FLUID[material]
 
     @JvmStatic
-    fun hasDefaultFluid(material: HTMaterialKey): Boolean = material in materialToFluid
+    fun hasDefaultFluid(material: HTMaterialKey): Boolean = material in MAT_TO_FLUID
 
     //   HTMaterialKey -> Collection<Fluid>    //
 
-    private val materialToFluids: Multimap<HTMaterialKey, Fluid> = HashMultimap.create()
+    private val MAT_TO_FLUIDS: Multimap<HTMaterialKey, Fluid> = HashMultimap.create()
 
     @JvmStatic
-    fun getMaterialToFluidsMap(): ImmutableMultimap<HTMaterialKey, Fluid> = ImmutableMultimap.copyOf(materialToFluids)
+    fun getMaterialToFluidsMap(): ImmutableMultimap<HTMaterialKey, Fluid> = ImmutableMultimap.copyOf(MAT_TO_FLUIDS)
 
     @JvmStatic
-    fun getFluids(material: HTMaterialKey): Collection<Fluid> = materialToFluids[material] ?: setOf()
+    fun getFluids(material: HTMaterialKey): Collection<Fluid> = MAT_TO_FLUIDS[material] ?: setOf()
 
     //    Registration    //
 
@@ -75,14 +75,14 @@ object HTFluidManager {
     @JvmSynthetic
     private fun registerInternal(material: HTMaterialKey, fluid: Fluid) {
         // Fluid -> HTMaterialKey
-        fluidToMaterial.putIfAbsent(fluid, material)
+        FLUID_TO_MAT.putIfAbsent(fluid, material)
         // HTMaterial -> Fluid
         if (!hasDefaultFluid(material)) {
-            materialToFluid[material] = fluid
+            MAT_TO_FLUID[material] = fluid
             LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
         }
         // HTMaterial -> Collection<Fluid>
-        materialToFluids.put(material, fluid)
+        MAT_TO_FLUIDS.put(material, fluid)
         // print info
         LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
     }
@@ -91,12 +91,12 @@ object HTFluidManager {
     @JvmSynthetic
     internal fun forceRegister(material: HTMaterialKey, fluid: Fluid) {
         // Fluid -> HTMaterialKey
-        fluidToMaterial.putIfAbsent(fluid, material)
+        FLUID_TO_MAT.putIfAbsent(fluid, material)
         // HTMaterial -> Fluid
-        materialToFluid[material] = fluid
+        MAT_TO_FLUID[material] = fluid
         LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
         // HTMaterial -> Collection<Fluid>
-        materialToFluids.put(material, fluid)
+        MAT_TO_FLUIDS.put(material, fluid)
         // print info
         LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
     }

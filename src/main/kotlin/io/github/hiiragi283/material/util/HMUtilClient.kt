@@ -3,6 +3,7 @@
 
 package io.github.hiiragi283.material.util
 
+import com.google.gson.JsonObject
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.MinecraftClient
@@ -12,6 +13,7 @@ import net.minecraft.util.Identifier
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.util.*
 
 //    Model    //
 
@@ -19,11 +21,19 @@ import java.io.InputStreamReader
  * Reference: <a href="https://github.com/TechReborn/TechReborn/blob/1.18/src/main/java/techreborn/client/render/ModelHelper.java">TechReborn - GitHub</a>
  */
 
-val DEFAULT_ITEM_TRANSFORMS: ModelTransformation =
+val DEFAULT_ITEM_TRANSFORMS: ModelTransformation by lazy {
     JsonUnbakedModel.deserialize(getReader(Identifier("models/item/generated"))).transformations
+}
 
 @Throws(IOException::class)
 fun getReader(id: Identifier): BufferedReader {
     val resource: Resource = MinecraftClient.getInstance().resourceManager.getResource(id.suffix(".json"))
     return BufferedReader(InputStreamReader(resource.inputStream, Charsets.UTF_8))
+}
+
+fun layeredModel(layer0: Identifier): JsonObject = buildJson {
+    addProperty("parent", "item/generated")
+    addObject("textures") {
+        addProperty("layer0", layer0.toString())
+    }
 }
