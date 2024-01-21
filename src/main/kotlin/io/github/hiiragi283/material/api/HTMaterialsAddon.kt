@@ -9,7 +9,6 @@ import io.github.hiiragi283.material.api.registry.HTDefaultedTable
 import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.ItemConvertible
 
@@ -45,9 +44,5 @@ interface HTMaterialsAddon {
 
     fun bindFluidToPart(registry: HTDefaultedMap<HTMaterialKey, MutableCollection<Fluid>>) {}
 
-    fun commonSetup() {}
-
-    @Environment(EnvType.CLIENT)
-    fun clientSetup() {
-    }
+    fun postInitialize(envType: EnvType) {}
 }

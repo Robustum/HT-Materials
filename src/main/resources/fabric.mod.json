@@ -27,7 +27,13 @@
     "client": [
       {
         "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.HTMaterialsClient"
+        "value": "io.github.hiiragi283.material.HTMaterials"
+      }
+    ],
+    "server": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.HTMaterials"
       }
     ],
     "ht_materials": [

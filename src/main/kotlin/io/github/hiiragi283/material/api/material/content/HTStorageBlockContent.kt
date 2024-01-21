@@ -8,12 +8,11 @@ import io.github.hiiragi283.material.api.resource.HTRuntimeDataManager
 import io.github.hiiragi283.material.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.api.util.HTCustomColoredBlock
-import io.github.hiiragi283.material.api.util.HTCustomColoredItem
 import io.github.hiiragi283.material.util.addObject
 import io.github.hiiragi283.material.util.buildJson
+import io.github.hiiragi283.material.util.onEnv
 import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
@@ -114,13 +113,19 @@ class HTStorageBlockContent(
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
         settings: Settings,
-    ) : Block(settings), HTCustomColoredBlock {
-        override fun getName(): MutableText = shapeKey.getTranslatedText(materialKey)
-
-        @Environment(EnvType.CLIENT)
-        override fun getColorProvider(): BlockColorProvider = BlockColorProvider { _, _, _, _ ->
-            materialKey.getMaterial().color.rgb
+    ) : Block(settings) {
+        init {
+            onEnv(EnvType.CLIENT) {
+                ColorProviderRegistry.BLOCK.register(
+                    BlockColorProvider { _, _, _, _ ->
+                        materialKey.getMaterial().color.rgb
+                    },
+                    this,
+                )
+            }
         }
+
+        override fun getName(): MutableText = shapeKey.getTranslatedText(materialKey)
     }
 
     //    BlockItem    //
@@ -129,18 +134,20 @@ class HTStorageBlockContent(
         block: Block,
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
-    ) : BlockItem(
-            block,
-            FabricItemSettings().group(HTMaterials.ITEM_GROUP),
-        ),
-        HTCustomColoredItem {
+    ) : BlockItem(block, FabricItemSettings().group(HTMaterials.ITEM_GROUP)) {
+        init {
+            onEnv(EnvType.CLIENT) {
+                ColorProviderRegistry.ITEM.register(
+                    ItemColorProvider { _, tintIndex: Int ->
+                        if (tintIndex == 0) materialKey.getMaterial().color.rgb else -1
+                    },
+                    this,
+                )
+            }
+        }
+
         override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
 
         override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
-
-        @Environment(EnvType.CLIENT)
-        override fun getColorProvider(): ItemColorProvider = ItemColorProvider { _, tintIndex: Int ->
-            if (tintIndex == 0) materialKey.getMaterial().color.rgb else -1
-        }
     }
 }

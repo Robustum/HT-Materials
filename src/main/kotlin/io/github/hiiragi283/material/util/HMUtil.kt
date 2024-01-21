@@ -73,9 +73,21 @@ fun getAllModId(): Collection<String> = FabricLoader.getInstance()
 
 fun getEnvType(): EnvType = FabricLoader.getInstance().environmentType
 
+fun isClient(): Boolean = getEnvType() == EnvType.CLIENT
+
+fun isServer(): Boolean = getEnvType() == EnvType.SERVER
+
+inline fun onEnv(envType: EnvType, action: () -> Unit) {
+    if (getEnvType() == envType) action()
+}
+
 fun isDevEnv(): Boolean = FabricLoader.getInstance().isDevelopmentEnvironment
 
 fun isModLoaded(id: String): Boolean = FabricLoader.getInstance().isModLoaded(id)
+
+inline fun <reified T> invokeEntryPoints(key: String, crossinline action: T.() -> Unit) {
+    FabricLoader.getInstance().invokeEntrypoints(key, T::class.java) { action(it) }
+}
 
 //    Storage    //
 

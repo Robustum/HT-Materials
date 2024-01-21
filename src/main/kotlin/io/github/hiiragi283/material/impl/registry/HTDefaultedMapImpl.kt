@@ -4,7 +4,7 @@ import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import java.util.function.BiConsumer
 
 internal class HTDefaultedMapImpl<K, V>(private val mapping: (K) -> V) : HTDefaultedMap<K, V> {
-    private val backingMap: HashMap<K, V> = hashMapOf()
+    private val backingMap: HashMap<K, V> = linkedMapOf()
 
     override fun getOrCreate(key: K): V = backingMap.computeIfAbsent(key, mapping)
 

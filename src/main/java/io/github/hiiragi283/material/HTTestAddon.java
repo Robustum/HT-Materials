@@ -14,7 +14,6 @@ import io.github.hiiragi283.material.api.shape.HTShapeKey;
 import io.github.hiiragi283.material.api.shape.HTShapes;
 import io.github.hiiragi283.material.api.util.HTColor;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
@@ -112,15 +111,9 @@ public class HTTestAddon implements HTMaterialsAddon {
     private static final Logger LOGGER = LogManager.getLogger(HTTestAddon.class);
 
     @Override
-    public void commonSetup() {
+    public void postInitialize(@NotNull EnvType envType) {
         HTShape.getShapeKeys().forEach(key -> LOGGER.info("Shape: " + key));
         HTMaterial.getMaterials().forEach(key -> LOGGER.info("Material: " + key));
-    }
-
-    @Environment(EnvType.CLIENT)
-    @Override
-    public void clientSetup() {
-
     }
 
 }

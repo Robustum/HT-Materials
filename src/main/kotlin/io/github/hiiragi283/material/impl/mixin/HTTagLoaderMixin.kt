@@ -22,6 +22,7 @@ internal object HTTagLoaderMixin {
 
     @JvmStatic
     fun loadTags(map: MutableMap<Identifier, Tag.Builder>, entryType: String) {
+        HTMixinLogger.INSTANCE.info("Current entry type: $entryType")
         when (entryType) {
             "block" -> {}
             "entity_type" -> {}

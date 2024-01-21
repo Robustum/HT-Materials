@@ -19,7 +19,6 @@ import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.util.isModLoaded
 import io.github.hiiragi283.material.util.prefix
 import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.data.server.RecipesProvider
 import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory
@@ -36,75 +35,39 @@ import org.apache.logging.log4j.Logger
 internal object HTMaterialsCore {
     private val LOGGER: Logger = LogManager.getLogger("${HTMaterials.MOD_NAME}/Addons")
 
-    private val CACHE: List<HTMaterialsAddon> = FabricLoader.getInstance()
-        .getEntrypoints(HTMaterials.MOD_ID, HTMaterialsAddon::class.java)
-        .filter { isModLoaded(it.modId) }
-        .sortedWith(compareBy(HTMaterialsAddon::priority).thenBy { it.javaClass.name })
+    private lateinit var entryPoints: Iterable<HTMaterialsAddon>
+
+    fun initEntryPoints() {
+        entryPoints = FabricLoader.getInstance()
+            .getEntrypoints(HTMaterials.MOD_ID, HTMaterialsAddon::class.java)
+            .filter { isModLoaded(it.modId) }
+            .sortedWith(compareBy(HTMaterialsAddon::priority).thenBy { it.javaClass.name })
+    }
 
     //    Initialize - HTShape    //
 
     private val shapeKeySet: HTObjectKeySet<HTShapeKey> = HTObjectKeySet.create()
 
-    fun registerShape() {
-        CACHE.forEach { it.registerShape(shapeKeySet) }
-    }
-
     fun createShape() {
+        entryPoints.forEach {
+            it.registerShape(shapeKeySet)
+        }
         shapeKeySet.forEach(HTShape::create)
     }
 
     //    Initialize - HTMaterial    //
 
     private val materialKeySet: HTObjectKeySet<HTMaterialKey> = HTObjectKeySet.create()
-
-    fun registerMaterialKey() {
-        CACHE.forEach { it.registerMaterialKey(materialKeySet) }
-    }
-
     private val contentMap: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap> =
         HTDefaultedMap.create { HTMaterialContentMap() }
-
-    fun modifyMaterialContent() {
-        CACHE.forEach { it.modifyMaterialContent(contentMap) }
-    }
-
     private val propertyMap: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> =
         HTDefaultedMap.create { HTMaterialPropertyMap.Builder() }
-
-    fun modifyMaterialProperty() {
-        CACHE.forEach { it.modifyMaterialProperty(propertyMap) }
-    }
-
     private val flagMap: HTDefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder> =
         HTDefaultedMap.create { HTMaterialFlagSet.Builder() }
-
-    fun modifyMaterialFlag() {
-        CACHE.forEach { it.modifyMaterialFlag(flagMap) }
-    }
-
     private val colorMap: MutableMap<HTMaterialKey, ColorConvertible> = hashMapOf()
-
-    fun modifyMaterialColor() {
-        CACHE.forEach { it.modifyMaterialColor(colorMap) }
-    }
-
     private val formulaMap: MutableMap<HTMaterialKey, FormulaConvertible> = hashMapOf()
-
-    fun modifyMaterialFormula() {
-        CACHE.forEach { it.modifyMaterialFormula(formulaMap) }
-    }
-
     private val molarMap: MutableMap<HTMaterialKey, MolarMassConvertible> = hashMapOf()
-
-    fun modifyMaterialMolar() {
-        CACHE.forEach { it.modifyMaterialMolar(molarMap) }
-    }
-
     private val typeMap: MutableMap<HTMaterialKey, HTMaterialType> = hashMapOf()
-
-    fun modifyMaterialType() {
-        CACHE.forEach { it.modifyMaterialType(typeMap) }
-    }
 
     private fun getColor(key: HTMaterialKey, property: HTMaterialPropertyMap): ColorConvertible {
         var color: ColorConvertible? = property.values.filterIsInstance<HTComponentProperty<*>>().getOrNull(0)
@@ -125,6 +88,16 @@ internal object HTMaterialsCore {
     }
 
     fun createMaterial() {
+        entryPoints.forEach {
+            it.registerMaterialKey(materialKeySet)
+            it.modifyMaterialContent(contentMap)
+            it.modifyMaterialProperty(propertyMap)
+            it.modifyMaterialFlag(flagMap)
+            it.modifyMaterialColor(colorMap)
+            it.modifyMaterialFormula(formulaMap)
+            it.modifyMaterialMolar(molarMap)
+            it.modifyMaterialType(typeMap)
+        }
         materialKeySet.forEach { key: HTMaterialKey ->
             val property: HTMaterialPropertyMap = propertyMap.getOrCreate(key).build()
             val flags: HTMaterialFlagSet = flagMap.getOrCreate(key).build()
@@ -208,12 +181,12 @@ internal object HTMaterialsCore {
 
     //    Post Initialization    //
 
-    fun commonSetup() {
+    fun postInitalize(envType: EnvType) {
         // Bind Game Objects to HTPart
         bindItemToPart()
         bindFluidToPart()
 
-        CACHE.forEach(HTMaterialsAddon::commonSetup)
+        HTMaterialsCore.entryPoints.forEach { it.postInitialize(envType) }
 
         registerRecipes()
         LOGGER.info("Added Material Recipes!")
@@ -226,7 +199,7 @@ internal object HTMaterialsCore {
         HTDefaultedTable.create { _, _ -> mutableSetOf() }
 
     private fun bindItemToPart() {
-        CACHE.forEach { it.bindItemToPart(itemTable) }
+        entryPoints.forEach { it.bindItemToPart(itemTable) }
         itemTable.forEach { materialKey: HTMaterialKey, shapeKey: HTShapeKey, items: MutableCollection<ItemConvertible> ->
             items.forEach { item: ItemConvertible -> HTPartManager.register(materialKey, shapeKey, item) }
         }
@@ -236,7 +209,7 @@ internal object HTMaterialsCore {
         HTDefaultedMap.create { mutableSetOf() }
 
     private fun bindFluidToPart() {
-        CACHE.forEach { it.bindFluidToPart(fluidMap) }
+        entryPoints.forEach { it.bindFluidToPart(fluidMap) }
         fluidMap.forEach { materialKey: HTMaterialKey, fluids: MutableCollection<Fluid> ->
             fluids.forEach { fluid: Fluid -> HTFluidManager.register(materialKey, fluid) }
         }
@@ -274,12 +247,5 @@ internal object HTMaterialsCore {
                 .input(ingotTag)
                 .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag)),
         )
-    }
-
-    @Environment(EnvType.CLIENT)
-    fun clientSetup() {
-        commonSetup()
-        CACHE.forEach(HTMaterialsAddon::clientSetup)
-        LOGGER.info("BlockStates and Models Registered!")
     }
 }

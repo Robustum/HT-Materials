@@ -1,6 +1,6 @@
 # HT Materials
 
-This is a simple Minecraft mod for **Fabric/Quilt 1.16.5** that provides _**Material System**_ and _**Tag Sync**_
+This is a simple Minecraft mod for **Fabric/Quilt** that provides _**Material System**_ and _**Tag Sync**_
 
 ## Material System
 

@@ -5,15 +5,14 @@ import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.api.shape.HTShapeKey
-import io.github.hiiragi283.material.api.util.HTCustomColoredItem
-import io.github.hiiragi283.material.api.util.HTCustomFluidRenderFluid
 import io.github.hiiragi283.material.api.util.HTFluidRenderHandler
 import io.github.hiiragi283.material.util.addObject
 import io.github.hiiragi283.material.util.buildJson
+import io.github.hiiragi283.material.util.onEnv
 import io.github.hiiragi283.material.util.prefix
 import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.block.Block
 import net.minecraft.block.Block.dropStacks
@@ -77,7 +76,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
     private abstract class FluidImpl(
         private val content: HTSimpleFluidContent,
         private val materialKey: HTMaterialKey,
-    ) : FlowableFluid(), HTCustomFluidRenderFluid {
+    ) : FlowableFluid() {
         override fun matchesType(fluid: Fluid): Boolean = fluid == still || fluid == flowing
 
         override fun isInfinite(): Boolean = false
@@ -138,12 +137,15 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
             return bucketCache
         }
 
-        @Environment(EnvType.CLIENT)
-        override fun getFluidRenderHandler(): FluidRenderHandler = HTFluidRenderHandler(materialKey.getMaterial())
-
         //    Flowing    //
 
         class Flowing(content: HTSimpleFluidContent, materialKey: HTMaterialKey) : FluidImpl(content, materialKey) {
+            init {
+                onEnv(EnvType.CLIENT) {
+                    FluidRenderHandlerRegistry.INSTANCE.register(this, HTFluidRenderHandler(materialKey.getMaterial()))
+                }
+            }
+
             override fun appendProperties(builder: StateManager.Builder<Fluid, FluidState>) {
                 super.appendProperties(builder)
                 builder.add(LEVEL)
@@ -157,6 +159,12 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
         //    Still    //
 
         class Still(content: HTSimpleFluidContent, materialKey: HTMaterialKey) : FluidImpl(content, materialKey) {
+            init {
+                onEnv(EnvType.CLIENT) {
+                    FluidRenderHandlerRegistry.INSTANCE.register(this, HTFluidRenderHandler(materialKey.getMaterial()))
+                }
+            }
+
             override fun isStill(state: FluidState): Boolean = true
 
             override fun getLevel(state: FluidState): Int = 0
@@ -165,17 +173,21 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
     //    Bucket    //
 
-    private class BucketImpl(fluid: Fluid, private val materialKey: HTMaterialKey) :
-        BucketItem(fluid, ITEM_SETTINGS),
-        HTCustomColoredItem {
+    private class BucketImpl(fluid: Fluid, private val materialKey: HTMaterialKey) : BucketItem(fluid, ITEM_SETTINGS) {
+        init {
+            onEnv(EnvType.CLIENT) {
+                ColorProviderRegistry.ITEM.register(
+                    ItemColorProvider { _: ItemStack, tintIndex: Int ->
+                        if (tintIndex == 1) materialKey.getMaterial().color.rgb else -1
+                    },
+                    this,
+                )
+            }
+        }
+
         override fun getName(): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)
 
         override fun getName(stack: ItemStack): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)
-
-        @Environment(EnvType.CLIENT)
-        override fun getColorProvider(): ItemColorProvider = ItemColorProvider { _: ItemStack, tintIndex: Int ->
-            if (tintIndex == 1) materialKey.getMaterial().color.rgb else -1
-        }
     }
 }
 
