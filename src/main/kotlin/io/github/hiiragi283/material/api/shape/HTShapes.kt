@@ -8,7 +8,7 @@ object HTShapes : HTMaterialsAddon {
     //    Block    //
 
     @JvmField
-    val BLOCK = HTShapeKey("block", forgePath = "storage_blocks/%s")
+    val BLOCK = HTShapeKey("block") // forgePath = "storage_blocks/%s"
 
     @JvmField
     val ORE = HTShapeKey("ore")
@@ -58,5 +58,19 @@ object HTShapes : HTMaterialsAddon {
             PLATE,
             ROD,
         )
+    }
+
+    override fun modifyShapeForgeRegex(registry: MutableMap<HTShapeKey, Regex>) {
+        // Block
+        registry[BLOCK] = """storage_blocks/.*""".toRegex()
+        registry[ORE] = """ores/.*""".toRegex()
+        // Item
+        registry[DUST] = """dusts/.*""".toRegex()
+        registry[GEAR] = """gears/.*""".toRegex()
+        registry[GEM] = """gems/.*""".toRegex()
+        registry[INGOT] = """ingots/.*""".toRegex()
+        registry[NUGGET] = """nuggets/.*""".toRegex()
+        registry[PLATE] = """plates/.*""".toRegex()
+        registry[ROD] = """rods/.*""".toRegex()
     }
 }

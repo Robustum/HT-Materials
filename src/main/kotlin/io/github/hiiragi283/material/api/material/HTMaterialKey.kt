@@ -5,7 +5,10 @@ import io.github.hiiragi283.material.api.registry.HTObjectKey
 import io.github.hiiragi283.material.util.commonId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
+import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.client.resource.language.I18n
+import net.minecraft.item.Item
+import net.minecraft.tag.Tag
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
@@ -21,6 +24,12 @@ data class HTMaterialKey(override val name: String) : HTObjectKey<HTMaterial> {
     fun getIdentifier(namespace: String = HTMaterials.MOD_ID): Identifier = Identifier(namespace, name)
 
     fun getCommonId() = commonId(name)
+
+    fun getMaterialId() = getIdentifier("material")
+
+    //    Tag    //
+
+    fun getMaterialTag(): Tag.Identified<Item> = TagRegistry.item(getMaterialId()) as Tag.Identified<Item>
 
     //    Translation    //
 

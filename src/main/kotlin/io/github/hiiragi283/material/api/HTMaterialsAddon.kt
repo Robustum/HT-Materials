@@ -22,6 +22,10 @@ interface HTMaterialsAddon {
 
     fun registerShape(registry: HTObjectKeySet<HTShapeKey>) {}
 
+    fun modifyShapeForgeRegex(registry: MutableMap<HTShapeKey, Regex>) {}
+
+    fun modifyShapeFabricRegex(registry: MutableMap<HTShapeKey, Regex>) {}
+
     fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {}
 
     fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {}

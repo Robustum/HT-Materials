@@ -47,12 +47,20 @@ internal object HTMaterialsCore {
     //    Initialize - HTShape    //
 
     private val shapeKeySet: HTObjectKeySet<HTShapeKey> = HTObjectKeySet.create()
+    private val forgeRegexMap: MutableMap<HTShapeKey, Regex> = hashMapOf()
+    private val fabricRegexMap: MutableMap<HTShapeKey, Regex> = hashMapOf()
 
     fun createShape() {
         entryPoints.forEach {
             it.registerShape(shapeKeySet)
+            it.modifyShapeForgeRegex(forgeRegexMap)
+            it.modifyShapeFabricRegex(fabricRegexMap)
         }
-        shapeKeySet.forEach(HTShape::create)
+        shapeKeySet.forEach { key: HTShapeKey ->
+            val forgeRegex: Regex = forgeRegexMap.getOrDefault(key, "".toRegex())
+            val fabricRegex: Regex = fabricRegexMap.getOrDefault(key, """.*_${key.name}s""".toRegex())
+            HTShape.create(key, forgeRegex, fabricRegex)
+        }
     }
 
     //    Initialize - HTMaterial    //
@@ -225,7 +233,7 @@ internal object HTMaterialsCore {
     private fun ingotRecipe(material: HTMaterialKey, item: Item) {
         // 9x Nugget -> 1x Ingot
         if (!HTPartManager.hasDefaultItem(material, HTShapes.NUGGET)) return
-        val nuggetTag: Tag<Item> = HTShapes.NUGGET.getCommonTag(material)
+        val nuggetTag: Tag<Item> = HTShapes.NUGGET.getPartTag(material)
         HTRuntimeDataManager.addShapedCrafting(
             HTShapes.INGOT.getIdentifier(material).prefix("shaped/"),
             ShapedRecipeJsonFactory.create(item)
@@ -240,7 +248,7 @@ internal object HTMaterialsCore {
     private fun nuggetRecipe(material: HTMaterialKey, item: Item) {
         // 1x Ingot -> 9x Nugget
         if (!HTPartManager.hasDefaultItem(material, HTShapes.INGOT)) return
-        val ingotTag: Tag<Item> = HTShapes.INGOT.getCommonTag(material)
+        val ingotTag: Tag<Item> = HTShapes.INGOT.getPartTag(material)
         HTRuntimeDataManager.addShapelessCrafting(
             HTShapes.NUGGET.getIdentifier(material).prefix("shapeless/"),
             ShapelessRecipeJsonFactory.create(item, 9)

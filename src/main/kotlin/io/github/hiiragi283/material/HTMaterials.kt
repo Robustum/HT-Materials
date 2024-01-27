@@ -39,13 +39,6 @@ object HTMaterials : ModInitializer, ClientModInitializer, DedicatedServerModIni
     val ICON: Item = Item(FabricItemSettings().group(ITEM_GROUP).rarity(Rarity.EPIC))
 
     override fun onInitialize() {
-        // Collect Addons
-        HTMaterialsCore.initEntryPoints()
-        // Create Shapes
-        HTMaterialsCore.createShape()
-        // Create Materials
-        HTMaterialsCore.createMaterial()
-        HTMaterialsCore.verifyMaterial()
         // Initialize Game Objects
         HTMaterialsCore.createContent(Registry.BLOCK_KEY)
         LOGGER.info("All Material Blocks Registered!")

@@ -18,6 +18,12 @@
   "icon": "assets/ht_materials/textures/icon.png",
   "environment": "*",
   "entrypoints": {
+    "preLaunch": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.HTMaterialsPre"
+      }
+    ],
     "main": [
       {
         "adapter": "kotlin",

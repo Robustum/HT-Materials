@@ -39,7 +39,7 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     //    HTShape    //
 
-    public static final HTShapeKey DIRTY_DUST = new HTShapeKey("dirty_dust");
+    public static final HTShapeKey DIRTY_DUST = new HTShapeKey("dirty_dust", "%s_dirty_dust");
 
     @Override
     public void registerShape(@NotNull HTObjectKeySet<HTShapeKey> registry) {

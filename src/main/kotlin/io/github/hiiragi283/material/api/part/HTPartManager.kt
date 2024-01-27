@@ -184,7 +184,7 @@ object HTPartManager {
 
             HTMaterial.getMaterialKeys().forEach { material: HTMaterialKey ->
                 HTShape.getShapeKeys().forEach { shape: HTShapeKey ->
-                    shape.getCommonTag(material).values().forEach { item -> register(material, shape, item) }
+                    HTPart(material, shape).getPartTag().values().forEach { item -> register(material, shape, item) }
                 }
             }
         }

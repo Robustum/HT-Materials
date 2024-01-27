@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @SuppressWarnings("UnstableApiUsage")
 @Mixin(FluidEntryStack.class)
-public class FluidEntryStackMixin {
+public abstract class FluidEntryStackMixin {
 
     @Shadow
     private Fluid fluid;

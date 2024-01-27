@@ -9,7 +9,8 @@
     "RecipeManagerMixin",
     "ServerAdvancementLoaderMixin",
     "TagBuilderAccessor",
-    "TagGroupLoaderMixin"
+    "TagGroupLoaderMixin",
+    "TagRegistryMixin"
   ],
   "client": [
     "FluidEntryStackMixin",
