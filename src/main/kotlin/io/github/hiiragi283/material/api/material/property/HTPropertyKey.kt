@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.api.material.property
 
-import io.github.hiiragi283.material.api.registry.HTObjectKey
+import io.github.hiiragi283.lib.registry.HTObjectKey
 
 data class HTPropertyKey<T : HTMaterialProperty<T>>(
     override val name: String,

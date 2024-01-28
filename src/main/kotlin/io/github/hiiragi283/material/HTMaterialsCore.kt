@@ -1,5 +1,12 @@
 package io.github.hiiragi283.material
 
+import io.github.hiiragi283.lib.HTRuntimeDataManager
+import io.github.hiiragi283.lib.event.HTTagBuilderEvent
+import io.github.hiiragi283.lib.registry.HTDefaultedMap
+import io.github.hiiragi283.lib.registry.HTDefaultedTable
+import io.github.hiiragi283.lib.registry.HTObjectKeySet
+import io.github.hiiragi283.lib.util.isModLoaded
+import io.github.hiiragi283.lib.util.prefix
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.*
@@ -8,16 +15,13 @@ import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTComponentProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
+import io.github.hiiragi283.material.api.part.HTPart
 import io.github.hiiragi283.material.api.part.HTPartManager
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap
-import io.github.hiiragi283.material.api.registry.HTDefaultedTable
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
-import io.github.hiiragi283.material.api.resource.HTRuntimeDataManager
+import io.github.hiiragi283.material.api.part.getMaterialKey
+import io.github.hiiragi283.material.api.part.getShapeKey
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.util.isModLoaded
-import io.github.hiiragi283.material.util.prefix
 import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.data.server.RecipesProvider
@@ -27,14 +31,11 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.tag.Tag
+import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.RegistryKey
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 
 internal object HTMaterialsCore {
-    private val LOGGER: Logger = LogManager.getLogger("${HTMaterials.MOD_NAME}/Addons")
-
     private lateinit var entryPoints: Iterable<HTMaterialsAddon>
 
     fun initEntryPoints() {
@@ -189,18 +190,21 @@ internal object HTMaterialsCore {
 
     //    Post Initialization    //
 
-    fun postInitalize(envType: EnvType) {
+    fun postInitialize(envType: EnvType) {
         // Bind Game Objects to HTPart
         bindItemToPart()
         bindFluidToPart()
 
-        HTMaterialsCore.entryPoints.forEach { it.postInitialize(envType) }
+        entryPoints.forEach { it.postInitialize(envType) }
 
         registerRecipes()
-        LOGGER.info("Added Material Recipes!")
+        HTMaterials.log("Added Material Recipes!")
+
+        registerTags()
+        HTMaterials.log("Registered Material Tag Events!")
 
         HTFluidManager.registerAllFluids()
-        LOGGER.info("All Fluids Registered to HTFluidManager!")
+        HTMaterials.log("All Fluids Registered to HTFluidManager!")
     }
 
     private val itemTable: HTDefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>> =
@@ -225,8 +229,8 @@ internal object HTMaterialsCore {
 
     private fun registerRecipes() {
         HTMaterial.getMaterialKeys().forEach { key ->
-            HTPartManager.getDefaultItem(key, HTShapes.INGOT)?.let { ingotRecipe(key, it) }
-            HTPartManager.getDefaultItem(key, HTShapes.NUGGET)?.let { nuggetRecipe(key, it) }
+            HTPartManager.defaultItemConsumer(key, HTShapes.INGOT) { ingotRecipe(key, it) }
+            HTPartManager.defaultItemConsumer(key, HTShapes.NUGGET) { nuggetRecipe(key, it) }
         }
     }
 
@@ -255,5 +259,62 @@ internal object HTMaterialsCore {
                 .input(ingotTag)
                 .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag)),
         )
+    }
+
+    private fun registerTags() {
+        // Register fluid tags from FluidManager
+        HTTagBuilderEvent.FLUID.register { tags: MutableMap<Identifier, Tag.Builder> ->
+            HTFluidManager.getMaterialToFluidsMap().forEach { key: HTMaterialKey, fluid: Fluid ->
+                registerTag(
+                    getOrCreateBuilder(tags, key.getCommonId()),
+                    Registry.FLUID,
+                    fluid,
+                )
+            }
+        }
+        // Register Item Tags from HTPartManager
+        HTTagBuilderEvent.ITEM.register { tags ->
+            // Convert tags into part format
+            HashMap(tags).forEach { (id: Identifier, builder: Tag.Builder) ->
+                HTPart.fromId(id)?.getPartId()?.let {
+                    // copy builder to converted id
+                    tags[it] = builder
+                    // builder with original id replaced with redirected one
+                    tags[id] = Tag.Builder.create().apply { addTag(it, HTMaterials.MOD_NAME) }
+                }
+            }
+            HTMaterials.log("Converted existing tags!")
+            // Register Tags from HTPartManager
+            HTPartManager.getAllItems().forEach { item ->
+                val materialKey: HTMaterialKey = item.getMaterialKey() ?: return@forEach
+                val shapeKey: HTShapeKey = item.getShapeKey() ?: return@forEach
+                // Shape tag
+                registerTag(
+                    getOrCreateBuilder(tags, shapeKey.getShapeId()),
+                    Registry.ITEM,
+                    item,
+                )
+                // Material tag
+                registerTag(
+                    getOrCreateBuilder(tags, materialKey.getMaterialId()),
+                    Registry.ITEM,
+                    item,
+                )
+                // Part tag
+                registerTag(
+                    getOrCreateBuilder(tags, shapeKey.getPartId(materialKey)),
+                    Registry.ITEM,
+                    item,
+                )
+            }
+            HTMaterials.log("Registered Tags for HTPartManager's Entries!")
+        }
+    }
+
+    private fun getOrCreateBuilder(map: MutableMap<Identifier, Tag.Builder>, id: Identifier) =
+        map.computeIfAbsent(id) { Tag.Builder.create() }
+
+    private fun <T> registerTag(builder: Tag.Builder, registry: Registry<T>, value: T) {
+        builder.add(registry.getId(value), HTMaterials.MOD_NAME)
     }
 }

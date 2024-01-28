@@ -1,16 +1,16 @@
 package io.github.hiiragi283.material.api.material.content
 
+import io.github.hiiragi283.lib.HTRuntimeDataManager
+import io.github.hiiragi283.lib.HTRuntimeResourcePack
+import io.github.hiiragi283.lib.util.addObject
+import io.github.hiiragi283.lib.util.buildJson
+import io.github.hiiragi283.lib.util.onEnv
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.HTMaterialType
 import io.github.hiiragi283.material.api.part.HTPartManager
-import io.github.hiiragi283.material.api.resource.HTRuntimeDataManager
-import io.github.hiiragi283.material.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.util.addObject
-import io.github.hiiragi283.material.util.buildJson
-import io.github.hiiragi283.material.util.onEnv
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
@@ -134,7 +134,7 @@ class HTStorageBlockContent(
         block: Block,
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
-    ) : BlockItem(block, FabricItemSettings().group(HTMaterials.ITEM_GROUP)) {
+    ) : BlockItem(block, FabricItemSettings().group(HTMaterials.itemGroup())) {
         init {
             onEnv(EnvType.CLIENT) {
                 ColorProviderRegistry.ITEM.register(

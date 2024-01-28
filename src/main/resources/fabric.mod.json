@@ -82,7 +82,8 @@
     "fabricloader": ">=0.15.0",
     "fabric": "*",
     "minecraft": "1.16.5",
-    "fabric-language-kotlin": "*"
+    "fabric-language-kotlin": "*",
+    "ht_library": "*"
   },
   "accessWidener": "ht_materials.accesswidener"
 }

@@ -2,22 +2,22 @@ package io.github.hiiragi283.material.api.part
 
 import com.google.common.collect.HashBasedTable
 import com.google.common.collect.Table
+import io.github.hiiragi283.lib.registry.HTDefaultedTable
+import io.github.hiiragi283.lib.util.checkItemNotAir
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
-import io.github.hiiragi283.material.api.registry.HTDefaultedTable
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.util.checkItemNotAir
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 import net.minecraft.util.registry.Registry
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import java.util.function.Consumer
 
 fun ItemConvertible.getPart(): HTPart? = HTPartManager.getPart(this)
 
@@ -28,14 +28,22 @@ fun ItemConvertible.getMaterial(): HTMaterial? = getMaterialKey()?.getMaterial()
 fun ItemConvertible.getShapeKey(): HTShapeKey? = getPart()?.shapeKey
 
 object HTPartManager {
-    private val LOGGER: Logger = LogManager.getLogger(this::class.java)
-
     //    Item -> HTPart    //
 
     private val ITEM_TO_PART: MutableMap<Item, HTPart> = hashMapOf()
 
     @JvmStatic
     fun getPart(itemConvertible: ItemConvertible): HTPart? = ITEM_TO_PART[itemConvertible.asItem()]
+
+    @JvmStatic
+    fun partConsumer(itemConvertible: ItemConvertible, consumer: Consumer<HTPart>) {
+        getPart(itemConvertible)?.let(consumer::accept)
+    }
+
+    @JvmStatic
+    inline fun partConsumer(itemConvertible: ItemConvertible, action: (HTPart) -> Unit) {
+        getPart(itemConvertible)?.apply(action)
+    }
 
     @JvmStatic
     fun hasPart(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in ITEM_TO_PART
@@ -49,6 +57,16 @@ object HTPartManager {
 
     @JvmStatic
     fun getDefaultItem(material: HTMaterialKey, shape: HTShapeKey): Item? = PART_TO_ITEM.get(material, shape)
+
+    @JvmStatic
+    fun defaultItemConsumer(material: HTMaterialKey, shape: HTShapeKey, consumer: Consumer<Item>) {
+        getDefaultItem(material, shape)?.let(consumer::accept)
+    }
+
+    @JvmStatic
+    inline fun defaultItemConsumer(material: HTMaterialKey, shape: HTShapeKey, action: (Item) -> Unit) {
+        getDefaultItem(material, shape)?.apply(action)
+    }
 
     @JvmStatic
     fun hasDefaultItem(material: HTMaterialKey, shape: HTShapeKey): Boolean = PART_TO_ITEM.contains(material, shape)
@@ -208,12 +226,12 @@ object HTPartManager {
         // HTMaterial, HTShape -> ItemConvertible
         if (!PART_TO_ITEM.contains(material, shape)) {
             PART_TO_ITEM.put(material, shape, item)
-            LOGGER.info("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
+            HTMaterials.log("The Item: ${Registry.ITEM.getId(item)} registered as Default Item for Material: $material and Shape: $shape!!")
         }
         // HTMaterial, HTShape -> Collection<ItemConvertible>
         PART_TO_ITEMS.getOrCreate(material, shape).add(item)
         // print info
-        LOGGER.info("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
+        HTMaterials.log("The Item: ${Registry.ITEM.getId(item)} linked to Material: $material and Shape: $shape!")
     }
 
     @JvmStatic

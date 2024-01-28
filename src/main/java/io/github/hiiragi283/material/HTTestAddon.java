@@ -1,24 +1,22 @@
 package io.github.hiiragi283.material;
 
+import io.github.hiiragi283.lib.registry.HTDefaultedMap;
+import io.github.hiiragi283.lib.registry.HTDefaultedTable;
+import io.github.hiiragi283.lib.registry.HTObjectKeySet;
+import io.github.hiiragi283.lib.util.HTColor;
 import io.github.hiiragi283.material.api.HTMaterialsAddon;
 import io.github.hiiragi283.material.api.material.*;
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap;
 import io.github.hiiragi283.material.api.material.content.HTSimpleFluidContent;
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent;
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap;
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap;
-import io.github.hiiragi283.material.api.registry.HTDefaultedTable;
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet;
 import io.github.hiiragi283.material.api.shape.HTShape;
 import io.github.hiiragi283.material.api.shape.HTShapeKey;
 import io.github.hiiragi283.material.api.shape.HTShapes;
-import io.github.hiiragi283.material.api.util.HTColor;
 import net.fabricmc.api.EnvType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -108,12 +106,10 @@ public class HTTestAddon implements HTMaterialsAddon {
         registry.getOrCreate(INFINITY, HTShapes.GEM).add(Items.NETHER_STAR);
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(HTTestAddon.class);
-
     @Override
     public void postInitialize(@NotNull EnvType envType) {
-        HTShape.getShapeKeys().forEach(key -> LOGGER.info("Shape: " + key));
-        HTMaterial.getMaterials().forEach(key -> LOGGER.info("Material: " + key));
+        HTShape.getShapeKeys().forEach(key -> HTMaterials.log("Shape: " + key));
+        HTMaterial.getMaterials().forEach(key -> HTMaterials.log("Material: " + key));
     }
 
 }

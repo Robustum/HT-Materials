@@ -1,5 +1,8 @@
 package io.github.hiiragi283.material.api.material.materials
 
+import io.github.hiiragi283.lib.registry.HTDefaultedMap
+import io.github.hiiragi283.lib.registry.HTObjectKeySet
+import io.github.hiiragi283.lib.util.HTColor
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.material.*
@@ -7,10 +10,7 @@ import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.api.material.content.HTStorageBlockContent
 import io.github.hiiragi283.material.api.material.property.*
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.api.util.HTColor
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 
 object HTCommonMaterials : HTMaterialsAddon {

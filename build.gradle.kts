@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.github.hiiragi283.material"
-version = "1.2.0+1.16.5"
+version = "1.3.0+1.16.5"
 
 repositories {
     mavenCentral()
@@ -30,6 +30,7 @@ dependencies {
         exclude(module = "fabric-api")
         exclude(module = "fabric-loader")
     }
+    modImplementation(fileTree("libs") { include("*.jar") })
     modLocalRuntime(libs.bundles.mods.debug) {
         exclude(module = "fabric-api")
         exclude(module = "fabric-loader")

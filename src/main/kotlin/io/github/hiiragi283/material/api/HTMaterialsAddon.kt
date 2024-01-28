@@ -1,12 +1,12 @@
 package io.github.hiiragi283.material.api
 
+import io.github.hiiragi283.lib.registry.HTDefaultedMap
+import io.github.hiiragi283.lib.registry.HTDefaultedTable
+import io.github.hiiragi283.lib.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.material.*
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap
-import io.github.hiiragi283.material.api.registry.HTDefaultedTable
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import net.fabricmc.api.EnvType
 import net.minecraft.fluid.Fluid

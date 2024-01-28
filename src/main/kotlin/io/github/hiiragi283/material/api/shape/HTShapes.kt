@@ -1,8 +1,8 @@
 package io.github.hiiragi283.material.api.shape
 
+import io.github.hiiragi283.lib.registry.HTObjectKeySet
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 
 object HTShapes : HTMaterialsAddon {
     //    Block    //
