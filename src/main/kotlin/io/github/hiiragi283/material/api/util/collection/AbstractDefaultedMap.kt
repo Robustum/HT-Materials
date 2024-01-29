@@ -1,14 +1,15 @@
-package io.github.hiiragi283.material.impl.registry
+package io.github.hiiragi283.material.api.util.collection
 
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap
 import java.util.function.BiConsumer
 
-internal class HTDefaultedMapImpl<K, V>(private val mapping: (K) -> V) : HTDefaultedMap<K, V> {
-    private val backingMap: HashMap<K, V> = linkedMapOf()
+abstract class AbstractDefaultedMap<K, V>(protected val mapping: (K) -> V) : DefaultedMap<K, V> {
+    abstract val backingMap: MutableMap<K, V>
 
     override fun getOrCreate(key: K): V = backingMap.computeIfAbsent(key, mapping)
 
     override fun forEach(biConsumer: BiConsumer<K, V>) = backingMap.forEach(biConsumer)
 
     override fun forEach(action: (K, V) -> Unit) = backingMap.forEach(action)
+
+    override fun toMap(): Map<K, V> = backingMap
 }

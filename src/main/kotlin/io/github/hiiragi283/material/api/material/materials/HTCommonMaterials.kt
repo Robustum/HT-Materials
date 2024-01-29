@@ -1,16 +1,21 @@
 package io.github.hiiragi283.material.api.material.materials
 
+import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.material.*
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.api.material.content.HTStorageBlockContent
-import io.github.hiiragi283.material.api.material.property.*
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
+import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
+import io.github.hiiragi283.material.api.material.property.component.HTCompoundProperty
+import io.github.hiiragi283.material.api.material.property.component.HTHydrateProperty
+import io.github.hiiragi283.material.api.material.property.component.HTMixtureProperty
+import io.github.hiiragi283.material.api.material.property.component.HTPolymerProperty
 import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.api.util.HTColor
+import io.github.hiiragi283.material.api.util.addAll
+import io.github.hiiragi283.material.api.util.collection.DefaultedMap
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 
 object HTCommonMaterials : HTMaterialsAddon {
@@ -83,7 +88,7 @@ object HTCommonMaterials : HTMaterialsAddon {
 
     override val priority: Int = -90
 
-    override fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {
+    override fun registerMaterialKey(registry: ImmutableSet.Builder<HTMaterialKey>) {
         // Fluids
         // Gems
         registry.addAll(
@@ -117,7 +122,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         // Woods
     }
 
-    override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
+    override fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
         // Fluids
         // Gems
         registry.getOrCreate(CINNABAR).apply {
@@ -302,7 +307,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         // Woods
     }
 
-    override fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
+    override fun modifyMaterialProperty(registry: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
         // Fluids
         // Gems
         registry.getOrCreate(CINNABAR).apply {

@@ -1,13 +1,13 @@
 package io.github.hiiragi283.material.api
 
+import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.material.api.material.*
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap
-import io.github.hiiragi283.material.api.registry.HTDefaultedTable
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapeKey
+import io.github.hiiragi283.material.api.util.collection.DefaultedMap
+import io.github.hiiragi283.material.api.util.collection.DefaultedTable
 import net.fabricmc.api.EnvType
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.ItemConvertible
@@ -20,19 +20,19 @@ interface HTMaterialsAddon {
 
     //    Initialize    //
 
-    fun registerShape(registry: HTObjectKeySet<HTShapeKey>) {}
+    fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {}
 
     fun modifyShapeForgeRegex(registry: MutableMap<HTShapeKey, Regex>) {}
 
     fun modifyShapeFabricRegex(registry: MutableMap<HTShapeKey, Regex>) {}
 
-    fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {}
+    fun registerMaterialKey(registry: ImmutableSet.Builder<HTMaterialKey>) {}
 
-    fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {}
+    fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap>) {}
 
-    fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {}
+    fun modifyMaterialProperty(registry: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {}
 
-    fun modifyMaterialFlag(registry: HTDefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder>) {}
+    fun modifyMaterialFlag(registry: DefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder>) {}
 
     fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {}
 
@@ -44,9 +44,9 @@ interface HTMaterialsAddon {
 
     //    Post Initialization    //
 
-    fun bindItemToPart(registry: HTDefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>>) {}
+    fun bindItemToPart(registry: DefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>>) {}
 
-    fun bindFluidToPart(registry: HTDefaultedMap<HTMaterialKey, MutableCollection<Fluid>>) {}
+    fun bindFluidToPart(registry: DefaultedMap<HTMaterialKey, MutableCollection<Fluid>>) {}
 
     fun postInitialize(envType: EnvType) {}
 }

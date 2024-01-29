@@ -3,7 +3,6 @@ package io.github.hiiragi283.material.api.shape
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.part.HTPart
-import io.github.hiiragi283.material.api.registry.HTObjectKey
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.tag.TagRegistry
@@ -13,9 +12,7 @@ import net.minecraft.tag.Tag
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
-data class HTShapeKey(override val name: String, val idPath: String = "%s_$name") : HTObjectKey<HTShape> {
-    override val objClass: Class<HTShape> = HTShape::class.java
-
+data class HTShapeKey(val name: String, val idPath: String = "%s_$name") {
     fun getShape(): HTShape = HTShape.getShape(this)
 
     fun getShapeOrNull(): HTShape? = HTShape.getShapeOrNull(this)

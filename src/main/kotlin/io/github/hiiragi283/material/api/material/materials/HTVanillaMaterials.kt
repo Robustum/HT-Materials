@@ -1,17 +1,18 @@
 package io.github.hiiragi283.material.api.material.materials
 
+import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.material.*
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
-import io.github.hiiragi283.material.api.material.property.HTCompoundProperty
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.material.api.material.property.HTMixtureProperty
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
+import io.github.hiiragi283.material.api.material.property.component.HTCompoundProperty
+import io.github.hiiragi283.material.api.material.property.component.HTMixtureProperty
 import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.api.util.HTColor
+import io.github.hiiragi283.material.api.util.addAll
+import io.github.hiiragi283.material.api.util.collection.DefaultedMap
 import java.awt.Color
 
 object HTVanillaMaterials : HTMaterialsAddon {
@@ -123,7 +124,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
 
     override val priority: Int = -90
 
-    override fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {
+    override fun registerMaterialKey(registry: ImmutableSet.Builder<HTMaterialKey>) {
         // Fluids
         registry.addAll(
             WATER,
@@ -174,7 +175,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         )
     }
 
-    override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
+    override fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
         // Fluids
         // Gems
         registry.getOrCreate(AMETHYST).apply {
@@ -291,7 +292,7 @@ object HTVanillaMaterials : HTMaterialsAddon {
         }
     }
 
-    override fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
+    override fun modifyMaterialProperty(registry: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
         // Fluids
         registry.getOrCreate(WATER)
             .add(HTCompoundProperty(HTElementMaterials.HYDROGEN to 2, HTElementMaterials.OXYGEN to 1))

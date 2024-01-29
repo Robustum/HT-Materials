@@ -3,21 +3,18 @@ package io.github.hiiragi283.material.api.fluid
 import com.google.common.collect.HashMultimap
 import com.google.common.collect.ImmutableMultimap
 import com.google.common.collect.Multimap
+import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
-import io.github.hiiragi283.material.util.getAllModId
+import io.github.hiiragi283.material.api.util.getAllModId
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 
 object HTFluidManager {
-    private val LOGGER: Logger = LogManager.getLogger(this::class.java)
-
     //    Fluid -> HTMaterialKey    //
 
     private val FLUID_TO_MAT: MutableMap<Fluid, HTMaterialKey> = hashMapOf()
@@ -79,12 +76,12 @@ object HTFluidManager {
         // HTMaterial -> Fluid
         if (!hasDefaultFluid(material)) {
             MAT_TO_FLUID[material] = fluid
-            LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
+            HTMaterials.log("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
         }
         // HTMaterial -> Collection<Fluid>
         MAT_TO_FLUIDS.put(material, fluid)
         // print info
-        LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
+        HTMaterials.log("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
     }
 
     @JvmStatic
@@ -94,11 +91,11 @@ object HTFluidManager {
         FLUID_TO_MAT.putIfAbsent(fluid, material)
         // HTMaterial -> Fluid
         MAT_TO_FLUID[material] = fluid
-        LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
+        HTMaterials.log("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
         // HTMaterial -> Collection<Fluid>
         MAT_TO_FLUIDS.put(material, fluid)
         // print info
-        LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
+        HTMaterials.log("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
     }
 
     //    Initialization    //

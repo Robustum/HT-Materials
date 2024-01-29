@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material.api.resource
+package io.github.hiiragi283.material.api.util.resource
 
 import com.google.gson.JsonElement
 import net.minecraft.advancement.Advancement

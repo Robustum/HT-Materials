@@ -1,6 +1,5 @@
-package io.github.hiiragi283.material.impl.mixin
+package io.github.hiiragi283.material
 
-import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.part.HTPart
@@ -9,7 +8,6 @@ import io.github.hiiragi283.material.api.part.getMaterialKey
 import io.github.hiiragi283.material.api.part.getShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.mixin.TagBuilderAccessor
-import io.github.hiiragi283.material.util.HTMixinLogger
 import net.minecraft.fluid.Fluid
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
@@ -21,7 +19,7 @@ internal object HTTagLoaderMixin {
 
     @JvmStatic
     fun loadTags(map: MutableMap<Identifier, Tag.Builder>, entryType: String) {
-        HTMixinLogger.INSTANCE.info("Current entry type: $entryType")
+        HTMaterials.log("Current entry type: $entryType")
         when (entryType) {
             "block" -> {}
             "entity_type" -> {}
@@ -35,7 +33,7 @@ internal object HTTagLoaderMixin {
                 map.remove(id)
             }
         }
-        HTMixinLogger.INSTANCE.info("Removed empty tag builders!")
+        HTMaterials.log("Removed empty tag builders!")
     }
 
     @JvmStatic
@@ -61,7 +59,7 @@ internal object HTTagLoaderMixin {
                 map[id] = Tag.Builder.create().apply { addTag(it, HTMaterials.MOD_NAME) }
             }
         }
-        HTMixinLogger.INSTANCE.info("Converted existing tags!")
+        HTMaterials.log("Converted existing tags!")
         // Register Tags from HTPartManager
         HTPartManager.getAllItems().forEach { item ->
             val materialKey: HTMaterialKey = item.getMaterialKey() ?: return@forEach
@@ -85,7 +83,7 @@ internal object HTTagLoaderMixin {
                 item,
             )
         }
-        HTMixinLogger.INSTANCE.info("Registered Tags for HTPartManager's Entries!")
+        HTMaterials.log("Registered Tags for HTPartManager's Entries!")
     }
 
     @JvmStatic

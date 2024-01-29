@@ -1,7 +1,8 @@
 @file:JvmName("HTUtil")
 
-package io.github.hiiragi283.material.util
+package io.github.hiiragi283.material.api.util
 
+import com.google.common.collect.ImmutableCollection
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import net.fabricmc.api.EnvType
@@ -25,6 +26,12 @@ import java.util.function.Function
 fun Item.asBlock(): Block = (this as? BlockItem)?.block ?: Blocks.AIR
 
 fun Block.isAir(): Boolean = this == Blocks.AIR
+
+//    Collection    //
+
+fun <T : Any> ImmutableCollection.Builder<T>.addAll(vararg element: T) {
+    element.forEach(this::add)
+}
 
 //    Fluid    //
 

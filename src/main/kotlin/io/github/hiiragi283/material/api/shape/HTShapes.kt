@@ -1,8 +1,9 @@
 package io.github.hiiragi283.material.api.shape
 
+import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
+import io.github.hiiragi283.material.api.util.addAll
 
 object HTShapes : HTMaterialsAddon {
     //    Block    //
@@ -42,7 +43,7 @@ object HTShapes : HTMaterialsAddon {
 
     override val priority: Int = -200
 
-    override fun registerShape(registry: HTObjectKeySet<HTShapeKey>) {
+    override fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {
         // Block
         registry.addAll(
             BLOCK,

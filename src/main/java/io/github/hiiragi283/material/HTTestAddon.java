@@ -1,14 +1,14 @@
 package io.github.hiiragi283.material;
 
+import com.google.common.collect.ImmutableSet;
 import io.github.hiiragi283.material.api.HTMaterialsAddon;
 import io.github.hiiragi283.material.api.material.*;
 import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap;
 import io.github.hiiragi283.material.api.material.content.HTSimpleFluidContent;
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent;
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap;
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap;
-import io.github.hiiragi283.material.api.registry.HTDefaultedTable;
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet;
+import io.github.hiiragi283.material.api.util.collection.DefaultedMap;
+import io.github.hiiragi283.material.api.util.collection.DefaultedTable;
 import io.github.hiiragi283.material.api.shape.HTShape;
 import io.github.hiiragi283.material.api.shape.HTShapeKey;
 import io.github.hiiragi283.material.api.shape.HTShapes;
@@ -17,8 +17,6 @@ import net.fabricmc.api.EnvType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -42,7 +40,7 @@ public class HTTestAddon implements HTMaterialsAddon {
     public static final HTShapeKey DIRTY_DUST = new HTShapeKey("dirty_dust", "%s_dirty_dust");
 
     @Override
-    public void registerShape(@NotNull HTObjectKeySet<HTShapeKey> registry) {
+    public void registerShape(@NotNull ImmutableSet.Builder<HTShapeKey> registry) {
         registry.add(DIRTY_DUST);
     }
 
@@ -51,12 +49,12 @@ public class HTTestAddon implements HTMaterialsAddon {
     public static final HTMaterialKey INFINITY = new HTMaterialKey("infinity");
 
     @Override
-    public void registerMaterialKey(@NotNull HTObjectKeySet<HTMaterialKey> registry) {
+    public void registerMaterialKey(@NotNull ImmutableSet.Builder<HTMaterialKey> registry) {
         registry.add(INFINITY);
     }
 
     @Override
-    public void modifyMaterialContent(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialContentMap> registry) {
+    public void modifyMaterialContent(@NotNull DefaultedMap<HTMaterialKey, HTMaterialContentMap> registry) {
         HTMaterialContentMap builder = registry.getOrCreate(INFINITY);
         builder.add(new HTSimpleFluidContent());
         builder.add(new HTSimpleItemContent(HTShapes.DUST));
@@ -68,7 +66,7 @@ public class HTTestAddon implements HTMaterialsAddon {
     }
 
     @Override
-    public void modifyMaterialProperty(@NotNull HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> registry) {
+    public void modifyMaterialProperty(@NotNull DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> registry) {
         HTMaterialPropertyMap.Builder builder = registry.getOrCreate(INFINITY);
         /*builder.add(new HTFluidProperty(), prop -> {
             prop.setTemperature(32768);
@@ -99,21 +97,19 @@ public class HTTestAddon implements HTMaterialsAddon {
     //    Post Init    //
 
     @Override
-    public void bindFluidToPart(@NotNull HTDefaultedMap<HTMaterialKey, Collection<Fluid>> registry) {
+    public void bindFluidToPart(@NotNull DefaultedMap<HTMaterialKey, Collection<Fluid>> registry) {
 
     }
 
     @Override
-    public void bindItemToPart(@NotNull HTDefaultedTable<HTMaterialKey, HTShapeKey, Collection<ItemConvertible>> registry) {
+    public void bindItemToPart(@NotNull DefaultedTable<HTMaterialKey, HTShapeKey, Collection<ItemConvertible>> registry) {
         registry.getOrCreate(INFINITY, HTShapes.GEM).add(Items.NETHER_STAR);
     }
 
-    private static final Logger LOGGER = LogManager.getLogger(HTTestAddon.class);
-
     @Override
     public void postInitialize(@NotNull EnvType envType) {
-        HTShape.getShapeKeys().forEach(key -> LOGGER.info("Shape: " + key));
-        HTMaterial.getMaterials().forEach(key -> LOGGER.info("Material: " + key));
+        HTShape.getShapeKeys().forEach(key -> HTMaterials.log("Shape: " + key));
+        HTMaterial.getMaterials().forEach(key -> HTMaterials.log("Material: " + key));
     }
 
 }

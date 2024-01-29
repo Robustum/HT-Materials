@@ -2,14 +2,14 @@ package io.github.hiiragi283.material.api.material.content
 
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
+import io.github.hiiragi283.material.api.fluid.HTFluidRenderHandler
 import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.api.shape.HTShapeKey
-import io.github.hiiragi283.material.api.util.HTFluidRenderHandler
-import io.github.hiiragi283.material.util.addObject
-import io.github.hiiragi283.material.util.buildJson
-import io.github.hiiragi283.material.util.onEnv
-import io.github.hiiragi283.material.util.prefix
+import io.github.hiiragi283.material.api.util.addObject
+import io.github.hiiragi283.material.api.util.buildJson
+import io.github.hiiragi283.material.api.util.onEnv
+import io.github.hiiragi283.material.api.util.prefix
+import io.github.hiiragi283.material.api.util.resource.HTRuntimeResourcePack
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
@@ -37,21 +37,21 @@ import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 
 class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
-    override fun createStill(materialKey: HTMaterialKey): FlowableFluid = FluidImpl.Still(this, materialKey)
+    override fun still(materialKey: HTMaterialKey): FlowableFluid = FluidImpl.Still(this, materialKey)
 
-    override fun getFlowingFluidIdentifier(materialKey: HTMaterialKey): Identifier = getIdentifier(materialKey).prefix("flowing_")
+    override fun flowingId(materialKey: HTMaterialKey): Identifier = id(materialKey).prefix("flowing_")
 
-    override fun createFlowing(materialKey: HTMaterialKey): FlowableFluid = FluidImpl.Flowing(this, materialKey)
+    override fun flowing(materialKey: HTMaterialKey): FlowableFluid = FluidImpl.Flowing(this, materialKey)
 
-    override fun getBlockIdentifier(materialKey: HTMaterialKey): Identifier = getIdentifier(materialKey)
+    override fun blockId(materialKey: HTMaterialKey): Identifier = id(materialKey)
 
-    override fun createFluidBlock(fluid: FlowableFluid, materialKey: HTMaterialKey): FluidBlock? = null
+    override fun block(fluid: FlowableFluid, materialKey: HTMaterialKey): FluidBlock? = null
 
-    override fun getBucketIdentifier(materialKey: HTMaterialKey): Identifier = BUCKET_SHAPE_KEY.getIdentifier(materialKey)
+    override fun bucketId(materialKey: HTMaterialKey): Identifier = BUCKET_SHAPE_KEY.getIdentifier(materialKey)
 
-    override fun createFluidBucket(fluid: FlowableFluid, materialKey: HTMaterialKey): BucketItem = BucketImpl(fluid, materialKey)
+    override fun bucket(fluid: FlowableFluid, materialKey: HTMaterialKey): BucketItem = BucketImpl(fluid, materialKey)
 
-    override fun getIdentifier(materialKey: HTMaterialKey): Identifier = materialKey.getIdentifier()
+    override fun id(materialKey: HTMaterialKey): Identifier = materialKey.getIdentifier()
 
     override fun onCreate(materialKey: HTMaterialKey, created: Fluid) {
         if (created is FlowableFluid) {
@@ -105,7 +105,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
         override fun getStill(): Fluid {
             if (!::stillCache.isInitialized) {
-                stillCache = Registry.FLUID.get(content.getIdentifier(materialKey))
+                stillCache = Registry.FLUID.get(content.id(materialKey))
             }
             return stillCache
         }
@@ -114,7 +114,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
         override fun getFlowing(): Fluid {
             if (!::flowingCache.isInitialized) {
-                flowingCache = Registry.FLUID.get(content.getIdentifier(materialKey))
+                flowingCache = Registry.FLUID.get(content.id(materialKey))
             }
             return flowingCache
         }
@@ -123,7 +123,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
         override fun toBlockState(state: FluidState): BlockState {
             if (!::blockCache.isInitialized) {
-                blockCache = Registry.BLOCK.get(content.getBlockIdentifier(materialKey))
+                blockCache = Registry.BLOCK.get(content.blockId(materialKey))
             }
             return blockCache.defaultState
         }
@@ -132,7 +132,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
         override fun getBucketItem(): Item {
             if (!::bucketCache.isInitialized) {
-                bucketCache = Registry.ITEM.get(content.getBucketIdentifier(materialKey))
+                bucketCache = Registry.ITEM.get(content.bucketId(materialKey))
             }
             return bucketCache
         }
@@ -193,4 +193,5 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
 private val BUCKET_SHAPE_KEY: HTShapeKey = HTShapeKey("bucket")
 
-private val ITEM_SETTINGS = FabricItemSettings().group(HTMaterials.ITEM_GROUP).maxCount(1).recipeRemainder(Items.BUCKET)
+private val ITEM_SETTINGS =
+    FabricItemSettings().group(HTMaterials.itemGroup()).maxCount(1).recipeRemainder(Items.BUCKET)

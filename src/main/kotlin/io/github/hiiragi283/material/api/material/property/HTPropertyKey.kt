@@ -1,11 +1,11 @@
 package io.github.hiiragi283.material.api.material.property
 
-import io.github.hiiragi283.material.api.registry.HTObjectKey
+import io.github.hiiragi283.material.api.material.property.component.HTCompoundProperty
+import io.github.hiiragi283.material.api.material.property.component.HTHydrateProperty
+import io.github.hiiragi283.material.api.material.property.component.HTMixtureProperty
+import io.github.hiiragi283.material.api.material.property.component.HTPolymerProperty
 
-data class HTPropertyKey<T : HTMaterialProperty<T>>(
-    override val name: String,
-    override val objClass: Class<T>,
-) : HTObjectKey<T> {
+data class HTPropertyKey<T : HTMaterialProperty<T>>(val name: String, val objClass: Class<T>) {
     init {
         REGISTRY.putIfAbsent(name, this)
     }
@@ -37,8 +37,5 @@ data class HTPropertyKey<T : HTMaterialProperty<T>>(
 
         @JvmField
         val POLYMER: HTPropertyKey<HTPolymerProperty> = create("polymer")
-
-        @JvmField
-        val STORAGE_BLOCK: HTPropertyKey<HTStorageBlockProperty> = create("storage_block")
     }
 }
