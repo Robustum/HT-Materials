@@ -9,6 +9,7 @@ import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.material.api.material.property.component.HTComponentProperty
+import io.github.hiiragi283.material.api.part.HTPart
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
@@ -230,7 +231,7 @@ internal object HTMaterialsCore {
     private fun ingotRecipe(material: HTMaterialKey, item: Item) {
         // 9x Nugget -> 1x Ingot
         if (!HTPartManager.hasDefaultItem(material, HTShapes.NUGGET)) return
-        val nuggetTag: Tag<Item> = HTShapes.NUGGET.getPartTag(material)
+        val nuggetTag: Tag<Item> = HTPart(material, HTShapes.NUGGET).getPartTag()
         HTRuntimeDataManager.addShapedCrafting(
             HTShapes.INGOT.getIdentifier(material).prefix("shaped/"),
             ShapedRecipeJsonFactory.create(item)
@@ -245,7 +246,7 @@ internal object HTMaterialsCore {
     private fun nuggetRecipe(material: HTMaterialKey, item: Item) {
         // 1x Ingot -> 9x Nugget
         if (!HTPartManager.hasDefaultItem(material, HTShapes.INGOT)) return
-        val ingotTag: Tag<Item> = HTShapes.INGOT.getPartTag(material)
+        val ingotTag: Tag<Item> = HTPart(material, HTShapes.INGOT).getPartTag()
         HTRuntimeDataManager.addShapelessCrafting(
             HTShapes.NUGGET.getIdentifier(material).prefix("shapeless/"),
             ShapelessRecipeJsonFactory.create(item, 9)

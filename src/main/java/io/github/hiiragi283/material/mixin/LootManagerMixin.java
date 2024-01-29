@@ -20,7 +20,7 @@ public abstract class LootManagerMixin {
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At(value = "HEAD"))
     private void ht_materials$apply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
         HTRuntimeDataManager.lootTableConsumer(map::putAll);
-        HTMaterials.log("HTMaterials registered loot tables!");
+        HTMaterials.log("Registered loot tables!");
     }
 
 }

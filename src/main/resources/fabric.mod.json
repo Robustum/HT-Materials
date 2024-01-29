@@ -21,7 +21,7 @@
     "preLaunch": [
       {
         "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.HTMaterialsPre"
+        "value": "io.github.hiiragi283.material.HTMaterials"
       }
     ],
     "main": [

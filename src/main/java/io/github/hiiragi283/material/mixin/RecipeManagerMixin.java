@@ -20,7 +20,7 @@ public abstract class RecipeManagerMixin {
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
     private void ht_materials$apply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
         HTRuntimeDataManager.recipeConsumer(map::putAll);
-        HTMaterials.log("HTMaterials registered recipes!");
+        HTMaterials.log("Registered recipes!");
     }
 
 }

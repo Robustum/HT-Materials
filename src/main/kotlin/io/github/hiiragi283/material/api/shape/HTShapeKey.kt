@@ -2,7 +2,6 @@ package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.part.HTPart
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.tag.TagRegistry
@@ -24,13 +23,9 @@ data class HTShapeKey(val name: String, val idPath: String = "%s_$name") {
 
     fun getShapeId(): Identifier = Identifier("shape", name)
 
-    fun getPartId(materialKey: HTMaterialKey): Identifier = HTPart(materialKey, this).getPartId()
-
     //    Tag    //
 
     fun getShapeTag(): Tag.Identified<Item> = TagRegistry.item(getShapeId()) as Tag.Identified<Item>
-
-    fun getPartTag(materialKey: HTMaterialKey): Tag.Identified<Item> = HTPart(materialKey, this).getPartTag()
 
     //    Translation    //
 

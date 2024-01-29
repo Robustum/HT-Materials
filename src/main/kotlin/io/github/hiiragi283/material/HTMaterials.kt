@@ -15,6 +15,7 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView
+import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
@@ -27,7 +28,7 @@ import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
 @Suppress("UnstableApiUsage")
-object HTMaterials : ModInitializer, ClientModInitializer, DedicatedServerModInitializer {
+object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, DedicatedServerModInitializer {
     const val MOD_ID: String = "ht_materials"
     const val MOD_NAME: String = "HT Materials"
 
@@ -50,6 +51,16 @@ object HTMaterials : ModInitializer, ClientModInitializer, DedicatedServerModIni
 
     @JvmStatic
     fun iconItem(): Item = iconItem
+
+    override fun onPreLaunch() {
+        // Collect Addons
+        HTMaterialsCore.initEntryPoints()
+        // Create Shapes
+        HTMaterialsCore.createShape()
+        // Create Materials
+        HTMaterialsCore.createMaterial()
+        HTMaterialsCore.verifyMaterial()
+    }
 
     override fun onInitialize() {
         // Initialize Game Objects

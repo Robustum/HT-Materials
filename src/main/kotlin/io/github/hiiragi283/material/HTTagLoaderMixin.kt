@@ -78,7 +78,7 @@ internal object HTTagLoaderMixin {
             )
             // Part tag
             registerTag(
-                getOrCreateBuilder(map, shapeKey.getPartId(materialKey)),
+                getOrCreateBuilder(map, HTPart(materialKey, shapeKey).getPartId()),
                 Registry.ITEM,
                 item,
             )
