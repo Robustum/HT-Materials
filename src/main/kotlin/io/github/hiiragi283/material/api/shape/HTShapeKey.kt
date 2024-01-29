@@ -1,9 +1,9 @@
 package io.github.hiiragi283.material.api.shape
 
-import io.github.hiiragi283.lib.registry.HTObjectKey
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.part.HTPart
+import io.github.hiiragi283.material.api.registry.HTObjectKey
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.tag.TagRegistry

@@ -1,10 +1,9 @@
 package io.github.hiiragi283.material
 
-import io.github.hiiragi283.lib.HTRuntimeResourcePack
-import io.github.hiiragi283.lib.util.getTransaction
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.part.getPart
+import io.github.hiiragi283.material.util.getTransaction
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.api.EnvType
@@ -23,7 +22,6 @@ import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.Rarity
 import net.minecraft.util.registry.Registry
-import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
@@ -32,40 +30,27 @@ object HTMaterials : ModInitializer, ClientModInitializer, DedicatedServerModIni
     const val MOD_ID: String = "ht_materials"
     const val MOD_NAME: String = "HT Materials"
 
-    @JvmStatic
-    fun id(path: String) = Identifier(MOD_ID, path)
+    private val LOGGER: Logger = LogManager.getLogger(MOD_NAME)
 
-    private val logger: Logger = LogManager.getLogger(MOD_NAME)
+    @JvmField
+    val ITEM_GROUP: ItemGroup = FabricItemGroupBuilder.create(id("material")).icon { ICON.defaultStack }.build()
 
-    @JvmOverloads
-    @JvmStatic
-    fun log(message: String, level: Level = Level.INFO) {
-        logger.log(level, "[$MOD_NAME] $message")
-    }
-
-    private lateinit var itemGroup: ItemGroup
-    private lateinit var iconItem: Item
-
-    @JvmStatic
-    fun itemGroup(): ItemGroup = itemGroup
-
-    @JvmStatic
-    fun iconItem(): Item = iconItem
+    @JvmField
+    val ICON: Item = Item(FabricItemSettings().group(ITEM_GROUP).rarity(Rarity.EPIC))
 
     override fun onInitialize() {
         // Initialize Game Objects
-        itemGroup = FabricItemGroupBuilder.create(id("material")).icon { iconItem.defaultStack }.build()
-        iconItem = Registry.register(Registry.ITEM, id("icon"), Item(FabricItemSettings().group(itemGroup).rarity(Rarity.EPIC)))
         HTMaterialsCore.createContent(Registry.BLOCK_KEY)
-        log("All Material Blocks Registered!")
+        LOGGER.info("All Material Blocks Registered!")
         HTMaterialsCore.createContent(Registry.FLUID_KEY)
-        log("All Material Fluids Registered!")
+        LOGGER.info("All Material Fluids Registered!")
+        Registry.register(Registry.ITEM, id("icon"), ICON)
         HTMaterialsCore.createContent(Registry.ITEM_KEY)
-        log("All Material Items Registered!")
+        LOGGER.info("All Material Items Registered!")
     }
 
     override fun onInitializeClient() {
-        HTMaterialsCore.postInitialize(EnvType.CLIENT)
+        HTMaterialsCore.postInitalize(EnvType.CLIENT)
         ItemTooltipCallback.EVENT.register { stack: ItemStack, _, lines: MutableList<Text> ->
 
             stack.item.getPart()?.let {
@@ -79,12 +64,14 @@ object HTMaterials : ModInitializer, ClientModInitializer, DedicatedServerModIni
                 ?.mapNotNull(HTFluidManager::getMaterialKey)
                 ?.forEach { HTMaterial.appendTooltip(it.getMaterial(), null, stack, lines) }
         }
-        HTRuntimeResourcePack.addDomain(MOD_ID)
-        log("Client Post-Initialization completed!")
+        LOGGER.info("Client Post-Initialization completed!")
     }
 
     override fun onInitializeServer() {
-        HTMaterialsCore.postInitialize(EnvType.SERVER)
-        log("Server Post-Initialization completed!")
+        HTMaterialsCore.postInitalize(EnvType.SERVER)
+        LOGGER.info("Server Post-Initialization completed!")
     }
+
+    @JvmStatic
+    fun id(path: String) = Identifier(MOD_ID, path)
 }

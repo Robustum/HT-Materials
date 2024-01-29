@@ -1,6 +1,5 @@
 package io.github.hiiragi283.material.api.material
 
-import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.material.api.material.property.HTMaterialProperty
@@ -11,6 +10,8 @@ import io.github.hiiragi283.material.api.shape.HTShapes
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import java.awt.Color
 
 class HTMaterial private constructor(
@@ -52,6 +53,8 @@ class HTMaterial private constructor(
     override fun toString(): String = key.toString()
 
     companion object {
+        private val LOGGER: Logger = LogManager.getLogger(HTMaterial::class.java)
+
         //    Registry    //
 
         private val REGISTRY: MutableMap<HTMaterialKey, HTMaterial> = linkedMapOf()
@@ -79,7 +82,7 @@ class HTMaterial private constructor(
             type: HTMaterialType,
         ): HTMaterial = HTMaterial(key, properties, flags, color, formula, molar, type).also {
             REGISTRY.putIfAbsent(key, it)
-            HTMaterials.log("Material: $key registered!")
+            LOGGER.info("Material: $key registered!")
         }
 
         private val shapeKey = HTShapeKey("fluid")

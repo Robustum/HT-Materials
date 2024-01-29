@@ -27,6 +27,6 @@ object HMReiPlugin : REIPluginV0 {
     }
 
     override fun registerOthers(recipeHelper: RecipeHelper) {
-        recipeHelper.registerWorkingStations(MATERIAL, EntryStack.create(HTMaterials.iconItem()))
+        recipeHelper.registerWorkingStations(MATERIAL, EntryStack.create(HTMaterials.ICON))
     }
 }

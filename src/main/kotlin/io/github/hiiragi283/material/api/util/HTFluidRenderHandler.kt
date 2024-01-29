@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material.api.fluid
+package io.github.hiiragi283.material.api.util
 
 import io.github.hiiragi283.material.api.material.HTMaterial
 import net.fabricmc.api.EnvType

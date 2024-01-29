@@ -1,6 +1,7 @@
 package io.github.hiiragi283.material.api.shape
 
-import io.github.hiiragi283.material.HTMaterials
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 
 class HTShape private constructor(
     val key: HTShapeKey,
@@ -12,6 +13,8 @@ class HTShape private constructor(
     fun isMatchFabricFormat(string: String): Boolean = fabricFormat.matches(string)
 
     companion object {
+        private val LOGGER: Logger = LogManager.getLogger(HTShape::class.java)
+
         //    Registry    //
 
         private val REGISTRY: MutableMap<HTShapeKey, HTShape> = linkedMapOf()
@@ -32,7 +35,7 @@ class HTShape private constructor(
         internal fun create(key: HTShapeKey, forgeFormat: Regex, fabricFormat: Regex): HTShape =
             HTShape(key, forgeFormat, fabricFormat).also {
                 REGISTRY.putIfAbsent(key, it)
-                HTMaterials.log("Shape: $key registered!")
+                LOGGER.info("Shape: $key registered!")
             }
     }
 }

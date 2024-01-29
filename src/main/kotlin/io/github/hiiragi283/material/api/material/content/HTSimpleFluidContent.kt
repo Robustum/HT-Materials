@@ -1,15 +1,15 @@
 package io.github.hiiragi283.material.api.material.content
 
-import io.github.hiiragi283.lib.HTRuntimeResourcePack
-import io.github.hiiragi283.lib.util.addObject
-import io.github.hiiragi283.lib.util.buildJson
-import io.github.hiiragi283.lib.util.onEnv
-import io.github.hiiragi283.lib.util.prefix
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.HTMaterialKey
+import io.github.hiiragi283.material.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.api.shape.HTShapeKey
-import io.github.hiiragi283.material.api.fluid.HTFluidRenderHandler
+import io.github.hiiragi283.material.api.util.HTFluidRenderHandler
+import io.github.hiiragi283.material.util.addObject
+import io.github.hiiragi283.material.util.buildJson
+import io.github.hiiragi283.material.util.onEnv
+import io.github.hiiragi283.material.util.prefix
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
@@ -193,4 +193,4 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
 private val BUCKET_SHAPE_KEY: HTShapeKey = HTShapeKey("bucket")
 
-private val ITEM_SETTINGS = FabricItemSettings().group(HTMaterials.itemGroup()).maxCount(1).recipeRemainder(Items.BUCKET)
+private val ITEM_SETTINGS = FabricItemSettings().group(HTMaterials.ITEM_GROUP).maxCount(1).recipeRemainder(Items.BUCKET)

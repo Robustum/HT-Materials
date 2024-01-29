@@ -1,8 +1,8 @@
 package io.github.hiiragi283.material.api.material
 
-import io.github.hiiragi283.lib.registry.HTObjectKey
-import io.github.hiiragi283.lib.util.commonId
 import io.github.hiiragi283.material.HTMaterials
+import io.github.hiiragi283.material.api.registry.HTObjectKey
+import io.github.hiiragi283.material.util.commonId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.tag.TagRegistry

@@ -3,21 +3,21 @@ package io.github.hiiragi283.material.api.fluid
 import com.google.common.collect.HashMultimap
 import com.google.common.collect.ImmutableMultimap
 import com.google.common.collect.Multimap
-import io.github.hiiragi283.lib.util.getAllModId
-import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
+import io.github.hiiragi283.material.util.getAllModId
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
-import java.util.function.Consumer
-
-fun Fluid.getMaterialKey(): HTMaterialKey? = HTFluidManager.getMaterialKey(this)
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 
 object HTFluidManager {
+    private val LOGGER: Logger = LogManager.getLogger(this::class.java)
+
     //    Fluid -> HTMaterialKey    //
 
     private val FLUID_TO_MAT: MutableMap<Fluid, HTMaterialKey> = hashMapOf()
@@ -27,16 +27,6 @@ object HTFluidManager {
 
     @JvmStatic
     fun getMaterialKey(fluid: Fluid): HTMaterialKey? = FLUID_TO_MAT[fluid]
-
-    @JvmStatic
-    fun materialKeyConsumer(fluid: Fluid, consumer: Consumer<HTMaterialKey>) {
-        getMaterialKey(fluid)?.let(consumer::accept)
-    }
-
-    @JvmStatic
-    inline fun materialKeyConsumer(fluid: Fluid, action: (HTMaterialKey) -> Unit) {
-        getMaterialKey(fluid)?.apply(action)
-    }
 
     @JvmStatic
     fun hasMaterialKey(fluid: Fluid): Boolean = fluid in FLUID_TO_MAT
@@ -50,16 +40,6 @@ object HTFluidManager {
 
     @JvmStatic
     fun getDefaultFluid(material: HTMaterialKey): Fluid? = MAT_TO_FLUID[material]
-
-    @JvmStatic
-    fun defaultFluidConsumer(material: HTMaterialKey, consumer: Consumer<Fluid>) {
-        getDefaultFluid(material)?.let(consumer::accept)
-    }
-
-    @JvmStatic
-    inline fun defaultFluidConsumer(material: HTMaterialKey, action: (Fluid) -> Unit) {
-        getDefaultFluid(material)?.apply(action)
-    }
 
     @JvmStatic
     fun hasDefaultFluid(material: HTMaterialKey): Boolean = material in MAT_TO_FLUID
@@ -99,12 +79,12 @@ object HTFluidManager {
         // HTMaterial -> Fluid
         if (!hasDefaultFluid(material)) {
             MAT_TO_FLUID[material] = fluid
-            HTMaterials.log("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
+            LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
         }
         // HTMaterial -> Collection<Fluid>
         MAT_TO_FLUIDS.put(material, fluid)
         // print info
-        HTMaterials.log("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
+        LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
     }
 
     @JvmStatic
@@ -114,11 +94,11 @@ object HTFluidManager {
         FLUID_TO_MAT.putIfAbsent(fluid, material)
         // HTMaterial -> Fluid
         MAT_TO_FLUID[material] = fluid
-        HTMaterials.log("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
+        LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} registered as Default Fluid for Material: $material!!")
         // HTMaterial -> Collection<Fluid>
         MAT_TO_FLUIDS.put(material, fluid)
         // print info
-        HTMaterials.log("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
+        LOGGER.info("The Fluid: ${Registry.FLUID.getId(fluid)} linked to Material: $material!")
     }
 
     //    Initialization    //

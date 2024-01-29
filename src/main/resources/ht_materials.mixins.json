@@ -5,10 +5,16 @@
   "compatibilityLevel": "JAVA_8",
   "plugin": "io.github.hiiragi283.material.mixin.HTMixinConfig",
   "mixins": [
+    "LootManagerMixin",
+    "RecipeManagerMixin",
+    "ServerAdvancementLoaderMixin",
+    "TagBuilderAccessor",
+    "TagGroupLoaderMixin",
     "TagRegistryMixin"
   ],
   "client": [
-    "FluidEntryStackMixin"
+    "FluidEntryStackMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

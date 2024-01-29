@@ -1,11 +1,11 @@
 package io.github.hiiragi283.material.compat
 
-import io.github.hiiragi283.lib.registry.HTDefaultedTable
-import io.github.hiiragi283.lib.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.materials.HTCommonMaterials
 import io.github.hiiragi283.material.api.material.materials.HTElementMaterials
+import io.github.hiiragi283.material.api.registry.HTDefaultedTable
+import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import net.minecraft.item.ItemConvertible
 import techreborn.init.TRContent
