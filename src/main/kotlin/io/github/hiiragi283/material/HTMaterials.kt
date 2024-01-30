@@ -2,6 +2,7 @@ package io.github.hiiragi283.material
 
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
 import io.github.hiiragi283.material.api.material.HTMaterial
+import io.github.hiiragi283.material.api.part.HTPart
 import io.github.hiiragi283.material.api.part.getPart
 import io.github.hiiragi283.material.api.util.getTransaction
 import net.fabricmc.api.ClientModInitializer
@@ -60,6 +61,8 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
         // Create Materials
         HTMaterialsCore.createMaterial()
         HTMaterialsCore.verifyMaterial()
+        // Init HTPart cache
+        HTPart.initCache()
     }
 
     override fun onInitialize() {

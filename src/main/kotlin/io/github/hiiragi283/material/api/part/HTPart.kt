@@ -31,22 +31,24 @@ data class HTPart(
 
     companion object {
         @JvmStatic
+        private lateinit var cache: Map<Identifier, HTPart>
+
+        @JvmStatic
+        internal fun initCache() {
+            val map: MutableMap<Identifier, HTPart> = hashMapOf()
+            HTShape.getShapeKeys().forEach { shape ->
+                HTMaterial.getMaterialKeys().forEach { material ->
+                    shape.getCommonId(material)
+                    map[shape.getCommonId(material)] = HTPart(material, shape)
+                }
+            }
+            cache = map
+        }
+
+        @JvmStatic
         fun fromTag(tag: Tag<*>): HTPart? = (tag as? Tag.Identified<*>)?.id?.let(::fromId)
 
         @JvmStatic
-        fun fromId(id: Identifier): HTPart? = if (id.namespace == "minecraft" || id.namespace == "part") null else from(id.path)
-
-        private fun from(path: String): HTPart? {
-            for (shape: HTShape in HTShape.getShapes()) {
-                for (materialKey: HTMaterialKey in HTMaterial.getMaterialKeys()) {
-                    if (path.contains(materialKey.name)) {
-                        if (shape.isMatchForgeFormat(path) || shape.isMatchFabricFormat(path)) {
-                            return HTPart(materialKey, shape.key)
-                        }
-                    }
-                }
-            }
-            return null
-        }
+        fun fromId(id: Identifier): HTPart? = if (id.namespace == "c") cache[id] else null
     }
 }

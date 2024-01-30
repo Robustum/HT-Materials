@@ -227,7 +227,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(ALUMINUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -258,7 +258,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(TITANIUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 3,
                 ),
             )
@@ -278,7 +278,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(NICKEL).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -292,7 +292,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(COPPER).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -307,7 +307,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(ZINC).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -322,7 +322,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(SILVER).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -336,7 +336,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(TIN).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -351,7 +351,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(TUNGSTEN).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 3,
                 ),
             )
@@ -365,7 +365,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(IRIDIUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 3,
                 ),
             )
@@ -379,7 +379,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(PLATINUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 3,
                 ),
             )
@@ -402,7 +402,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(LEAD).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -417,7 +417,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(URANIUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -430,7 +430,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(PLUTONIUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )

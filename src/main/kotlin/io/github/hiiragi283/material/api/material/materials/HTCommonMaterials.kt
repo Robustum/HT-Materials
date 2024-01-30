@@ -128,7 +128,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(CINNABAR).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -138,7 +138,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(COKE).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                 ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
@@ -147,7 +147,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(OLIVINE).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -157,7 +157,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(PERIDOT).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -169,7 +169,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(RUBY).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -181,7 +181,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(SALT).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.SHOVELS,
+                    toolTag = FabricToolTags::SHOVELS,
                 ),
             )
             add(HTSimpleItemContent(HTShapes.DUST))
@@ -192,7 +192,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(SAPPHIRE).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -205,7 +205,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(BRASS).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -219,7 +219,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(BRONZE).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -233,7 +233,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(ELECTRUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -247,7 +247,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(INVAR).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -261,7 +261,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(STAINLESS_STEEL).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -275,7 +275,7 @@ object HTCommonMaterials : HTMaterialsAddon {
         registry.getOrCreate(STEEl).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )

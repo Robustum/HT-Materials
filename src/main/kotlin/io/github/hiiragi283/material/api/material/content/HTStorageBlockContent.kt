@@ -27,10 +27,11 @@ import net.minecraft.tag.Tag
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
+import java.util.function.Supplier
 
 class HTStorageBlockContent(
     private val strength: Float = 5.0f,
-    private val toolTag: Tag<Item>? = null,
+    private val toolTag: Supplier<Tag<Item>>? = null,
     private val toolLevel: Int = 0,
 ) : HTMaterialContent.BLOCK(HTShapes.BLOCK) {
     private fun getBlockSetting(type: HTMaterialType): FabricBlockSettings {
@@ -52,7 +53,7 @@ class HTStorageBlockContent(
             toolTag?.let {
                 strength(strength)
                 this.requiresTool()
-                this.breakByTool(it, toolLevel)
+                this.breakByTool(it.get(), toolLevel)
             } ?: run {
                 this.breakByHand(true)
             }

@@ -60,18 +60,4 @@ object HTShapes : HTMaterialsAddon {
             ROD,
         )
     }
-
-    override fun modifyShapeForgeRegex(registry: MutableMap<HTShapeKey, Regex>) {
-        // Block
-        registry[BLOCK] = """storage_blocks/.*""".toRegex()
-        registry[ORE] = """ores/.*""".toRegex()
-        // Item
-        registry[DUST] = """dusts/.*""".toRegex()
-        registry[GEAR] = """gears/.*""".toRegex()
-        registry[GEM] = """gems/.*""".toRegex()
-        registry[INGOT] = """ingots/.*""".toRegex()
-        registry[NUGGET] = """nuggets/.*""".toRegex()
-        registry[PLATE] = """plates/.*""".toRegex()
-        registry[ROD] = """rods/.*""".toRegex()
-    }
 }

@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class HTTestAddon implements HTMaterialsAddon {
 
     @NotNull
@@ -37,7 +38,7 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     //    HTShape    //
 
-    public static final HTShapeKey DIRTY_DUST = new HTShapeKey("dirty_dust", "%s_dirty_dust");
+    public static final HTShapeKey DIRTY_DUST = new HTShapeKey("dirty_dust");
 
     @Override
     public void registerShape(@NotNull ImmutableSet.Builder<HTShapeKey> registry) {
@@ -68,10 +69,6 @@ public class HTTestAddon implements HTMaterialsAddon {
     @Override
     public void modifyMaterialProperty(@NotNull DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> registry) {
         HTMaterialPropertyMap.Builder builder = registry.getOrCreate(INFINITY);
-        /*builder.add(new HTFluidProperty(), prop -> {
-            prop.setTemperature(32768);
-            return Unit.INSTANCE;
-        });*/
     }
 
     @Override

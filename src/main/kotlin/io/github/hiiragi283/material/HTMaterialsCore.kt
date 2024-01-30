@@ -46,20 +46,10 @@ internal object HTMaterialsCore {
     //    Initialize - HTShape    //
 
     private val shapeKeySet: ImmutableSet.Builder<HTShapeKey> = ImmutableSet.builder()
-    private val forgeRegexMap: MutableMap<HTShapeKey, Regex> = hashMapOf()
-    private val fabricRegexMap: MutableMap<HTShapeKey, Regex> = hashMapOf()
 
     fun createShape() {
-        entryPoints.forEach {
-            it.registerShape(shapeKeySet)
-            it.modifyShapeForgeRegex(forgeRegexMap)
-            it.modifyShapeFabricRegex(fabricRegexMap)
-        }
-        shapeKeySet.build().forEach { key: HTShapeKey ->
-            val forgeRegex: Regex = forgeRegexMap.getOrDefault(key, "".toRegex())
-            val fabricRegex: Regex = fabricRegexMap.getOrDefault(key, """.*_${key.name}s""".toRegex())
-            HTShape.create(key, forgeRegex, fabricRegex)
-        }
+        entryPoints.forEach { it.registerShape(shapeKeySet) }
+        shapeKeySet.build().forEach(HTShape.Companion::create)
     }
 
     //    Initialize - HTMaterial    //
@@ -133,7 +123,7 @@ internal object HTMaterialsCore {
 
     //    Initialization    //
 
-    fun <T> createContent(registryKey: RegistryKey<Registry<T>>) {
+    fun <T : Any> createContent(registryKey: RegistryKey<Registry<T>>) {
         for (materialKey: HTMaterialKey in HTMaterial.getMaterialKeys()) {
             for (content: HTMaterialContent<T> in contentMap.getOrCreate(materialKey).getContents(registryKey)) {
                 when (content) {
