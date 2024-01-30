@@ -45,6 +45,10 @@
     "ht_materials": [
       {
         "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.HMIRAddon"
+      },
+      {
+        "adapter": "kotlin",
         "value": "io.github.hiiragi283.material.compat.HMMIAddon"
       },
       {

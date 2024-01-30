@@ -13,10 +13,8 @@ import net.fabricmc.loader.api.metadata.ModMetadata
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.fluid.Fluid
-import net.minecraft.fluid.Fluids
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
-import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 import net.minecraft.util.Identifier
 import java.util.function.Function
@@ -35,17 +33,9 @@ fun <T : Any> ImmutableCollection.Builder<T>.addAll(vararg element: T) {
 
 //    Fluid    //
 
-fun Fluid.checkNotEmpty() = this.also { fluid: Fluid ->
-    check(fluid == Fluids.EMPTY) { "The Entry: $this is empty!" }
-}
-
 fun Fluid.asBlock(): Block = this.defaultState.blockState.block
 
 //    Item   //
-
-fun ItemConvertible.checkItemNotAir(): Item = this.asItem().also { item: Item ->
-    check(!item.isAir()) { "The Entry: $this has no valid Item!" }
-}
 
 fun Item.isAir(): Boolean = this == Items.AIR
 

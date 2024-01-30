@@ -13,7 +13,6 @@ import techreborn.init.TRContent
 @Suppress("unused")
 object HMTRAddon : HTMaterialsAddon {
     override val modId: String = "techreborn"
-
     override val priority: Int = 0
 
     override fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {

@@ -10,7 +10,6 @@ import io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.api.util.checkItemNotAir
 import io.github.hiiragi283.material.api.util.collection.DefaultedTable
 import io.github.hiiragi283.material.api.util.collection.HashDefaultedTable
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
@@ -194,7 +193,7 @@ object HTPartManager {
     @JvmSynthetic
     internal fun register(material: HTMaterialKey, shape: HTShapeKey, itemConvertible: ItemConvertible) {
         // Check if the itemConvertible has non-air item
-        val item: Item = itemConvertible.checkItemNotAir()
+        val item: Item = itemConvertible.asItem()?.takeUnless { it == Items.AIR } ?: return
         // Remove existing entry
         getPart(item)?.run {
             ITEM_TO_PART.remove(item)
@@ -219,7 +218,7 @@ object HTPartManager {
     internal fun forceRegister(material: HTMaterialKey, shape: HTShapeKey, itemConvertible: ItemConvertible) {
         register(material, shape, itemConvertible)
         // Check if the itemConvertible has non-air item
-        val item: Item = itemConvertible.checkItemNotAir()
+        val item: Item = itemConvertible.asItem()?.takeUnless { it == Items.AIR } ?: return
         PART_TO_ITEM.put(material, shape, item)
     }
 }

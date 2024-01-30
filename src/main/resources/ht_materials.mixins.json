@@ -10,7 +10,7 @@
     "ServerAdvancementLoaderMixin",
     "TagBuilderAccessor",
     "TagGroupLoaderMixin",
-    "TagRegistryMixin"
+    "TagGroupMixin"
   ],
   "client": [
     "FluidEntryStackMixin",

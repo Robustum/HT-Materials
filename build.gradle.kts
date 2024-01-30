@@ -19,6 +19,9 @@ repositories {
         content { includeGroup("maven.modrinth") }
     }
     maven(url = "https://maven.architectury.dev/")
+    maven(url = "https://maven.blamejared.com") {
+        content { includeGroup("vazkii.patchouli") }
+    }
     maven(url = "https://maven.shedaniel.me/")
     maven(url = "https://maven.terraformersmc.com/releases/")
 }
@@ -26,7 +29,11 @@ repositories {
 dependencies {
     minecraft(libs.minecraft)
     mappings("net.fabricmc:yarn:${libs.versions.fabric.yarn.get()}:v2")
-    modImplementation(libs.bundles.mods.fabric) {
+    modApi(libs.bundles.mods.fabric) {
+        exclude(module = "fabric-api")
+        exclude(module = "fabric-loader")
+    }
+    modCompileOnly(libs.bundles.mods.compile) {
         exclude(module = "fabric-api")
         exclude(module = "fabric-loader")
     }

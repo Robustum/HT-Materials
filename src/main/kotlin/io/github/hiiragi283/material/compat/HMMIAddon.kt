@@ -14,7 +14,6 @@ import net.minecraft.util.registry.Registry
 @Suppress("unused")
 object HMMIAddon : HTMaterialsAddon {
     override val modId: String = "modern_industrialization"
-
     override val priority: Int = 0
 
     override fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {

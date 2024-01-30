@@ -53,10 +53,11 @@ internal object HTTagLoaderMixin {
         // Convert tags into part format
         HashMap(map).forEach { (id: Identifier, builder: Tag.Builder) ->
             HTPart.fromId(id)?.getPartId()?.let {
-                // copy builder to converted id
+                // copy builder to part id
                 map[it] = builder
-                // builder with original id replaced with redirected one
-                map[id] = Tag.Builder.create().apply { addTag(it, HTMaterials.MOD_NAME) }
+                // remove original id
+                map.remove(id)
+                HTMaterials.log("Migrated tag builder: $id -> $it")
             }
         }
         HTMaterials.log("Converted existing tags!")
