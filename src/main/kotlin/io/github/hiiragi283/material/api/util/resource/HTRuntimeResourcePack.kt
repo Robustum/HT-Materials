@@ -1,9 +1,9 @@
-package io.github.hiiragi283.material.api.resource
+package io.github.hiiragi283.material.api.util.resource
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import io.github.hiiragi283.material.HTMaterials
-import io.github.hiiragi283.material.util.modify
+import io.github.hiiragi283.material.api.util.modify
 import net.minecraft.block.Block
 import net.minecraft.data.client.model.*
 import net.minecraft.item.Item

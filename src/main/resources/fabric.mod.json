@@ -18,6 +18,12 @@
   "icon": "assets/ht_materials/textures/icon.png",
   "environment": "*",
   "entrypoints": {
+    "preLaunch": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.HTMaterials"
+      }
+    ],
     "main": [
       {
         "adapter": "kotlin",
@@ -37,6 +43,10 @@
       }
     ],
     "ht_materials": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.HMIRAddon"
+      },
       {
         "adapter": "kotlin",
         "value": "io.github.hiiragi283.material.compat.HMMIAddon"

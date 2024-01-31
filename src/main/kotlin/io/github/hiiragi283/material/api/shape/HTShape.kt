@@ -1,12 +1,9 @@
 package io.github.hiiragi283.material.api.shape
 
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import io.github.hiiragi283.material.HTMaterials
 
 class HTShape private constructor(val key: HTShapeKey) {
     companion object {
-        private val LOGGER: Logger = LogManager.getLogger(HTShape::class.java)
-
         //    Registry    //
 
         private val REGISTRY: MutableMap<HTShapeKey, HTShape> = linkedMapOf()
@@ -26,7 +23,7 @@ class HTShape private constructor(val key: HTShapeKey) {
         @JvmStatic
         internal fun create(key: HTShapeKey): HTShape = HTShape(key).also {
             REGISTRY.putIfAbsent(key, it)
-            LOGGER.info("Shape: $key registered!")
+            HTMaterials.log("Shape: $key registered!")
         }
     }
 }

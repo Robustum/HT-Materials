@@ -16,11 +16,14 @@ fabric-kotlin = { group = "net.fabricmc", name = "fabric-language-kotlin", versi
 
 mod-modmenu = { group = "maven.modrinth", name = "modmenu", version = "1.16.23" }
 rei = { group = "me.shedaniel", name = "RoughlyEnoughItems", version = "5.12.385" }
-tech_reborn = { group = "TechReborn", name = "TechReborn-1.16", version = "+" }
+tech-reborn = { group = "TechReborn", name = "TechReborn-1.16", version = "+" }
+industrial-revolution = { group = "curse.maven", name = "industrial-revolution-391708", version = "3364481" }
+patchouli = { group = "vazkii.patchouli", name = "Patchouli", version = "1.16.4-54-FABRIC-SNAPSHOT" }
 
 [bundles]
-mods-fabric = ["fabric-loader", "fabric-api", "fabric-kotlin", "rei", "tech_reborn"]
-mods-debug = ["mod-modmenu"]
+mods-fabric = ["fabric-loader", "fabric-api", "fabric-kotlin", "rei", "tech-reborn"]
+mods-compile = ["industrial-revolution"]
+mods-debug = ["mod-modmenu", "patchouli"]
 
 [plugins]
 fabric-loom = { id = "fabric-loom", version.ref = "fabric-loom" }

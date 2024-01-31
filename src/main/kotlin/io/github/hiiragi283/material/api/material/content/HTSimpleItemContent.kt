@@ -4,12 +4,12 @@ import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.HTMaterialType
 import io.github.hiiragi283.material.api.part.HTPartManager
-import io.github.hiiragi283.material.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.util.addObject
-import io.github.hiiragi283.material.util.buildJson
-import io.github.hiiragi283.material.util.onEnv
+import io.github.hiiragi283.material.api.util.addObject
+import io.github.hiiragi283.material.api.util.buildJson
+import io.github.hiiragi283.material.api.util.onEnv
+import io.github.hiiragi283.material.api.util.resource.HTRuntimeResourcePack
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 
 class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.ITEM(shapeKey) {
-    override fun createItem(materialKey: HTMaterialKey): Item? =
+    override fun item(materialKey: HTMaterialKey): Item? =
         ItemImpl(materialKey, shapeKey).takeUnless { HTPartManager.hasDefaultItem(materialKey, shapeKey) }
 
     private fun getTextureName(type: HTMaterialType): String = if (type is HTMaterialType.Gem) {
@@ -48,7 +48,7 @@ class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.ITEM(shapeKe
     private class ItemImpl(
         private val materialKey: HTMaterialKey,
         private val shapeKey: HTShapeKey,
-    ) : Item(FabricItemSettings().group(HTMaterials.ITEM_GROUP)) {
+    ) : Item(FabricItemSettings().group(HTMaterials.itemGroup())) {
         init {
             onEnv(EnvType.CLIENT) {
                 ColorProviderRegistry.ITEM.register(

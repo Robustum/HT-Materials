@@ -4,13 +4,13 @@ import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterialKey
 import io.github.hiiragi283.material.api.material.HTMaterialType
 import io.github.hiiragi283.material.api.part.HTPartManager
-import io.github.hiiragi283.material.api.resource.HTRuntimeDataManager
-import io.github.hiiragi283.material.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.util.addObject
-import io.github.hiiragi283.material.util.buildJson
-import io.github.hiiragi283.material.util.onEnv
+import io.github.hiiragi283.material.api.util.addObject
+import io.github.hiiragi283.material.api.util.buildJson
+import io.github.hiiragi283.material.api.util.onEnv
+import io.github.hiiragi283.material.api.util.resource.HTRuntimeDataManager
+import io.github.hiiragi283.material.api.util.resource.HTRuntimeResourcePack
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
@@ -27,10 +27,11 @@ import net.minecraft.tag.Tag
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
+import java.util.function.Supplier
 
 class HTStorageBlockContent(
     private val strength: Float = 5.0f,
-    private val toolTag: Tag<Item>? = null,
+    private val toolTag: Supplier<Tag<Item>>? = null,
     private val toolLevel: Int = 0,
 ) : HTMaterialContent.BLOCK(HTShapes.BLOCK) {
     private fun getBlockSetting(type: HTMaterialType): FabricBlockSettings {
@@ -52,7 +53,7 @@ class HTStorageBlockContent(
             toolTag?.let {
                 strength(strength)
                 this.requiresTool()
-                this.breakByTool(it, toolLevel)
+                this.breakByTool(it.get(), toolLevel)
             } ?: run {
                 this.breakByHand(true)
             }
@@ -78,13 +79,13 @@ class HTStorageBlockContent(
 
     //    HTMaterialContent    //
 
-    override fun createBlock(materialKey: HTMaterialKey): Block? = BlockImpl(
+    override fun block(materialKey: HTMaterialKey): Block? = BlockImpl(
         materialKey,
         shapeKey,
         getBlockSetting(materialKey.getMaterial().type),
     ).takeUnless { HTPartManager.hasDefaultItem(materialKey, shapeKey) }
 
-    override fun createBlockItem(block: Block, materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey).also {
+    override fun blockItem(block: Block, materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey).also {
         HTPartManager.forceRegister(materialKey, shapeKey, it)
     }
 
@@ -134,7 +135,7 @@ class HTStorageBlockContent(
         block: Block,
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
-    ) : BlockItem(block, FabricItemSettings().group(HTMaterials.ITEM_GROUP)) {
+    ) : BlockItem(block, FabricItemSettings().group(HTMaterials.itemGroup())) {
         init {
             onEnv(EnvType.CLIENT) {
                 ColorProviderRegistry.ITEM.register(

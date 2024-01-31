@@ -1,5 +1,6 @@
 package io.github.hiiragi283.material.api.material.materials
 
+import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.material.*
@@ -8,10 +9,10 @@ import io.github.hiiragi283.material.api.material.content.HTSimpleFluidContent
 import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.api.material.content.HTStorageBlockContent
 import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.material.api.registry.HTDefaultedMap
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShapes
 import io.github.hiiragi283.material.api.util.HTColor
+import io.github.hiiragi283.material.api.util.addAll
+import io.github.hiiragi283.material.api.util.collection.DefaultedMap
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import java.awt.Color
 
@@ -141,7 +142,7 @@ object HTElementMaterials : HTMaterialsAddon {
 
     override val priority: Int = -100
 
-    override fun registerMaterialKey(registry: HTObjectKeySet<HTMaterialKey>) {
+    override fun registerMaterialKey(registry: ImmutableSet.Builder<HTMaterialKey>) {
         // 1st Period
         registry.addAll(
             HYDROGEN,
@@ -200,7 +201,7 @@ object HTElementMaterials : HTMaterialsAddon {
         )
     }
 
-    override fun modifyMaterialContent(registry: HTDefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
+    override fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
         // 1st Period
         registry.getOrCreate(HYDROGEN).apply {
             add(HTSimpleFluidContent())
@@ -226,7 +227,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(ALUMINUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -257,7 +258,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(TITANIUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 3,
                 ),
             )
@@ -277,7 +278,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(NICKEL).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -291,7 +292,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(COPPER).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -306,7 +307,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(ZINC).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -321,7 +322,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(SILVER).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -335,7 +336,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(TIN).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -350,7 +351,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(TUNGSTEN).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 3,
                 ),
             )
@@ -364,7 +365,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(IRIDIUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 3,
                 ),
             )
@@ -378,7 +379,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(PLATINUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 3,
                 ),
             )
@@ -401,7 +402,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(LEAD).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 1,
                 ),
             )
@@ -416,7 +417,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(URANIUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -429,7 +430,7 @@ object HTElementMaterials : HTMaterialsAddon {
         registry.getOrCreate(PLUTONIUM).apply {
             add(
                 HTStorageBlockContent(
-                    toolTag = FabricToolTags.PICKAXES,
+                    toolTag = FabricToolTags::PICKAXES,
                     toolLevel = 2,
                 ),
             )
@@ -441,7 +442,7 @@ object HTElementMaterials : HTMaterialsAddon {
         }
     }
 
-    override fun modifyMaterialProperty(registry: HTDefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
+    override fun modifyMaterialProperty(registry: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
         // 1st Period
         registry.getOrCreate(HYDROGEN) // .add(HTFluidProperty()) { this.isGas = true }
         registry.getOrCreate(HELIUM) // .add(HTFluidProperty()) { this.isGas = true }

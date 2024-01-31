@@ -2,8 +2,7 @@ package io.github.hiiragi283.material.api.shape
 
 import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.registry.HTObjectKey
-import io.github.hiiragi283.material.util.commonId
+import io.github.hiiragi283.material.api.util.commonId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.tag.TagRegistry
@@ -15,14 +14,7 @@ import net.minecraft.util.Identifier
 
 data class HTShapeKey
     @JvmOverloads
-    constructor(
-        override val name: String,
-        val idPath: String = "%s_$name",
-        val forgePath: String = getForgePath(name),
-        val commonPath: String = "${idPath}s",
-    ) : HTObjectKey<HTShape> {
-        override val objClass: Class<HTShape> = HTShape::class.java
-
+    constructor(val name: String, val idPath: String = "%s_$name", val tagPath: String = "${idPath}s") {
         fun getShape(): HTShape = HTShape.getShape(this)
 
         fun getShapeOrNull(): HTShape? = HTShape.getShapeOrNull(this)
@@ -32,13 +24,13 @@ data class HTShapeKey
         fun getIdentifier(material: HTMaterialKey, namespace: String = HTMaterials.MOD_ID): Identifier =
             Identifier(namespace, idPath.replace("%s", material.name))
 
-        //    TagKey    //
+        fun getShapeId(): Identifier = Identifier("shape", name)
 
-        fun getForgeTag(material: HTMaterialKey): Tag.Identified<Item> =
-            TagRegistry.item(commonId(forgePath.replace("%s", material.name))) as Tag.Identified<Item>
+        internal fun getCommonId(material: HTMaterialKey): Identifier = commonId(tagPath.replace("%s", material.name))
 
-        fun getCommonTag(material: HTMaterialKey): Tag.Identified<Item> =
-            TagRegistry.item(commonId(commonPath.replace("%s", material.name))) as Tag.Identified<Item>
+        //    Tag    //
+
+        fun getShapeTag(): Tag.Identified<Item> = TagRegistry.item(getShapeId()) as Tag.Identified<Item>
 
         //    Translation    //
 

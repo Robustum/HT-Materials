@@ -1,7 +1,8 @@
 @file:JvmName("HTUtil")
 
-package io.github.hiiragi283.material.util
+package io.github.hiiragi283.material.api.util
 
+import com.google.common.collect.ImmutableCollection
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import net.fabricmc.api.EnvType
@@ -12,10 +13,8 @@ import net.fabricmc.loader.api.metadata.ModMetadata
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.fluid.Fluid
-import net.minecraft.fluid.Fluids
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
-import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 import net.minecraft.util.Identifier
 import java.util.function.Function
@@ -26,19 +25,17 @@ fun Item.asBlock(): Block = (this as? BlockItem)?.block ?: Blocks.AIR
 
 fun Block.isAir(): Boolean = this == Blocks.AIR
 
-//    Fluid    //
+//    Collection    //
 
-fun Fluid.checkNotEmpty() = this.also { fluid: Fluid ->
-    check(fluid == Fluids.EMPTY) { "The Entry: $this is empty!" }
+fun <T : Any> ImmutableCollection.Builder<T>.addAll(vararg element: T) {
+    element.forEach(this::add)
 }
+
+//    Fluid    //
 
 fun Fluid.asBlock(): Block = this.defaultState.blockState.block
 
 //    Item   //
-
-fun ItemConvertible.checkItemNotAir(): Item = this.asItem().also { item: Item ->
-    check(!item.isAir()) { "The Entry: $this has no valid Item!" }
-}
 
 fun Item.isAir(): Boolean = this == Items.AIR
 

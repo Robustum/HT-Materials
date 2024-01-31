@@ -1,6 +1,7 @@
-package io.github.hiiragi283.material.api.material.property
+package io.github.hiiragi283.material.api.material.property.component
 
 import io.github.hiiragi283.material.api.material.*
+import io.github.hiiragi283.material.api.material.property.HTPropertyKey
 import java.awt.Color
 
 class HTCompoundProperty(map: Map<HTMaterialKey, Int>) :

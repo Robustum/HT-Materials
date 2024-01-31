@@ -1,9 +1,10 @@
-package io.github.hiiragi283.material.api.material.property
+package io.github.hiiragi283.material.api.material.property.component
 
 import io.github.hiiragi283.material.api.material.ColorConvertible
 import io.github.hiiragi283.material.api.material.FormulaConvertible
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.MolarMassConvertible
+import io.github.hiiragi283.material.api.material.property.HTMaterialProperty
 
 @JvmDefaultWithCompatibility
 interface HTComponentProperty<T : HTComponentProperty<T>> :

@@ -1,6 +1,6 @@
 @file:JvmName("TableUtil")
 
-package io.github.hiiragi283.material.util
+package io.github.hiiragi283.material.api.util
 
 import com.google.common.collect.Table
 

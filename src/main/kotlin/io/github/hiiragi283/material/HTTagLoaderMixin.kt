@@ -1,16 +1,13 @@
-package io.github.hiiragi283.material.impl.mixin
+package io.github.hiiragi283.material
 
-import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.api.fluid.HTFluidManager
-import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
+import io.github.hiiragi283.material.api.part.HTPart
 import io.github.hiiragi283.material.api.part.HTPartManager
 import io.github.hiiragi283.material.api.part.getMaterialKey
 import io.github.hiiragi283.material.api.part.getShapeKey
-import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
 import io.github.hiiragi283.material.mixin.TagBuilderAccessor
-import io.github.hiiragi283.material.util.HTMixinLogger
 import net.minecraft.fluid.Fluid
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
@@ -22,7 +19,7 @@ internal object HTTagLoaderMixin {
 
     @JvmStatic
     fun loadTags(map: MutableMap<Identifier, Tag.Builder>, entryType: String) {
-        HTMixinLogger.INSTANCE.info("Current entry type: $entryType")
+        HTMaterials.log("Current entry type: $entryType")
         when (entryType) {
             "block" -> {}
             "entity_type" -> {}
@@ -36,7 +33,7 @@ internal object HTTagLoaderMixin {
                 map.remove(id)
             }
         }
-        HTMixinLogger.INSTANCE.info("Removed empty tag builders!")
+        HTMaterials.log("Removed empty tag builders!")
     }
 
     @JvmStatic
@@ -53,32 +50,42 @@ internal object HTTagLoaderMixin {
 
     @JvmStatic
     fun itemTags(map: MutableMap<Identifier, Tag.Builder>) {
+        // Convert tags into part format
+        HashMap(map).forEach { (id: Identifier, builder: Tag.Builder) ->
+            HTPart.fromId(id)?.getPartId()?.let {
+                // copy builder to part id
+                map[it] = builder
+                // remove original id
+                map.remove(id)
+                HTMaterials.log("Migrated tag builder: $id -> $it")
+            }
+        }
+        HTMaterials.log("Converted existing tags!")
         // Register Tags from HTPartManager
         HTPartManager.getAllItems().forEach { item ->
             val materialKey: HTMaterialKey = item.getMaterialKey() ?: return@forEach
             val shapeKey: HTShapeKey = item.getShapeKey() ?: return@forEach
+            // Shape tag
             registerTag(
-                getOrCreateBuilder(map, shapeKey.getCommonTag(materialKey).id),
+                getOrCreateBuilder(map, shapeKey.getShapeId()),
+                Registry.ITEM,
+                item,
+            )
+            // Material tag
+            registerTag(
+                getOrCreateBuilder(map, materialKey.getMaterialId()),
+                Registry.ITEM,
+                item,
+            )
+            // Part tag
+            registerTag(
+                getOrCreateBuilder(map, HTPart(materialKey, shapeKey).getPartId()),
                 Registry.ITEM,
                 item,
             )
         }
-        HTMixinLogger.INSTANCE.info("Registered Tags for HTPartManager's Entries!")
-        // Sync ForgeTag and CommonTag entries
-        HTMaterial.getMaterialKeys().forEach { materialKey: HTMaterialKey ->
-            HTShape.getShapeKeys().forEach shape@{ shapeKey: HTShapeKey ->
-                val forgeBuilder: Tag.Builder = getOrCreateBuilder(map, shapeKey.getForgeTag(materialKey))
-                val commonBuilder: Tag.Builder = getOrCreateBuilder(map, shapeKey.getCommonTag(materialKey))
-                syncBuilder(commonBuilder, forgeBuilder)
-                syncBuilder(forgeBuilder, commonBuilder)
-            }
-        }
-        HTMixinLogger.INSTANCE.info("Synced Forge Tags and Common Tags!")
+        HTMaterials.log("Registered Tags for HTPartManager's Entries!")
     }
-
-    @JvmStatic
-    private fun getOrCreateBuilder(map: MutableMap<Identifier, Tag.Builder>, tagKey: Tag.Identified<*>): Tag.Builder =
-        getOrCreateBuilder(map, tagKey.id)
 
     @JvmStatic
     private fun getOrCreateBuilder(map: MutableMap<Identifier, Tag.Builder>, id: Identifier) =
@@ -87,10 +94,5 @@ internal object HTTagLoaderMixin {
     @JvmStatic
     private fun <T> registerTag(builder: Tag.Builder, registry: Registry<T>, value: T) {
         builder.add(registry.getId(value), HTMaterials.MOD_NAME)
-    }
-
-    @JvmStatic
-    private fun syncBuilder(parentBuilder: Tag.Builder, childBuilder: Tag.Builder) {
-        childBuilder.entries.forEach(parentBuilder::add)
     }
 }

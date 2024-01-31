@@ -1,23 +1,22 @@
 package io.github.hiiragi283.material.compat
 
+import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.material.api.HTMaterialsAddon
 import io.github.hiiragi283.material.api.material.HTMaterial
 import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.registry.HTDefaultedTable
-import io.github.hiiragi283.material.api.registry.HTObjectKeySet
 import io.github.hiiragi283.material.api.shape.HTShape
 import io.github.hiiragi283.material.api.shape.HTShapeKey
-import io.github.hiiragi283.material.util.isAir
+import io.github.hiiragi283.material.api.util.collection.DefaultedTable
+import io.github.hiiragi283.material.api.util.isAir
 import net.minecraft.item.ItemConvertible
 import net.minecraft.util.registry.Registry
 
 @Suppress("unused")
 object HMMIAddon : HTMaterialsAddon {
     override val modId: String = "modern_industrialization"
-
     override val priority: Int = 0
 
-    override fun registerShape(registry: HTObjectKeySet<HTShapeKey>) {
+    override fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {
         listOf(
             "blade",
             "bolt",
@@ -34,7 +33,7 @@ object HMMIAddon : HTMaterialsAddon {
         ).map(::HTShapeKey).forEach(registry::add)
     }
 
-    override fun bindItemToPart(registry: HTDefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>>) {
+    override fun bindItemToPart(registry: DefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>>) {
         // Register Tags for ALL MI Material Items
         HTMaterial.getMaterialKeys().forEach { material: HTMaterialKey ->
             HTShape.getShapeKeys().forEach { shape ->

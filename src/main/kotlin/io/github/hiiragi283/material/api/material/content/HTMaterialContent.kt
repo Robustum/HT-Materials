@@ -15,44 +15,44 @@ import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.RegistryKey
 
 sealed class HTMaterialContent<T>(val shapeKey: HTShapeKey, val registryKey: RegistryKey<Registry<T>>) {
-    abstract fun getIdentifier(materialKey: HTMaterialKey): Identifier
+    abstract fun id(materialKey: HTMaterialKey): Identifier
 
     open fun onCreate(materialKey: HTMaterialKey, created: T) {}
 
     //    Block    //
 
     abstract class BLOCK(shapeKey: HTShapeKey) : HTMaterialContent<Block>(shapeKey, Registry.BLOCK_KEY) {
-        final override fun getIdentifier(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
+        final override fun id(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
 
-        abstract fun createBlock(materialKey: HTMaterialKey): Block?
+        abstract fun block(materialKey: HTMaterialKey): Block?
 
-        abstract fun createBlockItem(block: Block, materialKey: HTMaterialKey): BlockItem?
+        abstract fun blockItem(block: Block, materialKey: HTMaterialKey): BlockItem?
     }
 
     //    Fluid    //
 
     abstract class FLUID(shapeKey: HTShapeKey) : HTMaterialContent<Fluid>(shapeKey, Registry.FLUID_KEY) {
-        abstract fun createStill(materialKey: HTMaterialKey): FlowableFluid
+        abstract fun still(materialKey: HTMaterialKey): FlowableFluid
 
-        abstract fun getFlowingFluidIdentifier(materialKey: HTMaterialKey): Identifier
+        abstract fun flowingId(materialKey: HTMaterialKey): Identifier
 
-        abstract fun createFlowing(materialKey: HTMaterialKey): FlowableFluid?
+        abstract fun flowing(materialKey: HTMaterialKey): FlowableFluid?
 
-        abstract fun getBlockIdentifier(materialKey: HTMaterialKey): Identifier
+        abstract fun blockId(materialKey: HTMaterialKey): Identifier
 
-        abstract fun createFluidBlock(fluid: FlowableFluid, materialKey: HTMaterialKey): FluidBlock?
+        abstract fun block(fluid: FlowableFluid, materialKey: HTMaterialKey): FluidBlock?
 
-        abstract fun getBucketIdentifier(materialKey: HTMaterialKey): Identifier
+        abstract fun bucketId(materialKey: HTMaterialKey): Identifier
 
-        abstract fun createFluidBucket(fluid: FlowableFluid, materialKey: HTMaterialKey): BucketItem?
+        abstract fun bucket(fluid: FlowableFluid, materialKey: HTMaterialKey): BucketItem?
     }
 
     //    Item    //
 
     abstract class ITEM(shapeKey: HTShapeKey) : HTMaterialContent<Item>(shapeKey, Registry.ITEM_KEY) {
-        final override fun getIdentifier(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
+        final override fun id(materialKey: HTMaterialKey): Identifier = shapeKey.getIdentifier(materialKey)
 
-        abstract fun createItem(materialKey: HTMaterialKey): Item?
+        abstract fun item(materialKey: HTMaterialKey): Item?
 
         override fun onCreate(materialKey: HTMaterialKey, created: Item) {
             HTPartManager.forceRegister(materialKey, shapeKey, created)
