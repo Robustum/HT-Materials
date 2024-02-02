@@ -1,7 +1,7 @@
 package io.github.hiiragi283.material.compat.rei
 
+import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.material.HTMaterials
-import io.github.hiiragi283.material.api.material.HTMaterial
 import me.shedaniel.rei.api.EntryStack
 import me.shedaniel.rei.api.RecipeHelper
 import me.shedaniel.rei.api.plugins.REIPluginV0
@@ -11,16 +11,16 @@ import net.minecraft.util.Identifier
 
 @Environment(EnvType.CLIENT)
 object HMReiPlugin : REIPluginV0 {
-    val MATERIAL: Identifier = HTMaterials.id("material")
+    val MATERIAL: Identifier = HTMaterialsAPI.id("io/github/hiiragi283/material")
 
-    override fun getPluginIdentifier(): Identifier = HTMaterials.id("plugin")
+    override fun getPluginIdentifier(): Identifier = HTMaterialsAPI.id("plugin")
 
     override fun registerPluginCategories(recipeHelper: RecipeHelper) {
         recipeHelper.registerCategory(HTMaterialCategory)
     }
 
     override fun registerRecipeDisplays(recipeHelper: RecipeHelper) {
-        HTMaterial.getMaterials()
+        HTMaterialsAPI.getInstance().materialRegistry().getValues()
             .map(::HTMaterialDisplay)
             .filterNot { it.entries.isEmpty() }
             .forEach(recipeHelper::registerDisplay)

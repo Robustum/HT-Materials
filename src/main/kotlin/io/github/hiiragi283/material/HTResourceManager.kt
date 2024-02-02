@@ -2,6 +2,7 @@ package io.github.hiiragi283.material
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import io.github.hiiragi283.api.HTMaterialsAPI
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
 import net.minecraft.resource.ResourceManager
@@ -30,7 +31,7 @@ object HTResourceManager {
                     }
                 }
 
-                override fun getFabricId(): Identifier = HTMaterials.id(path)
+                override fun getFabricId(): Identifier = HTMaterialsAPI.id(path)
             },
         )
     }

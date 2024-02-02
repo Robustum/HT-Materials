@@ -8,7 +8,21 @@ plugins {
 }
 
 group = "io.github.hiiragi283.material"
-version = "1.3.0+1.16.5"
+version = "2.0.0+1.16.5"
+
+sourceSets {
+    create("api")
+    main {
+        // compileClasspath.forEach { print("$it\n") }
+        compileClasspath += getByName("api").output
+        runtimeClasspath += getByName("api").output
+    }
+}
+
+configurations {
+    // names.forEach { print("$it\n") }
+    getByName("apiCompileClasspath").extendsFrom(getByName("compileClasspath"))
+}
 
 repositories {
     mavenCentral()

@@ -1,6 +1,6 @@
 package io.github.hiiragi283.material.mixin;
 
-import io.github.hiiragi283.material.api.util.HTUtil;
+import io.github.hiiragi283.api.util.HTUtil;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;

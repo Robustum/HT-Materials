@@ -1,8 +1,8 @@
 package io.github.hiiragi283.material.mixin;
 
 import com.google.gson.JsonElement;
-import io.github.hiiragi283.material.HTMaterials;
-import io.github.hiiragi283.material.api.util.resource.HTRuntimeDataManager;
+import io.github.hiiragi283.api.HTMaterialsAPI;
+import io.github.hiiragi283.api.util.resource.HTRuntimeDataManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -20,7 +20,7 @@ public abstract class RecipeManagerMixin {
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;)V", at = @At("HEAD"))
     private void ht_materials$apply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
         HTRuntimeDataManager.recipeConsumer(map::putAll);
-        HTMaterials.log("Registered recipes!");
+        HTMaterialsAPI.log("Registered recipes!");
     }
 
 }

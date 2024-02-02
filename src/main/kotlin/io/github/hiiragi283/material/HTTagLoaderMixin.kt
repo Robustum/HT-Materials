@@ -1,14 +1,12 @@
 package io.github.hiiragi283.material
 
-import io.github.hiiragi283.material.api.fluid.HTFluidManager
-import io.github.hiiragi283.material.api.material.HTMaterialKey
-import io.github.hiiragi283.material.api.part.HTPart
-import io.github.hiiragi283.material.api.part.HTPartManager
-import io.github.hiiragi283.material.api.part.getMaterialKey
-import io.github.hiiragi283.material.api.part.getShapeKey
-import io.github.hiiragi283.material.api.shape.HTShapeKey
+import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.part.HTPart
+import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.material.mixin.TagBuilderAccessor
 import net.minecraft.fluid.Fluid
+import net.minecraft.item.Item
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
@@ -19,7 +17,7 @@ internal object HTTagLoaderMixin {
 
     @JvmStatic
     fun loadTags(map: MutableMap<Identifier, Tag.Builder>, entryType: String) {
-        HTMaterials.log("Current entry type: $entryType")
+        HTMaterialsAPI.log("Current entry type: $entryType")
         when (entryType) {
             "block" -> {}
             "entity_type" -> {}
@@ -33,13 +31,13 @@ internal object HTTagLoaderMixin {
                 map.remove(id)
             }
         }
-        HTMaterials.log("Removed empty tag builders!")
+        HTMaterialsAPI.log("Removed empty tag builders!")
     }
 
     @JvmStatic
     fun fluidTags(map: MutableMap<Identifier, Tag.Builder>) {
-        // Register Tags from HTFluidManager
-        HTFluidManager.getMaterialToFluidsMap().forEach { key: HTMaterialKey, fluid: Fluid ->
+        // Register Tags from HTFluidManagerOld
+        HTMaterialsAPI.getInstance().fluidManager().materialToFluidsMap.forEach { key: HTMaterialKey, fluid: Fluid ->
             registerTag(
                 getOrCreateBuilder(map, key.getCommonId()),
                 Registry.FLUID,
@@ -57,14 +55,13 @@ internal object HTTagLoaderMixin {
                 map[it] = builder
                 // remove original id
                 map.remove(id)
-                HTMaterials.log("Migrated tag builder: $id -> $it")
+                HTMaterialsAPI.log("Migrated tag builder: $id -> $it")
             }
         }
-        HTMaterials.log("Converted existing tags!")
-        // Register Tags from HTPartManager
-        HTPartManager.getAllItems().forEach { item ->
-            val materialKey: HTMaterialKey = item.getMaterialKey() ?: return@forEach
-            val shapeKey: HTShapeKey = item.getShapeKey() ?: return@forEach
+        HTMaterialsAPI.log("Converted existing tags!")
+        // Register Tags from HTPartManagerOld
+        HTMaterialsAPI.getInstance().partManager().getAllEntries().forEach { entry ->
+            val (materialKey: HTMaterialKey, shapeKey: HTShapeKey, item: Item) = entry
             // Shape tag
             registerTag(
                 getOrCreateBuilder(map, shapeKey.getShapeId()),
@@ -84,7 +81,7 @@ internal object HTTagLoaderMixin {
                 item,
             )
         }
-        HTMaterials.log("Registered Tags for HTPartManager's Entries!")
+        HTMaterialsAPI.log("Registered Tags for HTPartManagerOld's Entries!")
     }
 
     @JvmStatic
@@ -93,6 +90,6 @@ internal object HTTagLoaderMixin {
 
     @JvmStatic
     private fun <T> registerTag(builder: Tag.Builder, registry: Registry<T>, value: T) {
-        builder.add(registry.getId(value), HTMaterials.MOD_NAME)
+        builder.add(registry.getId(value), HTMaterialsAPI.MOD_NAME)
     }
 }

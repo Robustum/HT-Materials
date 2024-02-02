@@ -1,8 +1,8 @@
 package io.github.hiiragi283.material.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import io.github.hiiragi283.material.HTMaterials;
-import io.github.hiiragi283.material.api.util.resource.HTRuntimeResourcePack;
+import io.github.hiiragi283.api.HTMaterialsAPI;
+import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -24,7 +24,7 @@ public abstract class MinecraftClientMixin {
     private List<ResourcePack> ht_materials$resourcePackManager(List<ResourcePack> original) {
         List<ResourcePack> copyList = new ArrayList<>(original);
         copyList.add(HTRuntimeResourcePack.INSTANCE);
-        HTMaterials.log("HTRuntimeResourcePack added!");
+        HTMaterialsAPI.log("HTRuntimeResourcePack added!");
         return copyList;
     }
 

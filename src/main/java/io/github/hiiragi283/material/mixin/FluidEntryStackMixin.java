@@ -1,7 +1,7 @@
 package io.github.hiiragi283.material.mixin;
 
-import io.github.hiiragi283.material.api.fluid.HTFluidManager;
-import io.github.hiiragi283.material.api.material.HTMaterialKey;
+import io.github.hiiragi283.api.HTMaterialsAPI;
+import io.github.hiiragi283.api.material.HTMaterialKey;
 import me.shedaniel.rei.impl.FluidEntryStack;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.text.Text;
@@ -22,7 +22,7 @@ public abstract class FluidEntryStackMixin {
 
     @Inject(method = "asFormattedText", at = @At("RETURN"), cancellable = true)
     private void ht_materials$asFormattedText(CallbackInfoReturnable<Text> cir) {
-        Optional.ofNullable(HTFluidManager.getMaterialKey(fluid))
+        Optional.ofNullable(HTMaterialsAPI.getInstance().fluidManager().getMaterialKey(fluid))
                 .map(HTMaterialKey::getTranslatedText)
                 .ifPresent(cir::setReturnValue);
     }

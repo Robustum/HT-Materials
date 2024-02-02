@@ -14,7 +14,9 @@
     "issues": "https://github.com/Hiiragi283/HT-Materials/issues",
     "sources": "https://github.com/Hiiragi283/HT-Materials"
   },
-  "license": "MPL-2.0",
+  "license": [
+    "MPL-2.0"
+  ],
   "icon": "assets/ht_materials/textures/icon.png",
   "environment": "*",
   "entrypoints": {
@@ -42,6 +44,12 @@
         "value": "io.github.hiiragi283.material.HTMaterials"
       }
     ],
+    "ht_materials_api": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.HTMaterials"
+      }
+    ],
     "ht_materials": [
       {
         "adapter": "kotlin",
@@ -57,19 +65,7 @@
       },
       {
         "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.api.shape.HTShapes"
-      },
-      {
-        "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.api.material.materials.HTCommonMaterials"
-      },
-      {
-        "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.api.material.materials.HTElementMaterials"
-      },
-      {
-        "adapter": "kotlin",
-        "value": "io.github.hiiragi283.material.api.material.materials.HTVanillaMaterials"
+        "value": "io.github.hiiragi283.material.compat.HTMaterialsAddonImpl"
       }
     ],
     "rei_plugins_v0": [
