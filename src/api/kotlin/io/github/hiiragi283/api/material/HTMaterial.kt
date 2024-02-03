@@ -1,6 +1,5 @@
 package io.github.hiiragi283.api.material
 
-import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialProperty
@@ -13,7 +12,7 @@ import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import java.awt.Color
 
-class HTMaterial private constructor(
+class HTMaterial(
     val key: HTMaterialKey,
     val properties: HTMaterialPropertyMap,
     val flags: HTMaterialFlagSet,
@@ -52,27 +51,6 @@ class HTMaterial private constructor(
     override fun toString(): String = key.toString()
 
     companion object {
-        //    Registry    //
-
-        private val REGISTRY: MutableMap<HTMaterialKey, HTMaterial> = linkedMapOf()
-
-        @JvmStatic
-        fun getMaterialKeys(): Collection<HTMaterialKey> = REGISTRY.keys
-
-        @JvmStatic
-        fun create(
-            key: HTMaterialKey,
-            properties: HTMaterialPropertyMap,
-            flags: HTMaterialFlagSet,
-            color: Color,
-            formula: String,
-            molar: Double,
-            type: HTMaterialType,
-        ): HTMaterial = HTMaterial(key, properties, flags, color, formula, molar, type).also {
-            REGISTRY.putIfAbsent(key, it)
-            HTMaterialsAPI.log("Material: $key registered!")
-        }
-
         fun appendTooltip(
             material: HTMaterial,
             shapeKey: HTShapeKey?,
@@ -82,7 +60,7 @@ class HTMaterial private constructor(
             // Title
             lines.add(TranslatableText("tooltip.ht_materials.material.title"))
             // Name
-            val name: String = shapeKey?.getShape()?.getTranslatedName(material.key) ?: material.key.getTranslatedName()
+            val name: String = shapeKey?.getTranslatedName(material.key) ?: material.key.getTranslatedName()
             lines.add(TranslatableText("tooltip.ht_materials.material.name", name))
             // Type
             lines.add(TranslatableText("tooltip.ht_materials.material.type", material.type))

@@ -1,5 +1,6 @@
 package io.github.hiiragi283.material.impl.material.content
 
+import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.fluid.HTFluidRenderHandler
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.content.HTMaterialContent
@@ -45,7 +46,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
     override fun block(fluid: FlowableFluid, materialKey: HTMaterialKey): FluidBlock? = null
 
-    override fun bucketId(materialKey: HTMaterialKey): Identifier = TODO()
+    override fun bucketId(materialKey: HTMaterialKey): Identifier = HTMaterialsAPI.id("${materialKey.name}_bucket")
 
     override fun bucket(fluid: FlowableFluid, materialKey: HTMaterialKey): BucketItem = BucketImpl(fluid, materialKey)
 

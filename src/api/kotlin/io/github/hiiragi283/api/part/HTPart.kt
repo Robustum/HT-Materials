@@ -29,7 +29,7 @@ data class HTPart(
         private lateinit var cache: Map<Identifier, HTPart>
 
         @JvmStatic
-        internal fun initCache() {
+        fun initCache() {
             val map: MutableMap<Identifier, HTPart> = hashMapOf()
             HTMaterialsAPI.getInstance().shapeRegistry().getValues().forEach { shape ->
                 HTMaterialsAPI.getInstance().materialRegistry().getKeys().forEach { material ->

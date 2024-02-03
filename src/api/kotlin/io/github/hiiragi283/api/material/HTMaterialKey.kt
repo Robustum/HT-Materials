@@ -12,7 +12,9 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
 data class HTMaterialKey(val name: String) {
-    fun getMaterial(): HTMaterial = checkNotNull(HTMaterialsAPI.getInstance().materialRegistry().getMaterial(this))
+    fun getMaterial(): HTMaterial = checkNotNull(HTMaterialsAPI.getInstance().materialRegistry().getMaterial(this)) {
+        "Material with $name is not registered!"
+    }
 
     //    Identifier    //
 
@@ -20,7 +22,7 @@ data class HTMaterialKey(val name: String) {
 
     fun getCommonId() = commonId(name)
 
-    fun getMaterialId() = getIdentifier("io/github/hiiragi283/material")
+    fun getMaterialId() = getIdentifier("material")
 
     //    Tag    //
 

@@ -21,7 +21,7 @@ import net.minecraft.text.Text
 
 class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.ITEM(shapeKey) {
     override fun item(materialKey: HTMaterialKey): Item? =
-        ItemImpl(materialKey, shapeKey).takeUnless { HTMaterialsAPI.getInstance().partManager().hasItem(materialKey, shapeKey) }
+        ItemImpl(materialKey, shapeKey) // .takeUnless { HTMaterialsAPI.getInstance().partManager().hasItem(materialKey, shapeKey) }
 
     private fun getTextureName(type: HTMaterialType): String = if (type is HTMaterialType.Gem) {
         if (shapeKey == HTShapeKeys.GEM) "${type.name.lowercase()}_gem" else shapeKey.toString()
@@ -61,8 +61,8 @@ class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.ITEM(shapeKe
             }
         }
 
-        override fun getName(): Text = shapeKey.getShape().getTranslatedText(materialKey)
+        override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
 
-        override fun getName(stack: ItemStack): Text = shapeKey.getShape().getTranslatedText(materialKey)
+        override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
     }
 }

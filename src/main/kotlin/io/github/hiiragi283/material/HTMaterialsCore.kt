@@ -20,7 +20,7 @@ import io.github.hiiragi283.api.util.collection.HashDefaultedMap
 import io.github.hiiragi283.api.util.collection.HashDefaultedTable
 import io.github.hiiragi283.api.util.isModLoaded
 import io.github.hiiragi283.api.util.prefix
-import io.github.hiiragi283.api.util.resource.HTRuntimeDataManager
+import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import io.github.hiiragi283.material.impl.HTFluidManagerImpl
 import io.github.hiiragi283.material.impl.HTPartManagerImpl
 import io.github.hiiragi283.material.impl.material.HTMaterialRegistryImpl
@@ -108,8 +108,6 @@ internal object HTMaterialsCore {
     }
 
     fun createMaterial() {
-        // Set material registry to HTMaterialsAPI
-        HTMaterials.materialRegistry = HTMaterialRegistryImpl(mapOf())
         entryPoints.forEach {
             it.registerMaterialKey(materialKeySet)
             it.modifyMaterialContent(contentMap)
@@ -120,14 +118,16 @@ internal object HTMaterialsCore {
             it.modifyMaterialMolar(molarMap)
             it.modifyMaterialType(typeMap)
         }
+        val materialMap: MutableMap<HTMaterialKey, HTMaterial> = mutableMapOf()
+
         materialKeySet.build().forEach { key: HTMaterialKey ->
             val property: HTMaterialPropertyMap = propertyMap.getOrCreate(key).build()
             val flags: HTMaterialFlagSet = flagMap.getOrCreate(key).build()
-            val color: ColorConvertible = getColor(key, property)
-            val formula: FormulaConvertible = getFormula(key, property)
-            val molar: MolarMassConvertible = getMolar(key, property)
+            val color: ColorConvertible = ColorConvertible.EMPTY
+            val formula: FormulaConvertible = FormulaConvertible.EMPTY
+            val molar: MolarMassConvertible = MolarMassConvertible.EMPTY
             val type: HTMaterialType = typeMap.getOrDefault(key, HTMaterialType.Undefined)
-            HTMaterial.create(
+            materialMap[key] = HTMaterial(
                 key,
                 property,
                 flags,
@@ -136,7 +136,11 @@ internal object HTMaterialsCore {
                 "%.1f".format(molar.asMolarMass()).toDouble(),
                 type,
             )
+            HTMaterialsAPI.log("Material: $key registered!")
         }
+
+        // Set material registry to HTMaterialsAPI
+        HTMaterials.materialRegistry = HTMaterialRegistryImpl(materialMap)
     }
 
     fun verifyMaterial() {
@@ -241,26 +245,26 @@ internal object HTMaterialsCore {
         // 9x Nugget -> 1x Ingot
         if (!partManager.hasItem(material, HTShapeKeys.NUGGET)) return
         val nuggetTag: Tag<Item> = HTPart(material, HTShapeKeys.NUGGET).getPartTag()
-        HTRuntimeDataManager.addShapedCrafting(
-            HTShapeKeys.INGOT.getShape().getIdentifier(material).prefix("shaped/"),
+        HTRuntimeDataPack.addRecipe { exporter ->
             ShapedRecipeJsonFactory.create(item)
                 .pattern("AAA")
                 .pattern("AAA")
                 .pattern("AAA")
                 .input('A', nuggetTag)
-                .criterion("has_nugget", RecipesProvider.conditionsFromTag(nuggetTag)),
-        )
+                .criterion("has_nugget", RecipesProvider.conditionsFromTag(nuggetTag))
+                .offerTo(exporter, HTShapeKeys.INGOT.getShape().getIdentifier(material).prefix("shaped/"))
+        }
     }
 
     private fun nuggetRecipe(partManager: HTPartManager, material: HTMaterialKey, item: Item) {
         // 1x Ingot -> 9x Nugget
         if (!partManager.hasItem(material, HTShapeKeys.INGOT)) return
         val ingotTag: Tag<Item> = HTPart(material, HTShapeKeys.INGOT).getPartTag()
-        HTRuntimeDataManager.addShapelessCrafting(
-            HTShapeKeys.NUGGET.getShape().getIdentifier(material).prefix("shapeless/"),
+        HTRuntimeDataPack.addRecipe { exporter ->
             ShapelessRecipeJsonFactory.create(item, 9)
                 .input(ingotTag)
-                .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag)),
-        )
+                .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag))
+                .offerTo(exporter, HTShapeKeys.NUGGET.getShape().getIdentifier(material).prefix("shapeless/"))
+        }
     }
 }

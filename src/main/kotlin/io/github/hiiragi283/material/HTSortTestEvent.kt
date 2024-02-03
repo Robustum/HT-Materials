@@ -1,4 +1,4 @@
-package io.github.hiiragi283.api.event
+package io.github.hiiragi283.material
 
 import io.github.hiiragi283.api.HTMaterialsAPI
 import net.fabricmc.fabric.api.event.Event

@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier
 
 @Environment(EnvType.CLIENT)
 object HMReiPlugin : REIPluginV0 {
-    val MATERIAL: Identifier = HTMaterialsAPI.id("io/github/hiiragi283/material")
+    val MATERIAL: Identifier = HTMaterialsAPI.id("material")
 
     override fun getPluginIdentifier(): Identifier = HTMaterialsAPI.id("plugin")
 

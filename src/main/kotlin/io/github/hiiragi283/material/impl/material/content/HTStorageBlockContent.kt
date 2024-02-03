@@ -9,7 +9,7 @@ import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
 import io.github.hiiragi283.api.util.onEnv
-import io.github.hiiragi283.api.util.resource.HTRuntimeDataManager
+import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.HTMaterials
 import net.fabricmc.api.EnvType
@@ -80,19 +80,17 @@ class HTStorageBlockContent(
 
     //    HTMaterialContent    //
 
-    override fun block(materialKey: HTMaterialKey): Block? = BlockImpl(
+    override fun block(materialKey: HTMaterialKey): Block = BlockImpl(
         materialKey,
         shapeKey,
         getBlockSetting(materialKey.getMaterial().type),
-    ).takeUnless { HTMaterialsAPI.getInstance().partManager().hasItem(materialKey, shapeKey) }
+    ) // .takeUnless { HTMaterialsAPI.getInstance().partManager().hasItem(materialKey, shapeKey) }
 
-    override fun blockItem(block: Block, materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey).also {
-        // HTPartManagerOld.forceRegister(materialKey, shapeKey, it)
-    }
+    override fun blockItem(block: Block, materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey)
 
     override fun onCreate(materialKey: HTMaterialKey, created: Block) {
         // LootTable
-        HTRuntimeDataManager.addBlockLootTable(created, BlockLootTableGenerator.drops(created))
+        HTRuntimeDataPack.addBlockLootTable(created, BlockLootTableGenerator.drops(created))
         // BlockState
         val modelId: Identifier = HTMaterialsAPI.id("block/storage/${getResourcePath(materialKey.getMaterial().type)}")
         HTRuntimeResourcePack.addBlockState(
@@ -127,7 +125,7 @@ class HTStorageBlockContent(
             }
         }
 
-        override fun getName(): MutableText = shapeKey.getShape().getTranslatedText(materialKey)
+        override fun getName(): MutableText = shapeKey.getTranslatedText(materialKey)
     }
 
     //    BlockItem    //
@@ -148,8 +146,8 @@ class HTStorageBlockContent(
             }
         }
 
-        override fun getName(): Text = shapeKey.getShape().getTranslatedText(materialKey)
+        override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
 
-        override fun getName(stack: ItemStack): Text = shapeKey.getShape().getTranslatedText(materialKey)
+        override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)
     }
 }
