@@ -239,4 +239,67 @@ object HTMaterialKeys {
 
     @JvmField
     val WOOD = HTMaterialKey("wood")
+
+    //    Common - Fluids    //
+
+    //    Common - Gems    //
+
+    @JvmField
+    val CINNABAR = HTMaterialKey("cinnabar")
+
+    @JvmField
+    val COKE = HTMaterialKey("coke")
+
+    @JvmField
+    val OLIVINE = HTMaterialKey("olivine")
+
+    @JvmField
+    val PERIDOT = HTMaterialKey("peridot")
+
+    @JvmField
+    val RUBY = HTMaterialKey("ruby")
+
+    @JvmField
+    val SALT = HTMaterialKey("salt")
+
+    @JvmField
+    val SAPPHIRE = HTMaterialKey("sapphire")
+
+    //    Common - Metal    //
+
+    @JvmField
+    val BRASS = HTMaterialKey("brass")
+
+    @JvmField
+    val BRONZE = HTMaterialKey("bronze")
+
+    @JvmField
+    val ELECTRUM = HTMaterialKey("electrum")
+
+    @JvmField
+    val INVAR = HTMaterialKey("invar")
+
+    @JvmField
+    val STAINLESS_STEEL = HTMaterialKey("stainless_steel")
+
+    @JvmField
+    val STEEl = HTMaterialKey("steel")
+
+    //    Common - Solids    //
+
+    @JvmField
+    val ASHES = HTMaterialKey("ashes")
+
+    @JvmField
+    val BAUXITE = HTMaterialKey("bauxite")
+
+    @JvmField
+    val RUBBER = HTMaterialKey("rubber")
+
+    //    Common - Stones    //
+
+    @JvmField
+    val MARBLE = HTMaterialKey("marble")
+
+    //    Common - Woods    //
 }

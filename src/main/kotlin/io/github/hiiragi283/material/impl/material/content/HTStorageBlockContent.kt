@@ -1,6 +1,7 @@
 package io.github.hiiragi283.material.impl.material.content
 
 import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.HTPlatformHelper
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.content.HTMaterialContent
@@ -8,7 +9,6 @@ import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
-import io.github.hiiragi283.api.util.onEnv
 import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.HTMaterials
@@ -115,10 +115,10 @@ class HTStorageBlockContent(
         settings: Settings,
     ) : Block(settings) {
         init {
-            onEnv(EnvType.CLIENT) {
+            HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
                 ColorProviderRegistry.BLOCK.register(
                     BlockColorProvider { _, _, _, _ ->
-                        materialKey.getMaterial().color.rgb
+                        materialKey.getMaterial().color().rgb
                     },
                     this,
                 )
@@ -136,10 +136,10 @@ class HTStorageBlockContent(
         val shapeKey: HTShapeKey,
     ) : BlockItem(block, FabricItemSettings().group(HTMaterials.itemGroup())) {
         init {
-            onEnv(EnvType.CLIENT) {
+            HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
                 ColorProviderRegistry.ITEM.register(
                     ItemColorProvider { _, tintIndex: Int ->
-                        if (tintIndex == 0) materialKey.getMaterial().color.rgb else -1
+                        if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1
                     },
                     this,
                 )

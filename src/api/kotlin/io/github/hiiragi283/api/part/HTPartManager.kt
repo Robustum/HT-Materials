@@ -1,6 +1,7 @@
 package io.github.hiiragi283.api.part
 
-import com.google.common.collect.Multimap
+import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableMultimap
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShapeKey
@@ -13,7 +14,7 @@ import java.util.function.Predicate
 interface HTPartManager {
     // Item -> HTPart
 
-    val itemToPartMap: MutableMap<Item, HTPart>
+    val itemToPartMap: ImmutableMap<Item, HTPart>
 
     fun getPart(itemConvertible: ItemConvertible): HTPart? = itemToPartMap[itemConvertible.asItem()]
 
@@ -36,7 +37,7 @@ interface HTPartManager {
 
     // HTPart -> Collection<Item>
 
-    val partToItemsMap: Multimap<HTPart, Item>
+    val partToItemsMap: ImmutableMultimap<HTPart, Item>
 
     fun getAllEntries(): Collection<Entry> {
         val allEntries: Collection<Entry> = buildSet {
@@ -58,4 +59,8 @@ interface HTPartManager {
     fun hasItem(part: HTPart): Boolean = partToItemsMap.containsKey(part)
 
     data class Entry(val materialKey: HTMaterialKey, val shapeKey: HTShapeKey, val item: Item)
+
+    interface Builder {
+        fun add(materialKey: HTMaterialKey, shapeKey: HTShapeKey, itemConvertible: ItemConvertible)
+    }
 }

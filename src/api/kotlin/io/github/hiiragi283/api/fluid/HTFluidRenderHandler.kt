@@ -26,5 +26,5 @@ class HTFluidRenderHandler(val material: HTMaterial) : FluidRenderHandler {
         return sprites
     }
 
-    override fun getFluidColor(view: BlockRenderView?, pos: BlockPos?, state: FluidState): Int = material.color.rgb
+    override fun getFluidColor(view: BlockRenderView?, pos: BlockPos?, state: FluidState): Int = material.color().rgb
 }

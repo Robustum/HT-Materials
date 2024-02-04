@@ -1,13 +1,13 @@
 package io.github.hiiragi283.material.impl.material.content
 
 import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.HTPlatformHelper
 import io.github.hiiragi283.api.fluid.HTFluidRenderHandler
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.content.HTMaterialContent
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
-import io.github.hiiragi283.api.util.onEnv
 import io.github.hiiragi283.api.util.prefix
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.HTMaterials
@@ -140,7 +140,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
         class Flowing(content: HTSimpleFluidContent, materialKey: HTMaterialKey) : FluidImpl(content, materialKey) {
             init {
-                onEnv(EnvType.CLIENT) {
+                HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
                     FluidRenderHandlerRegistry.INSTANCE.register(this, HTFluidRenderHandler(materialKey.getMaterial()))
                 }
             }
@@ -159,7 +159,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
         class Still(content: HTSimpleFluidContent, materialKey: HTMaterialKey) : FluidImpl(content, materialKey) {
             init {
-                onEnv(EnvType.CLIENT) {
+                HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
                     FluidRenderHandlerRegistry.INSTANCE.register(this, HTFluidRenderHandler(materialKey.getMaterial()))
                 }
             }
@@ -174,10 +174,10 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
     private class BucketImpl(fluid: Fluid, private val materialKey: HTMaterialKey) : BucketItem(fluid, ITEM_SETTINGS) {
         init {
-            onEnv(EnvType.CLIENT) {
+            HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
                 ColorProviderRegistry.ITEM.register(
                     ItemColorProvider { _: ItemStack, tintIndex: Int ->
-                        if (tintIndex == 1) materialKey.getMaterial().color.rgb else -1
+                        if (tintIndex == 1) materialKey.getMaterial().color().rgb else -1
                     },
                     this,
                 )

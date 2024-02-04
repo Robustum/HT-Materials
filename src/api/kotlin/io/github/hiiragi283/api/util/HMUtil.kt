@@ -5,12 +5,7 @@ package io.github.hiiragi283.api.util
 import com.google.common.collect.ImmutableCollection
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
-import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.loader.api.ModContainer
-import net.fabricmc.loader.api.entrypoint.EntrypointContainer
-import net.fabricmc.loader.api.metadata.ModMetadata
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.fluid.Fluid
@@ -18,6 +13,7 @@ import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.Items
 import net.minecraft.util.Identifier
+import java.util.*
 import java.util.function.Function
 
 //    Block    //
@@ -62,33 +58,15 @@ fun JsonObject.addObject(property: String, builderAction: JsonObject.() -> Unit)
     this.add(property, buildJson(builderAction))
 }
 
-//    Loader    //
+//    Service    //
 
-operator fun <T> EntrypointContainer<T>.component1(): T = this.entrypoint
-
-operator fun <T> EntrypointContainer<T>.component2(): ModContainer = this.provider
-
-fun getAllModId(): Collection<String> = FabricLoader.getInstance()
-    .allMods
-    .map(ModContainer::getMetadata)
-    .map(ModMetadata::getId)
-
-fun getEnvType(): EnvType = FabricLoader.getInstance().environmentType
-
-fun isClient(): Boolean = getEnvType() == EnvType.CLIENT
-
-fun isServer(): Boolean = getEnvType() == EnvType.SERVER
-
-inline fun onEnv(envType: EnvType, action: () -> Unit) {
-    if (getEnvType() == envType) action()
-}
-
-fun isDevEnv(): Boolean = FabricLoader.getInstance().isDevelopmentEnvironment
-
-fun isModLoaded(id: String): Boolean = FabricLoader.getInstance().isModLoaded(id)
-
-inline fun <reified T> invokeEntryPoints(key: String, crossinline action: T.() -> Unit) {
-    FabricLoader.getInstance().invokeEntrypoints(key, T::class.java) { action(it) }
+inline fun <reified T> getInstance(): T {
+    val list: List<T> = ServiceLoader.load(T::class.java).toList()
+    return when {
+        list.isEmpty() -> throw IllegalStateException()
+        list.size != 1 -> throw IllegalStateException()
+        else -> list[0]
+    }
 }
 
 //    Storage    //

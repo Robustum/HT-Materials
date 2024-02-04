@@ -3,11 +3,14 @@ package io.github.hiiragi283.material
 import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
-import io.github.hiiragi283.api.material.*
+import io.github.hiiragi283.api.HTPlatformHelper
+import io.github.hiiragi283.api.material.HTMaterial
+import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.material.HTMaterialType
+import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.content.HTMaterialContent
 import io.github.hiiragi283.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
-import io.github.hiiragi283.api.material.property.HTComponentProperty
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
@@ -15,25 +18,20 @@ import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.collection.DefaultedMap
-import io.github.hiiragi283.api.util.collection.DefaultedTable
 import io.github.hiiragi283.api.util.collection.HashDefaultedMap
-import io.github.hiiragi283.api.util.collection.HashDefaultedTable
-import io.github.hiiragi283.api.util.isModLoaded
 import io.github.hiiragi283.api.util.prefix
 import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
-import io.github.hiiragi283.material.impl.HTFluidManagerImpl
-import io.github.hiiragi283.material.impl.HTPartManagerImpl
+import io.github.hiiragi283.material.impl.HTMaterialsAPIImpl
+import io.github.hiiragi283.material.impl.fluid.HTFluidManagerImpl
 import io.github.hiiragi283.material.impl.material.HTMaterialRegistryImpl
-import io.github.hiiragi283.material.impl.shape.HTShapeImpl
+import io.github.hiiragi283.material.impl.part.HTPartManagerImpl
 import io.github.hiiragi283.material.impl.shape.HTShapeRegistryImpl
 import net.fabricmc.api.EnvType
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.data.server.RecipesProvider
 import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
-import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
-import net.minecraft.item.ItemConvertible
 import net.minecraft.tag.Tag
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.registry.RegistryKey
@@ -44,8 +42,15 @@ internal object HTMaterialsCore {
     fun initEntryPoints() {
         entryPoints = FabricLoader.getInstance()
             .getEntrypoints(HTMaterialsAPI.MOD_ID, HTMaterialsAddon::class.java)
-            .filter { isModLoaded(it.modId) }
+            .filter { HTPlatformHelper.INSTANCE.isModLoaded(it.modId) }
             .sortedWith(compareBy(HTMaterialsAddon::priority).thenBy { it.javaClass.name })
+        // Print sorted addons
+        HTMaterialsAPI.log("HTMaterialsAddon collected!")
+        HTMaterialsAPI.log("=== List ===")
+        entryPoints.forEach {
+            HTMaterialsAPI.log("${it::class.qualifiedName} - Priority: ${it.priority}")
+        }
+        HTMaterialsAPI.log("============")
     }
 
     //    Initialize - HTShape    //
@@ -68,11 +73,12 @@ internal object HTMaterialsCore {
         shapeKeySet.forEach { key: HTShapeKey ->
             val idPath: String = idPathMap.getOrDefault(key, "%s_${key.name}")
             val tagPath: String = tagPathMap.getOrDefault(key, "${idPath}s")
-            shapeMap.putIfAbsent(key, HTShapeImpl(key, idPath, tagPath))
+            shapeMap.putIfAbsent(key, HTShape(key, idPath, tagPath))
             HTMaterialsAPI.log("Shape: ${key.name} registered!")
         }
         // Set shape registry to HTMaterialsAPI
-        HTMaterials.shapeRegistry = HTShapeRegistryImpl(shapeMap)
+        HTMaterialsAPIImpl.shapeRegistry = HTShapeRegistryImpl(shapeMap)
+        HTMaterialsAPI.log("HTShapeRegistry initialized!")
     }
 
     //    Initialize - HTMaterial    //
@@ -80,71 +86,47 @@ internal object HTMaterialsCore {
     private val materialKeySet: ImmutableSet.Builder<HTMaterialKey> = ImmutableSet.builder()
     private val contentMap: DefaultedMap<HTMaterialKey, HTMaterialContentMap> =
         HashDefaultedMap { HTMaterialContentMap() }
-    private val propertyMap: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> =
-        HashDefaultedMap { HTMaterialPropertyMap.Builder() }
+    private val compositionMap: MutableMap<HTMaterialKey, HTMaterialComposition> = hashMapOf()
     private val flagMap: DefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder> =
         HashDefaultedMap { HTMaterialFlagSet.Builder() }
-    private val colorMap: MutableMap<HTMaterialKey, ColorConvertible> = hashMapOf()
-    private val formulaMap: MutableMap<HTMaterialKey, FormulaConvertible> = hashMapOf()
-    private val molarMap: MutableMap<HTMaterialKey, MolarMassConvertible> = hashMapOf()
+    private val propertyMap: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> =
+        HashDefaultedMap { HTMaterialPropertyMap.Builder() }
     private val typeMap: MutableMap<HTMaterialKey, HTMaterialType> = hashMapOf()
 
-    private fun getColor(key: HTMaterialKey, property: HTMaterialPropertyMap): ColorConvertible {
-        var color: ColorConvertible? = property.values.filterIsInstance<HTComponentProperty<*>>().getOrNull(0)
-        colorMap[key]?.let { color = it }
-        return color ?: ColorConvertible.EMPTY
-    }
-
-    private fun getFormula(key: HTMaterialKey, property: HTMaterialPropertyMap): FormulaConvertible {
-        var formula: FormulaConvertible? = property.values.filterIsInstance<HTComponentProperty<*>>().getOrNull(0)
-        formulaMap[key]?.let { formula = it }
-        return formula ?: FormulaConvertible.EMPTY
-    }
-
-    private fun getMolar(key: HTMaterialKey, property: HTMaterialPropertyMap): MolarMassConvertible {
-        var molar: MolarMassConvertible? = property.values.filterIsInstance<HTComponentProperty<*>>().getOrNull(0)
-        molarMap[key]?.let { molar = it }
-        return molar ?: MolarMassConvertible.EMPTY
-    }
-
     fun createMaterial() {
+        // Register material keys and each property
         entryPoints.forEach {
             it.registerMaterialKey(materialKeySet)
             it.modifyMaterialContent(contentMap)
-            it.modifyMaterialProperty(propertyMap)
+            it.modifyMaterialComposition(compositionMap)
             it.modifyMaterialFlag(flagMap)
-            it.modifyMaterialColor(colorMap)
-            it.modifyMaterialFormula(formulaMap)
-            it.modifyMaterialMolar(molarMap)
+            it.modifyMaterialProperty(propertyMap)
             it.modifyMaterialType(typeMap)
         }
         val materialMap: MutableMap<HTMaterialKey, HTMaterial> = mutableMapOf()
 
         materialKeySet.build().forEach { key: HTMaterialKey ->
-            val property: HTMaterialPropertyMap = propertyMap.getOrCreate(key).build()
+            val composition: HTMaterialComposition = compositionMap.getOrDefault(key, HTMaterialComposition.Empty)
             val flags: HTMaterialFlagSet = flagMap.getOrCreate(key).build()
-            val color: ColorConvertible = ColorConvertible.EMPTY
-            val formula: FormulaConvertible = FormulaConvertible.EMPTY
-            val molar: MolarMassConvertible = MolarMassConvertible.EMPTY
+            val property: HTMaterialPropertyMap = propertyMap.getOrCreate(key).build()
             val type: HTMaterialType = typeMap.getOrDefault(key, HTMaterialType.Undefined)
             materialMap[key] = HTMaterial(
                 key,
-                property,
+                composition,
                 flags,
-                color.asColor(),
-                formula.asFormula(),
-                "%.1f".format(molar.asMolarMass()).toDouble(),
+                property,
                 type,
             )
             HTMaterialsAPI.log("Material: $key registered!")
         }
 
         // Set material registry to HTMaterialsAPI
-        HTMaterials.materialRegistry = HTMaterialRegistryImpl(materialMap)
+        HTMaterialsAPIImpl.materialRegistry = HTMaterialRegistryImpl(materialMap)
+        HTMaterialsAPI.log("HTMaterialRegistry initialized")
     }
 
     fun verifyMaterial() {
-        HTMaterialsAPI.getInstance().materialRegistry().getValues().forEach { material ->
+        HTMaterialsAPI.INSTANCE.materialRegistry().getValues().forEach { material ->
             material.properties.values.forEach { it.verify(material) }
             material.flags.forEach { it.verify(material) }
         }
@@ -153,7 +135,7 @@ internal object HTMaterialsCore {
     //    Initialization    //
 
     fun <T : Any> createContent(registryKey: RegistryKey<Registry<T>>) {
-        for (materialKey: HTMaterialKey in HTMaterialsAPI.getInstance().materialRegistry().getKeys()) {
+        for (materialKey: HTMaterialKey in HTMaterialsAPI.INSTANCE.materialRegistry().getKeys()) {
             for (content: HTMaterialContent<T> in contentMap.getOrCreate(materialKey).getContents(registryKey)) {
                 when (content) {
                     is HTMaterialContent.BLOCK -> createBlock(content, materialKey)
@@ -165,11 +147,11 @@ internal object HTMaterialsCore {
     }
 
     private fun createBlock(content: HTMaterialContent.BLOCK, materialKey: HTMaterialKey) {
-        // Register Block
+        // Register block
         content.block(materialKey)
             ?.let { Registry.register(Registry.BLOCK, content.id(materialKey), it) }
             ?.run {
-                // Register BlockItem if exists
+                // Register block item if exists
                 content.blockItem(this, materialKey)
                     ?.let { Registry.register(Registry.ITEM, content.id(materialKey), it) }
                 content.onCreate(materialKey, this)
@@ -177,20 +159,20 @@ internal object HTMaterialsCore {
     }
 
     private fun createFluid(content: HTMaterialContent.FLUID, materialKey: HTMaterialKey) {
-        // Register Flowing Fluid if exists
+        // Register flowing fluid if exists
         content.flowing(materialKey)
             ?.let { Registry.register(Registry.FLUID, content.flowingId(materialKey), it) }
-        // Register Still Fluid
+        // Register still fluid
         Registry.register(
             Registry.FLUID,
             content.id(materialKey),
             content.still(materialKey),
         ).run {
-            // Register FluidBlock if exists
+            // Register fluid block if exists
             content.block(this, materialKey)?.let {
                 Registry.register(Registry.BLOCK, content.blockId(materialKey), it)
             }
-            // Register BucketItem if exists
+            // Register bucket item if exists
             content.bucket(this, materialKey)?.let {
                 Registry.register(Registry.ITEM, content.bucketId(materialKey), it)
             }
@@ -199,7 +181,7 @@ internal object HTMaterialsCore {
     }
 
     private fun createItem(content: HTMaterialContent.ITEM, materialKey: HTMaterialKey) {
-        // Register Item
+        // Register item
         content.item(materialKey)
             ?.let { Registry.register(Registry.ITEM, content.id(materialKey), it) }
             ?.run { content.onCreate(materialKey, this) }
@@ -208,36 +190,39 @@ internal object HTMaterialsCore {
     //    Post Initialization    //
 
     fun postInitialize(envType: EnvType) {
-        // Bind Game Objects to HTPart
-        bindItemToPart()
+        // Bind game objects to HTPart
         bindFluidToPart()
-
+        HTMaterialsAPI.log("HTFluidManager initialized!")
+        bindItemToPart()
+        HTMaterialsAPI.log("HTPartManager initialized!")
+        // Post initialize from addons
         entryPoints.forEach { it.postInitialize(envType) }
-
+        HTMaterialsAPI.log("Post-initialize completed!")
+        // Register material recipes
         registerRecipes()
-        HTMaterialsAPI.log("Added Material Recipes!")
+        HTMaterialsAPI.log("Added material recipes!")
     }
-
-    private val itemTable: DefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>> =
-        HashDefaultedTable { _, _ -> mutableSetOf() }
 
     private fun bindItemToPart() {
-        entryPoints.forEach { it.bindItemToPart(itemTable) }
-        HTMaterials.partManager = HTPartManagerImpl(itemTable)
+        HTPartManagerImpl.Builder().run {
+            entryPoints.forEach { it.bindItemToPart(this) }
+            HTMaterialsAPIImpl.partManager = HTPartManagerImpl(this)
+        }
     }
 
-    private val fluidMap: DefaultedMap<HTMaterialKey, MutableCollection<Fluid>> = HashDefaultedMap { mutableSetOf() }
-
     private fun bindFluidToPart() {
-        entryPoints.forEach { it.bindFluidToPart(fluidMap) }
-        HTMaterials.fluidManager = HTFluidManagerImpl(fluidMap)
+        HTFluidManagerImpl.Builder().run {
+            entryPoints.forEach { it.bindFluidToPart(this) }
+            HTMaterialsAPIImpl.fluidManager = HTFluidManagerImpl(this)
+        }
     }
 
     private fun registerRecipes() {
-        HTMaterialsAPI.getInstance().materialRegistry().getKeys().forEach { key ->
-            val partManager = HTMaterialsAPI.getInstance().partManager()
-            partManager.getDefaultItem(key, HTShapeKeys.INGOT)?.let { ingotRecipe(partManager, key, it) }
-            partManager.getDefaultItem(key, HTShapeKeys.NUGGET)?.let { nuggetRecipe(partManager, key, it) }
+        HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { key ->
+            HTMaterialsAPI.INSTANCE.partManager().run {
+                getDefaultItem(key, HTShapeKeys.INGOT)?.let { ingotRecipe(this, key, it) }
+                getDefaultItem(key, HTShapeKeys.NUGGET)?.let { nuggetRecipe(this, key, it) }
+            }
         }
     }
 

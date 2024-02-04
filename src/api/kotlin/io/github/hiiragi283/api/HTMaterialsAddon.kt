@@ -1,16 +1,16 @@
 package io.github.hiiragi283.api
 
 import com.google.common.collect.ImmutableSet
+import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.*
+import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
+import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.util.collection.DefaultedMap
-import io.github.hiiragi283.api.util.collection.DefaultedTable
 import net.fabricmc.api.EnvType
-import net.minecraft.fluid.Fluid
-import net.minecraft.item.ItemConvertible
 
 @JvmDefaultWithCompatibility
 interface HTMaterialsAddon {
@@ -30,9 +30,13 @@ interface HTMaterialsAddon {
 
     fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap>) {}
 
-    fun modifyMaterialProperty(registry: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {}
+    fun modifyMaterialComposition(registry: MutableMap<HTMaterialKey, HTMaterialComposition>) {}
 
     fun modifyMaterialFlag(registry: DefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder>) {}
+
+    fun modifyMaterialProperty(registry: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {}
+
+    fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {}
 
     fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {}
 
@@ -40,13 +44,11 @@ interface HTMaterialsAddon {
 
     fun modifyMaterialMolar(registry: MutableMap<HTMaterialKey, MolarMassConvertible>) {}
 
-    fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {}
-
     //    Post Initialization    //
 
-    fun bindItemToPart(registry: DefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>>) {}
+    fun bindItemToPart(builder: HTPartManager.Builder) {}
 
-    fun bindFluidToPart(registry: DefaultedMap<HTMaterialKey, MutableCollection<Fluid>>) {}
+    fun bindFluidToPart(builder: HTFluidManager.Builder) {}
 
     fun postInitialize(envType: EnvType) {}
 }

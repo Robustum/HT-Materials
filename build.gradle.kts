@@ -111,4 +111,7 @@ tasks {
             rename { "${it}_${project.base.archivesName.get()}" }
         }
     }
+    compileJava {
+        source(sourceSets.getByName("api").allSource)
+    }
 }

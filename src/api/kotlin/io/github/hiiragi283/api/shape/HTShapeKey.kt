@@ -11,7 +11,7 @@ import net.minecraft.util.Identifier
 data class HTShapeKey(val name: String) {
     private val translationKey: String = "ht_shape.$name"
 
-    fun getShape(): HTShape = checkNotNull(HTMaterialsAPI.getInstance().shapeRegistry().getShape(this)) {
+    fun getShape(): HTShape = checkNotNull(HTMaterialsAPI.INSTANCE.shapeRegistry().getShape(this)) {
         "Shape with $name is not registered!"
     }
 

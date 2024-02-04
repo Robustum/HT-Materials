@@ -16,7 +16,9 @@ import io.github.hiiragi283.material.impl.material.content.HTSimpleFluidContent
 import io.github.hiiragi283.material.impl.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.impl.material.content.HTStorageBlockContent
 import io.github.hiiragi283.material.impl.material.property.HTCompoundProperty
+import io.github.hiiragi283.material.impl.material.property.HTHydrateProperty
 import io.github.hiiragi283.material.impl.material.property.HTMixtureProperty
+import io.github.hiiragi283.material.impl.material.property.HTPolymerProperty
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import java.awt.Color
 
@@ -147,6 +149,37 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
         registry.addAll(
             HTMaterialKeys.WOOD,
         )
+        // Common - Fluids
+        // Common - Gems
+        registry.addAll(
+            HTMaterialKeys.CINNABAR,
+            HTMaterialKeys.COKE,
+            HTMaterialKeys.OLIVINE,
+            HTMaterialKeys.PERIDOT,
+            HTMaterialKeys.RUBY,
+            HTMaterialKeys.SALT,
+            HTMaterialKeys.SAPPHIRE,
+        )
+        // Common - Metals
+        registry.addAll(
+            HTMaterialKeys.BRASS,
+            HTMaterialKeys.BRONZE,
+            HTMaterialKeys.ELECTRUM,
+            HTMaterialKeys.INVAR,
+            HTMaterialKeys.STAINLESS_STEEL,
+            HTMaterialKeys.STEEl,
+        )
+        // Common - Solids
+        registry.addAll(
+            HTMaterialKeys.ASHES,
+            HTMaterialKeys.BAUXITE,
+            HTMaterialKeys.RUBBER,
+        )
+        // Common - Stones
+        registry.addAll(
+            HTMaterialKeys.MARBLE,
+        )
+        // Common - Woods
     }
 
     override fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
@@ -502,6 +535,188 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
             add(HTSimpleItemContent(HTShapeKeys.GEAR))
             add(HTSimpleItemContent(HTShapeKeys.PLATE))
         }
+        // Common - Fluids
+        // Common - Gems
+        registry.getOrCreate(HTMaterialKeys.CINNABAR).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 1,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEM))
+        }
+        registry.getOrCreate(HTMaterialKeys.COKE).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEM))
+        }
+        registry.getOrCreate(HTMaterialKeys.OLIVINE).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 1,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEM))
+        }
+        registry.getOrCreate(HTMaterialKeys.PERIDOT).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 1,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEM))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        registry.getOrCreate(HTMaterialKeys.RUBY).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 1,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEM))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        registry.getOrCreate(HTMaterialKeys.SALT).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::SHOVELS,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEM))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        registry.getOrCreate(HTMaterialKeys.SAPPHIRE).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 1,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEM))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        // Common - Metals
+        registry.getOrCreate(HTMaterialKeys.BRASS).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 1,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEAR))
+            add(HTSimpleItemContent(HTShapeKeys.INGOT))
+            add(HTSimpleItemContent(HTShapeKeys.NUGGET))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        registry.getOrCreate(HTMaterialKeys.BRONZE).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 1,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEAR))
+            add(HTSimpleItemContent(HTShapeKeys.INGOT))
+            add(HTSimpleItemContent(HTShapeKeys.NUGGET))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        registry.getOrCreate(HTMaterialKeys.ELECTRUM).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 2,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEAR))
+            add(HTSimpleItemContent(HTShapeKeys.INGOT))
+            add(HTSimpleItemContent(HTShapeKeys.NUGGET))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        registry.getOrCreate(HTMaterialKeys.INVAR).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 2,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEAR))
+            add(HTSimpleItemContent(HTShapeKeys.INGOT))
+            add(HTSimpleItemContent(HTShapeKeys.NUGGET))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        registry.getOrCreate(HTMaterialKeys.STAINLESS_STEEL).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 2,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEAR))
+            add(HTSimpleItemContent(HTShapeKeys.INGOT))
+            add(HTSimpleItemContent(HTShapeKeys.NUGGET))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        registry.getOrCreate(HTMaterialKeys.STEEl).apply {
+            add(
+                HTStorageBlockContent(
+                    toolTag = FabricToolTags::PICKAXES,
+                    toolLevel = 2,
+                ),
+            )
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.GEAR))
+            add(HTSimpleItemContent(HTShapeKeys.INGOT))
+            add(HTSimpleItemContent(HTShapeKeys.NUGGET))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        // Common - Solids
+        registry.getOrCreate(HTMaterialKeys.ASHES).apply {
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+        }
+        registry.getOrCreate(HTMaterialKeys.BAUXITE).apply {
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+        }
+        registry.getOrCreate(HTMaterialKeys.RUBBER).apply {
+            add(HTStorageBlockContent())
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+            add(HTSimpleItemContent(HTShapeKeys.INGOT))
+            add(HTSimpleItemContent(HTShapeKeys.PLATE))
+            add(HTSimpleItemContent(HTShapeKeys.ROD))
+        }
+        // Common - Stones
+        registry.getOrCreate(HTMaterialKeys.MARBLE).apply {
+            add(HTSimpleItemContent(HTShapeKeys.DUST))
+        }
+        // Common - Woods
     }
 
     override fun modifyMaterialProperty(registry: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
@@ -623,6 +838,60 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
         registry.getOrCreate(HTMaterialKeys.WOOD).apply {
             add(HTMixtureProperty(HTMaterialKeys.CARBON, HTMaterialKeys.HYDROGEN, HTMaterialKeys.OXYGEN))
         }
+        // Common - Fluids
+        // Common - Gems
+        registry.getOrCreate(HTMaterialKeys.CINNABAR).apply {
+            add(HTCompoundProperty(HTMaterialKeys.MERCURY to 1, HTMaterialKeys.SULFUR to 1))
+        }
+        registry.getOrCreate(HTMaterialKeys.COKE).apply {
+            add(HTCompoundProperty(HTMaterialKeys.CARBON to 1))
+        }
+        registry.getOrCreate(HTMaterialKeys.OLIVINE)
+        registry.getOrCreate(HTMaterialKeys.PERIDOT)
+        registry.getOrCreate(HTMaterialKeys.RUBY).apply {
+            add(HTCompoundProperty(*HTMaterialKeys.ALUMINUM_OXIDE))
+        }
+        registry.getOrCreate(HTMaterialKeys.SALT).apply {
+            add(HTCompoundProperty(HTMaterialKeys.SODIUM to 1, HTMaterialKeys.CHLORINE to 1))
+        }
+        registry.getOrCreate(HTMaterialKeys.SAPPHIRE).apply {
+            add(HTCompoundProperty(*HTMaterialKeys.ALUMINUM_OXIDE))
+        }
+        // Common - Metals
+        registry.getOrCreate(HTMaterialKeys.BRASS).apply {
+            add(HTCompoundProperty(HTMaterialKeys.COPPER to 3, HTMaterialKeys.ZINC to 1))
+        }
+        registry.getOrCreate(HTMaterialKeys.BRONZE).apply {
+            add(HTCompoundProperty(HTMaterialKeys.COPPER to 3, HTMaterialKeys.TIN to 1))
+        }
+        registry.getOrCreate(HTMaterialKeys.ELECTRUM).apply {
+            add(HTCompoundProperty(HTMaterialKeys.SILVER to 1, HTMaterialKeys.GOLD to 1))
+        }
+        registry.getOrCreate(HTMaterialKeys.INVAR).apply {
+            add(HTCompoundProperty(HTMaterialKeys.IRON to 2, HTMaterialKeys.NICKEL to 1))
+        }
+        registry.getOrCreate(HTMaterialKeys.STAINLESS_STEEL).apply {
+            add(
+                HTCompoundProperty(
+                    HTMaterialKeys.IRON to 6,
+                    HTMaterialKeys.CHROMIUM to 1,
+                    HTMaterialKeys.MANGANESE to 1,
+                    HTMaterialKeys.NICKEL to 1,
+                ),
+            )
+        }
+        registry.getOrCreate(HTMaterialKeys.STEEl).apply {
+            add(HTMixtureProperty(HTMaterialKeys.IRON, HTMaterialKeys.CARBON))
+        }
+        // Common - Solids
+        registry.getOrCreate(HTMaterialKeys.ASHES)
+        registry.getOrCreate(HTMaterialKeys.BAUXITE).add(HTHydrateProperty(HTMaterialKeys.RUBY, 2))
+        registry.getOrCreate(HTMaterialKeys.RUBBER).add(HTPolymerProperty("CC(=C)C=C"))
+        // Common - Stones
+        registry.getOrCreate(HTMaterialKeys.MARBLE).apply {
+            add(HTCompoundProperty(HTMaterialKeys.CALCIUM to 1, *HTMaterialKeys.CARBONATE))
+        }
+        // Common - Woods
     }
 
     override fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {
@@ -714,6 +983,29 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
         registry[HTMaterialKeys.END_STONE] = ColorConvertible.ofColor(HTColor.YELLOW to 1, HTColor.WHITE to 3)
         // Vanilla - Woods
         registry[HTMaterialKeys.WOOD] = ColorConvertible.ofColor(HTColor.DARK_GRAY to 2, HTColor.RED to 1, HTColor.YELLOW to 1)
+        // Common - Fluids
+        // Common - Gems
+        registry[HTMaterialKeys.CINNABAR] = ColorConvertible { HTColor.RED }
+        registry[HTMaterialKeys.COKE] = ColorConvertible { HTColor.DARK_GRAY }
+        registry[HTMaterialKeys.OLIVINE] = ColorConvertible.ofColor(HTColor.DARK_GREEN, HTColor.GREEN)
+        registry[HTMaterialKeys.PERIDOT] = ColorConvertible.ofColor(HTColor.GREEN, HTColor.WHITE)
+        registry[HTMaterialKeys.RUBY] = ColorConvertible { HTColor.RED }
+        registry[HTMaterialKeys.SALT] = ColorConvertible { HTColor.WHITE }
+        registry[HTMaterialKeys.SAPPHIRE] = ColorConvertible { HTColor.BLUE }
+        // Common - Metals
+        registry[HTMaterialKeys.BRASS] = ColorConvertible { HTColor.GOLD }
+        registry[HTMaterialKeys.BRONZE]
+        registry[HTMaterialKeys.ELECTRUM] = ColorConvertible.ofColor(HTColor.GOLD, HTColor.YELLOW, HTColor.WHITE)
+        registry[HTMaterialKeys.INVAR] = ColorConvertible.ofColor(HTColor.GREEN to 1, HTColor.GRAY to 3, HTColor.WHITE to 4)
+        registry[HTMaterialKeys.STAINLESS_STEEL] = ColorConvertible.ofColor(HTColor.GRAY, HTColor.WHITE)
+        registry[HTMaterialKeys.STEEl] = ColorConvertible { HTColor.DARK_GRAY }
+        // Common - Solids
+        registry[HTMaterialKeys.ASHES] = ColorConvertible { HTColor.DARK_GRAY }
+        registry[HTMaterialKeys.BAUXITE] = ColorConvertible.ofColor(HTColor.BLACK to 1, HTColor.DARK_RED to 2, HTColor.GOLD to 1)
+        registry[HTMaterialKeys.RUBBER] = ColorConvertible.ofColor(HTColor.BLACK, HTColor.DARK_GRAY)
+        // Common - Stones
+        registry[HTMaterialKeys.MARBLE] = ColorConvertible { HTColor.WHITE }
+        // Common - Woods
     }
 
     override fun modifyMaterialFormula(registry: MutableMap<HTMaterialKey, FormulaConvertible>) {
@@ -795,6 +1087,29 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
         registry[HTMaterialKeys.END_STONE]
         // Vanilla - Wood
         registry[HTMaterialKeys.WOOD] = FormulaConvertible { "C, H, O" }
+        // Common - Fluids
+        // Common - Gems
+        registry[HTMaterialKeys.CINNABAR]
+        registry[HTMaterialKeys.COKE]
+        registry[HTMaterialKeys.OLIVINE]
+        registry[HTMaterialKeys.PERIDOT]
+        registry[HTMaterialKeys.RUBY]
+        registry[HTMaterialKeys.SALT]
+        registry[HTMaterialKeys.SAPPHIRE]
+        // Common - Metals
+        registry[HTMaterialKeys.BRASS]
+        registry[HTMaterialKeys.BRONZE]
+        registry[HTMaterialKeys.ELECTRUM]
+        registry[HTMaterialKeys.INVAR]
+        registry[HTMaterialKeys.STAINLESS_STEEL]
+        registry[HTMaterialKeys.STEEl] = FormulaConvertible { "Fe, C" }
+        // Common - Solids
+        registry[HTMaterialKeys.ASHES]
+        registry[HTMaterialKeys.BAUXITE]
+        registry[HTMaterialKeys.RUBBER]
+        // Common - Stones
+        registry[HTMaterialKeys.MARBLE]
+        // Common - Woods
     }
 
     override fun modifyMaterialMolar(registry: MutableMap<HTMaterialKey, MolarMassConvertible>) {
@@ -876,6 +1191,12 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
         registry[HTMaterialKeys.END_STONE]
         // Vanilla - Wood
         registry[HTMaterialKeys.WOOD]
+        // Common - Fluids
+        // Common - Gems
+        // Common - Metals
+        // Common - Solids
+        // Common - Stones
+        // Common - Woods
     }
 
     override fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {
@@ -947,5 +1268,28 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
         registry[HTMaterialKeys.END_STONE] = HTMaterialType.Stone
         // Vanilla - Wood
         registry[HTMaterialKeys.WOOD] = HTMaterialType.Wood
+        // Common - Fluids
+        // Common - Gems
+        registry[HTMaterialKeys.CINNABAR] = HTMaterialType.Gem.EMERALD
+        registry[HTMaterialKeys.COKE] = HTMaterialType.Gem.COAL
+        registry[HTMaterialKeys.OLIVINE] = HTMaterialType.Gem.EMERALD
+        registry[HTMaterialKeys.PERIDOT] = HTMaterialType.Gem.RUBY
+        registry[HTMaterialKeys.RUBY] = HTMaterialType.Gem.RUBY
+        registry[HTMaterialKeys.SALT] = HTMaterialType.Gem.CUBIC
+        registry[HTMaterialKeys.SAPPHIRE] = HTMaterialType.Gem.RUBY
+        // Common - Metals
+        registry[HTMaterialKeys.BRASS] = HTMaterialType.Metal
+        registry[HTMaterialKeys.BRONZE] = HTMaterialType.Metal
+        registry[HTMaterialKeys.ELECTRUM] = HTMaterialType.Metal
+        registry[HTMaterialKeys.INVAR] = HTMaterialType.Metal
+        registry[HTMaterialKeys.STAINLESS_STEEL] = HTMaterialType.Metal
+        registry[HTMaterialKeys.STEEl] = HTMaterialType.Metal
+        // Common - Solids
+        registry[HTMaterialKeys.ASHES]
+        registry[HTMaterialKeys.BAUXITE]
+        registry[HTMaterialKeys.RUBBER]
+        // Common - Stones
+        registry[HTMaterialKeys.MARBLE] = HTMaterialType.Stone
+        // Common - Woods
     }
 }

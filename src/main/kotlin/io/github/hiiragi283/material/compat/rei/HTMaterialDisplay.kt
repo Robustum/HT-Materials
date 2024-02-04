@@ -21,10 +21,10 @@ class HTMaterialDisplay(val material: HTMaterial, val key: HTMaterialKey = mater
 
     override fun getRecipeCategory(): Identifier = HMReiPlugin.MATERIAL
 
-    private fun getFluidEntries(): Collection<Fluid> = HTMaterialsAPI.getInstance().fluidManager()
+    private fun getFluidEntries(): Collection<Fluid> = HTMaterialsAPI.INSTANCE.fluidManager()
         .getFluids(key)
 
-    private fun getItemEntries(): Collection<Item> = HTMaterialsAPI.getInstance().partManager()
+    private fun getItemEntries(): Collection<Item> = HTMaterialsAPI.INSTANCE.partManager()
         .getFilteredItems { it.materialKey == key }
         .map { it.item }
 }

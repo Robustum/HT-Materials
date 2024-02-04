@@ -4,10 +4,9 @@ import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeKey
-import io.github.hiiragi283.api.util.collection.DefaultedTable
 import io.github.hiiragi283.api.util.isAir
-import net.minecraft.item.ItemConvertible
 import net.minecraft.util.registry.Registry
 
 @Suppress("unused")
@@ -32,13 +31,13 @@ object HMMIAddon : HTMaterialsAddon {
         ).map(::HTShapeKey).forEach(registry::add)
     }
 
-    override fun bindItemToPart(registry: DefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>>) {
+    override fun bindItemToPart(builder: HTPartManager.Builder) {
         // Register Tags for ALL MI Material Items
-        HTMaterialsAPI.getInstance().materialRegistry().getKeys().forEach { material: HTMaterialKey ->
-            HTMaterialsAPI.getInstance().shapeRegistry().getValues().forEach { shape ->
+        HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { material: HTMaterialKey ->
+            HTMaterialsAPI.INSTANCE.shapeRegistry().getValues().forEach { shape ->
                 Registry.ITEM.get(shape.getIdentifier(material, modId)).run {
                     if (!this.isAir()) {
-                        registry.getOrCreate(material, shape.key).add(this)
+                        builder.add(material, shape.key, this)
                     }
                 }
             }

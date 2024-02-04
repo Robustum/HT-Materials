@@ -1,12 +1,8 @@
 package io.github.hiiragi283.material
 
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterial
-import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.part.HTPart
-import io.github.hiiragi283.api.part.HTPartManager
-import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.api.util.getTransaction
 import io.github.hiiragi283.api.util.resource.HTResourcePackProvider
 import net.fabricmc.api.ClientModInitializer
@@ -30,7 +26,7 @@ import net.minecraft.util.Rarity
 import net.minecraft.util.registry.Registry
 
 @Suppress("UnstableApiUsage")
-object HTMaterials : HTMaterialsAPI, PreLaunchEntrypoint, ModInitializer, ClientModInitializer, DedicatedServerModInitializer {
+object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, DedicatedServerModInitializer {
     private lateinit var itemGroup: ItemGroup
     private lateinit var iconItem: Item
 
@@ -39,20 +35,6 @@ object HTMaterials : HTMaterialsAPI, PreLaunchEntrypoint, ModInitializer, Client
 
     @JvmStatic
     fun iconItem(): Item = iconItem
-
-    // HTMaterialsAPI
-    internal lateinit var shapeRegistry: HTShapeRegistry
-    internal lateinit var materialRegistry: HTMaterialRegistry
-    internal lateinit var fluidManager: HTFluidManager
-    internal lateinit var partManager: HTPartManager
-
-    override fun shapeRegistry(): HTShapeRegistry = shapeRegistry
-
-    override fun materialRegistry(): HTMaterialRegistry = materialRegistry
-
-    override fun fluidManager(): HTFluidManager = fluidManager
-
-    override fun partManager(): HTPartManager = partManager
 
     // PreLaunchEntrypoint
     override fun onPreLaunch() {
@@ -77,11 +59,11 @@ object HTMaterials : HTMaterialsAPI, PreLaunchEntrypoint, ModInitializer, Client
             Item(FabricItemSettings().group(itemGroup).rarity(Rarity.EPIC)),
         )
         HTMaterialsCore.createContent(Registry.BLOCK_KEY)
-        HTMaterialsAPI.log("All Material Blocks Registered!")
+        HTMaterialsAPI.log("All Material Blocks registered!")
         HTMaterialsCore.createContent(Registry.FLUID_KEY)
-        HTMaterialsAPI.log("All Material Fluids Registered!")
+        HTMaterialsAPI.log("All Material Fluids registered!")
         HTMaterialsCore.createContent(Registry.ITEM_KEY)
-        HTMaterialsAPI.log("All Material Items Registered!")
+        HTMaterialsAPI.log("All Material Items registered!")
     }
 
     // ClientModInitializer
@@ -91,13 +73,13 @@ object HTMaterials : HTMaterialsAPI, PreLaunchEntrypoint, ModInitializer, Client
         (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager).`ht_materials$addPackProvider`(
             HTResourcePackProvider.CLIENT,
         )
-        HTMaterialsAPI.log("Registered Runtime ResourcePack Pack!")
-        HTMaterialsAPI.log("Client Post-Initialization completed!")
+        HTMaterialsAPI.log("Registered runtime resource pack!")
+        HTMaterialsAPI.log("Client post-initialize completed!")
     }
 
     @Suppress("UNUSED_PARAMETER")
     private fun getTooltip(stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
-        HTMaterialsAPI.getInstance().partManager().getPart(stack.item)?.let {
+        HTMaterialsAPI.INSTANCE.partManager().getPart(stack.item)?.let {
             HTMaterial.appendTooltip(it.getMaterial(), it.shapeKey, stack, lines)
         }
 
@@ -105,13 +87,13 @@ object HTMaterials : HTMaterialsAPI, PreLaunchEntrypoint, ModInitializer, Client
             ?.iterable(getTransaction())
             ?.map(StorageView<FluidVariant>::getResource)
             ?.map(FluidVariant::getFluid)
-            ?.mapNotNull { HTMaterialsAPI.getInstance().fluidManager().getMaterialKey(it) }
+            ?.mapNotNull { HTMaterialsAPI.INSTANCE.fluidManager().getMaterialKey(it) }
             ?.forEach { HTMaterial.appendTooltip(it.getMaterial(), null, stack, lines) }
     }
 
     // DedicatedServerModInitializer
     override fun onInitializeServer() {
         HTMaterialsCore.postInitialize(EnvType.SERVER)
-        HTMaterialsAPI.log("Server Post-Initialization completed!")
+        HTMaterialsAPI.log("Server post-initialize completed!")
     }
 }

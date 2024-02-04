@@ -3,23 +3,21 @@ package io.github.hiiragi283.material;
 import com.google.common.collect.ImmutableSet;
 import io.github.hiiragi283.api.HTMaterialsAPI;
 import io.github.hiiragi283.api.HTMaterialsAddon;
+import io.github.hiiragi283.api.fluid.HTFluidManager;
 import io.github.hiiragi283.api.material.*;
 import io.github.hiiragi283.api.material.content.HTMaterialContentMap;
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap;
+import io.github.hiiragi283.api.part.HTPartManager;
 import io.github.hiiragi283.api.shape.HTShapeKey;
 import io.github.hiiragi283.api.shape.HTShapeKeys;
-import io.github.hiiragi283.api.util.collection.DefaultedMap;
-import io.github.hiiragi283.api.util.collection.DefaultedTable;
 import io.github.hiiragi283.api.util.HTColor;
+import io.github.hiiragi283.api.util.collection.DefaultedMap;
 import io.github.hiiragi283.material.impl.material.content.HTSimpleFluidContent;
 import io.github.hiiragi283.material.impl.material.content.HTSimpleItemContent;
 import net.fabricmc.api.EnvType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.Map;
 
 @SuppressWarnings("unused")
@@ -94,19 +92,19 @@ public class HTTestAddon implements HTMaterialsAddon {
     //    Post Init    //
 
     @Override
-    public void bindFluidToPart(@NotNull DefaultedMap<HTMaterialKey, Collection<Fluid>> registry) {
+    public void bindFluidToPart(@NotNull HTFluidManager.Builder builder) {
 
     }
 
     @Override
-    public void bindItemToPart(@NotNull DefaultedTable<HTMaterialKey, HTShapeKey, Collection<ItemConvertible>> registry) {
-        registry.getOrCreate(INFINITY, HTShapeKeys.GEM).add(Items.NETHER_STAR);
+    public void bindItemToPart(@NotNull HTPartManager.Builder builder) {
+        builder.add(INFINITY, HTShapeKeys.GEM, Items.NETHER_STAR);
     }
 
     @Override
     public void postInitialize(@NotNull EnvType envType) {
-        HTMaterialsAPI.getInstance().shapeRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Shape: " + key));
-        HTMaterialsAPI.getInstance().materialRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Material: " + key));
+        HTMaterialsAPI.getINSTANCE().shapeRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Shape: " + key));
+        HTMaterialsAPI.getINSTANCE().materialRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Material: " + key));
     }
 
 }

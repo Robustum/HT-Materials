@@ -1,10 +1,10 @@
 package io.github.hiiragi283.api.material
 
 import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.HTPlatformHelper
 import io.github.hiiragi283.api.util.commonId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.item.Item
 import net.minecraft.tag.Tag
@@ -12,7 +12,7 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
 data class HTMaterialKey(val name: String) {
-    fun getMaterial(): HTMaterial = checkNotNull(HTMaterialsAPI.getInstance().materialRegistry().getMaterial(this)) {
+    fun getMaterial(): HTMaterial = checkNotNull(HTMaterialsAPI.INSTANCE.materialRegistry().getMaterial(this)) {
         "Material with $name is not registered!"
     }
 
@@ -26,7 +26,7 @@ data class HTMaterialKey(val name: String) {
 
     //    Tag    //
 
-    fun getMaterialTag(): Tag.Identified<Item> = TagRegistry.item(getMaterialId()) as Tag.Identified<Item>
+    fun getMaterialTag(): Tag.Identified<Item> = HTPlatformHelper.INSTANCE.getItemTag(getMaterialId())
 
     //    Translation    //
 

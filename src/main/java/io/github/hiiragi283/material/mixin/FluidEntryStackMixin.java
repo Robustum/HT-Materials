@@ -22,7 +22,7 @@ public abstract class FluidEntryStackMixin {
 
     @Inject(method = "asFormattedText", at = @At("RETURN"), cancellable = true)
     private void ht_materials$asFormattedText(CallbackInfoReturnable<Text> cir) {
-        Optional.ofNullable(HTMaterialsAPI.getInstance().fluidManager().getMaterialKey(fluid))
+        Optional.ofNullable(HTMaterialsAPI.getINSTANCE().fluidManager().getMaterialKey(fluid))
                 .map(HTMaterialKey::getTranslatedText)
                 .ifPresent(cir::setReturnValue);
     }

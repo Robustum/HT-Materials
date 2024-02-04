@@ -2,15 +2,14 @@ package io.github.hiiragi283.material.compat
 
 import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.HTMaterialsAddon
+import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
+import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeKey
-import io.github.hiiragi283.api.util.collection.DefaultedMap
-import io.github.hiiragi283.api.util.collection.DefaultedTable
 import me.steven.indrev.IndustrialRevolution
 import me.steven.indrev.registry.IRFluidRegistry
 import net.minecraft.fluid.Fluid
-import net.minecraft.item.ItemConvertible
 import net.minecraft.util.registry.Registry
 
 @Suppress("unused")
@@ -28,7 +27,7 @@ object HMIRAddon : HTMaterialsAddon {
         registry.add(CHUNK, PURIFIED_ORE)
     }
 
-    override fun bindFluidToPart(registry: DefaultedMap<HTMaterialKey, MutableCollection<Fluid>>) {
+    override fun bindFluidToPart(builder: HTFluidManager.Builder) {
         mapOf(
             HTMaterialKeys.COPPER to IRFluidRegistry.MOLTEN_COPPER_STILL,
             HTMaterialKeys.GOLD to IRFluidRegistry.MOLTEN_GOLD_STILL,
@@ -37,10 +36,10 @@ object HMIRAddon : HTMaterialsAddon {
             HTMaterialKeys.NETHERITE to IRFluidRegistry.MOLTEN_NETHERITE_STILL,
             HTMaterialKeys.SILVER to IRFluidRegistry.MOLTEN_SILVER_STILL,
             HTMaterialKeys.TIN to IRFluidRegistry.MOLTEN_TIN_STILL,
-        ).forEach { (key: HTMaterialKey, fluid: Fluid) -> registry.getOrCreate(key).add(fluid) }
+        ).forEach { (key: HTMaterialKey, fluid: Fluid) -> builder.add(key, fluid) }
     }
 
-    override fun bindItemToPart(registry: DefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>>) {
+    override fun bindItemToPart(builder: HTPartManager.Builder) {
         listOf(
             HTMaterialKeys.COPPER,
             HTMaterialKeys.GOLD,
@@ -51,9 +50,9 @@ object HMIRAddon : HTMaterialsAddon {
             HTMaterialKeys.TIN,
         ).forEach {
             // Chunks
-            registry.getOrCreate(it, CHUNK).add(Registry.ITEM.get(CHUNK.getShape().getIdentifier(it, modId)))
+            builder.add(it, CHUNK, Registry.ITEM.get(CHUNK.getShape().getIdentifier(it, modId)))
             // Purified Ores
-            registry.getOrCreate(it, PURIFIED_ORE).add(Registry.ITEM.get(PURIFIED_ORE.getShape().getIdentifier(it, modId)))
+            builder.add(it, PURIFIED_ORE, Registry.ITEM.get(PURIFIED_ORE.getShape().getIdentifier(it, modId)))
         }
     }
 }

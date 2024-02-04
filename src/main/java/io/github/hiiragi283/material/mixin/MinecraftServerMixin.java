@@ -17,7 +17,7 @@ public class MinecraftServerMixin {
     @Inject(method = "loadDataPacks", at = @At("HEAD"))
     private static void ht_materials$loadDataPacks(ResourcePackManager resourcePackManager, DataPackSettings dataPackSettings, boolean safeMode, CallbackInfoReturnable<DataPackSettings> cir) {
         ((MutableResourcePackManager) resourcePackManager).ht_materials$addPackProvider(HTResourcePackProvider.SERVER);
-        HTMaterialsAPI.log("Registered Runtime Data Pack!");
+        HTMaterialsAPI.log("Registered runtime data pack!");
     }
 
 }

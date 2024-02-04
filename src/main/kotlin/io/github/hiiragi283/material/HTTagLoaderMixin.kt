@@ -37,7 +37,7 @@ internal object HTTagLoaderMixin {
     @JvmStatic
     fun fluidTags(map: MutableMap<Identifier, Tag.Builder>) {
         // Register Tags from HTFluidManagerOld
-        HTMaterialsAPI.getInstance().fluidManager().materialToFluidsMap.forEach { key: HTMaterialKey, fluid: Fluid ->
+        HTMaterialsAPI.INSTANCE.fluidManager().materialToFluidsMap.forEach { key: HTMaterialKey, fluid: Fluid ->
             registerTag(
                 getOrCreateBuilder(map, key.getCommonId()),
                 Registry.FLUID,
@@ -60,7 +60,7 @@ internal object HTTagLoaderMixin {
         }
         HTMaterialsAPI.log("Converted existing tags!")
         // Register Tags from HTPartManagerOld
-        HTMaterialsAPI.getInstance().partManager().getAllEntries().forEach { entry ->
+        HTMaterialsAPI.INSTANCE.partManager().getAllEntries().forEach { entry ->
             val (materialKey: HTMaterialKey, shapeKey: HTShapeKey, item: Item) = entry
             // Shape tag
             registerTag(

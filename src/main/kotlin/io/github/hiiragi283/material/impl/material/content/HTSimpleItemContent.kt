@@ -1,6 +1,7 @@
 package io.github.hiiragi283.material.impl.material.content
 
 import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.HTPlatformHelper
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.content.HTMaterialContent
@@ -8,7 +9,6 @@ import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
-import io.github.hiiragi283.api.util.onEnv
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.HTMaterials
 import net.fabricmc.api.EnvType
@@ -51,10 +51,10 @@ class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.ITEM(shapeKe
         private val shapeKey: HTShapeKey,
     ) : Item(FabricItemSettings().group(HTMaterials.itemGroup())) {
         init {
-            onEnv(EnvType.CLIENT) {
+            HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
                 ColorProviderRegistry.ITEM.register(
                     ItemColorProvider { _, tintIndex: Int ->
-                        if (tintIndex == 0) materialKey.getMaterial().color.rgb else -1
+                        if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1
                     },
                     this,
                 )

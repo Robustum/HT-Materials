@@ -1,6 +1,7 @@
 package io.github.hiiragi283.api.fluid
 
-import com.google.common.collect.Multimap
+import com.google.common.collect.ImmutableMap
+import com.google.common.collect.ImmutableMultimap
 import io.github.hiiragi283.api.material.HTMaterialKey
 import net.minecraft.fluid.Fluid
 
@@ -8,7 +9,7 @@ import net.minecraft.fluid.Fluid
 interface HTFluidManager {
     // Fluid -> HTMaterialKey
 
-    val fluidToMaterialMap: MutableMap<Fluid, HTMaterialKey>
+    val fluidToMaterialMap: ImmutableMap<Fluid, HTMaterialKey>
 
     fun getMaterialKey(fluid: Fluid): HTMaterialKey? = fluidToMaterialMap[fluid]
 
@@ -16,9 +17,13 @@ interface HTFluidManager {
 
     // HTMaterialKey -> Collection<Fluid>
 
-    val materialToFluidsMap: Multimap<HTMaterialKey, Fluid>
+    val materialToFluidsMap: ImmutableMultimap<HTMaterialKey, Fluid>
 
     fun getFluids(materialKey: HTMaterialKey): Collection<Fluid> = materialToFluidsMap.get(materialKey)
 
     fun hasFluid(materialKey: HTMaterialKey): Boolean = materialToFluidsMap.containsKey(materialKey)
+
+    interface Builder {
+        fun add(materialKey: HTMaterialKey, fluid: Fluid)
+    }
 }
