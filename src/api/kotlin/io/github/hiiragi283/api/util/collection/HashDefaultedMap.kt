@@ -1,5 +1,13 @@
 package io.github.hiiragi283.api.util.collection
 
-class HashDefaultedMap<K, V>(mapping: (K) -> V) : AbstractDefaultedMap<K, V>(mapping) {
-    override val backingMap: MutableMap<K, V> = hashMapOf()
+class HashDefaultedMap<K, V> private constructor(mapping: (K) -> V) : AbstractDefaultedMap<K, V>(mapping) {
+    companion object {
+        @JvmStatic
+        fun <K, V> create(mapping: (K) -> V) = HashDefaultedMap(mapping)
+
+        @JvmStatic
+        fun <K, V> create(mapping: () -> V) = HashDefaultedMap<K, V> { _ -> mapping() }
+    }
+
+    override val backingMap: MutableMap<K, V> = linkedMapOf()
 }

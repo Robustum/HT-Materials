@@ -15,9 +15,11 @@ class HTCompoundProperty(map: Map<HTMaterialKey, Int>) : HTComponentProperty<HTC
 
     override val key: HTPropertyKey<HTCompoundProperty> = KEY
 
-    override fun asColor(): Color = ColorConvertible.average(this.mapKeys { (key: HTMaterialKey, _) -> key.getMaterial().color })
+    override fun asColor(): Color = ColorConvertible.average(this.mapKeys { (key: HTMaterialKey, _) -> key.getMaterial().color() })
 
-    override fun asFormula(): String = FormulaConvertible.format(this.mapKeys { (key: HTMaterialKey, _) -> key.getMaterial().formula })
+    override fun asFormula(): String = FormulaConvertible.format(this.mapKeys { (key: HTMaterialKey, _) -> key.getMaterial().formula() })
 
-    override fun asMolarMass(): Double = MolarMassConvertible.calculate(this.mapKeys { (key: HTMaterialKey, _) -> key.getMaterial().molar })
+    override fun asMolarMass(): Double = MolarMassConvertible.calculate(
+        this.mapKeys { (key: HTMaterialKey, _) -> key.getMaterial().molar() },
+    )
 }

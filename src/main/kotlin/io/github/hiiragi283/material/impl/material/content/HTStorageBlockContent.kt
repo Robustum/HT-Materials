@@ -12,14 +12,10 @@ import io.github.hiiragi283.api.util.buildJson
 import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.HTMaterials
-import net.fabricmc.api.EnvType
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Block
 import net.minecraft.block.Material
-import net.minecraft.client.color.block.BlockColorProvider
-import net.minecraft.client.color.item.ItemColorProvider
 import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
@@ -115,11 +111,9 @@ class HTStorageBlockContent(
         settings: Settings,
     ) : Block(settings) {
         init {
-            HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
-                ColorProviderRegistry.BLOCK.register(
-                    BlockColorProvider { _, _, _, _ ->
-                        materialKey.getMaterial().color().rgb
-                    },
+            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+                HTPlatformHelper.INSTANCE.registerBlockColor(
+                    { _, _, _, _ -> materialKey.getMaterial().color().rgb },
                     this,
                 )
             }
@@ -136,11 +130,9 @@ class HTStorageBlockContent(
         val shapeKey: HTShapeKey,
     ) : BlockItem(block, FabricItemSettings().group(HTMaterials.itemGroup())) {
         init {
-            HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
-                ColorProviderRegistry.ITEM.register(
-                    ItemColorProvider { _, tintIndex: Int ->
-                        if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1
-                    },
+            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+                HTPlatformHelper.INSTANCE.registerItemColor(
+                    { _, tintIndex: Int -> if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1 },
                     this,
                 )
             }

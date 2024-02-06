@@ -19,6 +19,7 @@ import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.collection.DefaultedMap
 import io.github.hiiragi283.api.util.collection.HashDefaultedMap
+import io.github.hiiragi283.api.util.collection.buildDefaultedMap
 import io.github.hiiragi283.api.util.prefix
 import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import io.github.hiiragi283.material.impl.HTMaterialsAPIImpl
@@ -69,66 +70,62 @@ internal object HTMaterialsCore {
             entryPoints.forEach { it.modifyShapeTagPath(this) }
         }
         // Create and register shape
-        val shapeMap: MutableMap<HTShapeKey, HTShape> = mutableMapOf()
-        shapeKeySet.forEach { key: HTShapeKey ->
-            val idPath: String = idPathMap.getOrDefault(key, "%s_${key.name}")
-            val tagPath: String = tagPathMap.getOrDefault(key, "${idPath}s")
-            shapeMap.putIfAbsent(key, HTShape(key, idPath, tagPath))
-            HTMaterialsAPI.log("Shape: ${key.name} registered!")
-        }
-        // Set shape registry to HTMaterialsAPI
-        HTMaterialsAPIImpl.shapeRegistry = HTShapeRegistryImpl(shapeMap)
+        HTMaterialsAPIImpl.shapeRegistry = buildMap {
+            shapeKeySet.forEach { key: HTShapeKey ->
+                val idPath: String = idPathMap.getOrDefault(key, "%s_${key.name}")
+                val tagPath: String = tagPathMap.getOrDefault(key, "${idPath}s")
+                putIfAbsent(key, HTShape(key, idPath, tagPath))
+                HTMaterialsAPI.log("Shape: ${key.name} registered!")
+            }
+        }.let(::HTShapeRegistryImpl)
         HTMaterialsAPI.log("HTShapeRegistry initialized!")
     }
 
     //    Initialize - HTMaterial    //
 
-    private val materialKeySet: ImmutableSet.Builder<HTMaterialKey> = ImmutableSet.builder()
-    private val contentMap: DefaultedMap<HTMaterialKey, HTMaterialContentMap> =
-        HashDefaultedMap { HTMaterialContentMap() }
-    private val compositionMap: MutableMap<HTMaterialKey, HTMaterialComposition> = hashMapOf()
-    private val flagMap: DefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder> =
-        HashDefaultedMap { HTMaterialFlagSet.Builder() }
-    private val propertyMap: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> =
-        HashDefaultedMap { HTMaterialPropertyMap.Builder() }
-    private val typeMap: MutableMap<HTMaterialKey, HTMaterialType> = hashMapOf()
+    private val contentMap: DefaultedMap<HTMaterialKey, HTMaterialContentMap> = HashDefaultedMap.create(::HTMaterialContentMap)
 
     fun createMaterial() {
-        // Register material keys and each property
+        // Register material keys
+        val materialKeySet: ImmutableSet<HTMaterialKey> = ImmutableSet.builder<HTMaterialKey>().apply {
+            entryPoints.forEach { it.registerMaterialKey(this) }
+        }.build()
+        // Register material contents
         entryPoints.forEach {
-            it.registerMaterialKey(materialKeySet)
             it.modifyMaterialContent(contentMap)
-            it.modifyMaterialComposition(compositionMap)
-            it.modifyMaterialFlag(flagMap)
-            it.modifyMaterialProperty(propertyMap)
-            it.modifyMaterialType(typeMap)
         }
-        val materialMap: MutableMap<HTMaterialKey, HTMaterial> = mutableMapOf()
-
-        materialKeySet.build().forEach { key: HTMaterialKey ->
-            val composition: HTMaterialComposition = compositionMap.getOrDefault(key, HTMaterialComposition.Empty)
-            val flags: HTMaterialFlagSet = flagMap.getOrCreate(key).build()
-            val property: HTMaterialPropertyMap = propertyMap.getOrCreate(key).build()
-            val type: HTMaterialType = typeMap.getOrDefault(key, HTMaterialType.Undefined)
-            materialMap[key] = HTMaterial(
-                key,
-                composition,
-                flags,
-                property,
-                type,
-            )
-            HTMaterialsAPI.log("Material: $key registered!")
+        // Register material compositions
+        val compositionMap: Map<HTMaterialKey, HTMaterialComposition> = buildMap {
+            entryPoints.forEach { it.modifyMaterialComposition(this) }
         }
-
-        // Set material registry to HTMaterialsAPI
-        HTMaterialsAPIImpl.materialRegistry = HTMaterialRegistryImpl(materialMap)
+        // Register material flags
+        val flagMap: DefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder> =
+            buildDefaultedMap(HTMaterialFlagSet::Builder) { entryPoints.forEach { it.modifyMaterialFlag(this) } }
+        // Register material properties
+        val propertyMap: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> =
+            buildDefaultedMap(HTMaterialPropertyMap::Builder) { entryPoints.forEach { it.modifyMaterialProperty(this) } }
+        // Register material types
+        val typeMap: Map<HTMaterialKey, HTMaterialType> = buildMap {
+            entryPoints.forEach { it.modifyMaterialType(this) }
+        }
+        // create and register material
+        HTMaterialsAPIImpl.materialRegistry = buildMap {
+            materialKeySet.forEach { key: HTMaterialKey ->
+                val composition: HTMaterialComposition = compositionMap.getOrDefault(key, HTMaterialComposition.EMPTY)
+                val flags: HTMaterialFlagSet = flagMap.getOrCreate(key).build()
+                val property: HTMaterialPropertyMap = propertyMap.getOrCreate(key).build()
+                val type: HTMaterialType = typeMap.getOrDefault(key, HTMaterialType.Undefined)
+                put(key, HTMaterial(key, composition, flags, property, type))
+                HTMaterialsAPI.log("Material: $key registered!")
+            }
+        }.let(::HTMaterialRegistryImpl)
         HTMaterialsAPI.log("HTMaterialRegistry initialized")
     }
 
     fun verifyMaterial() {
         HTMaterialsAPI.INSTANCE.materialRegistry().getValues().forEach { material ->
-            material.properties.values.forEach { it.verify(material) }
-            material.flags.forEach { it.verify(material) }
+            material.forEachProperty { it.verify(material) }
+            material.forEachFlag { it.verify(material) }
         }
     }
 

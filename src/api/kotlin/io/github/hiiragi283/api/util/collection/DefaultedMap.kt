@@ -11,3 +11,9 @@ interface DefaultedMap<K, V> {
 
     fun toMap(): Map<K, V>
 }
+
+inline fun <K, V> buildDefaultedMap(noinline mapping: (K) -> V, builderAction: DefaultedMap<K, V>.() -> Unit): DefaultedMap<K, V> =
+    HashDefaultedMap.create(mapping).apply(builderAction)
+
+inline fun <K, V> buildDefaultedMap(noinline mapping: () -> V, builderAction: DefaultedMap<K, V>.() -> Unit): DefaultedMap<K, V> =
+    HashDefaultedMap.create<K, V>(mapping).apply(builderAction)

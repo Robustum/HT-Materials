@@ -28,7 +28,13 @@ fun interface ColorConvertible {
         fun ofColor(map: Map<Color, Int>) = ColorConvertible { average(map) }
 
         @JvmStatic
+        fun average(vararg colors: Color): Color = average(colors.associateWith { 1 })
+
+        @JvmStatic
         fun average(colors: Iterable<Color>): Color = average(colors.associateWith { 1 })
+
+        @JvmStatic
+        fun average(vararg pairs: Pair<Color, Int>): Color = average(mapOf(*pairs))
 
         @JvmStatic
         fun average(map: Map<Color, Int>): Color {

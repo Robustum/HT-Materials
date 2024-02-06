@@ -11,14 +11,11 @@ import io.github.hiiragi283.api.util.buildJson
 import io.github.hiiragi283.api.util.prefix
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.HTMaterials
-import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.FluidBlock
-import net.minecraft.client.color.item.ItemColorProvider
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
@@ -53,10 +50,6 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
     override fun id(materialKey: HTMaterialKey): Identifier = materialKey.getIdentifier()
 
     override fun onCreate(materialKey: HTMaterialKey, created: Fluid) {
-        if (created is FlowableFluid) {
-            // HTFluidManagerOld.forceRegister(materialKey, created.flowing)
-            // HTFluidManagerOld.forceRegister(materialKey, created.still)
-        }
         // Model
         HTRuntimeResourcePack.addModel(
             created.bucketItem,
@@ -140,7 +133,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
         class Flowing(content: HTSimpleFluidContent, materialKey: HTMaterialKey) : FluidImpl(content, materialKey) {
             init {
-                HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
+                HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
                     FluidRenderHandlerRegistry.INSTANCE.register(this, HTFluidRenderHandler(materialKey.getMaterial()))
                 }
             }
@@ -159,7 +152,7 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
         class Still(content: HTSimpleFluidContent, materialKey: HTMaterialKey) : FluidImpl(content, materialKey) {
             init {
-                HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
+                HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
                     FluidRenderHandlerRegistry.INSTANCE.register(this, HTFluidRenderHandler(materialKey.getMaterial()))
                 }
             }
@@ -174,11 +167,9 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
     private class BucketImpl(fluid: Fluid, private val materialKey: HTMaterialKey) : BucketItem(fluid, ITEM_SETTINGS) {
         init {
-            HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
-                ColorProviderRegistry.ITEM.register(
-                    ItemColorProvider { _: ItemStack, tintIndex: Int ->
-                        if (tintIndex == 1) materialKey.getMaterial().color().rgb else -1
-                    },
+            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+                HTPlatformHelper.INSTANCE.registerItemColor(
+                    { _: ItemStack, tintIndex: Int -> if (tintIndex == 1) materialKey.getMaterial().color().rgb else -1 },
                     this,
                 )
             }

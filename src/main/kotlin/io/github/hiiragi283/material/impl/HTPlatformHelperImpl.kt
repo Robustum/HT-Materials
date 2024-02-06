@@ -4,11 +4,14 @@ import com.google.common.base.Suppliers
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTPlatformHelper
 import net.fabricmc.api.EnvType
+import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.tag.TagRegistry
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.loader.api.metadata.ModMetadata
 import net.minecraft.block.Block
+import net.minecraft.client.color.block.BlockColorProvider
+import net.minecraft.client.color.item.ItemColorProvider
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.tag.Tag
@@ -19,7 +22,11 @@ import java.util.function.Supplier
 class HTPlatformHelperImpl : HTPlatformHelper {
     override fun isDevelop() = FabricLoader.getInstance().isDevelopmentEnvironment
 
-    override fun getEnvType(): EnvType = FabricLoader.getInstance().environmentType
+    override fun getSide(): HTPlatformHelper.Side = when (FabricLoader.getInstance().environmentType) {
+        EnvType.CLIENT -> HTPlatformHelper.Side.CLIENT
+        EnvType.SERVER -> HTPlatformHelper.Side.SERVER
+        null -> throw IllegalStateException("")
+    }
 
     override fun getAllModId(): Collection<String> = FabricLoader.getInstance()
         .allMods
@@ -44,4 +51,12 @@ class HTPlatformHelperImpl : HTPlatformHelper {
 
     override fun registerItem(id: String, item: Supplier<Item>): Supplier<Item> =
         Registry.register(Registry.ITEM, HTMaterialsAPI.id(id), item.get()).let { Suppliers.ofInstance(it) }
+
+    override fun registerBlockColor(provider: BlockColorProvider, block: Block) {
+        ColorProviderRegistry.BLOCK.register(provider, block)
+    }
+
+    override fun registerItemColor(provider: ItemColorProvider, item: Item) {
+        ColorProviderRegistry.ITEM.register(provider, item)
+    }
 }

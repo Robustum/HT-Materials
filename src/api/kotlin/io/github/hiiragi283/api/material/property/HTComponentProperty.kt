@@ -12,7 +12,7 @@ interface HTComponentProperty<T : HTComponentProperty<T>> :
     FormulaConvertible,
     MolarMassConvertible {
     override fun verify(material: HTMaterial) {
-        material.properties.values.forEach {
+        material.forEachProperty {
             if (it.key != key && it is ColorConvertible) {
                 throw IllegalStateException("Material: ${material.key} cannot have two or more properties implemented ColorConvertible!")
             }

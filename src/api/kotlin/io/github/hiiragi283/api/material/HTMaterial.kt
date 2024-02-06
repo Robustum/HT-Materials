@@ -1,7 +1,7 @@
 package io.github.hiiragi283.api.material
 
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
-import io.github.hiiragi283.api.material.element.HTElement
+import io.github.hiiragi283.api.material.element.HTMaterialInfoProvider
 import io.github.hiiragi283.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialProperty
@@ -13,17 +13,18 @@ import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
 import java.awt.Color
+import java.util.function.Consumer
 
 class HTMaterial(
     val key: HTMaterialKey,
-    val composition: HTMaterialComposition,
-    val flags: HTMaterialFlagSet,
-    val properties: HTMaterialPropertyMap,
+    private val composition: HTMaterialComposition,
+    private val flags: HTMaterialFlagSet,
+    private val properties: HTMaterialPropertyMap,
     val type: HTMaterialType,
 ) {
     //    Composition    //
 
-    fun componentMap(): Map<HTElement, Int> = composition.componentMap()
+    fun componentMap(): Map<HTMaterialInfoProvider<*>, Int> = composition.componentMap()
 
     fun color(): Color = composition.color()
 
@@ -33,9 +34,25 @@ class HTMaterial(
 
     //    Flags    //
 
+    fun forEachFlag(consumer: Consumer<HTMaterialFlag>) {
+        flags.forEach(consumer)
+    }
+
+    fun forEachFlag(action: (HTMaterialFlag) -> Unit) {
+        flags.forEach(action)
+    }
+
     fun hasFlag(flag: HTMaterialFlag): Boolean = flag in flags
 
     //    Properties    //
+
+    fun forEachProperty(consumer: Consumer<HTMaterialProperty<*>>) {
+        properties.values.forEach(consumer)
+    }
+
+    fun forEachProperty(action: (HTMaterialProperty<*>) -> Unit) {
+        properties.values.forEach(action)
+    }
 
     fun <T : HTMaterialProperty<T>> getProperty(key: HTPropertyKey<T>): T? = key.objClass.cast(properties[key])
 

@@ -11,10 +11,7 @@ import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.material.HTMaterials
-import net.fabricmc.api.EnvType
-import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
-import net.minecraft.client.color.item.ItemColorProvider
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
@@ -51,11 +48,9 @@ class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.ITEM(shapeKe
         private val shapeKey: HTShapeKey,
     ) : Item(FabricItemSettings().group(HTMaterials.itemGroup())) {
         init {
-            HTPlatformHelper.INSTANCE.onEnv(EnvType.CLIENT) {
-                ColorProviderRegistry.ITEM.register(
-                    ItemColorProvider { _, tintIndex: Int ->
-                        if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1
-                    },
+            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+                HTPlatformHelper.INSTANCE.registerItemColor(
+                    { _, tintIndex: Int -> if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1 },
                     this,
                 )
             }
