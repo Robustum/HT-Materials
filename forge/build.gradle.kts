@@ -1,0 +1,5 @@
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}

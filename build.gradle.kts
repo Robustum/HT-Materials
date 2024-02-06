@@ -2,116 +2,94 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
-    kotlin("jvm") version libs.versions.kotlin
-    alias(libs.plugins.fabric.loom)
-    alias(libs.plugins.ktlint)
+    kotlin("jvm") version "1.9.21"
+    id("architectury-plugin") version "3.4-SNAPSHOT"
+    id("dev.architectury.loom") version "1.5-SNAPSHOT" apply(false)
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
 }
 
-group = "io.github.hiiragi283.material"
-version = "2.0.0+1.16.5"
+val archivesBaseName: String by rootProject
+val modVersion: String by rootProject
+val mavenGroup: String by rootProject
 
-sourceSets {
-    create("api")
-    main {
-        // compileClasspath.forEach { print("$it\n") }
-        compileClasspath += getByName("api").output
-        runtimeClasspath += getByName("api").output
-    }
+architectury {
+    minecraft = "1.16.5"
 }
 
-configurations {
-    // names.forEach { print("$it\n") }
-    getByName("apiCompileClasspath").extendsFrom(getByName("compileClasspath"))
-}
+subprojects {
+    apply(plugin = "dev.architectury.loom")
 
-repositories {
-    mavenCentral()
-    maven(url = "https://cursemaven.com") {
-        content { includeGroup("curse.maven") }
-    }
-    maven(url = "https://api.modrinth.com/maven") {
-        content { includeGroup("maven.modrinth") }
-    }
-    maven(url = "https://maven.architectury.dev/")
-    maven(url = "https://maven.blamejared.com") {
-        content { includeGroup("vazkii.patchouli") }
-    }
-    maven(url = "https://maven.shedaniel.me/")
-    maven(url = "https://maven.terraformersmc.com/releases/")
-}
-
-dependencies {
-    minecraft(libs.minecraft)
-    mappings("net.fabricmc:yarn:${libs.versions.fabric.yarn.get()}:v2")
-    modApi(libs.bundles.mods.fabric) {
-        exclude(module = "fabric-api")
-        exclude(module = "fabric-loader")
-    }
-    modCompileOnly(libs.bundles.mods.compile) {
-        exclude(module = "fabric-api")
-        exclude(module = "fabric-loader")
-    }
-    modLocalRuntime(libs.bundles.mods.debug) {
-        exclude(module = "fabric-api")
-        exclude(module = "fabric-loader")
-    }
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/ht_materials.accesswidener")
-    runs {
-        getByName("client") {
-            programArg("--username=Developer")
-            vmArg("-Dmixin.debug.export=true")
-        }
-        getByName("server") {
-            runDir = "server"
+    withGroovyBuilder {
+        "loom" {
+            "silentMojangMappingsLicense"()
         }
     }
-}
 
-kotlin {
-    jvmToolchain(8)
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_1_8)
-        freeCompilerArgs.add("-Xjvm-default=all")
+    dependencies {
+        add("minecraft", "com.mojang:minecraft:1.16.5")
+        add("mappings", "net.fabricmc:yarn:1.16.5+build.10:v2")
+        testImplementation("org.jetbrains.kotlin:kotlin-test")
     }
 }
 
-java {
-    withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
+allprojects {
+    apply(plugin = "kotlin")
+    apply(plugin = "architectury-plugin")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
-ktlint {
-    reporters {
-        reporter(ReporterType.HTML)
-        reporter(ReporterType.SARIF)
-    }
-    filter {
-        exclude("**/generated/**")
-        include("**/kotlin/**")
-    }
-}
+    base.archivesName = archivesBaseName
+    version = modVersion
+    group = mavenGroup
 
-tasks {
-    test {
-        useJUnitPlatform()
+    repositories {
+        mavenCentral()
+        maven(url = "https://cursemaven.com") {
+            content { includeGroup("curse.maven") }
+        }
+        maven(url = "https://api.modrinth.com/maven") {
+            content { includeGroup("maven.modrinth") }
+        }
+        maven(url = "https://maven.architectury.dev/")
+        maven(url = "https://maven.blamejared.com") {
+            content { includeGroup("vazkii.patchouli") }
+        }
+        maven(url = "https://maven.shedaniel.me/")
+        maven(url = "https://maven.terraformersmc.com/releases/")
     }
-    processResources {
-        inputs.property("version", project.version)
-        filesMatching("fabric.mod.json") {
-            expand("version" to project.version)
+
+    kotlin {
+        jvmToolchain(8)
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_1_8)
+            freeCompilerArgs.add("-Xjvm-default=all")
         }
     }
-    jar {
-        from("LICENSE") {
-            rename { "${it}_${project.base.archivesName.get()}" }
+
+    java {
+        withSourcesJar()
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    ktlint {
+        reporters {
+            reporter(ReporterType.HTML)
+            reporter(ReporterType.SARIF)
+        }
+        filter {
+            exclude("**/generated/**")
+            include("**/kotlin/**")
         }
     }
-    compileJava {
-        source(sourceSets.getByName("api").allSource)
+
+    tasks {
+        test {
+            useJUnitPlatform()
+        }
+        jar {
+            from("LICENSE") {
+                rename { "${it}_${archivesBaseName}" }
+            }
+        }
     }
 }

@@ -1,7 +1,13 @@
 pluginManagement {
     repositories {
         maven(url = "https://maven.fabricmc.net/") {
-            name = "Fabric"
+            name = "fabric"
+        }
+        maven(url = "https://maven.architectury.dev/") {
+            name = "architectury"
+        }
+        maven(url = "https://maven.minecraftforge.net/") {
+            name = "forge"
         }
         gradlePluginPortal()
     }
@@ -18,3 +24,4 @@ plugins {
 }
 
 rootProject.name = "HT-Materials"
+include("common", "fabric", "forge")
