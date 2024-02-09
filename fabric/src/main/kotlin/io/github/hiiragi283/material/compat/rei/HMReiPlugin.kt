@@ -1,7 +1,6 @@
 package io.github.hiiragi283.material.compat.rei
 
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.material.HTMaterials
 import me.shedaniel.rei.api.EntryStack
 import me.shedaniel.rei.api.RecipeHelper
 import me.shedaniel.rei.api.plugins.REIPluginV0
@@ -27,6 +26,6 @@ object HMReiPlugin : REIPluginV0 {
     }
 
     override fun registerOthers(recipeHelper: RecipeHelper) {
-        recipeHelper.registerWorkingStations(MATERIAL, EntryStack.create(HTMaterials.iconItem()))
+        recipeHelper.registerWorkingStations(MATERIAL, EntryStack.create(HTMaterialsAPI.INSTANCE.iconItem()))
     }
 }

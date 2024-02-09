@@ -3,74 +3,108 @@ package io.github.hiiragi283.api.material.composition
 import io.github.hiiragi283.api.material.ColorConvertible
 import io.github.hiiragi283.api.material.FormulaConvertible
 import io.github.hiiragi283.api.material.MolarMassConvertible
-import io.github.hiiragi283.api.material.element.HTMaterialInfoProvider
+import io.github.hiiragi283.api.material.element.HTElement
 import io.github.hiiragi283.api.util.HTColor
 import java.awt.Color
 
 abstract class HTMaterialComposition {
-    abstract fun componentMap(): Map<HTMaterialInfoProvider<*>, Int>
-
-    abstract fun color(): Color
-
-    abstract fun formula(): String
-
-    abstract fun molar(): Double
+    abstract val componentMap: Map<HTElement<*>, Int>
+    abstract val color: Color
+    abstract val formula: String
+    abstract val molar: Double
 
     companion object {
         @JvmField
         val EMPTY: HTMaterialComposition = Empty
 
+        @JvmOverloads
         @JvmStatic
-        fun create(vararg pairs: Pair<HTMaterialInfoProvider<*>, Int>) = create(mapOf(*pairs))
+        inline fun molecular(vararg pairs: Pair<HTElement<*>, Int>, builderAction: Molecular.() -> Unit = {}): HTMaterialComposition =
+            molecular(mapOf(*pairs), builderAction)
 
+        @JvmOverloads
         @JvmStatic
-        fun create(map: Map<HTMaterialInfoProvider<*>, Int>): HTMaterialComposition = build {
-            this.map.putAll(map)
-        }
+        inline fun molecular(map: Map<HTElement<*>, Int>, builderAction: Molecular.() -> Unit = {}): HTMaterialComposition =
+            Molecular(map).apply(builderAction)
 
+        @JvmOverloads
         @JvmStatic
-        inline fun override(parent: HTMaterialComposition, builderAction: Builder.() -> Unit): HTMaterialComposition = build {
-            map.putAll(parent.componentMap())
-            color = parent::color
-            formula = parent::formula
-            molar = parent::molar
-            builderAction()
-        }
+        inline fun hydrate(
+            vararg pairs: Pair<HTElement<*>, Int>,
+            waterCount: Int,
+            builderAction: Hydrate.() -> Unit = {},
+        ): HTMaterialComposition = hydrate(molecular(*pairs), waterCount, builderAction)
 
+        @JvmOverloads
         @JvmStatic
-        inline fun build(builderAction: Builder.() -> Unit): HTMaterialComposition = Builder().apply(builderAction).build()
+        inline fun hydrate(
+            unhydrate: HTMaterialComposition,
+            waterCount: Int,
+            builderAction: Hydrate.() -> Unit = {},
+        ): HTMaterialComposition = Hydrate(unhydrate, waterCount).apply(builderAction)
+
+        @JvmOverloads
+        @JvmStatic
+        inline fun mixture(vararg providers: HTElement<*>, builderAction: Mixture.() -> Unit = {}): HTMaterialComposition =
+            mixture(providers.toList(), builderAction)
+
+        @JvmOverloads
+        @JvmStatic
+        inline fun mixture(elements: Iterable<HTElement<*>>, builderAction: Mixture.() -> Unit = {}): HTMaterialComposition =
+            Mixture(elements).apply(builderAction)
+
+        @JvmOverloads
+        @JvmStatic
+        inline fun polymer(vararg pairs: Pair<HTElement<*>, Int>, builderAction: Polymer.() -> Unit = {}): HTMaterialComposition =
+            polymer(molecular(*pairs), builderAction)
+
+        @JvmOverloads
+        @JvmStatic
+        inline fun polymer(monomar: HTMaterialComposition, builderAction: Polymer.() -> Unit = {}): HTMaterialComposition =
+            Polymer(monomar).apply(builderAction)
     }
 
     private data object Empty : HTMaterialComposition() {
-        override fun componentMap(): Map<HTMaterialInfoProvider<*>, Int> = mapOf()
-
-        override fun color(): Color = HTColor.WHITE
-
-        override fun formula(): String = ""
-
-        override fun molar(): Double = 0.0
+        override val componentMap: Map<HTElement<*>, Int> = mapOf()
+        override val color: Color = HTColor.WHITE
+        override val formula: String = ""
+        override val molar: Double = 0.0
     }
 
-    class Builder {
-        var map: MutableMap<HTMaterialInfoProvider<*>, Int> = mutableMapOf()
-        var color: () -> Color = ::averageColor
-        var formula: () -> String = ::formatForula
-        var molar: () -> Double = ::calculateMolar
+    class Molecular(
+        override var componentMap: Map<HTElement<*>, Int>,
+        override var color: Color = ColorConvertible.average(componentMap.mapKeys { it.key.color }),
+        override var formula: String = FormulaConvertible.format(componentMap.mapKeys { it.key.formula }),
+        override var molar: Double = MolarMassConvertible.calculate(componentMap.mapKeys { it.key.molar }),
+    ) : HTMaterialComposition()
 
-        fun averageColor(): Color = ColorConvertible.average(map.mapKeys { it.key.color })
-
-        fun formatForula(): String = FormulaConvertible.format(map.mapKeys { it.key.formula })
-
-        fun calculateMolar(): Double = MolarMassConvertible.calculate(map.mapKeys { it.key.molar })
-
-        fun build(): HTMaterialComposition = object : HTMaterialComposition() {
-            override fun componentMap(): Map<HTMaterialInfoProvider<*>, Int> = map
-
-            override fun color(): Color = this@Builder.color()
-
-            override fun formula(): String = this@Builder.formula()
-
-            override fun molar(): Double = this@Builder.molar()
+    class Hydrate(
+        unhydrate: HTMaterialComposition,
+        waterCount: Int,
+        override var color: Color = HTColor.WHITE,
+        override var formula: String = "${unhydrate.formula}-${waterCount}H₂O",
+        override var molar: Double = unhydrate.molar + waterCount * 18.0,
+    ) : HTMaterialComposition() {
+        override val componentMap: Map<HTElement<*>, Int> = buildMap {
+            putAll(unhydrate.componentMap)
         }
+    }
+
+    class Mixture(
+        elements: Iterable<HTElement<*>>,
+        override var color: Color = ColorConvertible.average(elements.map(HTElement<*>::color)),
+        override var formula: String = "",
+        override var molar: Double = 0.0,
+    ) : HTMaterialComposition() {
+        override val componentMap: Map<HTElement<*>, Int> = elements.associateWith { 1 }
+    }
+
+    class Polymer(
+        monomar: HTMaterialComposition,
+        override var color: Color = monomar.color,
+        override var formula: String = "(${monomar.formula})n",
+        override var molar: Double = 0.0,
+    ) : HTMaterialComposition() {
+        override val componentMap: Map<HTElement<*>, Int> = monomar.componentMap
     }
 }

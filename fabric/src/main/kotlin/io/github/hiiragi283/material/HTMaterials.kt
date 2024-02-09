@@ -5,38 +5,29 @@ import io.github.hiiragi283.api.HTPlatformHelper
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.util.resource.HTResourcePackProvider
+import io.github.hiiragi283.material.impl.HTMaterialsAPIImpl
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint
+import net.minecraft.block.Block
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
+import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.util.Rarity
-import net.minecraft.util.registry.Registry
 
 @Suppress("UnstableApiUsage")
 object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, DedicatedServerModInitializer {
-    private lateinit var itemGroup: ItemGroup
-    private lateinit var iconItem: Item
-
-    @JvmStatic
-    fun itemGroup(): ItemGroup = itemGroup
-
-    @JvmStatic
-    fun iconItem(): Item = iconItem
-
     // PreLaunchEntrypoint
     override fun onPreLaunch() {
         // Collect Addons
@@ -53,17 +44,17 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
     // ModInitializer
     override fun onInitialize() {
         // Initialize Game Objects
-        itemGroup = FabricItemGroupBuilder.create(HTMaterialsAPI.id("material")).icon { iconItem.defaultStack }.build()
-        iconItem = Registry.register(
-            Registry.ITEM,
-            HTMaterialsAPI.id("icon"),
-            Item(FabricItemSettings().group(itemGroup).rarity(Rarity.EPIC)),
-        )
-        HTMaterialsCore.createContent(Registry.BLOCK_KEY)
+        HTMaterialsAPIImpl.itemGroup = object : ItemGroup(GROUPS.size - 1, "${HTMaterialsAPI.MOD_ID}.material") {
+            override fun createIcon(): ItemStack = HTMaterialsAPI.INSTANCE.iconItem().defaultStack
+        }
+        HTMaterialsAPIImpl.iconItem = HTPlatformHelper.INSTANCE.registerItem("icon") {
+            Item(Item.Settings().group(HTMaterialsAPI.INSTANCE.itemGroup()).rarity(Rarity.EPIC))
+        }
+        HTMaterialsCore.forEachContent(Block::class.java) { content, key -> content.init(key) }
         HTMaterialsAPI.log("All Material Blocks registered!")
-        HTMaterialsCore.createContent(Registry.FLUID_KEY)
+        HTMaterialsCore.forEachContent(Fluid::class.java) { content, key -> content.init(key) }
         HTMaterialsAPI.log("All Material Fluids registered!")
-        HTMaterialsCore.createContent(Registry.ITEM_KEY)
+        HTMaterialsCore.forEachContent(Item::class.java) { content, key -> content.init(key) }
         HTMaterialsAPI.log("All Material Items registered!")
     }
 
@@ -71,9 +62,8 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
     override fun onInitializeClient() {
         HTMaterialsCore.postInitialize(HTPlatformHelper.Side.CLIENT)
         ItemTooltipCallback.EVENT.register(::getTooltip)
-        (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager).`ht_materials$addPackProvider`(
-            HTResourcePackProvider.CLIENT,
-        )
+        (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager)
+            .`ht_materials$addPackProvider`(HTResourcePackProvider.CLIENT)
         HTMaterialsAPI.log("Registered runtime resource pack!")
         HTMaterialsAPI.log("Client post-initialize completed!")
     }

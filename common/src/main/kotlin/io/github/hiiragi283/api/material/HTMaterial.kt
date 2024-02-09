@@ -1,7 +1,7 @@
 package io.github.hiiragi283.api.material
 
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
-import io.github.hiiragi283.api.material.element.HTMaterialInfoProvider
+import io.github.hiiragi283.api.material.element.HTElement
 import io.github.hiiragi283.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialProperty
@@ -24,13 +24,13 @@ class HTMaterial(
 ) {
     //    Composition    //
 
-    fun componentMap(): Map<HTMaterialInfoProvider<*>, Int> = composition.componentMap()
+    fun componentMap(): Map<HTElement<*>, Int> = composition.componentMap
 
-    fun color(): Color = composition.color()
+    fun color(): Color = composition.color
 
-    fun formula(): String = composition.formula()
+    fun formula(): String = composition.formula
 
-    fun molar(): Double = composition.molar()
+    fun molar(): Double = composition.molar
 
     //    Flags    //
 

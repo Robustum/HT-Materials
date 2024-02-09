@@ -16,9 +16,9 @@ interface HTPlatformHelper {
         val INSTANCE: HTPlatformHelper = getInstance()
     }
 
-    fun isDevelop(): Boolean
-
     fun getAllModId(): Collection<String>
+
+    fun isDevelop(): Boolean
 
     fun isModLoaded(id: String): Boolean
 
@@ -68,13 +68,19 @@ interface HTPlatformHelper {
 
     fun getCommonItemTag(path: String): Tag.Identified<Item> = getItemTag(Identifier(getLoaderType().tagNamespace, path))
 
-    //    Register    //
+    //    Registry    //
 
-    fun registerBlock(id: String, block: Supplier<Block>): Supplier<Block>
+    fun getBlock(id: String): Block
 
-    fun registerFluid(id: String, fluid: Supplier<Fluid>): Supplier<Fluid>
+    fun getFluid(id: String): Fluid
 
-    fun registerItem(id: String, item: Supplier<Item>): Supplier<Item>
+    fun getItem(id: String): Item
+
+    fun <T : Block> registerBlock(id: String, block: Supplier<T>): Supplier<T>
+
+    fun <T : Fluid> registerFluid(id: String, fluid: Supplier<T>): Supplier<T>
+
+    fun <T : Item> registerItem(id: String, item: Supplier<T>): Supplier<T>
 
     fun registerBlockColor(provider: BlockColorProvider, block: Block)
 

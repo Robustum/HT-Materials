@@ -1,6 +1,7 @@
 package io.github.hiiragi283.material
 
 import com.google.common.collect.ImmutableSet
+import io.github.hiiragi283.api.HTAddon
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.HTPlatformHelper
@@ -12,43 +13,44 @@ import io.github.hiiragi283.api.material.content.HTMaterialContent
 import io.github.hiiragi283.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.api.part.HTPart
-import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeKey
-import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.collection.DefaultedMap
 import io.github.hiiragi283.api.util.collection.HashDefaultedMap
 import io.github.hiiragi283.api.util.collection.buildDefaultedMap
-import io.github.hiiragi283.api.util.prefix
-import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import io.github.hiiragi283.material.impl.HTMaterialsAPIImpl
 import io.github.hiiragi283.material.impl.fluid.HTFluidManagerImpl
 import io.github.hiiragi283.material.impl.material.HTMaterialRegistryImpl
 import io.github.hiiragi283.material.impl.part.HTPartManagerImpl
 import io.github.hiiragi283.material.impl.shape.HTShapeRegistryImpl
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.block.Block
-import net.minecraft.data.server.RecipesProvider
-import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
-import net.minecraft.tag.Tag
+import net.minecraftforge.fml.ModList
+import net.minecraftforge.forgespi.language.ModFileScanData
+import org.objectweb.asm.Type
 import java.util.function.BiConsumer
 
 internal object HTMaterialsCore {
-    private lateinit var entryPoints: Iterable<HTMaterialsAddon>
+    private lateinit var addons: Iterable<HTMaterialsAddon>
 
-    fun initEntryPoints() {
-        entryPoints = FabricLoader.getInstance()
-            .getEntrypoints(HTMaterialsAPI.MOD_ID, HTMaterialsAddon::class.java)
-            .filter { HTPlatformHelper.INSTANCE.isModLoaded(it.modId) }
-            .sortedWith(compareBy(HTMaterialsAddon::priority).thenBy { it.javaClass.name })
+    fun initAddons() {
+        val type: Type = Type.getType(HTAddon::class.java)
+        addons = ModList.get().allScanData.flatMap { scanData ->
+            scanData.annotations
+                .asSequence()
+                .filter { it.annotationType == type }
+                .map(ModFileScanData.AnnotationData::getMemberName)
+                .map { Class.forName(it) }
+                .map { it.asSubclass(HTMaterialsAddon::class.java) }
+                .map { it.getConstructor() }
+                .map { it.newInstance() }
+                .toList()
+        }
         // Print sorted addons
         HTMaterialsAPI.log("HTMaterialsAddon collected!")
         HTMaterialsAPI.log("=== List ===")
-        entryPoints.forEach {
+        addons.forEach {
             HTMaterialsAPI.log("${it::class.qualifiedName} - Priority: ${it.priority}")
         }
         HTMaterialsAPI.log("============")
@@ -59,15 +61,15 @@ internal object HTMaterialsCore {
     fun createShape() {
         // Register shape keys
         val shapeKeySet: Set<HTShapeKey> = ImmutableSet.builder<HTShapeKey>().apply {
-            entryPoints.forEach { it.registerShape(this) }
+            addons.forEach { it.registerShape(this) }
         }.build()
         // Register shape id path
         val idPathMap: Map<HTShapeKey, String> = buildMap {
-            entryPoints.forEach { it.modifyShapeIdPath(this) }
+            addons.forEach { it.modifyShapeIdPath(this) }
         }
         // Register shape tag path
         val tagPathMap: Map<HTShapeKey, String> = buildMap {
-            entryPoints.forEach { it.modifyShapeTagPath(this) }
+            addons.forEach { it.modifyShapeTagPath(this) }
         }
         // Create and register shape
         HTMaterialsAPIImpl.shapeRegistry = buildMap {
@@ -83,30 +85,31 @@ internal object HTMaterialsCore {
 
     //    Initialize - HTMaterial    //
 
-    private val contentMap: DefaultedMap<HTMaterialKey, HTMaterialContentMap> = HashDefaultedMap.create(::HTMaterialContentMap)
+    private val contentMap: DefaultedMap<HTMaterialKey, HTMaterialContentMap> =
+        HashDefaultedMap.create(::HTMaterialContentMap)
 
     fun createMaterial() {
         // Register material keys
         val materialKeySet: ImmutableSet<HTMaterialKey> = ImmutableSet.builder<HTMaterialKey>().apply {
-            entryPoints.forEach { it.registerMaterialKey(this) }
+            addons.forEach { it.registerMaterialKey(this) }
         }.build()
         // Register material contents
-        entryPoints.forEach {
+        addons.forEach {
             it.modifyMaterialContent(contentMap)
         }
         // Register material compositions
         val compositionMap: Map<HTMaterialKey, HTMaterialComposition> = buildMap {
-            entryPoints.forEach { it.modifyMaterialComposition(this) }
+            addons.forEach { it.modifyMaterialComposition(this) }
         }
         // Register material flags
         val flagMap: DefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder> =
-            buildDefaultedMap(HTMaterialFlagSet::Builder) { entryPoints.forEach { it.modifyMaterialFlag(this) } }
+            buildDefaultedMap(HTMaterialFlagSet::Builder) { addons.forEach { it.modifyMaterialFlag(this) } }
         // Register material properties
         val propertyMap: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> =
-            buildDefaultedMap(HTMaterialPropertyMap::Builder) { entryPoints.forEach { it.modifyMaterialProperty(this) } }
+            buildDefaultedMap(HTMaterialPropertyMap::Builder) { addons.forEach { it.modifyMaterialProperty(this) } }
         // Register material types
         val typeMap: Map<HTMaterialKey, HTMaterialType> = buildMap {
-            entryPoints.forEach { it.modifyMaterialType(this) }
+            addons.forEach { it.modifyMaterialType(this) }
         }
         // create and register material
         HTMaterialsAPIImpl.materialRegistry = buildMap {
@@ -139,47 +142,6 @@ internal object HTMaterialsCore {
         }
     }
 
-    /*private fun createBlock(content: HTMaterialContent.BLOCK, materialKey: HTMaterialKey) {
-        // Register block
-        content.block(materialKey)
-            ?.let { Registry.register(Registry.BLOCK, content.id(materialKey), it) }
-            ?.run {
-                // Register block item if exists
-                content.blockItem(this, materialKey)
-                    ?.let { Registry.register(Registry.ITEM, content.id(materialKey), it) }
-                content.onCreate(materialKey, this)
-            }
-    }
-
-    private fun createFluid(content: HTMaterialContent.FLUID, materialKey: HTMaterialKey) {
-        // Register flowing fluid if exists
-        content.flowing(materialKey)
-            ?.let { Registry.register(Registry.FLUID, content.flowingId(materialKey), it) }
-        // Register still fluid
-        Registry.register(
-            Registry.FLUID,
-            content.id(materialKey),
-            content.still(materialKey),
-        ).run {
-            // Register fluid block if exists
-            content.block(this, materialKey)?.let {
-                Registry.register(Registry.BLOCK, content.blockId(materialKey), it)
-            }
-            // Register bucket item if exists
-            content.bucket(this, materialKey)?.let {
-                Registry.register(Registry.ITEM, content.bucketId(materialKey), it)
-            }
-            content.onCreate(materialKey, this)
-        }
-    }
-
-    private fun createItem(content: HTMaterialContent.ITEM, materialKey: HTMaterialKey) {
-        // Register item
-        content.item(materialKey)
-            ?.let { Registry.register(Registry.ITEM, content.id(materialKey), it) }
-            ?.run { content.onCreate(materialKey, this) }
-    }*/
-
     //    Post Initialization    //
 
     fun postInitialize(side: HTPlatformHelper.Side) {
@@ -196,7 +158,7 @@ internal object HTMaterialsCore {
         bindItemToPart()
         HTMaterialsAPI.log("HTPartManager initialized!")
         // Post initialize from addons
-        entryPoints.forEach { it.postInitialize(side) }
+        addons.forEach { it.postInitialize(side) }
         HTMaterialsAPI.log("Post-initialize completed!")
         // Register material recipes
         registerRecipes()
@@ -205,14 +167,14 @@ internal object HTMaterialsCore {
 
     private fun bindItemToPart() {
         HTPartManagerImpl.Builder().run {
-            entryPoints.forEach { it.bindItemToPart(this) }
+            addons.forEach { it.bindItemToPart(this) }
             HTMaterialsAPIImpl.partManager = HTPartManagerImpl(this)
         }
     }
 
     private fun bindFluidToPart() {
         HTFluidManagerImpl.Builder().run {
-            entryPoints.forEach { it.bindFluidToPart(this) }
+            addons.forEach { it.bindFluidToPart(this) }
             HTMaterialsAPIImpl.fluidManager = HTFluidManagerImpl(this)
         }
     }
@@ -220,13 +182,13 @@ internal object HTMaterialsCore {
     private fun registerRecipes() {
         HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { key ->
             HTMaterialsAPI.INSTANCE.partManager().run {
-                getDefaultItem(key, HTShapeKeys.INGOT)?.let { ingotRecipe(this, key, it) }
-                getDefaultItem(key, HTShapeKeys.NUGGET)?.let { nuggetRecipe(this, key, it) }
+                // getDefaultItem(key, HTShapeKeys.INGOT)?.let { ingotRecipe(this, key, it) }
+                // getDefaultItem(key, HTShapeKeys.NUGGET)?.let { nuggetRecipe(this, key, it) }
             }
         }
     }
 
-    private fun ingotRecipe(partManager: HTPartManager, material: HTMaterialKey, item: Item) {
+    /*private fun ingotRecipe(partManager: HTPartManager, material: HTMaterialKey, item: Item) {
         // 9x Nugget -> 1x Ingot
         if (!partManager.hasItem(material, HTShapeKeys.NUGGET)) return
         val nuggetTag: Tag<Item> = HTPart(material, HTShapeKeys.NUGGET).getPartTag()
@@ -251,5 +213,5 @@ internal object HTMaterialsCore {
                 .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag))
                 .offerTo(exporter, HTShapeKeys.NUGGET.getShape().getIdentifier(material).prefix("shapeless/"))
         }
-    }
+    }*/
 }

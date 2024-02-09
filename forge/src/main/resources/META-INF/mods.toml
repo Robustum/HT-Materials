@@ -1,0 +1,32 @@
+modLoader = "kotlinforforge"
+loaderVersion = "[1.17,)"
+license = "MPL-2.0"
+issueTrackerURL = "https://github.com/Robustum/HT-Materials/issues/"
+
+[[mods]]
+
+modId = "ht_materials"
+version = "${version}"
+displayName = "HT Materials"
+#updateJSONURL="https://change.me.example.invalid/updates.json"
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+logoFile = "examplemod.png"
+credits = "MrKoNo"
+authors = "Hiiragi283"
+description = '''Hello'''
+
+[[dependencies.ht_materials]]
+
+modId = "forge"
+mandatory = true
+versionRange = "[36.2,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ht_materials]]
+
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16,)"
+ordering = "NONE"
+side = "BOTH"

@@ -30,6 +30,7 @@ val shadowCommon = configurations.maybeCreate("shadowCommon")
 configurations {
     compileClasspath.get().extendsFrom(common)
     runtimeClasspath.get().extendsFrom(common)
+    getByName("developmentFabric").extendsFrom(common)
 }
 
 val minecraftVersion: String by rootProject
@@ -104,7 +105,13 @@ tasks {
     sourcesJar {
         project(":common").tasks.sourcesJar.get().run {
             dependsOn(this)
-            from(this.archiveFile.map(::zipTree))
+            from(archiveFile.map(::zipTree))
         }
+    }
+}
+
+components.getByName<AdhocComponentWithVariants>("java") {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements.get()) {
+        skip()
     }
 }

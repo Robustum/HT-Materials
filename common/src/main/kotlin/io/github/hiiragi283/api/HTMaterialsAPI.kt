@@ -5,6 +5,8 @@ import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.api.util.getInstance
+import net.minecraft.item.Item
+import net.minecraft.item.ItemGroup
 import net.minecraft.util.Identifier
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
@@ -33,6 +35,10 @@ interface HTMaterialsAPI {
     fun shapeRegistry(): HTShapeRegistry
 
     fun materialRegistry(): HTMaterialRegistry
+
+    fun itemGroup(): ItemGroup
+
+    fun iconItem(): Item
 
     fun fluidManager(): HTFluidManager
 

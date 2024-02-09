@@ -1,56 +1,61 @@
 package io.github.hiiragi283.api.material.content
 
+import io.github.hiiragi283.api.HTPlatformHelper
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShapeKey
-import net.minecraft.block.Block
-import net.minecraft.block.FluidBlock
 import net.minecraft.fluid.FlowableFluid
-import net.minecraft.fluid.Fluid
 import net.minecraft.item.BlockItem
-import net.minecraft.item.BucketItem
-import net.minecraft.item.Item
-import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
-import net.minecraft.util.registry.RegistryKey
+import java.util.function.Supplier
+import net.minecraft.block.Block as MCBlock
+import net.minecraft.fluid.Fluid as MCFluid
+import net.minecraft.item.Item as MCItem
 
-sealed class HTMaterialContent<T>(val shapeKey: HTShapeKey, val registryKey: RegistryKey<Registry<T>>) {
-    abstract fun id(materialKey: HTMaterialKey): Identifier
+sealed class HTMaterialContent<T>(val shapeKey: HTShapeKey, val objClass: Class<T>) {
+    abstract fun init(materialKey: HTMaterialKey)
 
-    open fun onCreate(materialKey: HTMaterialKey, created: T) {}
+    open fun postInit(materialKey: HTMaterialKey) {}
 
     //    Block    //
 
-    abstract class BLOCK(shapeKey: HTShapeKey) : HTMaterialContent<Block>(shapeKey, Registry.BLOCK_KEY) {
-        final override fun id(materialKey: HTMaterialKey): Identifier = shapeKey.getShape().getIdentifier(materialKey)
+    abstract class Block(shapeKey: HTShapeKey) : HTMaterialContent<MCBlock>(shapeKey, MCBlock::class.java) {
+        lateinit var block: Supplier<MCBlock>
+            private set
+        lateinit var blockItem: Supplier<BlockItem>
+            private set
 
-        abstract fun block(materialKey: HTMaterialKey): Block?
+        final override fun init(materialKey: HTMaterialKey) {
+            block = HTPlatformHelper.INSTANCE.registerBlock(blockId(materialKey)) { block(materialKey) }
+            blockItem = HTPlatformHelper.INSTANCE.registerItem(blockId(materialKey)) { blockItem(materialKey, block) }
+        }
 
-        abstract fun blockItem(block: Block, materialKey: HTMaterialKey): BlockItem?
+        abstract fun blockId(materialKey: HTMaterialKey): String
+
+        abstract fun block(materialKey: HTMaterialKey): MCBlock
+
+        abstract fun blockItem(materialKey: HTMaterialKey, block: Supplier<MCBlock>): BlockItem
     }
 
     //    Fluid    //
 
-    abstract class FLUID(shapeKey: HTShapeKey) : HTMaterialContent<Fluid>(shapeKey, Registry.FLUID_KEY) {
-        abstract fun still(materialKey: HTMaterialKey): FlowableFluid
-
-        abstract fun flowingId(materialKey: HTMaterialKey): Identifier
-
-        abstract fun flowing(materialKey: HTMaterialKey): FlowableFluid?
-
-        abstract fun blockId(materialKey: HTMaterialKey): Identifier
-
-        abstract fun block(fluid: FlowableFluid, materialKey: HTMaterialKey): FluidBlock?
-
-        abstract fun bucketId(materialKey: HTMaterialKey): Identifier
-
-        abstract fun bucket(fluid: FlowableFluid, materialKey: HTMaterialKey): BucketItem?
+    abstract class Fluid(shapeKey: HTShapeKey) : HTMaterialContent<MCFluid>(shapeKey, MCFluid::class.java) {
+        lateinit var still: Supplier<FlowableFluid>
+            protected set
+        lateinit var flowing: Supplier<FlowableFluid>
+            protected set
     }
 
     //    Item    //
 
-    abstract class ITEM(shapeKey: HTShapeKey) : HTMaterialContent<Item>(shapeKey, Registry.ITEM_KEY) {
-        final override fun id(materialKey: HTMaterialKey): Identifier = shapeKey.getShape().getIdentifier(materialKey)
+    abstract class Item(shapeKey: HTShapeKey) : HTMaterialContent<MCItem>(shapeKey, MCItem::class.java) {
+        lateinit var item: Supplier<MCItem>
+            private set
 
-        abstract fun item(materialKey: HTMaterialKey): Item?
+        final override fun init(materialKey: HTMaterialKey) {
+            item = HTPlatformHelper.INSTANCE.registerItem(itemId(materialKey)) { item(materialKey) }
+        }
+
+        abstract fun itemId(materialKey: HTMaterialKey): String
+
+        abstract fun item(materialKey: HTMaterialKey): MCItem
     }
 }

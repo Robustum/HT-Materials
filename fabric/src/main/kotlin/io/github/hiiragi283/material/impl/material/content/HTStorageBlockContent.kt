@@ -11,26 +11,24 @@ import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
 import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
-import io.github.hiiragi283.material.HTMaterials
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.minecraft.block.Block
 import net.minecraft.block.Material
 import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.item.BlockItem
-import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.tag.Tag
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import java.util.function.Supplier
+import net.minecraft.block.Block as MCBlock
+import net.minecraft.item.Item as MCItem
 
 class HTStorageBlockContent(
     private val strength: Float = 5.0f,
-    private val toolTag: Supplier<Tag<Item>>? = null,
+    private val toolTag: Supplier<Tag<MCItem>>? = null,
     private val toolLevel: Int = 0,
-) : HTMaterialContent.BLOCK(HTShapeKeys.BLOCK) {
+) : HTMaterialContent.Block(HTShapeKeys.BLOCK) {
     private fun getBlockSetting(type: HTMaterialType): FabricBlockSettings {
         val material: Material = when (type) {
             HTMaterialType.Gem.AMETHYST -> Material.STONE
@@ -49,10 +47,10 @@ class HTStorageBlockContent(
         return FabricBlockSettings.of(material).apply {
             toolTag?.let {
                 strength(strength)
-                this.requiresTool()
-                this.breakByTool(it.get(), toolLevel)
+                requiresTool()
+                breakByTool(it.get(), toolLevel)
             } ?: run {
-                this.breakByHand(true)
+                breakByHand(true)
             }
         }
     }
@@ -76,31 +74,49 @@ class HTStorageBlockContent(
 
     //    HTMaterialContent    //
 
-    override fun block(materialKey: HTMaterialKey): Block = BlockImpl(
+    override fun blockId(materialKey: HTMaterialKey): String = shapeKey.getShape().getIdentifier(materialKey).path
+
+    override fun block(materialKey: HTMaterialKey): MCBlock = BlockImpl(
         materialKey,
         shapeKey,
         getBlockSetting(materialKey.getMaterial().type),
-    ) // .takeUnless { HTMaterialsAPI.getInstance().partManager().hasItem(materialKey, shapeKey) }
+    )
 
-    override fun blockItem(block: Block, materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey)
+    override fun blockItem(materialKey: HTMaterialKey, block: Supplier<MCBlock>): BlockItem =
+        BlockItemImpl(block.get(), materialKey, shapeKey)
 
-    override fun onCreate(materialKey: HTMaterialKey, created: Block) {
+    override fun postInit(materialKey: HTMaterialKey) {
         // LootTable
-        HTRuntimeDataPack.addBlockLootTable(created, BlockLootTableGenerator.drops(created))
-        // BlockState
-        val modelId: Identifier = HTMaterialsAPI.id("block/storage/${getResourcePath(materialKey.getMaterial().type)}")
-        HTRuntimeResourcePack.addBlockState(
-            created,
-            buildJson {
-                addObject("variants") {
-                    addObject("") {
-                        addProperty("model", modelId.toString())
+        HTRuntimeDataPack.addBlockLootTable(block.get(), BlockLootTableGenerator.drops(block.get()))
+        // Client-only
+        HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+            // BlockColor
+            HTPlatformHelper.INSTANCE.registerBlockColor(
+                { _, _, _, _ -> materialKey.getMaterial().color().rgb },
+                block.get(),
+            )
+            // BlockState
+            val modelId: Identifier = HTMaterialsAPI.id("block/storage/${getResourcePath(materialKey.getMaterial().type)}")
+            HTRuntimeResourcePack.addBlockState(
+                block.get(),
+                buildJson {
+                    addObject("variants") {
+                        addObject("") {
+                            addProperty("model", modelId.toString())
+                        }
                     }
-                }
-            },
-        )
-        // Model
-        HTRuntimeResourcePack.addModel(created.asItem(), buildJson { addProperty("parent", modelId.toString()) })
+                },
+            )
+            // ItemColor
+            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+                HTPlatformHelper.INSTANCE.registerItemColor(
+                    { _, tintIndex: Int -> if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1 },
+                    blockItem.get(),
+                )
+            }
+            // Model
+            HTRuntimeResourcePack.addModel(blockItem.get(), buildJson { addProperty("parent", modelId.toString()) })
+        }
     }
 
     //    Block    //
@@ -109,35 +125,17 @@ class HTStorageBlockContent(
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
         settings: Settings,
-    ) : Block(settings) {
-        init {
-            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
-                HTPlatformHelper.INSTANCE.registerBlockColor(
-                    { _, _, _, _ -> materialKey.getMaterial().color().rgb },
-                    this,
-                )
-            }
-        }
-
+    ) : MCBlock(settings) {
         override fun getName(): MutableText = shapeKey.getTranslatedText(materialKey)
     }
 
     //    BlockItem    //
 
     private class BlockItemImpl(
-        block: Block,
+        block: MCBlock,
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
-    ) : BlockItem(block, FabricItemSettings().group(HTMaterials.itemGroup())) {
-        init {
-            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
-                HTPlatformHelper.INSTANCE.registerItemColor(
-                    { _, tintIndex: Int -> if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1 },
-                    this,
-                )
-            }
-        }
-
+    ) : BlockItem(block, Settings().group(HTMaterialsAPI.INSTANCE.itemGroup())) {
         override fun getName(): Text = shapeKey.getTranslatedText(materialKey)
 
         override fun getName(stack: ItemStack): Text = shapeKey.getTranslatedText(materialKey)

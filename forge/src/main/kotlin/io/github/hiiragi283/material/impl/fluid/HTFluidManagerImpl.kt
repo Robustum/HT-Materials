@@ -10,13 +10,13 @@ import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.material.impl.HTMaterialsAPIImpl
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
-import net.minecraft.server.MinecraftServer
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.util.registry.Registry
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.event.world.WorldEvent
+import net.minecraftforge.eventbus.api.SubscribeEvent
 
 internal class HTFluidManagerImpl(builder: Builder) : HTFluidManager {
     init {
@@ -28,7 +28,7 @@ internal class HTFluidManagerImpl(builder: Builder) : HTFluidManager {
             }
         }
         // Register event
-        ServerWorldEvents.LOAD.register(::onWorldLoad)
+        MinecraftForge.EVENT_BUS.register(EventHandler)
     }
 
     override val fluidToMaterialMap: ImmutableMap<Fluid, HTMaterialKey> = ImmutableMap.copyOf(builder.fluidToMaterialMap)
@@ -52,18 +52,20 @@ internal class HTFluidManagerImpl(builder: Builder) : HTFluidManager {
             add(HTMaterialKeys.LAPIS, Fluids.LAVA)
         }
     }
-}
 
-@Suppress("UNUSED_PARAMETER")
-private fun onWorldLoad(server: MinecraftServer, world: ServerWorld) {
-    HTMaterialsAPIImpl.fluidManager = HTFluidManagerImpl.Builder().apply {
-        // Register fluids from Vanilla's registry
-        loadVanillaEntries()
-        // Register fluids from common tag
-        HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { materialKey: HTMaterialKey ->
-            HTPlatformHelper.INSTANCE.getFluidTag(materialKey.getCommonId()).values().forEach { fluid ->
-                add(materialKey, fluid)
-            }
+    object EventHandler {
+        @SubscribeEvent
+        fun onWorldLoaded(event: WorldEvent.Load) {
+            HTMaterialsAPIImpl.fluidManager = Builder().apply {
+                // Register fluids from Vanilla's registry
+                loadVanillaEntries()
+                // Register fluids from common tag
+                HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { materialKey: HTMaterialKey ->
+                    HTPlatformHelper.INSTANCE.getFluidTag(materialKey.getCommonId()).values().forEach { fluid ->
+                        add(materialKey, fluid)
+                    }
+                }
+            }.let { HTFluidManagerImpl(it) }
         }
-    }.let { HTFluidManagerImpl(it) }
+    }
 }

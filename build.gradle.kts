@@ -53,8 +53,10 @@ allprojects {
         maven(url = "https://maven.blamejared.com") {
             content { includeGroup("vazkii.patchouli") }
         }
-        maven(url = "https://maven.shedaniel.me/")
+        maven(url = "https://maven.shedaniel.me/") //REI
         maven(url = "https://maven.terraformersmc.com/releases/")
+        maven(url = "https://thedarkcolour.github.io/KotlinForForge/") //KfF
+        maven(url = "https://dvs1.progwml6.com/files/maven/") //JEI
     }
 
     kotlin {

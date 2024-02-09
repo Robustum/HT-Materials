@@ -2,7 +2,9 @@ package io.github.hiiragi283.api
 
 import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.fluid.HTFluidManager
-import io.github.hiiragi283.api.material.*
+import io.github.hiiragi283.api.material.ColorConvertible
+import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
@@ -38,10 +40,6 @@ interface HTMaterialsAddon {
     fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {}
 
     fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {}
-
-    fun modifyMaterialFormula(registry: MutableMap<HTMaterialKey, FormulaConvertible>) {}
-
-    fun modifyMaterialMolar(registry: MutableMap<HTMaterialKey, MolarMassConvertible>) {}
 
     //    Post Initialization    //
 

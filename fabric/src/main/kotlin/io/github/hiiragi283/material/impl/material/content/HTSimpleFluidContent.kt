@@ -7,60 +7,84 @@ import io.github.hiiragi283.api.material.content.HTMaterialContent
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
-import io.github.hiiragi283.api.util.prefix
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
-import io.github.hiiragi283.material.HTMaterials
 import io.github.hiiragi283.material.impl.fluid.HTFluidRenderHandler
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
-import net.minecraft.block.Block
 import net.minecraft.block.BlockState
-import net.minecraft.block.FluidBlock
+import net.minecraft.block.Blocks
 import net.minecraft.fluid.FlowableFluid
-import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.FluidState
 import net.minecraft.item.BucketItem
-import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.state.StateManager
-import net.minecraft.util.Identifier
+import net.minecraft.text.Text
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.registry.Registry
 import net.minecraft.world.BlockView
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
+import java.util.function.Supplier
+import net.minecraft.block.Block as MCBlock
+import net.minecraft.fluid.Fluid as MCFluid
+import net.minecraft.item.Item as MCItem
 
-class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
-    override fun still(materialKey: HTMaterialKey): FlowableFluid = FluidImpl.Still(this, materialKey)
+class HTSimpleFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
+    lateinit var bucketItem: Supplier<MCItem>
+        private set
 
-    override fun flowingId(materialKey: HTMaterialKey): Identifier = id(materialKey).prefix("flowing_")
+    override fun init(materialKey: HTMaterialKey) {
+        still = HTPlatformHelper.INSTANCE.registerFluid(materialKey.name) { FluidImpl.Still(this, materialKey) }
+        flowing = HTPlatformHelper.INSTANCE.registerFluid("flowing_${materialKey.name}") {
+            FluidImpl.Flowing(
+                this,
+                materialKey,
+            )
+        }
+        bucketItem = HTPlatformHelper.INSTANCE.registerItem("${materialKey.name}_bucket") {
+            BucketImpl(
+                still.get(),
+                materialKey,
+            )
+        }
+    }
 
-    override fun flowing(materialKey: HTMaterialKey): FlowableFluid = FluidImpl.Flowing(this, materialKey)
-
-    override fun blockId(materialKey: HTMaterialKey): Identifier = id(materialKey)
-
-    override fun block(fluid: FlowableFluid, materialKey: HTMaterialKey): FluidBlock? = null
-
-    override fun bucketId(materialKey: HTMaterialKey): Identifier = HTMaterialsAPI.id("${materialKey.name}_bucket")
-
-    override fun bucket(fluid: FlowableFluid, materialKey: HTMaterialKey): BucketItem = BucketImpl(fluid, materialKey)
-
-    override fun id(materialKey: HTMaterialKey): Identifier = materialKey.getIdentifier()
-
-    override fun onCreate(materialKey: HTMaterialKey, created: Fluid) {
-        // Model
-        HTRuntimeResourcePack.addModel(
-            created.bucketItem,
-            buildJson {
-                addProperty("parent", "item/generated")
-                addObject("textures") {
-                    addProperty("layer0", "item/bucket")
-                    addProperty("layer1", "ht_materials:item/bucket")
-                }
-            },
-        )
+    override fun postInit(materialKey: HTMaterialKey) {
+        // Client-only
+        HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+            // ItemColor
+            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+                HTPlatformHelper.INSTANCE.registerItemColor(
+                    { _: ItemStack, tintIndex: Int ->
+                        if (tintIndex == 1) materialKey.getMaterial().color().rgb else -1
+                    },
+                    bucketItem.get(),
+                )
+            }
+            // Model
+            HTRuntimeResourcePack.addModel(
+                bucketItem.get(),
+                buildJson {
+                    addProperty("parent", "item/generated")
+                    addObject("textures") {
+                        addProperty("layer0", "item/bucket")
+                        addProperty("layer1", "ht_materials:item/bucket")
+                    }
+                },
+            )
+            // Renderer
+            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+                FluidRenderHandlerRegistry.INSTANCE.register(
+                    still.get(),
+                    HTFluidRenderHandler(materialKey.getMaterial()),
+                )
+                FluidRenderHandlerRegistry.INSTANCE.register(
+                    flowing.get(),
+                    HTFluidRenderHandler(materialKey.getMaterial()),
+                )
+            }
+        }
     }
 
     //    Fluid    //
@@ -69,19 +93,19 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
         private val content: HTSimpleFluidContent,
         private val materialKey: HTMaterialKey,
     ) : FlowableFluid() {
-        override fun matchesType(fluid: Fluid): Boolean = fluid == still || fluid == flowing
+        override fun matchesType(fluid: MCFluid): Boolean = fluid == still || fluid == flowing
 
         override fun isInfinite(): Boolean = false
 
         override fun beforeBreakingBlock(world: WorldAccess, pos: BlockPos, state: BlockState) {
-            Block.dropStacks(state, world, pos, world.getBlockEntity(pos))
+            MCBlock.dropStacks(state, world, pos, world.getBlockEntity(pos))
         }
 
         override fun canBeReplacedWith(
             state: FluidState,
             world: BlockView,
             pos: BlockPos,
-            fluid: Fluid,
+            fluid: MCFluid,
             direction: Direction,
         ): Boolean = false
 
@@ -93,52 +117,18 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
         override fun getBlastResistance(): Float = 100.0f
 
-        private lateinit var stillCache: Fluid
+        override fun getStill(): MCFluid = content.still.get()
 
-        override fun getStill(): Fluid {
-            if (!::stillCache.isInitialized) {
-                stillCache = Registry.FLUID.get(content.id(materialKey))
-            }
-            return stillCache
-        }
+        override fun getFlowing(): MCFluid = content.flowing.get()
 
-        private lateinit var flowingCache: Fluid
+        override fun toBlockState(state: FluidState): BlockState = Blocks.AIR.defaultState
 
-        override fun getFlowing(): Fluid {
-            if (!::flowingCache.isInitialized) {
-                flowingCache = Registry.FLUID.get(content.id(materialKey))
-            }
-            return flowingCache
-        }
-
-        private lateinit var blockCache: Block
-
-        override fun toBlockState(state: FluidState): BlockState {
-            if (!::blockCache.isInitialized) {
-                blockCache = Registry.BLOCK.get(content.blockId(materialKey))
-            }
-            return blockCache.defaultState
-        }
-
-        private lateinit var bucketCache: Item
-
-        override fun getBucketItem(): Item {
-            if (!::bucketCache.isInitialized) {
-                bucketCache = Registry.ITEM.get(content.bucketId(materialKey))
-            }
-            return bucketCache
-        }
+        override fun getBucketItem(): MCItem = content.bucketItem.get()
 
         //    Flowing    //
 
         class Flowing(content: HTSimpleFluidContent, materialKey: HTMaterialKey) : FluidImpl(content, materialKey) {
-            init {
-                HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
-                    FluidRenderHandlerRegistry.INSTANCE.register(this, HTFluidRenderHandler(materialKey.getMaterial()))
-                }
-            }
-
-            override fun appendProperties(builder: StateManager.Builder<Fluid, FluidState>) {
+            override fun appendProperties(builder: StateManager.Builder<MCFluid, FluidState>) {
                 super.appendProperties(builder)
                 builder.add(LEVEL)
             }
@@ -151,12 +141,6 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
         //    Still    //
 
         class Still(content: HTSimpleFluidContent, materialKey: HTMaterialKey) : FluidImpl(content, materialKey) {
-            init {
-                HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
-                    FluidRenderHandlerRegistry.INSTANCE.register(this, HTFluidRenderHandler(materialKey.getMaterial()))
-                }
-            }
-
             override fun isStill(state: FluidState): Boolean = true
 
             override fun getLevel(state: FluidState): Int = 0
@@ -165,23 +149,14 @@ class HTSimpleFluidContent : HTMaterialContent.FLUID(HTShapeKey("fluid")) {
 
     //    Bucket    //
 
-    private class BucketImpl(fluid: Fluid, private val materialKey: HTMaterialKey) : BucketItem(fluid, ITEM_SETTINGS) {
-        init {
-            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
-                HTPlatformHelper.INSTANCE.registerItemColor(
-                    { _: ItemStack, tintIndex: Int -> if (tintIndex == 1) materialKey.getMaterial().color().rgb else -1 },
-                    this,
-                )
-            }
-        }
+    private class BucketImpl(fluid: MCFluid, private val materialKey: HTMaterialKey) : BucketItem(
+        fluid,
+        FabricItemSettings().group(HTMaterialsAPI.INSTANCE.itemGroup()).maxCount(1).recipeRemainder(Items.BUCKET),
+    ) {
+        override fun getName(): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)
 
-        /*override fun getName(): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)
-
-        override fun getName(stack: ItemStack): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)*/
+        override fun getName(stack: ItemStack): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)
     }
 }
 
 private val BUCKET_SHAPE_KEY: HTShapeKey = HTShapeKey("bucket")
-
-private val ITEM_SETTINGS =
-    FabricItemSettings().group(HTMaterials.itemGroup()).maxCount(1).recipeRemainder(Items.BUCKET)

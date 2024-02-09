@@ -3,22 +3,21 @@ package io.github.hiiragi283.material.compat
 import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
-import io.github.hiiragi283.api.material.*
-import io.github.hiiragi283.api.material.composition.HTHydrateComposition
+import io.github.hiiragi283.api.material.ColorConvertible
+import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.material.HTMaterialKeys
+import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
-import io.github.hiiragi283.api.material.composition.HTMixtureComposition
 import io.github.hiiragi283.api.material.content.HTMaterialContentMap
+import io.github.hiiragi283.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.api.material.element.HTElements
-import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.HTColor
 import io.github.hiiragi283.api.util.addAll
 import io.github.hiiragi283.api.util.collection.DefaultedMap
 import io.github.hiiragi283.material.impl.material.content.HTSimpleFluidContent
-import io.github.hiiragi283.material.impl.material.content.HTSimpleItemContent
 import io.github.hiiragi283.material.impl.material.content.HTStorageBlockContent
-import io.github.hiiragi283.material.impl.material.property.HTCompoundProperty
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import java.awt.Color
 
@@ -184,102 +183,126 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
 
     override fun modifyMaterialComposition(registry: MutableMap<HTMaterialKey, HTMaterialComposition>) {
         // 1st Period
-        registry[HTMaterialKeys.HYDROGEN] = HTMaterialComposition.create(HTElements.H to 2)
-        registry[HTMaterialKeys.HELIUM] = HTMaterialComposition.create(HTElements.He to 1)
+        registry[HTMaterialKeys.HYDROGEN] = HTMaterialComposition.molecular(HTElements.H to 2)
+        registry[HTMaterialKeys.HELIUM] = HTMaterialComposition.molecular(HTElements.He to 1)
         // 2nd Period
-        registry[HTMaterialKeys.LITHIUM] = HTMaterialComposition.create(HTElements.Li to 1)
-        registry[HTMaterialKeys.BERYLLIUM] = HTMaterialComposition.create(HTElements.Be to 1)
-        registry[HTMaterialKeys.CARBON] = HTMaterialComposition.create(HTElements.C to 1)
-        registry[HTMaterialKeys.NITROGEN] = HTMaterialComposition.create(HTElements.N to 2)
-        registry[HTMaterialKeys.OXYGEN] = HTMaterialComposition.create(HTElements.O to 2)
-        registry[HTMaterialKeys.FLUORINE] = HTMaterialComposition.create(HTElements.F to 2)
+        registry[HTMaterialKeys.LITHIUM] = HTMaterialComposition.molecular(HTElements.Li to 1)
+        registry[HTMaterialKeys.BERYLLIUM] = HTMaterialComposition.molecular(HTElements.Be to 1)
+        registry[HTMaterialKeys.CARBON] = HTMaterialComposition.molecular(HTElements.C to 1)
+        registry[HTMaterialKeys.NITROGEN] = HTMaterialComposition.molecular(HTElements.N to 2)
+        registry[HTMaterialKeys.OXYGEN] = HTMaterialComposition.molecular(HTElements.O to 2)
+        registry[HTMaterialKeys.FLUORINE] = HTMaterialComposition.molecular(HTElements.F to 2)
         // 3rd Period
-        registry[HTMaterialKeys.SODIUM] = HTMaterialComposition.create(HTElements.Na to 1)
-        registry[HTMaterialKeys.MAGNESIUM] = HTMaterialComposition.create(HTElements.Mg to 1)
-        registry[HTMaterialKeys.ALUMINUM] = HTMaterialComposition.create(HTElements.Al to 1)
-        registry[HTMaterialKeys.SILICON] = HTMaterialComposition.create(HTElements.Si to 1)
-        registry[HTMaterialKeys.PHOSPHORUS] = HTMaterialComposition.create(HTElements.P to 1)
-        registry[HTMaterialKeys.SULFUR] = HTMaterialComposition.create(HTElements.S to 8)
-        registry[HTMaterialKeys.CHLORINE] = HTMaterialComposition.create(HTElements.Cl to 2)
+        registry[HTMaterialKeys.SODIUM] = HTMaterialComposition.molecular(HTElements.Na to 1)
+        registry[HTMaterialKeys.MAGNESIUM] = HTMaterialComposition.molecular(HTElements.Mg to 1)
+        registry[HTMaterialKeys.ALUMINUM] = HTMaterialComposition.molecular(HTElements.Al to 1)
+        registry[HTMaterialKeys.SILICON] = HTMaterialComposition.molecular(HTElements.Si to 1)
+        registry[HTMaterialKeys.PHOSPHORUS] = HTMaterialComposition.molecular(HTElements.P to 1)
+        registry[HTMaterialKeys.SULFUR] = HTMaterialComposition.molecular(HTElements.S to 8)
+        registry[HTMaterialKeys.CHLORINE] = HTMaterialComposition.molecular(HTElements.Cl to 2)
         // 4th Period
-        registry[HTMaterialKeys.POTASSIUM] = HTMaterialComposition.create(HTElements.K to 1)
-        registry[HTMaterialKeys.CALCIUM] = HTMaterialComposition.create(HTElements.Ca to 1)
-        registry[HTMaterialKeys.TITANIUM] = HTMaterialComposition.create(HTElements.Ti to 1)
-        registry[HTMaterialKeys.CHROMIUM] = HTMaterialComposition.create(HTElements.Cr to 1)
-        registry[HTMaterialKeys.MANGANESE] = HTMaterialComposition.create(HTElements.Mn to 1)
-        registry[HTMaterialKeys.IRON] = HTMaterialComposition.create(HTElements.Fe to 1)
-        registry[HTMaterialKeys.COBALT] = HTMaterialComposition.create(HTElements.Co to 1)
-        registry[HTMaterialKeys.NICKEL] = HTMaterialComposition.create(HTElements.Ni to 1)
-        registry[HTMaterialKeys.COPPER] = HTMaterialComposition.create(HTElements.Cu to 1)
-        registry[HTMaterialKeys.ZINC] = HTMaterialComposition.create(HTElements.Zn to 1)
-
+        registry[HTMaterialKeys.POTASSIUM] = HTMaterialComposition.molecular(HTElements.K to 1)
+        registry[HTMaterialKeys.CALCIUM] = HTMaterialComposition.molecular(HTElements.Ca to 1)
+        registry[HTMaterialKeys.TITANIUM] = HTMaterialComposition.molecular(HTElements.Ti to 1)
+        registry[HTMaterialKeys.CHROMIUM] = HTMaterialComposition.molecular(HTElements.Cr to 1)
+        registry[HTMaterialKeys.MANGANESE] = HTMaterialComposition.molecular(HTElements.Mn to 1)
+        registry[HTMaterialKeys.IRON] = HTMaterialComposition.molecular(HTElements.Fe to 1)
+        registry[HTMaterialKeys.COBALT] = HTMaterialComposition.molecular(HTElements.Co to 1)
+        registry[HTMaterialKeys.NICKEL] = HTMaterialComposition.molecular(HTElements.Ni to 1)
+        registry[HTMaterialKeys.COPPER] = HTMaterialComposition.molecular(HTElements.Cu to 1)
+        registry[HTMaterialKeys.ZINC] = HTMaterialComposition.molecular(HTElements.Zn to 1)
+        // 5th Period
+        registry[HTMaterialKeys.SILVER] = HTMaterialComposition.molecular(HTElements.Ag to 1)
+        registry[HTMaterialKeys.TIN] = HTMaterialComposition.molecular(HTElements.Sn to 1)
+        // 6th Period
+        registry[HTMaterialKeys.TUNGSTEN] = HTMaterialComposition.molecular(HTElements.W to 1)
+        registry[HTMaterialKeys.IRIDIUM] = HTMaterialComposition.molecular(HTElements.Ir to 1)
+        registry[HTMaterialKeys.PLATINUM] = HTMaterialComposition.molecular(HTElements.Pt to 1)
+        registry[HTMaterialKeys.GOLD] = HTMaterialComposition.molecular(HTElements.Au to 1)
+        registry[HTMaterialKeys.MERCURY] = HTMaterialComposition.molecular(HTElements.Hg to 1)
+        registry[HTMaterialKeys.LEAD] = HTMaterialComposition.molecular(HTElements.Pb to 1)
+        // 7th Period
+        registry[HTMaterialKeys.URANIUM] = HTMaterialComposition.molecular(HTElements.U to 1)
+        registry[HTMaterialKeys.PLUTONIUM] = HTMaterialComposition.molecular(HTElements.Pu to 1)
         // Vanilla - Fluids
-        registry[HTMaterialKeys.WATER] = HTMaterialComposition.build {
-            map[HTElements.H] = 2
-            map[HTElements.O] = 1
-            color = HTColor::BLUE
+        registry[HTMaterialKeys.WATER] = HTMaterialComposition.molecular(mapOf(HTElements.H to 2, HTElements.O to 1)) {
+            color = HTColor.BLUE
         }
-        registry[HTMaterialKeys.WATER] = HTMaterialComposition.build {
-            map[HTElements.SiO2] = 1
-            color = { ColorConvertible.average(HTColor.DARK_RED, HTColor.GOLD) }
+        registry[HTMaterialKeys.WATER] = HTMaterialComposition.molecular(mapOf(HTElements.SiO2 to 1)) {
+            color = ColorConvertible.average(HTColor.DARK_RED, HTColor.GOLD)
         }
         // Vanilla - Gems
-        registry[HTMaterialKeys.AMETHYST] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.DIAMOND] = HTMaterialComposition.create(HTElements.C to 1)
+        registry[HTMaterialKeys.AMETHYST] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.DIAMOND] = HTMaterialComposition.molecular(HTElements.C to 1)
         registry[HTMaterialKeys.ENDER_PEARL]
-        registry[HTMaterialKeys.EMERALD] = HTMaterialComposition.create(
+        registry[HTMaterialKeys.EMERALD] = HTMaterialComposition.molecular(
             HTElements.Be to 3,
             HTElements.Al to 2,
             HTElements.Si to 6,
             HTElements.O to 18,
         )
-        registry[HTMaterialKeys.FLINT] = HTMaterialComposition.create(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.FLINT] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
         registry[HTMaterialKeys.LAPIS]
-        registry[HTMaterialKeys.QUARTZ] = HTMaterialComposition.create(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.QUARTZ] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
         // Vanilla - Metals
-        registry[HTMaterialKeys.NETHERITE]
+        registry[HTMaterialKeys.NETHERITE] = HTMaterialComposition.molecular(HTElements.Nr to 1)
         // Vanilla - Solids
         registry[HTMaterialKeys.BRICK]
-        registry[HTMaterialKeys.CHARCOAL] = HTMaterialComposition.create(HTElements.C to 1)
+        registry[HTMaterialKeys.CHARCOAL] = HTMaterialComposition.molecular(HTElements.C to 1)
         registry[HTMaterialKeys.CLAY]
-        registry[HTMaterialKeys.COAL] = HTMaterialComposition.create(HTElements.C to 1)
-        registry[HTMaterialKeys.GLASS] = HTMaterialComposition.create(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.COAL] = HTMaterialComposition.molecular(HTElements.C to 1)
+        registry[HTMaterialKeys.GLASS] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
         registry[HTMaterialKeys.GLOWSTONE]
         registry[HTMaterialKeys.NETHER_BRICK]
         registry[HTMaterialKeys.REDSTONE]
         // Vanilla - Stones
-        registry[HTMaterialKeys.STONE] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.GRANITE] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.DIORITE] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.ANDESITE] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.DEEPSLATE] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.CALCITE] = HTMaterialComposition.create(HTElements.Ca to 1, HTElements.CO3 to 1)
-        registry[HTMaterialKeys.TUFF] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.OBSIDIAN] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.NETHERRACK] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.BASALT] = HTMaterialComposition.create(HTElements.SiO2 to 1)
-        registry[HTMaterialKeys.END_STONE] = HTMaterialComposition.create(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.STONE] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.GRANITE] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.DIORITE] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.ANDESITE] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.DEEPSLATE] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.CALCITE] = HTMaterialComposition.molecular(HTElements.Ca to 1, HTElements.CO3 to 1)
+        registry[HTMaterialKeys.TUFF] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.OBSIDIAN] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.NETHERRACK] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.BASALT] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
+        registry[HTMaterialKeys.END_STONE] = HTMaterialComposition.molecular(HTElements.SiO2 to 1)
         // Vanilla - Woods
-        registry[HTMaterialKeys.WOOD] = HTMixtureComposition(HTElements.C, HTElements.H, HTElements.O)
+        registry[HTMaterialKeys.WOOD] = HTMaterialComposition.mixture(HTElements.C, HTElements.H, HTElements.O) {
+            formula = "(C, H, O)"
+        }
         // Common - Fluids
         // Common - Gems
-        registry[HTMaterialKeys.CINNABAR]
-        registry[HTMaterialKeys.COKE] = HTMaterialComposition.create(HTElements.C to 1)
+        registry[HTMaterialKeys.CINNABAR] = HTMaterialComposition.molecular(HTElements.Hg to 1, HTElements.S to 1)
+        registry[HTMaterialKeys.COKE] = HTMaterialComposition.molecular(HTElements.C to 1)
         registry[HTMaterialKeys.OLIVINE]
         registry[HTMaterialKeys.PERIDOT]
-        registry[HTMaterialKeys.RUBY] = HTMaterialComposition.create(HTElements.Al2O3 to 1)
-        registry[HTMaterialKeys.SALT] = HTMaterialComposition.create(HTElements.Na to 1, HTElements.Cl to 1)
-        registry[HTMaterialKeys.SAPPHIRE] = HTMaterialComposition.create(HTElements.Al2O3 to 1)
+        registry[HTMaterialKeys.RUBY] = HTMaterialComposition.molecular(HTElements.Al2O3 to 1)
+        registry[HTMaterialKeys.SALT] = HTMaterialComposition.molecular(HTElements.Na to 1, HTElements.Cl to 1)
+        registry[HTMaterialKeys.SAPPHIRE] = HTMaterialComposition.molecular(HTElements.Al2O3 to 1)
         // Common - Metals
-        registry[HTMaterialKeys.STEEl] = HTMixtureComposition(HTElements.Fe, HTElements.C)
+        registry[HTMaterialKeys.BRASS] = HTMaterialComposition.molecular(HTElements.Cu to 3, HTElements.Zn to 1)
+        registry[HTMaterialKeys.BRONZE] = HTMaterialComposition.molecular(HTElements.Cu to 3, HTElements.Sn to 1)
+        registry[HTMaterialKeys.ELECTRUM] = HTMaterialComposition.molecular(HTElements.Ag to 1, HTElements.Au to 1)
+        registry[HTMaterialKeys.INVAR] = HTMaterialComposition.molecular(HTElements.Fe to 2, HTElements.Ni to 1)
+        registry[HTMaterialKeys.STAINLESS_STEEL] = HTMaterialComposition.molecular(
+            HTElements.Fe to 6,
+            HTElements.Cr to 1,
+            HTElements.Mn to 1,
+            HTElements.Ni to 1,
+        )
+        registry[HTMaterialKeys.STEEl] = HTMaterialComposition.mixture(HTElements.Fe, HTElements.C) {
+            formula = "(Fe, C)"
+        }
         // Common - Solids
         registry[HTMaterialKeys.ASHES]
-        registry[HTMaterialKeys.BAUXITE] = HTHydrateComposition(HTMaterialComposition.create(HTElements.Al2O3 to 1), 2)
-        registry[HTMaterialKeys.RUBBER] = HTMaterialComposition.override(
-            HTMaterialComposition.create(HTElements.C to 5, HTElements.H to 6),
-        ) { formula = { "CC(=C)C=C" } }
+        registry[HTMaterialKeys.BAUXITE] =
+            HTMaterialComposition.hydrate(HTMaterialComposition.molecular(HTElements.Al2O3 to 1), 2)
+        registry[HTMaterialKeys.RUBBER] = HTMaterialComposition.polymer(HTElements.C to 5, HTElements.H to 6) {
+            formula = "CC(=C)C=C"
+        }
         // Common - Stones
-        registry[HTMaterialKeys.MARBLE] = HTMaterialComposition.create(HTElements.Ca to 1, HTElements.CO3 to 1)
+        registry[HTMaterialKeys.MARBLE] = HTMaterialComposition.molecular(HTElements.Ca to 1, HTElements.CO3 to 1)
         // Common - Woods
     }
 
@@ -820,50 +843,7 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
         // Common - Woods
     }
 
-    override fun modifyMaterialProperty(registry: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {
-        // Common - Gems
-        registry.getOrCreate(HTMaterialKeys.CINNABAR).apply {
-            add(HTCompoundProperty(HTMaterialKeys.MERCURY to 1, HTMaterialKeys.SULFUR to 1))
-        }
-        // Common - Metals
-        registry.getOrCreate(HTMaterialKeys.BRASS).apply {
-            add(HTCompoundProperty(HTMaterialKeys.COPPER to 3, HTMaterialKeys.ZINC to 1))
-        }
-        registry.getOrCreate(HTMaterialKeys.BRONZE).apply {
-            add(HTCompoundProperty(HTMaterialKeys.COPPER to 3, HTMaterialKeys.TIN to 1))
-        }
-        registry.getOrCreate(HTMaterialKeys.ELECTRUM).apply {
-            add(HTCompoundProperty(HTMaterialKeys.SILVER to 1, HTMaterialKeys.GOLD to 1))
-        }
-        registry.getOrCreate(HTMaterialKeys.INVAR).apply {
-            add(HTCompoundProperty(HTMaterialKeys.IRON to 2, HTMaterialKeys.NICKEL to 1))
-        }
-        registry.getOrCreate(HTMaterialKeys.STAINLESS_STEEL).apply {
-            add(
-                HTCompoundProperty(
-                    HTMaterialKeys.IRON to 6,
-                    HTMaterialKeys.CHROMIUM to 1,
-                    HTMaterialKeys.MANGANESE to 1,
-                    HTMaterialKeys.NICKEL to 1,
-                ),
-            )
-        }
-    }
-
     override fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {
-        // 5th Period
-        registry[HTMaterialKeys.SILVER] = ColorConvertible.ofColor(HTColor.AQUA to 1, HTColor.WHITE to 3)
-        registry[HTMaterialKeys.TIN] = ColorConvertible.ofColor(HTColor.BLUE to 1, HTColor.AQUA to 1, HTColor.WHITE to 3)
-        // 6th Period
-        registry[HTMaterialKeys.TUNGSTEN] = ColorConvertible.ofColor(HTColor.BLACK to 2, HTColor.DARK_GRAY to 1)
-        registry[HTMaterialKeys.IRIDIUM] = ColorConvertible { HTColor.WHITE }
-        registry[HTMaterialKeys.PLATINUM] = ColorConvertible { Color(0x87cefa) }
-        registry[HTMaterialKeys.GOLD] = ColorConvertible.ofColor(HTColor.GOLD, HTColor.YELLOW)
-        registry[HTMaterialKeys.MERCURY] = ColorConvertible { HTColor.WHITE }
-        registry[HTMaterialKeys.LEAD] = ColorConvertible.ofColor(HTColor.DARK_BLUE, HTColor.DARK_GRAY, HTColor.WHITE)
-        // 7th Period
-        registry[HTMaterialKeys.URANIUM] = ColorConvertible { HTColor.GREEN }
-        registry[HTMaterialKeys.PLUTONIUM] = ColorConvertible { HTColor.RED }
         // Vanilla - Gems
         registry[HTMaterialKeys.AMETHYST] = ColorConvertible.ofColor(HTColor.BLUE, HTColor.LIGHT_PURPLE)
         registry[HTMaterialKeys.DIAMOND] = ColorConvertible { HTColor.AQUA }
@@ -929,139 +909,6 @@ object HTMaterialsAddonImpl : HTMaterialsAddon {
         registry[HTMaterialKeys.RUBBER] = ColorConvertible.ofColor(HTColor.BLACK, HTColor.DARK_GRAY)
         // Common - Stones
         registry[HTMaterialKeys.MARBLE] = ColorConvertible { HTColor.WHITE }
-        // Common - Woods
-    }
-
-    override fun modifyMaterialFormula(registry: MutableMap<HTMaterialKey, FormulaConvertible>) {
-        // 5th Period
-        registry[HTMaterialKeys.SILVER] = FormulaConvertible { "Ag" }
-        registry[HTMaterialKeys.TIN] = FormulaConvertible { "Sn" }
-        // 6th Period
-        registry[HTMaterialKeys.TUNGSTEN] = FormulaConvertible { "W" }
-        registry[HTMaterialKeys.IRIDIUM] = FormulaConvertible { "Ir" }
-        registry[HTMaterialKeys.PLATINUM] = FormulaConvertible { "Pt" }
-        registry[HTMaterialKeys.GOLD] = FormulaConvertible { "Au" }
-        registry[HTMaterialKeys.MERCURY] = FormulaConvertible { "Hg" }
-        registry[HTMaterialKeys.LEAD] = FormulaConvertible { "Pb" }
-        // 7th Period
-        registry[HTMaterialKeys.URANIUM] = FormulaConvertible { "U" }
-        registry[HTMaterialKeys.PLUTONIUM] = FormulaConvertible { "Pu" }
-        // Vanilla - Fluids
-        registry[HTMaterialKeys.WATER]
-        registry[HTMaterialKeys.LAVA]
-        // Vanilla - Gems
-        registry[HTMaterialKeys.AMETHYST]
-        registry[HTMaterialKeys.DIAMOND]
-        registry[HTMaterialKeys.ENDER_PEARL]
-        registry[HTMaterialKeys.EMERALD]
-        registry[HTMaterialKeys.FLINT]
-        registry[HTMaterialKeys.LAPIS]
-        registry[HTMaterialKeys.QUARTZ]
-        // Vanilla - Metals
-        registry[HTMaterialKeys.NETHERITE] = FormulaConvertible { "Nr" }
-        // Vanilla - Solids
-        registry[HTMaterialKeys.BRICK]
-        registry[HTMaterialKeys.CHARCOAL]
-        registry[HTMaterialKeys.CLAY]
-        registry[HTMaterialKeys.COAL]
-        registry[HTMaterialKeys.GLASS]
-        registry[HTMaterialKeys.GLOWSTONE]
-        registry[HTMaterialKeys.NETHER_BRICK]
-        registry[HTMaterialKeys.REDSTONE]
-        // Vanilla - Stones
-        registry[HTMaterialKeys.STONE]
-        registry[HTMaterialKeys.GRANITE]
-        registry[HTMaterialKeys.DIORITE]
-        registry[HTMaterialKeys.ANDESITE]
-        registry[HTMaterialKeys.DEEPSLATE]
-        registry[HTMaterialKeys.CALCITE]
-        registry[HTMaterialKeys.TUFF]
-        registry[HTMaterialKeys.OBSIDIAN]
-        registry[HTMaterialKeys.NETHERRACK]
-        registry[HTMaterialKeys.BASALT]
-        registry[HTMaterialKeys.END_STONE]
-        // Vanilla - Wood
-        registry[HTMaterialKeys.WOOD] = FormulaConvertible { "C, H, O" }
-        // Common - Fluids
-        // Common - Gems
-        registry[HTMaterialKeys.CINNABAR]
-        registry[HTMaterialKeys.COKE]
-        registry[HTMaterialKeys.OLIVINE]
-        registry[HTMaterialKeys.PERIDOT]
-        registry[HTMaterialKeys.RUBY]
-        registry[HTMaterialKeys.SALT]
-        registry[HTMaterialKeys.SAPPHIRE]
-        // Common - Metals
-        registry[HTMaterialKeys.BRASS]
-        registry[HTMaterialKeys.BRONZE]
-        registry[HTMaterialKeys.ELECTRUM]
-        registry[HTMaterialKeys.INVAR]
-        registry[HTMaterialKeys.STAINLESS_STEEL]
-        registry[HTMaterialKeys.STEEl] = FormulaConvertible { "Fe, C" }
-        // Common - Solids
-        registry[HTMaterialKeys.ASHES]
-        registry[HTMaterialKeys.BAUXITE]
-        registry[HTMaterialKeys.RUBBER]
-        // Common - Stones
-        registry[HTMaterialKeys.MARBLE]
-        // Common - Woods
-    }
-
-    override fun modifyMaterialMolar(registry: MutableMap<HTMaterialKey, MolarMassConvertible>) {
-        // 5th Period
-        registry[HTMaterialKeys.SILVER] = MolarMassConvertible { 107.9 }
-        registry[HTMaterialKeys.TIN] = MolarMassConvertible { 118.7 }
-        // 6th Period
-        registry[HTMaterialKeys.TUNGSTEN] = MolarMassConvertible { 183.8 }
-        registry[HTMaterialKeys.IRIDIUM] = MolarMassConvertible { 192.2 }
-        registry[HTMaterialKeys.PLATINUM] = MolarMassConvertible { 195.1 }
-        registry[HTMaterialKeys.GOLD] = MolarMassConvertible { 197.0 }
-        registry[HTMaterialKeys.MERCURY] = MolarMassConvertible { 200.6 }
-        registry[HTMaterialKeys.LEAD] = MolarMassConvertible { 207.2 }
-        // 7th Period
-        registry[HTMaterialKeys.URANIUM] = MolarMassConvertible { 238.0 }
-        registry[HTMaterialKeys.PLUTONIUM] = MolarMassConvertible { 244.1 }
-        // Vanilla - Fluids
-        registry[HTMaterialKeys.WATER]
-        registry[HTMaterialKeys.LAVA]
-        // Vanilla - Gems
-        registry[HTMaterialKeys.AMETHYST]
-        registry[HTMaterialKeys.DIAMOND]
-        registry[HTMaterialKeys.ENDER_PEARL]
-        registry[HTMaterialKeys.EMERALD]
-        registry[HTMaterialKeys.FLINT]
-        registry[HTMaterialKeys.LAPIS]
-        registry[HTMaterialKeys.QUARTZ]
-        // Vanilla - Metals
-        registry[HTMaterialKeys.NETHERITE]
-        // Vanilla - Solids
-        registry[HTMaterialKeys.BRICK]
-        registry[HTMaterialKeys.CHARCOAL]
-        registry[HTMaterialKeys.CLAY]
-        registry[HTMaterialKeys.COAL]
-        registry[HTMaterialKeys.GLASS]
-        registry[HTMaterialKeys.GLOWSTONE]
-        registry[HTMaterialKeys.NETHER_BRICK]
-        registry[HTMaterialKeys.REDSTONE]
-        // Vanilla - Stones
-        registry[HTMaterialKeys.STONE]
-        registry[HTMaterialKeys.GRANITE]
-        registry[HTMaterialKeys.DIORITE]
-        registry[HTMaterialKeys.ANDESITE]
-        registry[HTMaterialKeys.DEEPSLATE]
-        registry[HTMaterialKeys.CALCITE]
-        registry[HTMaterialKeys.TUFF]
-        registry[HTMaterialKeys.OBSIDIAN]
-        registry[HTMaterialKeys.NETHERRACK]
-        registry[HTMaterialKeys.BASALT]
-        registry[HTMaterialKeys.END_STONE]
-        // Vanilla - Wood
-        registry[HTMaterialKeys.WOOD]
-        // Common - Fluids
-        // Common - Gems
-        // Common - Metals
-        // Common - Solids
-        // Common - Stones
         // Common - Woods
     }
 

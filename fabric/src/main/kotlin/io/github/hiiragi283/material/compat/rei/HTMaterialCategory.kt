@@ -1,7 +1,6 @@
 package io.github.hiiragi283.material.compat.rei
 
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.material.HTMaterials
 import me.shedaniel.clothconfig2.ClothConfigInitializer
 import me.shedaniel.clothconfig2.api.ScissorsHandler
 import me.shedaniel.clothconfig2.api.ScrollingContainer
@@ -22,7 +21,7 @@ import net.minecraft.util.math.MathHelper
 object HTMaterialCategory : RecipeCategory<HTMaterialDisplay> {
     override fun getIdentifier(): Identifier = HMReiPlugin.MATERIAL
 
-    override fun getLogo(): EntryStack = EntryStack.create(HTMaterials.iconItem())
+    override fun getLogo(): EntryStack = EntryStack.create(HTMaterialsAPI.INSTANCE.iconItem())
 
     override fun getCategoryName(): String = HTMaterialsAPI.MOD_NAME
 

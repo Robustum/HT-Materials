@@ -1,27 +1,27 @@
 package io.github.hiiragi283.api.material.content
 
 import io.github.hiiragi283.api.shape.HTShapeKey
-import net.minecraft.util.registry.Registry
-import net.minecraft.util.registry.RegistryKey
+import net.minecraft.block.Block
+import net.minecraft.fluid.Fluid
+import net.minecraft.item.Item
 
 class HTMaterialContentMap {
     private val blockMap: MutableMap<HTShapeKey, HTMaterialContent<*>> = hashMapOf()
     private val fluidMap: MutableMap<HTShapeKey, HTMaterialContent<*>> = hashMapOf()
     private val itemMap: MutableMap<HTShapeKey, HTMaterialContent<*>> = hashMapOf()
 
-    private fun <T> getMap(registryKey: RegistryKey<Registry<T>>): MutableMap<HTShapeKey, HTMaterialContent<*>> = when (registryKey) {
-        Registry.BLOCK_KEY -> blockMap
-        Registry.FLUID_KEY -> fluidMap
-        Registry.ITEM_KEY -> itemMap
+    private fun <T> getMap(clazz: Class<T>): MutableMap<HTShapeKey, HTMaterialContent<*>> = when (clazz) {
+        Block::class.java -> blockMap
+        Fluid::class.java -> fluidMap
+        Item::class.java -> itemMap
         else -> mutableMapOf()
     }
 
     fun <T> add(content: HTMaterialContent<T>) {
-        getMap(content.registryKey)[content.shapeKey] = content
+        getMap(content.objClass)[content.shapeKey] = content
     }
 
-    fun <T> remove(registryKey: RegistryKey<Registry<T>>, shapeKey: HTShapeKey) = getMap(registryKey).remove(shapeKey)
+    fun <T> remove(content: HTMaterialContent<T>, shapeKey: HTShapeKey) = getMap(content.objClass).remove(shapeKey)
 
-    fun <T> getContents(registryKey: RegistryKey<Registry<T>>): Collection<HTMaterialContent<T>> =
-        getMap(registryKey).values.filterIsInstance<HTMaterialContent<T>>()
+    fun <T> getContents(clazz: Class<T>): Collection<HTMaterialContent<T>> = getMap(clazz).values.filterIsInstance<HTMaterialContent<T>>()
 }
