@@ -6,7 +6,6 @@ import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.api.util.resource.HTResourcePackProvider
-import io.github.hiiragi283.material.MutableResourcePackManager
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.api.ModInitializer
@@ -55,7 +54,6 @@ object HTMaterialsFabric : PreLaunchEntrypoint, ModInitializer, ClientModInitial
 
     // ClientModInitializer
     override fun onInitializeClient() {
-        HTMaterialsCoreFabric.initColorHandlers()
         HTMaterialsCoreFabric.postInitialize(HTPlatformHelper.Side.CLIENT)
         HTMaterialsCoreFabric.registerRecipes()
         ItemTooltipCallback.EVENT.register(HTMaterialsFabric::getTooltip)

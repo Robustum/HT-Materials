@@ -9,7 +9,9 @@ import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
 import net.minecraft.item.BucketItem
+import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraftforge.fluids.FluidAttributes
 import net.minecraftforge.fluids.ForgeFlowingFluid
@@ -17,7 +19,6 @@ import net.minecraftforge.fml.RegistryObject
 import net.minecraftforge.registries.ForgeRegistries
 import java.util.function.Supplier
 import net.minecraft.fluid.Fluid as MCFluid
-import net.minecraft.item.Item as MCItem
 
 class HTForgeFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
     private lateinit var bucket: Supplier<BucketItem>
@@ -36,13 +37,7 @@ class HTForgeFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
         ).bucket(bucket)
         HTPlatformHelper.INSTANCE.registerFluid(materialKey.name, ForgeFlowingFluid.Source(properties))
         HTPlatformHelper.INSTANCE.registerFluid("flowing_" + materialKey.name, ForgeFlowingFluid.Flowing(properties))
-        HTPlatformHelper.INSTANCE.registerItem(
-            materialKey.name + "_bucket",
-            BucketItem(
-                still,
-                MCItem.Settings().group(HTMaterialsAPI.INSTANCE.itemGroup()).maxCount(1).recipeRemainder(Items.BUCKET)
-            )
-        )
+        HTPlatformHelper.INSTANCE.registerItem(materialKey.name + "_bucket", BucketImpl(still, materialKey))
     }
 
     override fun postInit(materialKey: HTMaterialKey) {
@@ -61,4 +56,17 @@ class HTForgeFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
             )
         }
     }
+
+    //    Bucket    //
+
+    private class BucketImpl(fluid: Supplier<MCFluid>, private val materialKey: HTMaterialKey) : BucketItem(
+        fluid,
+        Settings().group(HTMaterialsAPI.INSTANCE.itemGroup()).maxCount(1).recipeRemainder(Items.BUCKET),
+    ) {
+        override fun getName(): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)
+
+        override fun getName(stack: ItemStack): Text = BUCKET_SHAPE_KEY.getTranslatedText(materialKey)
+    }
 }
+
+private val BUCKET_SHAPE_KEY: HTShapeKey = HTShapeKey("bucket")

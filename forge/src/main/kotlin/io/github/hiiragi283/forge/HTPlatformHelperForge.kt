@@ -5,7 +5,9 @@ import io.github.hiiragi283.api.HTPlatformHelper
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.client.color.block.BlockColorProvider
+import net.minecraft.client.color.block.BlockColors
 import net.minecraft.client.color.item.ItemColorProvider
+import net.minecraft.client.color.item.ItemColors
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.Item
@@ -21,8 +23,8 @@ import net.minecraftforge.registries.ForgeRegistries
 
 class HTPlatformHelperForge : HTPlatformHelper {
     companion object {
-        internal val BLOCK_COLORS: MutableMap<Block, BlockColorProvider> = hashMapOf()
-        internal val ITEM_COLORS: MutableMap<Item, ItemColorProvider> = hashMapOf()
+        internal lateinit var blockColors: BlockColors
+        internal lateinit var itemColors: ItemColors
     }
 
     override fun getAllModId(): Collection<String> = ModList.get().mods.map(ModInfo::getModId)
@@ -39,20 +41,17 @@ class HTPlatformHelperForge : HTPlatformHelper {
 
     override fun getLoaderType(): HTPlatformHelper.Loader = HTPlatformHelper.Loader.FORGE
 
-    override fun getBlockTag(id: Identifier): Tag.Identified<Block> =
-        ForgeTagHandler.createOptionalTag(ForgeRegistries.BLOCKS, id)
+    override fun getBlockTag(id: Identifier): Tag.Identified<Block> = ForgeTagHandler.createOptionalTag(ForgeRegistries.BLOCKS, id)
 
-    override fun getFluidTag(id: Identifier): Tag.Identified<Fluid> =
-        ForgeTagHandler.createOptionalTag(ForgeRegistries.FLUIDS, id)
+    override fun getFluidTag(id: Identifier): Tag.Identified<Fluid> = ForgeTagHandler.createOptionalTag(ForgeRegistries.FLUIDS, id)
 
-    override fun getItemTag(id: Identifier): Tag.Identified<Item> =
-        ForgeTagHandler.createOptionalTag(ForgeRegistries.ITEMS, id)
+    override fun getItemTag(id: Identifier): Tag.Identified<Item> = ForgeTagHandler.createOptionalTag(ForgeRegistries.ITEMS, id)
 
-    override fun getBlock(id: String): Block = ForgeRegistries.BLOCKS.getValue(HTMaterialsAPI.id(id)) ?: Blocks.AIR
+    override fun getBlock(id: Identifier): Block = ForgeRegistries.BLOCKS.getValue(id) ?: Blocks.AIR
 
-    override fun getFluid(id: String): Fluid = ForgeRegistries.FLUIDS.getValue(HTMaterialsAPI.id(id)) ?: Fluids.EMPTY
+    override fun getFluid(id: Identifier): Fluid = ForgeRegistries.FLUIDS.getValue(id) ?: Fluids.EMPTY
 
-    override fun getItem(id: String): Item = ForgeRegistries.ITEMS.getValue(HTMaterialsAPI.id(id)) ?: Items.AIR
+    override fun getItem(id: Identifier): Item = ForgeRegistries.ITEMS.getValue(id) ?: Items.AIR
 
     override fun <T : Block> registerBlock(id: String, block: T): T = block
         .apply { setRegistryName(HTMaterialsAPI.MOD_ID, id) }
@@ -67,10 +66,10 @@ class HTPlatformHelperForge : HTPlatformHelper {
         .also(ForgeRegistries.ITEMS::register)
 
     override fun registerBlockColor(provider: BlockColorProvider, block: Block) {
-        BLOCK_COLORS[block] = provider
+        blockColors.registerColorProvider(provider, block)
     }
 
     override fun registerItemColor(provider: ItemColorProvider, item: Item) {
-        ITEM_COLORS[item] = provider
+        itemColors.register(provider, item)
     }
 }

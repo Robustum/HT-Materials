@@ -24,19 +24,14 @@ class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.Item(shapeKe
         shapeKey.toString()
     }
 
-    override fun initColorHandler(materialKey: HTMaterialKey) {
+    override fun postInit(materialKey: HTMaterialKey) {
+        // Client-only
         HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
             // ItemColor
             HTPlatformHelper.INSTANCE.registerItemColor(
                 { _, tintIndex: Int -> if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1 },
                 item,
             )
-        }
-    }
-
-    override fun postInit(materialKey: HTMaterialKey) {
-        // Client-only
-        HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
             // Model
             HTRuntimeResourcePack.addModel(
                 item,

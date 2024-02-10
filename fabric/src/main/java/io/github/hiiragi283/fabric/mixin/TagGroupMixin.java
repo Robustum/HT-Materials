@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material.mixin;
+package io.github.hiiragi283.fabric.mixin;
 
 import io.github.hiiragi283.api.part.HTPart;
 import net.minecraft.tag.Tag;

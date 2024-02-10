@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material;
+package io.github.hiiragi283.fabric;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;

@@ -37,32 +37,27 @@ class HTSimpleFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
     override fun init(materialKey: HTMaterialKey) {
         still = HTPlatformHelper.INSTANCE.registerFluid(
             materialKey.name,
-            FluidImpl.Still(this, materialKey)
+            FluidImpl.Still(this, materialKey),
         ).let { Suppliers.ofInstance(it) }
         flowing = HTPlatformHelper.INSTANCE.registerFluid(
             "flowing_${materialKey.name}",
-            FluidImpl.Flowing(this, materialKey)
+            FluidImpl.Flowing(this, materialKey),
         )
             .let { Suppliers.ofInstance(it) }
         bucketItem =
             HTPlatformHelper.INSTANCE.registerItem("${materialKey.name}_bucket", BucketImpl(still.get(), materialKey))
     }
 
-    override fun initColorHandler(materialKey: HTMaterialKey) {
-        // ItemColor
+    override fun postInit(materialKey: HTMaterialKey) {
+        // Client-only
         HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+            // ItemColor
             HTPlatformHelper.INSTANCE.registerItemColor(
                 { _: ItemStack, tintIndex: Int ->
                     if (tintIndex == 1) materialKey.getMaterial().color().rgb else -1
                 },
                 bucketItem,
             )
-        }
-    }
-
-    override fun postInit(materialKey: HTMaterialKey) {
-        // Client-only
-        HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
             // Model
             HTRuntimeResourcePack.addModel(
                 bucketItem,

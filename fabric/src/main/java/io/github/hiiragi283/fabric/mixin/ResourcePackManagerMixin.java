@@ -1,7 +1,7 @@
-package io.github.hiiragi283.material.mixin;
+package io.github.hiiragi283.fabric.mixin;
 
 import com.google.common.collect.ImmutableSet;
-import io.github.hiiragi283.material.MutableResourcePackManager;
+import io.github.hiiragi283.fabric.MutableResourcePackManager;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProvider;
 import org.spongepowered.asm.mixin.Mixin;

@@ -14,7 +14,6 @@ import net.minecraftforge.common.ToolType
 
 @HTAddon
 class HTMaterialsInitForge : HTMaterialsInit() {
-
     override fun modifyShapeTagPath(registry: MutableMap<HTShapeKey, String>) {
         // Block
         registry[HTShapeKeys.BLOCK] = "storage_blocks/%s"
@@ -110,5 +109,4 @@ class HTMaterialsInitForge : HTMaterialsInit() {
         registry.getOrCreate(HTMaterialKeys.RUBBER)
             .add(HTStorageBlockContent())
     }
-
 }

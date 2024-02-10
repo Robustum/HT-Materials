@@ -1,9 +1,8 @@
-package io.github.hiiragi283.material.mixin;
+package io.github.hiiragi283.fabric.mixin;
 
 import io.github.hiiragi283.api.HTMaterialsAPI;
 import io.github.hiiragi283.api.util.resource.HTResourcePackProvider;
-import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack;
-import io.github.hiiragi283.material.MutableResourcePackManager;
+import io.github.hiiragi283.fabric.MutableResourcePackManager;
 import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.server.MinecraftServer;
@@ -17,7 +16,6 @@ public class MinecraftServerMixin {
 
     @Inject(method = "loadDataPacks", at = @At("HEAD"))
     private static void ht_materials$loadDataPacks(ResourcePackManager resourcePackManager, DataPackSettings dataPackSettings, boolean safeMode, CallbackInfoReturnable<DataPackSettings> cir) {
-        HTRuntimeDataPack.writeTagData();
         ((MutableResourcePackManager) resourcePackManager).ht_materials$addPackProvider(HTResourcePackProvider.SERVER);
         HTMaterialsAPI.log("Registered runtime data pack!");
     }

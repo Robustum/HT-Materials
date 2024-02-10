@@ -9,7 +9,6 @@ import io.github.hiiragi283.api.material.content.HTMaterialContent
 import io.github.hiiragi283.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeKey
@@ -17,15 +16,9 @@ import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.collection.DefaultedMap
 import io.github.hiiragi283.api.util.collection.HashDefaultedMap
 import io.github.hiiragi283.api.util.collection.buildDefaultedMap
-import io.github.hiiragi283.api.util.prefix
-import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import net.minecraft.block.Block
-import net.minecraft.data.server.RecipesProvider
-import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
-import net.minecraft.tag.Tag
 import java.util.function.BiConsumer
 
 abstract class HTMaterialsCore {
@@ -140,13 +133,6 @@ abstract class HTMaterialsCore {
         HTMaterialsAPI.log("All Material Items registered!")
     }
 
-    fun initColorHandlers() {
-        forEachContent(Block::class.java) { content, key -> content.initColorHandler(key) }
-        forEachContent(Fluid::class.java) { content, key -> content.initColorHandler(key) }
-        forEachContent(Item::class.java) { content, key -> content.initColorHandler(key) }
-        HTMaterialsAPI.log("All color handlers initialized!")
-    }
-
     //    Post Initialization    //
 
     fun postInitialize(side: HTPlatformHelper.Side) {
@@ -181,30 +167,9 @@ abstract class HTMaterialsCore {
         HTMaterialsAPI.log("Added material recipes!")
     }
 
-    private fun ingotRecipe(partManager: HTPartManager, material: HTMaterialKey, item: Item) {
-        // 9x Nugget -> 1x Ingot
-        if (!partManager.hasItem(material, HTShapeKeys.NUGGET)) return
-        val nuggetTag: Tag<Item> = HTPart(material, HTShapeKeys.NUGGET).getPartTag()
-        HTRuntimeDataPack.addRecipe { exporter ->
-            ShapedRecipeJsonFactory.create(item)
-                .pattern("AAA")
-                .pattern("AAA")
-                .pattern("AAA")
-                .input('A', nuggetTag)
-                .criterion("has_nugget", RecipesProvider.conditionsFromTag(nuggetTag))
-                .offerTo(exporter, HTShapeKeys.INGOT.getShape().getIdentifier(material).prefix("shaped/"))
-        }
-    }
+    // 9x Nugget -> 1x Ingot
+    abstract fun ingotRecipe(partManager: HTPartManager, materialKey: HTMaterialKey, item: Item)
 
-    private fun nuggetRecipe(partManager: HTPartManager, material: HTMaterialKey, item: Item) {
-        // 1x Ingot -> 9x Nugget
-        if (!partManager.hasItem(material, HTShapeKeys.INGOT)) return
-        val ingotTag: Tag<Item> = HTPart(material, HTShapeKeys.INGOT).getPartTag()
-        HTRuntimeDataPack.addRecipe { exporter ->
-            ShapelessRecipeJsonFactory.create(item, 9)
-                .input(ingotTag)
-                .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag))
-                .offerTo(exporter, HTShapeKeys.NUGGET.getShape().getIdentifier(material).prefix("shapeless/"))
-        }
-    }
+    // 1x Ingot -> 9x Nugget
+    abstract fun nuggetRecipe(partManager: HTPartManager, materialKey: HTMaterialKey, item: Item)
 }

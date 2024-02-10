@@ -3,8 +3,6 @@ package io.github.hiiragi283.api.material.content
 import io.github.hiiragi283.api.HTPlatformHelper
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShapeKey
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.item.BlockItem
 import java.util.function.Supplier
@@ -14,9 +12,6 @@ import net.minecraft.item.Item as MCItem
 
 sealed class HTMaterialContent<T>(val shapeKey: HTShapeKey, val objClass: Class<T>) {
     abstract fun init(materialKey: HTMaterialKey)
-
-    @Environment(EnvType.CLIENT)
-    open fun initColorHandler(materialKey: HTMaterialKey) {}
 
     open fun postInit(materialKey: HTMaterialKey) {}
 

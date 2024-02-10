@@ -41,11 +41,11 @@ class HTPlatformHelperFabric : HTPlatformHelper {
 
     override fun getItemTag(id: Identifier): Tag.Identified<Item> = TagRegistry.item(id) as Tag.Identified<Item>
 
-    override fun getBlock(id: String): Block = Registry.BLOCK.get(HTMaterialsAPI.id(id))
+    override fun getBlock(id: Identifier): Block = Registry.BLOCK.get(id)
 
-    override fun getFluid(id: String): Fluid = Registry.FLUID.get(HTMaterialsAPI.id(id))
+    override fun getFluid(id: Identifier): Fluid = Registry.FLUID.get(id)
 
-    override fun getItem(id: String): Item = Registry.ITEM.get(HTMaterialsAPI.id(id))
+    override fun getItem(id: Identifier): Item = Registry.ITEM.get(id)
 
     override fun <T : Block> registerBlock(id: String, block: T): T = Registry.register(Registry.BLOCK, HTMaterialsAPI.id(id), block)
 

@@ -11,8 +11,6 @@ import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
 import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
-import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
 import net.minecraft.block.Material
 import net.minecraft.data.server.BlockLootTableGenerator
@@ -86,27 +84,16 @@ class HTStorageBlockContent(
 
     override fun blockItem(materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey)
 
-    @Environment(EnvType.CLIENT)
-    override fun initColorHandler(materialKey: HTMaterialKey) {
-        // BlockColor
-        HTPlatformHelper.INSTANCE.registerBlockColor(
-            { _, _, _, _ -> materialKey.getMaterial().color().rgb },
-            block,
-        )
-        // ItemColor
-        HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
-            HTPlatformHelper.INSTANCE.registerItemColor(
-                { _, tintIndex: Int -> if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1 },
-                blockItem,
-            )
-        }
-    }
-
     override fun postInit(materialKey: HTMaterialKey) {
         // LootTable
         HTRuntimeDataPack.addBlockLootTable(block, BlockLootTableGenerator.drops(block))
         // Client-only
         HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+            // BlockColor
+            HTPlatformHelper.INSTANCE.registerBlockColor(
+                { _, _, _, _ -> materialKey.getMaterial().color().rgb },
+                block,
+            )
             // BlockState
             val modelId: Identifier = HTMaterialsAPI.id("block/storage/${getResourcePath(materialKey.getMaterial().type)}")
             HTRuntimeResourcePack.addBlockState(
@@ -119,6 +106,13 @@ class HTStorageBlockContent(
                     }
                 },
             )
+            // ItemColor
+            HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+                HTPlatformHelper.INSTANCE.registerItemColor(
+                    { _, tintIndex: Int -> if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1 },
+                    blockItem,
+                )
+            }
             // Model
             HTRuntimeResourcePack.addModel(blockItem, buildJson { addProperty("parent", modelId.toString()) })
         }

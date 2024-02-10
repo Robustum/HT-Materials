@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material.mixin;
+package io.github.hiiragi283.fabric.mixin;
 
 import io.github.hiiragi283.api.HTPlatformHelper;
 import org.objectweb.asm.tree.ClassNode;
@@ -22,7 +22,7 @@ public class HTMixinConfig implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        if (targetClassName.equals("io.github.hiiragi283.material.mixin.FluidEntryStackMixin"))
+        if (targetClassName.equals("io.github.hiiragi283.mixin.FluidEntryStackMixin"))
             return HTPlatformHelper.getINSTANCE().isModLoaded("roughlyenoughitems");
         return true;
     }

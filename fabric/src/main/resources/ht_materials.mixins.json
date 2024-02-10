@@ -1,9 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "io.github.hiiragi283.material.mixin",
+  "package": "io.github.hiiragi283.fabric.mixin",
   "compatibilityLevel": "JAVA_8",
-  "plugin": "io.github.hiiragi283.material.mixin.HTMixinConfig",
+  "plugin": "io.github.hiiragi283.fabric.mixin.HTMixinConfig",
   "mixins": [
     "MinecraftServerMixin",
     "ResourcePackManagerMixin",

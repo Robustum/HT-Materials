@@ -10,8 +10,15 @@ architectury {
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
+    runs {
+        getByName("server") {
+            runDir = "server"
+        }
+    }
+
     forge {
         convertAccessWideners = true
+        mixinConfigs.add("ht_materials.mixins.json")
     }
 }
 

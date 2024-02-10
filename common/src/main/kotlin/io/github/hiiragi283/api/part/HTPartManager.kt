@@ -22,7 +22,7 @@ class HTPartManager(builder: Builder) {
         HTPlatformHelper.INSTANCE.getAllModId().forEach { modid ->
             HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { materialKey ->
                 HTMaterialsAPI.INSTANCE.shapeRegistry().getValues().forEach { shapeKey ->
-                    Registry.ITEM.get(shapeKey.getIdentifier(materialKey, modid)).run {
+                    HTPlatformHelper.INSTANCE.getItem(shapeKey.getIdentifier(materialKey, modid)).run {
                         builder.add(materialKey, shapeKey.key, this)
                     }
                 }

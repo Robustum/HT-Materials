@@ -1,5 +1,6 @@
 package io.github.hiiragi283.api.fluid
 
+import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTPlatformHelper
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
@@ -62,7 +63,7 @@ abstract class HTFlowableFluid(protected val settings: Settings) : FlowableFluid
 
     override fun getFlowing(): Fluid {
         if (!::flowing.isInitialized) {
-            flowing = HTPlatformHelper.INSTANCE.getFluid(settings.flowing)
+            flowing = HTPlatformHelper.INSTANCE.getFluid(HTMaterialsAPI.id(settings.flowing))
         }
         return flowing
     }
@@ -71,7 +72,7 @@ abstract class HTFlowableFluid(protected val settings: Settings) : FlowableFluid
 
     override fun getStill(): Fluid {
         if (!::still.isInitialized) {
-            still = HTPlatformHelper.INSTANCE.getFluid(settings.still)
+            still = HTPlatformHelper.INSTANCE.getFluid(HTMaterialsAPI.id(settings.still))
         }
         return still
     }

@@ -361,7 +361,7 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
         }
         registry[HTMaterialKeys.BAUXITE] = HTMaterialComposition.hydrate(
             HTMaterialComposition.molecular(HTElements.Al2O3 to 1),
-            2
+            2,
         ) { color = ColorConvertible.average(HTColor.BLACK to 1, HTColor.DARK_RED to 2, HTColor.GOLD to 1) }
         registry[HTMaterialKeys.RUBBER] = HTMaterialComposition.polymer(HTElements.C to 5, HTElements.H to 6) {
             color = ColorConvertible.average(HTColor.BLACK, HTColor.DARK_GRAY)

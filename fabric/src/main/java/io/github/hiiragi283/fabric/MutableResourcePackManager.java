@@ -1,4 +1,4 @@
-package io.github.hiiragi283.material;
+package io.github.hiiragi283.fabric;
 
 import net.minecraft.resource.ResourcePackProvider;
 

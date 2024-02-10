@@ -30,7 +30,7 @@ class HTMaterial(
 
     fun formula(): String = composition.formula
 
-    fun molar(): Double = composition.molar
+    fun molar(): Double = "%.1f".format(composition.molar).toDouble()
 
     //    Flags    //
 

@@ -46,7 +46,8 @@ interface HTPlatformHelper {
 
     enum class Loader(val tagNamespace: String) {
         FABRIC("c"),
-        FORGE("forge");
+        FORGE("forge"),
+        ;
 
         fun id(path: String) = Identifier(tagNamespace, path)
     }
@@ -67,11 +68,11 @@ interface HTPlatformHelper {
 
     //    Registry    //
 
-    fun getBlock(id: String): Block
+    fun getBlock(id: Identifier): Block
 
-    fun getFluid(id: String): Fluid
+    fun getFluid(id: Identifier): Fluid
 
-    fun getItem(id: String): Item
+    fun getItem(id: Identifier): Item
 
     fun <T : Block> registerBlock(id: String, block: T): T
 
