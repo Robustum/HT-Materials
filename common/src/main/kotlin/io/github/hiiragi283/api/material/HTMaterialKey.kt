@@ -2,7 +2,6 @@ package io.github.hiiragi283.api.material
 
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTPlatformHelper
-import io.github.hiiragi283.api.util.commonId
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.resource.language.I18n
@@ -20,7 +19,7 @@ data class HTMaterialKey(val name: String) {
 
     fun getIdentifier(namespace: String = HTMaterialsAPI.MOD_ID): Identifier = Identifier(namespace, name)
 
-    fun getCommonId() = commonId(name)
+    fun getCommonId() = HTPlatformHelper.INSTANCE.getLoaderType().id(name)
 
     fun getMaterialId() = getIdentifier("material")
 

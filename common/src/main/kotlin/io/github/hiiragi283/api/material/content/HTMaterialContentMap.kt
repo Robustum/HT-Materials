@@ -1,6 +1,7 @@
 package io.github.hiiragi283.api.material.content
 
 import io.github.hiiragi283.api.shape.HTShapeKey
+import io.github.hiiragi283.api.shape.HTShapeKeys
 import net.minecraft.block.Block
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
@@ -17,11 +18,32 @@ class HTMaterialContentMap {
         else -> mutableMapOf()
     }
 
-    fun <T> add(content: HTMaterialContent<T>) {
+    fun addMetalComponents() = apply {
+        add(HTSimpleItemContent(HTShapeKeys.DUST))
+        add(HTSimpleItemContent(HTShapeKeys.GEAR))
+        add(HTSimpleItemContent(HTShapeKeys.INGOT))
+        add(HTSimpleItemContent(HTShapeKeys.NUGGET))
+        add(HTSimpleItemContent(HTShapeKeys.PLATE))
+        add(HTSimpleItemContent(HTShapeKeys.ROD))
+    }
+
+    fun addGemComponents() = apply {
+        add(HTSimpleItemContent(HTShapeKeys.DUST))
+        add(HTSimpleItemContent(HTShapeKeys.GEAR))
+        add(HTSimpleItemContent(HTShapeKeys.GEM))
+        add(HTSimpleItemContent(HTShapeKeys.PLATE))
+        add(HTSimpleItemContent(HTShapeKeys.ROD))
+    }
+
+    fun <T> add(content: HTMaterialContent<T>): HTMaterialContentMap = apply {
         getMap(content.objClass)[content.shapeKey] = content
     }
 
-    fun <T> remove(content: HTMaterialContent<T>, shapeKey: HTShapeKey) = getMap(content.objClass).remove(shapeKey)
+    inline fun <reified T> remove(shapeKey: HTShapeKey) = remove(T::class.java, shapeKey)
+
+    fun <T> remove(clazz: Class<T>, shapeKey: HTShapeKey): HTMaterialContentMap = apply {
+        getMap(clazz).remove(shapeKey)
+    }
 
     fun <T> getContents(clazz: Class<T>): Collection<HTMaterialContent<T>> = getMap(clazz).values.filterIsInstance<HTMaterialContent<T>>()
 }

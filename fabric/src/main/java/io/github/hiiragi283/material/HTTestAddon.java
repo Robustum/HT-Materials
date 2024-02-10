@@ -17,7 +17,7 @@ import io.github.hiiragi283.api.shape.HTShapeKey;
 import io.github.hiiragi283.api.shape.HTShapeKeys;
 import io.github.hiiragi283.api.util.HTColor;
 import io.github.hiiragi283.api.util.collection.DefaultedMap;
-import io.github.hiiragi283.material.impl.material.content.HTSimpleFluidContent;
+import io.github.hiiragi283.fabric.content.HTSimpleFluidContent;
 import io.github.hiiragi283.api.material.content.HTSimpleItemContent;
 import net.minecraft.item.Items;
 import org.jetbrains.annotations.NotNull;

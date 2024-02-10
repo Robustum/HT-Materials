@@ -8,7 +8,8 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/ht_materials.accesswidener")
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
     runs {
         getByName("client") {
             programArg("--username=Developer")
@@ -70,8 +71,14 @@ dependencies {
         exclude(module = "fabric-api")
         exclude(module = "fabric-loader")
     }
-    add("common", project(path = ":common", configuration = "namedElements").apply { isTransitive = false })
-    add("shadowCommon", project(path = ":common", configuration = "transformProductionFabric").apply { isTransitive = false })
+    add(
+        "common",
+        project(path = ":common", configuration = "namedElements").apply { isTransitive = false },
+    )
+    add(
+        "shadowCommon",
+        project(path = ":common", configuration = "transformProductionFabric").apply { isTransitive = false },
+    )
 }
 
 java {
@@ -88,14 +95,14 @@ tasks {
 
     shadowJar {
         configurations = listOf(shadowCommon)
-        archiveClassifier.set("dev-shadow")
+        archiveClassifier = "dev-shadow"
     }
 
     remapJar {
-        injectAccessWidener.set(true)
-        inputFile.set(shadowJar.get().archiveFile.get())
+        injectAccessWidener = true
+        inputFile = shadowJar.get().archiveFile.get()
         dependsOn(shadowJar)
-        archiveClassifier.set(null as String?)
+        archiveClassifier = null
     }
 
     jar {

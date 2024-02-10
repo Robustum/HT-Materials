@@ -8,6 +8,8 @@ architectury {
 }
 
 loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
     forge {
         convertAccessWideners = true
     }
@@ -32,11 +34,18 @@ dependencies {
     add("forge", "net.minecraftforge:forge:$forgeLoader")
     modImplementation("thedarkcolour:kotlinforforge:1.17.0")
     modImplementation("mezz.jei:jei-1.16.5:7.7.1.153")
-    add("common", project(path = ":common", configuration = "namedElements").apply { isTransitive = false })
+    add(
+        "common",
+        project(path = ":common", configuration = "namedElements").apply { isTransitive = false },
+    )
     add(
         "shadowCommon",
         project(path = ":common", configuration = "transformProductionForge").apply { isTransitive = false },
     )
+}
+
+java {
+    withSourcesJar()
 }
 
 tasks {
@@ -53,10 +62,10 @@ tasks {
     }
 
     remapJar {
-        injectAccessWidener.set(true)
-        inputFile.set(shadowJar.get().archiveFile.get())
+        injectAccessWidener = true
+        inputFile = shadowJar.get().archiveFile.get()
         dependsOn(shadowJar)
-        archiveClassifier.set(null as String?)
+        archiveClassifier = null
     }
 
     jar {

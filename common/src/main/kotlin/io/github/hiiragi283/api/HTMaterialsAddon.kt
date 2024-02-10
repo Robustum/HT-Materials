@@ -2,7 +2,6 @@ package io.github.hiiragi283.api
 
 import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.fluid.HTFluidManager
-import io.github.hiiragi283.api.material.ColorConvertible
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
@@ -38,8 +37,6 @@ interface HTMaterialsAddon {
     fun modifyMaterialProperty(registry: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder>) {}
 
     fun modifyMaterialType(registry: MutableMap<HTMaterialKey, HTMaterialType>) {}
-
-    fun modifyMaterialColor(registry: MutableMap<HTMaterialKey, ColorConvertible>) {}
 
     //    Post Initialization    //
 

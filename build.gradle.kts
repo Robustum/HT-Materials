@@ -22,13 +22,13 @@ subprojects {
     withGroovyBuilder {
         "loom" {
             "silentMojangMappingsLicense"()
+            setProperty("accessWidenerPath", file("src/main/resources/ht_materials.accesswidener"))
         }
     }
 
     dependencies {
         add("minecraft", "com.mojang:minecraft:1.16.5")
         add("mappings", "net.fabricmc:yarn:1.16.5+build.10:v2")
-        testImplementation("org.jetbrains.kotlin:kotlin-test")
     }
 }
 
@@ -57,6 +57,10 @@ allprojects {
         maven(url = "https://maven.terraformersmc.com/releases/")
         maven(url = "https://thedarkcolour.github.io/KotlinForForge/") //KfF
         maven(url = "https://dvs1.progwml6.com/files/maven/") //JEI
+    }
+
+    dependencies {
+        testImplementation("org.jetbrains.kotlin:kotlin-test")
     }
 
     kotlin {

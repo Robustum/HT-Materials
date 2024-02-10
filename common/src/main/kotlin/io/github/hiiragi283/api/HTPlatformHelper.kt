@@ -8,7 +8,6 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
-import java.util.function.Supplier
 
 interface HTPlatformHelper {
     companion object {
@@ -41,17 +40,15 @@ interface HTPlatformHelper {
 
     fun getLoaderType(): Loader
 
-    fun isFabric(): Boolean = getLoaderType() == Loader.FABRIC
-
-    fun isForge(): Boolean = getLoaderType() == Loader.FORGE
-
     fun onLoader(loader: Loader, action: () -> Unit) {
         if (getLoaderType() == loader) action()
     }
 
     enum class Loader(val tagNamespace: String) {
         FABRIC("c"),
-        FORGE("forge"),
+        FORGE("forge");
+
+        fun id(path: String) = Identifier(tagNamespace, path)
     }
 
     //    Tag    //
@@ -76,11 +73,11 @@ interface HTPlatformHelper {
 
     fun getItem(id: String): Item
 
-    fun <T : Block> registerBlock(id: String, block: Supplier<T>): Supplier<T>
+    fun <T : Block> registerBlock(id: String, block: T): T
 
-    fun <T : Fluid> registerFluid(id: String, fluid: Supplier<T>): Supplier<T>
+    fun <T : Fluid> registerFluid(id: String, fluid: T): T
 
-    fun <T : Item> registerItem(id: String, item: Supplier<T>): Supplier<T>
+    fun <T : Item> registerItem(id: String, item: T): T
 
     fun registerBlockColor(provider: BlockColorProvider, block: Block)
 

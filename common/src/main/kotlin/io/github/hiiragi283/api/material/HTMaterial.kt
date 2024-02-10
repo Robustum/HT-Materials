@@ -75,34 +75,29 @@ class HTMaterial(
         HTMaterialType.Wood -> null
     }
 
+    //    Other    //
+
+    fun appendTooltip(shapeKey: HTShapeKey?, stack: ItemStack, lines: MutableList<Text>) {
+        // Title
+        lines.add(TranslatableText("tooltip.ht_materials.material.title"))
+        // Name
+        val name: String = shapeKey?.getTranslatedName(key) ?: key.getTranslatedName()
+        lines.add(TranslatableText("tooltip.ht_materials.material.name", name))
+        // Type
+        lines.add(TranslatableText("tooltip.ht_materials.material.type", type))
+        // Formula
+        formula().takeIf(String::isNotEmpty)?.let { formula: String ->
+            lines.add(TranslatableText("tooltip.ht_materials.material.formula", formula))
+        }
+        // Molar Mass
+        molar().takeIf { it > 0.0 }?.let { molar: Double ->
+            lines.add(TranslatableText("tooltip.ht_materials.material.molar", molar))
+        }
+        // Tooltip from Properties
+        properties.values.forEach { it.appendTooltip(this, shapeKey, stack, lines) }
+    }
+
     //    Any    //
 
     override fun toString(): String = key.toString()
-
-    companion object {
-        fun appendTooltip(
-            material: HTMaterial,
-            shapeKey: HTShapeKey?,
-            stack: ItemStack,
-            lines: MutableList<Text>,
-        ) {
-            // Title
-            lines.add(TranslatableText("tooltip.ht_materials.material.title"))
-            // Name
-            val name: String = shapeKey?.getTranslatedName(material.key) ?: material.key.getTranslatedName()
-            lines.add(TranslatableText("tooltip.ht_materials.material.name", name))
-            // Type
-            lines.add(TranslatableText("tooltip.ht_materials.material.type", material.type))
-            // Formula
-            material.formula().takeIf(String::isNotEmpty)?.let { formula: String ->
-                lines.add(TranslatableText("tooltip.ht_materials.material.formula", formula))
-            }
-            // Molar Mass
-            material.molar().takeIf { it > 0.0 }?.let { molar: Double ->
-                lines.add(TranslatableText("tooltip.ht_materials.material.molar", molar))
-            }
-            // Tooltip from Properties
-            material.properties.values.forEach { it.appendTooltip(material, shapeKey, stack, lines) }
-        }
-    }
 }

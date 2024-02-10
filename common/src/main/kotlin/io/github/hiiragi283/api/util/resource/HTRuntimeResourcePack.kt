@@ -66,7 +66,7 @@ object HTRuntimeResourcePack : HTRuntimePackBase(ResourceType.CLIENT_RESOURCES) 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
     override fun <T> parseMetadata(metaReader: ResourceMetadataReader<T>): T? =
-        PackResourceMetadata(LiteralText(""), 6).takeIf { metaReader is PackResourceMetadataReader } as? T
+        PackResourceMetadata(LiteralText(name), 6).takeIf { metaReader is PackResourceMetadataReader } as? T
 
     override fun getName(): String = "${HTMaterialsAPI.MOD_NAME}'s Runtime Resource Pack"
 }

@@ -2,8 +2,8 @@ package io.github.hiiragi283.api.shape
 
 import com.google.common.collect.ImmutableMap
 
-interface HTShapeRegistry {
-    val registry: ImmutableMap<HTShapeKey, HTShape>
+class HTShapeRegistry(map: Map<HTShapeKey, HTShape>) {
+    val registry: ImmutableMap<HTShapeKey, HTShape> = ImmutableMap.copyOf(map)
 
     fun getKeys(): Collection<HTShapeKey> = registry.keys
 

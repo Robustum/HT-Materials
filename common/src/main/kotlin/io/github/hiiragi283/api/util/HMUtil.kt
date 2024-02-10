@@ -37,8 +37,6 @@ fun Item.isAir(): Boolean = this == Items.AIR
 
 //    Identifier    //
 
-fun commonId(path: String) = Identifier("c", path)
-
 fun Identifier.prefix(prefix: String) = Identifier(this.namespace, prefix + this.path)
 
 fun Identifier.suffix(suffix: String) = Identifier(this.namespace, this.path + suffix)

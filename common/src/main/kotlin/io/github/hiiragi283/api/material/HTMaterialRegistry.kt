@@ -2,8 +2,8 @@ package io.github.hiiragi283.api.material
 
 import com.google.common.collect.ImmutableMap
 
-interface HTMaterialRegistry {
-    val registry: ImmutableMap<HTMaterialKey, HTMaterial>
+class HTMaterialRegistry(map: Map<HTMaterialKey, HTMaterial>) {
+    val registry: ImmutableMap<HTMaterialKey, HTMaterial> = ImmutableMap.copyOf(map)
 
     fun getKeys(): Collection<HTMaterialKey> = registry.keys
 
