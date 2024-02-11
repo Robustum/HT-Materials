@@ -1,11 +1,11 @@
 package io.github.hiiragi283.forge
 
-import io.github.hiiragi283.api.*
+import io.github.hiiragi283.api.HTAddon
+import io.github.hiiragi283.api.HTMaterialsAddon
+import io.github.hiiragi283.api.HTMaterialsCore
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
-import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
-import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.addArray
 import io.github.hiiragi283.api.util.addObject
@@ -89,28 +89,5 @@ internal object HTMaterialsCoreForge : HTMaterialsCore() {
                 }
             },
         )
-    }
-
-    fun reloadManagers() {
-        // Reload Fluid Manager
-        HTMaterialsAPIForge.fluidManager = HTFluidManager.Builder().apply {
-            // Register fluids from common tag
-            HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { materialKey: HTMaterialKey ->
-                HTPlatformHelper.INSTANCE.getFluidTag(materialKey.getCommonId()).values().forEach { fluid ->
-                    add(materialKey, fluid)
-                }
-            }
-        }.let(::HTFluidManager)
-        // Reload Part Manager
-        HTMaterialsAPIForge.partManager = HTPartManager.Builder().apply {
-            // Register items from part tag
-            HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { materialKey: HTMaterialKey ->
-                HTMaterialsAPI.INSTANCE.shapeRegistry().getKeys().forEach { shapeKey: HTShapeKey ->
-                    HTPart(materialKey, shapeKey).getPartTag().values().forEach { item ->
-                        add(materialKey, shapeKey, item)
-                    }
-                }
-            }
-        }.let(::HTPartManager)
     }
 }

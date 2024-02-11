@@ -29,7 +29,7 @@ data class HTMaterialKey(val name: String) {
 
     //    Translation    //
 
-    private val translationKey: String = "ht_material.$name"
+    val translationKey: String = "ht_material.$name"
 
     @Environment(EnvType.CLIENT)
     fun getTranslatedName(): String = I18n.translate(translationKey)

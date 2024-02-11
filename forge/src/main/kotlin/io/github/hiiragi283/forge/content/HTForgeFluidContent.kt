@@ -33,7 +33,9 @@ class HTForgeFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
         properties = ForgeFlowingFluid.Properties(
             still,
             flowing,
-            FluidAttributes.builder(Identifier("block/white_concrete"), Identifier("block/white_concrete")),
+            FluidAttributes.builder(Identifier("block/white_concrete"), Identifier("block/white_concrete"))
+                .color(materialKey.getMaterial().color().rgb)
+                .translationKey(materialKey.translationKey),
         ).bucket(bucket)
         HTPlatformHelper.INSTANCE.registerFluid(materialKey.name, ForgeFlowingFluid.Source(properties))
         HTPlatformHelper.INSTANCE.registerFluid("flowing_" + materialKey.name, ForgeFlowingFluid.Flowing(properties))
@@ -43,6 +45,13 @@ class HTForgeFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
     override fun postInit(materialKey: HTMaterialKey) {
         // Client-only
         HTPlatformHelper.INSTANCE.onSide(HTPlatformHelper.Side.CLIENT) {
+            // ItemColor
+            HTPlatformHelper.INSTANCE.registerItemColor(
+                { _: ItemStack, tintIndex: Int ->
+                    if (tintIndex == 1) materialKey.getMaterial().color().rgb else -1
+                },
+                bucket.get(),
+            )
             // Model
             HTRuntimeResourcePack.addModel(
                 bucket.get(),

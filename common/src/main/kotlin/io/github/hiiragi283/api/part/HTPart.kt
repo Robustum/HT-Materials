@@ -20,7 +20,7 @@ data class HTPart(
 
     fun getShape(): HTShape = shapeKey.getShape()
 
-    fun getPartId(): Identifier = Identifier("part", "$materialKey/$shapeKey")
+    fun getPartId(): Identifier = Identifier("part", "$shapeKey/$materialKey")
 
     fun getPartTag(): Tag.Identified<Item> = HTPlatformHelper.INSTANCE.getItemTag(getPartId())
 

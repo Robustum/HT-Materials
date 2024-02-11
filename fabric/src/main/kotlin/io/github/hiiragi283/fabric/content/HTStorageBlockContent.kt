@@ -31,18 +31,11 @@ class HTStorageBlockContent(
 ) : HTMaterialContent.Block(HTShapeKeys.BLOCK) {
     private fun getBlockSetting(type: HTMaterialType): FabricBlockSettings {
         val material: Material = when (type) {
-            HTMaterialType.Gem.AMETHYST -> Material.STONE
-            HTMaterialType.Gem.COAL -> Material.STONE
-            HTMaterialType.Gem.CUBIC -> Material.STONE
-            HTMaterialType.Gem.DIAMOND -> Material.STONE
-            HTMaterialType.Gem.EMERALD -> Material.STONE
-            HTMaterialType.Gem.LAPIS -> Material.STONE
-            HTMaterialType.Gem.QUARTZ -> Material.STONE
-            HTMaterialType.Gem.RUBY -> Material.STONE
-            HTMaterialType.Metal -> Material.METAL
-            HTMaterialType.Stone -> Material.STONE
-            HTMaterialType.Undefined -> Material.SOIL
-            HTMaterialType.Wood -> Material.WOOD
+            is HTMaterialType.Gem -> Material.STONE
+            is HTMaterialType.Metal -> Material.METAL
+            is HTMaterialType.Stone -> Material.STONE
+            is HTMaterialType.Undefined -> Material.SOIL
+            is HTMaterialType.Wood -> Material.WOOD
         }
         return FabricBlockSettings.of(material).apply {
             toolTag?.let {
@@ -57,18 +50,11 @@ class HTStorageBlockContent(
 
     companion object {
         private fun getResourcePath(type: HTMaterialType): String = when (type) {
-            HTMaterialType.Gem.AMETHYST -> "gem"
-            HTMaterialType.Gem.COAL -> "gem"
-            HTMaterialType.Gem.CUBIC -> "gem"
-            HTMaterialType.Gem.DIAMOND -> "gem"
-            HTMaterialType.Gem.EMERALD -> "gem"
-            HTMaterialType.Gem.LAPIS -> "gem"
-            HTMaterialType.Gem.QUARTZ -> "gem"
-            HTMaterialType.Gem.RUBY -> "gem"
-            HTMaterialType.Metal -> "metal"
-            HTMaterialType.Stone -> "solid"
-            HTMaterialType.Undefined -> "solid"
-            HTMaterialType.Wood -> "solid"
+            is HTMaterialType.Gem -> "gem"
+            is HTMaterialType.Metal -> "metal"
+            is HTMaterialType.Stone -> "solid"
+            is HTMaterialType.Undefined -> "solid"
+            is HTMaterialType.Wood -> "solid"
         }
     }
 
