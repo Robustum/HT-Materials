@@ -12,7 +12,6 @@ import io.github.hiiragi283.api.util.buildJson
 import io.github.hiiragi283.api.util.resource.HTRuntimeDataPack
 import io.github.hiiragi283.api.util.resource.HTRuntimeResourcePack
 import net.minecraft.block.AbstractBlock
-import net.minecraft.block.Material
 import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
@@ -27,33 +26,14 @@ class HTStorageBlockContent(
     private val toolType: ToolType? = null,
     private val toolLevel: Int = 0,
 ) : HTMaterialContent.Block(HTShapeKeys.BLOCK) {
-    private fun getBlockSetting(type: HTMaterialType): AbstractBlock.Settings {
-        val material: Material = when (type) {
-            is HTMaterialType.Gem -> Material.STONE
-            is HTMaterialType.Metal -> Material.METAL
-            is HTMaterialType.Stone -> Material.STONE
-            is HTMaterialType.Undefined -> Material.SOIL
-            is HTMaterialType.Wood -> Material.WOOD
-        }
-        return AbstractBlock.Settings.of(material).apply {
-            toolType?.let {
-                strength(strength)
-                requiresTool()
-                harvestTool(it)
-                harvestLevel(toolLevel)
-            } ?: run {
-                breakInstantly()
-            }
-        }
-    }
-
-    companion object {
-        private fun getResourcePath(type: HTMaterialType): String = when (type) {
-            is HTMaterialType.Gem -> "gem"
-            is HTMaterialType.Metal -> "metal"
-            is HTMaterialType.Stone -> "solid"
-            is HTMaterialType.Undefined -> "solid"
-            is HTMaterialType.Wood -> "solid"
+    private fun getBlockSetting(type: HTMaterialType): AbstractBlock.Settings = AbstractBlock.Settings.of(type.blockMaterial).apply {
+        toolType?.let {
+            strength(strength)
+            requiresTool()
+            harvestTool(it)
+            harvestLevel(toolLevel)
+        } ?: run {
+            breakInstantly()
         }
     }
 
@@ -80,7 +60,7 @@ class HTStorageBlockContent(
                 block,
             )
             // BlockState
-            val modelId: Identifier = HTMaterialsAPI.id("block/storage/${getResourcePath(materialKey.getMaterial().type)}")
+            val modelId: Identifier = HTMaterialsAPI.id("block/storage/${materialKey.getMaterial().type.resourcePath}")
             HTRuntimeResourcePack.addBlockState(
                 block,
                 buildJson {

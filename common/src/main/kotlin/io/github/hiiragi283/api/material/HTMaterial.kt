@@ -8,7 +8,6 @@ import io.github.hiiragi283.api.material.property.HTMaterialProperty
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.api.material.property.HTPropertyKey
 import io.github.hiiragi283.api.shape.HTShapeKey
-import io.github.hiiragi283.api.shape.HTShapeKeys
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
@@ -60,20 +59,7 @@ class HTMaterial(
 
     //    Type    //
 
-    fun getDefaultShape(): HTShapeKey? = when (type) {
-        HTMaterialType.Gem.AMETHYST -> HTShapeKeys.GEM
-        HTMaterialType.Gem.COAL -> HTShapeKeys.GEM
-        HTMaterialType.Gem.CUBIC -> HTShapeKeys.GEM
-        HTMaterialType.Gem.DIAMOND -> HTShapeKeys.GEM
-        HTMaterialType.Gem.EMERALD -> HTShapeKeys.GEM
-        HTMaterialType.Gem.LAPIS -> HTShapeKeys.GEM
-        HTMaterialType.Gem.QUARTZ -> HTShapeKeys.GEM
-        HTMaterialType.Gem.RUBY -> HTShapeKeys.GEM
-        HTMaterialType.Metal -> HTShapeKeys.INGOT
-        HTMaterialType.Stone -> null
-        HTMaterialType.Undefined -> null
-        HTMaterialType.Wood -> null
-    }
+    fun getDefaultShape(): HTShapeKey? = type.defaultShape
 
     //    Other    //
 
