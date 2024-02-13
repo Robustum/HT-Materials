@@ -1,101 +1,126 @@
+import org.gradle.api.tasks.bundling.Jar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
-    kotlin("jvm") version "1.9.21"
-    id("architectury-plugin") version "3.4-SNAPSHOT"
-    id("dev.architectury.loom") version "1.5-SNAPSHOT" apply(false)
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    kotlin("jvm") version libs.versions.kotlin
+    alias(libs.plugins.fabric.loom)
+    alias(libs.plugins.ktlint)
 }
 
-val archivesBaseName: String by rootProject
-val modVersion: String by rootProject
-val mavenGroup: String by rootProject
+group = "io.github.hiiragi283"
+version = "2.0.0+1.16.5"
 
-architectury {
-    minecraft = "1.16.5"
-}
-
-subprojects {
-    apply(plugin = "dev.architectury.loom")
-
-    withGroovyBuilder {
-        "loom" {
-            "silentMojangMappingsLicense"()
-            setProperty("accessWidenerPath", file("src/main/resources/ht_materials.accesswidener"))
-        }
-    }
-
-    dependencies {
-        add("minecraft", "com.mojang:minecraft:1.16.5")
-        add("mappings", "net.fabricmc:yarn:1.16.5+build.10:v2")
+sourceSets {
+    create("api")
+    main {
+        // compileClasspath.forEach { print("$it\n") }
+        compileClasspath += getByName("api").output
+        runtimeClasspath += getByName("api").output
     }
 }
 
-allprojects {
-    apply(plugin = "kotlin")
-    apply(plugin = "architectury-plugin")
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+configurations {
+    // names.forEach { print("$it\n") }
+    getByName("apiCompileClasspath").extendsFrom(getByName("compileClasspath"))
+}
 
-    base.archivesName = archivesBaseName
-    version = modVersion
-    group = mavenGroup
-
-    repositories {
-        mavenCentral()
-        maven(url = "https://cursemaven.com") {
-            content { includeGroup("curse.maven") }
-        }
-        maven(url = "https://api.modrinth.com/maven") {
-            content { includeGroup("maven.modrinth") }
-        }
-        maven(url = "https://maven.architectury.dev/")
-        maven(url = "https://maven.blamejared.com") {
-            content { includeGroup("vazkii.patchouli") }
-        }
-        maven(url = "https://maven.shedaniel.me/") //REI
-        maven(url = "https://maven.terraformersmc.com/releases/")
-        maven(url = "https://thedarkcolour.github.io/KotlinForForge/") //KfF
-        maven(url = "https://dvs1.progwml6.com/files/maven/") //JEI
+repositories {
+    mavenCentral()
+    maven(url = "https://cursemaven.com") {
+        content { includeGroup("curse.maven") }
     }
-
-    dependencies {
-        testImplementation("org.jetbrains.kotlin:kotlin-test")
+    maven(url = "https://api.modrinth.com/maven") {
+        content { includeGroup("maven.modrinth") }
     }
+    maven(url = "https://dvs1.progwml6.com/files/maven") // JEI
+    maven(url = "https://maven.architectury.dev")
+    maven(url = "https://maven.shedaniel.me") // REI
+    maven(url = "https://maven.terraformersmc.com/releases")
+    maven(url = "https://thedarkcolour.github.io/KotlinForForge") // KfF
+}
 
-    kotlin {
-        jvmToolchain(8)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8)
-            freeCompilerArgs.add("-Xjvm-default=all")
+dependencies {
+    minecraft(libs.minecraft)
+    mappings("net.fabricmc:yarn:${libs.versions.fabric.yarn.get()}:v2")
+    modApi(libs.bundles.mods.fabric) {
+        exclude(module = "fabric-api")
+        exclude(module = "fabric-loader")
+    }
+    modCompileOnly(libs.bundles.mods.compile) {
+        exclude(module = "fabric-api")
+        exclude(module = "fabric-loader")
+    }
+    modLocalRuntime(libs.bundles.mods.debug) {
+        exclude(module = "fabric-api")
+        exclude(module = "fabric-loader")
+    }
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/ht_materials.accesswidener")
+    runs {
+        getByName("client") {
+            programArg("--username=Developer")
+            vmArg("-Dmixin.debug.export=true")
         }
-    }
-
-    java {
-        withSourcesJar()
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    ktlint {
-        reporters {
-            reporter(ReporterType.HTML)
-            reporter(ReporterType.SARIF)
-        }
-        filter {
-            exclude("**/generated/**")
-            include("**/kotlin/**")
+        getByName("server") {
+            runDir = "server"
         }
     }
+}
 
-    tasks {
-        test {
-            useJUnitPlatform()
+kotlin {
+    jvmToolchain(8)
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_1_8)
+        freeCompilerArgs.add("-Xjvm-default=all")
+    }
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+ktlint {
+    reporters {
+        reporter(ReporterType.HTML)
+        reporter(ReporterType.SARIF)
+    }
+    filter {
+        exclude("**/generated/**")
+        include("**/kotlin/**")
+    }
+}
+
+tasks {
+    test {
+        useJUnitPlatform()
+    }
+    processResources {
+        inputs.property("version", project.version)
+        filesMatching("fabric.mod.json") {
+            expand("version" to project.version)
         }
-        jar {
-            from("LICENSE") {
-                rename { "${it}_${archivesBaseName}" }
-            }
+    }
+    jar {
+        from("LICENSE") {
+            rename { "${it}_${project.base.archivesName.get()}" }
+        }
+        from(sourceSets.getByName("api").output)
+        dependsOn(getByName("apiClasses"))
+    }
+
+    register("apiJar", Jar::class.java) {
+        archiveClassifier = "api"
+        from(sourceSets.getByName("api").java) {
+            include("io/github/hiiragi283/api/**")
+        }
+        from(sourceSets.getByName("api").output) {
+            include("io/github/hiiragi283/api/**")
         }
     }
 }

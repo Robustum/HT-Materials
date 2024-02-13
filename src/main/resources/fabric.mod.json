@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "id": "ht_materials",
+  "version": "${version}",
+  "name": "HT Materials",
+  "description": "A simple Minecraft mod for Fabric/Quilt that provides Material System and Tag Sync",
+  "authors": [
+    "Hiiragi283"
+  ],
+  "contributors": [
+    "MrKono"
+  ],
+  "contact": {
+    "issues": "https://github.com/Hiiragi283/HT-Materials/issues",
+    "sources": "https://github.com/Hiiragi283/HT-Materials"
+  },
+  "license": [
+    "MPL-2.0"
+  ],
+  "icon": "assets/ht_materials/textures/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "preLaunch": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.HTMaterials"
+      }
+    ],
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.HTMaterials"
+      }
+    ],
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.HTMaterials"
+      }
+    ],
+    "server": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.HTMaterials"
+      }
+    ],
+    "ht_materials": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.HMIRAddon"
+      },
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.HMMIAddon"
+      },
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.HMTRAddon"
+      },
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.HTMaterialsInitFabric"
+      }
+    ],
+    "rei_plugins_v0": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.compat.rei.HMReiPlugin"
+      }
+    ]
+  },
+  "mixins": [
+    "ht_materials.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "fabric": "*",
+    "minecraft": "1.16.5",
+    "fabric-language-kotlin": "*"
+  }
+}
