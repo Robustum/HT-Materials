@@ -28,7 +28,7 @@ interface HTMaterialsAddon {
 
     fun registerMaterialKey(registry: ImmutableSet.Builder<HTMaterialKey>) {}
 
-    fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap>) {}
+    fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {}
 
     fun modifyMaterialComposition(registry: MutableMap<HTMaterialKey, HTMaterialComposition>) {}
 

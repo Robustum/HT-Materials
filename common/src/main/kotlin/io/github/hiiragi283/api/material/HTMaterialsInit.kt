@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
+import io.github.hiiragi283.api.material.content.HTMaterialContent
 import io.github.hiiragi283.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.api.material.content.HTSimpleItemContent
 import io.github.hiiragi283.api.material.element.HTElements
@@ -12,7 +13,6 @@ import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.HTColor
 import io.github.hiiragi283.api.util.addAll
 import io.github.hiiragi283.api.util.collection.DefaultedMap
-import net.minecraft.item.Item
 import java.awt.Color
 
 abstract class HTMaterialsInit : HTMaterialsAddon {
@@ -372,7 +372,7 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
         // Common - Woods
     }
 
-    override fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
+    override fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {
         // 2nd Period
         registry.getOrCreate(HTMaterialKeys.CARBON)
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
@@ -391,8 +391,8 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.IRON)
             .addMetalComponents()
-            .remove<Item>(HTShapeKeys.INGOT)
-            .remove<Item>(HTShapeKeys.NUGGET)
+            .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.INGOT)
+            .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.NUGGET)
         registry.getOrCreate(HTMaterialKeys.NICKEL)
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.COPPER)
@@ -413,8 +413,8 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.GOLD)
             .addMetalComponents()
-            .remove<Item>(HTShapeKeys.INGOT)
-            .remove<Item>(HTShapeKeys.NUGGET)
+            .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.INGOT)
+            .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.NUGGET)
         registry.getOrCreate(HTMaterialKeys.LEAD)
             .addMetalComponents()
         // 7th Period
@@ -429,24 +429,24 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
             .add(HTSimpleItemContent(HTShapeKeys.PLATE))
         registry.getOrCreate(HTMaterialKeys.DIAMOND)
             .addGemComponents()
-            .remove<Item>(HTShapeKeys.GEM)
+            .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.GEM)
         registry.getOrCreate(HTMaterialKeys.ENDER_PEARL)
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
         registry.getOrCreate(HTMaterialKeys.EMERALD)
             .addGemComponents()
-            .remove<Item>(HTShapeKeys.GEM)
+            .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.GEM)
         registry.getOrCreate(HTMaterialKeys.FLINT)
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
         registry.getOrCreate(HTMaterialKeys.LAPIS)
             .addGemComponents()
-            .remove<Item>(HTShapeKeys.GEM)
+            .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.GEM)
         registry.getOrCreate(HTMaterialKeys.QUARTZ)
             .addGemComponents()
-            .remove<Item>(HTShapeKeys.GEM)
+            .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.GEM)
         // Vanilla - Metals
         registry.getOrCreate(HTMaterialKeys.NETHERITE)
             .addMetalComponents()
-            .remove<Item>(HTShapeKeys.INGOT)
+            .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.INGOT)
         // Vanilla - Solids
         registry.getOrCreate(HTMaterialKeys.BRICK)
             .add(HTSimpleItemContent(HTShapeKeys.DUST))

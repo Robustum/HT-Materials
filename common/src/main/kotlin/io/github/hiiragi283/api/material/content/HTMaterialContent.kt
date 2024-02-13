@@ -7,17 +7,22 @@ import net.minecraft.fluid.FlowableFluid
 import net.minecraft.item.BlockItem
 import java.util.function.Supplier
 import net.minecraft.block.Block as MCBlock
-import net.minecraft.fluid.Fluid as MCFluid
 import net.minecraft.item.Item as MCItem
 
-sealed class HTMaterialContent<T>(val shapeKey: HTShapeKey, val objClass: Class<T>) {
+sealed class HTMaterialContent(val shapeKey: HTShapeKey, val type: Type) {
     abstract fun init(materialKey: HTMaterialKey)
 
     open fun postInit(materialKey: HTMaterialKey) {}
 
+    enum class Type {
+        BLOCK,
+        FLUID,
+        ITEM,
+    }
+
     //    Block    //
 
-    abstract class Block(shapeKey: HTShapeKey) : HTMaterialContent<MCBlock>(shapeKey, MCBlock::class.java) {
+    abstract class Block(shapeKey: HTShapeKey) : HTMaterialContent(shapeKey, Type.BLOCK) {
         lateinit var block: MCBlock
             private set
         lateinit var blockItem: BlockItem
@@ -37,7 +42,7 @@ sealed class HTMaterialContent<T>(val shapeKey: HTShapeKey, val objClass: Class<
 
     //    Fluid    //
 
-    abstract class Fluid(shapeKey: HTShapeKey) : HTMaterialContent<MCFluid>(shapeKey, MCFluid::class.java) {
+    abstract class Fluid(shapeKey: HTShapeKey) : HTMaterialContent(shapeKey, Type.FLUID) {
         lateinit var still: Supplier<FlowableFluid>
             protected set
         lateinit var flowing: Supplier<FlowableFluid>
@@ -46,7 +51,7 @@ sealed class HTMaterialContent<T>(val shapeKey: HTShapeKey, val objClass: Class<
 
     //    Item    //
 
-    abstract class Item(shapeKey: HTShapeKey) : HTMaterialContent<MCItem>(shapeKey, MCItem::class.java) {
+    abstract class Item(shapeKey: HTShapeKey) : HTMaterialContent(shapeKey, Type.ITEM) {
         lateinit var item: MCItem
             private set
 

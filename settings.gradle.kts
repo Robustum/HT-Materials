@@ -24,4 +24,4 @@ plugins {
 }
 
 rootProject.name = "HT-Materials"
-include("common", "fabric", "forge")
+include("common", "fabric")

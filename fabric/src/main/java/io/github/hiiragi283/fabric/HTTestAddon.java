@@ -68,8 +68,8 @@ public class HTTestAddon implements HTMaterialsAddon {
     }
 
     @Override
-    public void modifyMaterialContent(@NotNull DefaultedMap<HTMaterialKey, HTMaterialContentMap> registry) {
-        HTMaterialContentMap builder = registry.getOrCreate(INFINITY_KEY);
+    public void modifyMaterialContent(@NotNull DefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder> registry) {
+        HTMaterialContentMap.Builder builder = registry.getOrCreate(INFINITY_KEY);
         builder.add(new HTSimpleFluidContent());
         builder.add(new HTSimpleItemContent(HTShapeKeys.DUST));
         builder.add(new HTSimpleItemContent(HTShapeKeys.GEAR));

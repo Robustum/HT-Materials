@@ -10,7 +10,7 @@ import io.github.hiiragi283.fabric.content.HTStorageBlockContent
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 
 object HTMaterialsInitFabric : HTMaterialsInit() {
-    override fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap>) {
+    override fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {
         super.modifyMaterialContent(registry)
         // 1st Period
         registry.getOrCreate(HTMaterialKeys.HYDROGEN)

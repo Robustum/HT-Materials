@@ -14,10 +14,7 @@ import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.collection.DefaultedMap
-import io.github.hiiragi283.api.util.collection.HashDefaultedMap
 import io.github.hiiragi283.api.util.collection.buildDefaultedMap
-import net.minecraft.block.Block
-import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import java.util.function.BiConsumer
 
@@ -73,9 +70,11 @@ abstract class HTMaterialsCore {
             addons.forEach { it.registerMaterialKey(this) }
         }.build()
         // Register material compositions
-        val compositionMap: Map<HTMaterialKey, HTMaterialComposition> = buildMap {
-            addons.forEach { it.modifyMaterialComposition(this) }
-        }
+        val compositionMap: Map<HTMaterialKey, HTMaterialComposition> =
+            buildMap { addons.forEach { it.modifyMaterialComposition(this) } }
+        // Register material contents
+        val contentMapMap: DefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder> =
+            buildDefaultedMap(HTMaterialContentMap::Builder) { addons.forEach { it.modifyMaterialContent(this) } }
         // Register material flags
         val flagMap: DefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder> =
             buildDefaultedMap(HTMaterialFlagSet::Builder) { addons.forEach { it.modifyMaterialFlag(this) } }
@@ -90,10 +89,11 @@ abstract class HTMaterialsCore {
         val materialMap: Map<HTMaterialKey, HTMaterial> = buildMap {
             materialKeySet.forEach { key: HTMaterialKey ->
                 val composition: HTMaterialComposition = compositionMap.getOrDefault(key, HTMaterialComposition.EMPTY)
+                val contentMap: HTMaterialContentMap = contentMapMap.getOrCreate(key).build()
                 val flags: HTMaterialFlagSet = flagMap.getOrCreate(key).build()
                 val property: HTMaterialPropertyMap = propertyMap.getOrCreate(key).build()
                 val type: HTMaterialType = typeMap.getOrDefault(key, HTMaterialType.Undefined)
-                put(key, HTMaterial(key, composition, flags, property, type))
+                put(key, HTMaterial(key, composition, contentMap, flags, property, type))
                 HTMaterialsAPI.log("Material: $key registered!")
             }
         }
@@ -110,26 +110,20 @@ abstract class HTMaterialsCore {
 
     //    Initialization    //
 
-    private val contentMap by lazy {
-        HashDefaultedMap.create<HTMaterialKey, HTMaterialContentMap>(::HTMaterialContentMap).apply {
-            addons.forEach { it.modifyMaterialContent(this) }
-        }
-    }
-
-    protected fun <T : Any> forEachContent(clazz: Class<T>, consumer: BiConsumer<HTMaterialContent<T>, HTMaterialKey>) {
-        for (materialKey: HTMaterialKey in HTMaterialsAPI.INSTANCE.materialRegistry().getKeys()) {
-            for (content: HTMaterialContent<T> in contentMap.getOrCreate(materialKey).getContents(clazz)) {
-                consumer.accept(content, materialKey)
+    protected fun forEachContent(type: HTMaterialContent.Type, consumer: BiConsumer<HTMaterialContent, HTMaterialKey>) {
+        for (material in HTMaterialsAPI.INSTANCE.materialRegistry().getValues()) {
+            for (content: HTMaterialContent in material.getContents(type)) {
+                consumer.accept(content, material.key)
             }
         }
     }
 
     fun initContents() {
-        forEachContent(Block::class.java) { content, key -> content.init(key) }
+        forEachContent(HTMaterialContent.Type.BLOCK) { content, key -> content.init(key) }
         HTMaterialsAPI.log("All Material Blocks registered!")
-        forEachContent(Fluid::class.java) { content, key -> content.init(key) }
+        forEachContent(HTMaterialContent.Type.FLUID) { content, key -> content.init(key) }
         HTMaterialsAPI.log("All Material Fluids registered!")
-        forEachContent(Item::class.java) { content, key -> content.init(key) }
+        forEachContent(HTMaterialContent.Type.ITEM) { content, key -> content.init(key) }
         HTMaterialsAPI.log("All Material Items registered!")
     }
 
@@ -137,11 +131,11 @@ abstract class HTMaterialsCore {
 
     fun postInitialize(side: HTPlatformHelper.Side) {
         // Process postInit on HTMaterialContent
-        forEachContent(Block::class.java) { content, key -> content.postInit(key) }
+        forEachContent(HTMaterialContent.Type.BLOCK) { content, key -> content.postInit(key) }
         HTMaterialsAPI.log("All post-initialization for Material Blocks completed!")
-        forEachContent(Fluid::class.java) { content, key -> content.postInit(key) }
+        forEachContent(HTMaterialContent.Type.FLUID) { content, key -> content.postInit(key) }
         HTMaterialsAPI.log("All post-initialization for Material Fluids completed!")
-        forEachContent(Item::class.java) { content, key -> content.postInit(key) }
+        forEachContent(HTMaterialContent.Type.ITEM) { content, key -> content.postInit(key) }
         HTMaterialsAPI.log("All post-initialization for Material Items completed!")
         // Bind game objects to HTPart
         bindFluidToPart()
