@@ -4,6 +4,7 @@ import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShapeKey
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.item.BlockItem
+import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 import java.util.function.Supplier
@@ -28,6 +29,9 @@ sealed class HTMaterialContent(val shapeKey: HTShapeKey, val type: Type) {
             private set
         lateinit var blockItem: BlockItem
             private set
+
+        abstract var harvestTool: Supplier<Tag<MCItem>>?
+        abstract var harvestLevel: Int
 
         final override fun init(materialKey: HTMaterialKey) {
             block = Registry.register(Registry.BLOCK, blockId(materialKey), block(materialKey))

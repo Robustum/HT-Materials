@@ -77,5 +77,6 @@
     "fabric": "*",
     "minecraft": "1.16.5",
     "fabric-language-kotlin": "*"
-  }
+  },
+  "accessWidener" : "ht_materials.accesswidener"
 }

@@ -36,9 +36,10 @@ object HMTRAddon : HTMaterialsAddon {
         builder.add(HTMaterialKeys.PHOSPHORUS, SMALL_DUST, TRContent.SmallDusts.PHOSPHOROUS)
     }
 
-    override fun replaceJsonRecipeOutput(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {
+    override fun replaceJsonRecipe(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {
         if (serializer is RebornRecipeType<*>) {
             if (serializer == ModRecipes.ROLLING_MACHINE) return
+            // Replace outputs
             JsonHelper.getArray(jsonObject, "results").forEach { element: JsonElement ->
                 if (element is JsonObject) {
                     HTMaterialsAPI.INSTANCE.partManager()

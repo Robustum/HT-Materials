@@ -52,5 +52,5 @@ interface HTMaterialsAddon {
 
     //   Recipe Unification    //
 
-    fun replaceJsonRecipeOutput(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {}
+    fun replaceJsonRecipe(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {}
 }

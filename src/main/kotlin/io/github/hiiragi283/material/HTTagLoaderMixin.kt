@@ -19,7 +19,7 @@ internal object HTTagLoaderMixin {
     fun loadTags(map: MutableMap<Identifier, Tag.Builder>, entryType: String) {
         HTMaterialsAPI.log("Current entry type: $entryType")
         when (entryType) {
-            "block" -> {}
+            "block" -> blockTags(map)
             "entity_type" -> {}
             "fluid" -> fluidTags(map)
             "item" -> itemTags(map)
@@ -32,6 +32,11 @@ internal object HTTagLoaderMixin {
             }
         }
         HTMaterialsAPI.log("Removed empty tag builders!")
+    }
+
+    @JvmStatic
+    fun blockTags(map: MutableMap<Identifier, Tag.Builder>) {
+        // Register Harvest tool & level tags
     }
 
     @JvmStatic

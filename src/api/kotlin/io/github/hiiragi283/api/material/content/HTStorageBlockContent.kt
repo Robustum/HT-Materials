@@ -13,10 +13,8 @@ import io.github.hiiragi283.api.util.buildJson
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
-import net.minecraft.block.Block
 import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.item.BlockItem
-import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.tag.Tag
 import net.minecraft.text.MutableText
@@ -26,14 +24,14 @@ import java.util.function.Supplier
 
 class HTStorageBlockContent(
     private val strength: Float = 5.0f,
-    private val toolTag: Supplier<Tag<net.minecraft.item.Item>>? = null,
-    private val toolLevel: Int = 0,
+    override var harvestTool: Supplier<Tag<net.minecraft.item.Item>>? = null,
+    override var harvestLevel: Int = 0,
 ) : HTMaterialContent.Block(HTShapeKeys.BLOCK) {
     private fun getBlockSetting(type: HTMaterialType): FabricBlockSettings = FabricBlockSettings.of(type.blockMaterial).apply {
-        toolTag?.let {
+        harvestTool?.let {
             strength(strength)
             requiresTool()
-            breakByTool(it.get(), toolLevel)
+            breakByTool(it.get(), harvestLevel)
         } ?: run {
             breakByHand(true)
         }

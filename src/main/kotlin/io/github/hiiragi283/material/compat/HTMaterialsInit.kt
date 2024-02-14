@@ -1,6 +1,8 @@
 package io.github.hiiragi283.material.compat
 
 import com.google.common.collect.ImmutableSet
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
@@ -13,6 +15,7 @@ import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.content.*
 import io.github.hiiragi283.api.material.element.HTElements
+import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.HTColor
@@ -398,7 +401,7 @@ internal object HTMaterialsInit : HTMaterialsAddon {
             .add(HTSimpleFluidContent())
         // 3rd Period
         registry.getOrCreate(HTMaterialKeys.ALUMINUM)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 1))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.SILICON)
             .addMetalComponents()
@@ -410,37 +413,37 @@ internal object HTMaterialsInit : HTMaterialsAddon {
             .add(HTSimpleFluidContent())
         // 4th Period
         registry.getOrCreate(HTMaterialKeys.TITANIUM)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 3))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.IRON)
             .addMetalComponents()
             .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.INGOT)
             .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.NUGGET)
         registry.getOrCreate(HTMaterialKeys.NICKEL)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.COPPER)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 1))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.ZINC)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 1))
             .addMetalComponents()
         // 5th Period
         registry.getOrCreate(HTMaterialKeys.SILVER)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.TIN)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 1))
             .addMetalComponents()
         // 6th Period
         registry.getOrCreate(HTMaterialKeys.TUNGSTEN)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 3))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.IRIDIUM)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 3))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.PLATINUM)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 3))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.GOLD)
             .addMetalComponents()
@@ -449,14 +452,14 @@ internal object HTMaterialsInit : HTMaterialsAddon {
         registry.getOrCreate(HTMaterialKeys.MERCURY)
             .add(HTSimpleFluidContent())
         registry.getOrCreate(HTMaterialKeys.LEAD)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 1))
             .addMetalComponents()
         // 7th Period
         registry.getOrCreate(HTMaterialKeys.URANIUM)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.PLUTONIUM)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addMetalComponents()
         // Vanilla - Fluids
         // Vanilla - Gems
@@ -536,46 +539,46 @@ internal object HTMaterialsInit : HTMaterialsAddon {
         // Common - Fluids
         // Common - Gems
         registry.getOrCreate(HTMaterialKeys.CINNABAR)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 1))
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
             .add(HTSimpleItemContent(HTShapeKeys.GEM))
         registry.getOrCreate(HTMaterialKeys.COKE)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES))
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
             .add(HTSimpleItemContent(HTShapeKeys.GEM))
         registry.getOrCreate(HTMaterialKeys.OLIVINE)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addGemComponents()
         registry.getOrCreate(HTMaterialKeys.PERIDOT)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addGemComponents()
         registry.getOrCreate(HTMaterialKeys.RUBY)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 3))
             .addGemComponents()
         registry.getOrCreate(HTMaterialKeys.SALT)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 1))
             .addGemComponents()
         registry.getOrCreate(HTMaterialKeys.SAPPHIRE)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 3))
             .addGemComponents()
         // Common - Metals
         registry.getOrCreate(HTMaterialKeys.BRASS)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 1))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.BRONZE)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 1))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.ELECTRUM)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.INVAR)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.STAINLESS_STEEL)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.STEEl)
-            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
+            .add(HTStorageBlockContent(harvestTool = FabricToolTags::PICKAXES, harvestLevel = 2))
             .addMetalComponents()
         // Common - Solids
         registry.getOrCreate(HTMaterialKeys.ASHES)
@@ -685,7 +688,26 @@ internal object HTMaterialsInit : HTMaterialsAddon {
         // Common - Woods
     }
 
-    override fun replaceJsonRecipeOutput(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {
+    override fun replaceJsonRecipe(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {
+        // Replace inputs
+        if (jsonObject.has("ingredients") && jsonObject.get("ingredients") is JsonArray) {
+            JsonHelper.getArray(jsonObject, "ingredients").forEach { element: JsonElement ->
+                if (element is JsonObject) {
+                    val part: HTPart = when {
+                        element.has("item") ->
+                            HTMaterialsAPI.INSTANCE.partManager().getPart(JsonHelper.getItem(element, "item"))
+                        element.has("tag") ->
+                            HTPart.fromId(JsonHelper.getString(element, "tag").let(::Identifier))
+                        else -> null
+                    } ?: return@forEach
+                    part.getPartId().toString().run {
+                        element.remove("item")
+                        element.addProperty("tag", this)
+                    }
+                }
+            }
+        }
+        // Replace outputs
         if (serializer in listOf(
                 RecipeSerializer.SHAPED,
                 RecipeSerializer.SHAPELESS,

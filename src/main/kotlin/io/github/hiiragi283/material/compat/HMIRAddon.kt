@@ -62,7 +62,7 @@ object HMIRAddon : HTMaterialsAddon {
         }
     }
 
-    override fun replaceJsonRecipeOutput(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {
+    override fun replaceJsonRecipe(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {
         if (serializer is IRRecipe.IRRecipeSerializer<*>) {
             val outputs: Array<OutputEntry> = IRRecipe.itemStacksFromElement(jsonObject.get("output"))
             outputs.map { it.stack }

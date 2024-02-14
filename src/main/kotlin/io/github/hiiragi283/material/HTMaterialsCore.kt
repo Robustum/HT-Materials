@@ -231,7 +231,7 @@ internal object HTMaterialsCore {
                 jsonElement.asJsonObject.run json@{
                     if (has("type")) {
                         Registry.RECIPE_SERIALIZER.get(Identifier(getAsJsonPrimitive("type").asString))?.run type@{
-                            addons.forEach { it.replaceJsonRecipeOutput(id, this@type, this@json) }
+                            addons.forEach { it.replaceJsonRecipe(id, this@type, this@json) }
                         }
                     }
                 }
