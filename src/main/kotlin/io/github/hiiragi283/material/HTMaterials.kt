@@ -30,12 +30,12 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
     // PreLaunchEntrypoint
     override fun onPreLaunch() {
         // Collect Addons
-        HTMaterialsCoreFabric.initAddons()
+        HTMaterialsCore.initAddons()
         // Create Shapes
-        HTMaterialsAPIFabric.shapeRegistry = HTShapeRegistry(HTMaterialsCoreFabric.createShapeMap())
+        HTMaterialsAPIImpl.shapeRegistry = HTShapeRegistry(HTMaterialsCore.createShapeMap())
         // Create Materials
-        HTMaterialsAPIFabric.materialRegistry = HTMaterialRegistry(HTMaterialsCoreFabric.createMaterialMap())
-        HTMaterialsCoreFabric.verifyMaterial()
+        HTMaterialsAPIImpl.materialRegistry = HTMaterialRegistry(HTMaterialsCore.createMaterialMap())
+        HTMaterialsCore.verifyMaterial()
         // Init HTPart cache
         HTPart.initCache()
     }
@@ -43,21 +43,20 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
     // ModInitializer
     override fun onInitialize() {
         // Initialize Game Objects
-        HTMaterialsAPIFabric.itemGroup = FabricItemGroupBuilder.build(HTMaterialsAPI.id("material")) {
+        HTMaterialsAPIImpl.itemGroup = FabricItemGroupBuilder.build(HTMaterialsAPI.id("material")) {
             HTMaterialsAPI.INSTANCE.iconItem().defaultStack
         }
-        HTMaterialsAPIFabric.iconItem = Registry.register(
+        HTMaterialsAPIImpl.iconItem = Registry.register(
             Registry.ITEM,
             HTMaterialsAPI.id("icon"),
             Item(Item.Settings().group(HTMaterialsAPI.INSTANCE.itemGroup()).rarity(Rarity.EPIC)),
         )
-        HTMaterialsCoreFabric.initContents()
+        HTMaterialsCore.initContents()
     }
 
     // ClientModInitializer
     override fun onInitializeClient() {
-        HTMaterialsCoreFabric.postInitialize(EnvType.CLIENT)
-        HTMaterialsCoreFabric.registerRecipes()
+        HTMaterialsCore.postInitialize(EnvType.CLIENT)
         ItemTooltipCallback.EVENT.register(HTMaterials::getTooltip)
         (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager)
             .`ht_materials$addPackProvider`(HTResourcePackProvider.CLIENT)
@@ -83,8 +82,7 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
 
     // DedicatedServerModInitializer
     override fun onInitializeServer() {
-        HTMaterialsCoreFabric.postInitialize(EnvType.SERVER)
-        HTMaterialsCoreFabric.registerRecipes()
+        HTMaterialsCore.postInitialize(EnvType.SERVER)
         HTMaterialsAPI.log("Server post-initialize completed!")
     }
 }

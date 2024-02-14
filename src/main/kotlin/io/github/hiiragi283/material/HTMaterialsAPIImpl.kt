@@ -8,7 +8,7 @@ import io.github.hiiragi283.api.shape.HTShapeRegistry
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 
-class HTMaterialsAPIFabric : HTMaterialsAPI {
+class HTMaterialsAPIImpl : HTMaterialsAPI {
     companion object {
         internal lateinit var shapeRegistry: HTShapeRegistry
         internal lateinit var materialRegistry: HTMaterialRegistry

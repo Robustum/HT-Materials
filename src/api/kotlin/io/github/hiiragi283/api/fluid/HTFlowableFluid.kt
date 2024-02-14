@@ -47,17 +47,10 @@ abstract class HTFlowableFluid(protected val settings: Settings) : FlowableFluid
 
     override fun getBlastResistance(): Float = settings.blastResistance
 
-    override fun toBlockState(state: FluidState): BlockState {
-        val blockState: BlockState = settings.block.get().defaultState
-        return if (blockState.contains(FluidBlock.LEVEL)) {
-            blockState.with(
-                FluidBlock.LEVEL,
-                getBlockStateLevel(state),
-            )
-        } else {
-            blockState
-        }
-    }
+    override fun toBlockState(state: FluidState): BlockState = settings.block.get().defaultState
+        ?.takeIf { it.contains(FluidBlock.LEVEL) }
+        ?.with(FluidBlock.LEVEL, getBlockStateLevel(state))
+        ?: settings.block.get().defaultState
 
     private lateinit var flowing: Fluid
 

@@ -1,14 +1,19 @@
 package io.github.hiiragi283.material.compat
 
 import com.google.common.collect.ImmutableSet
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
+import io.github.hiiragi283.api.extention.id
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import net.minecraft.recipe.RecipeSerializer
 import net.minecraft.util.Identifier
+import net.minecraft.util.JsonHelper
+import reborncore.common.crafting.RebornRecipeType
 import techreborn.init.ModRecipes
 import techreborn.init.TRContent
 
@@ -32,6 +37,15 @@ object HMTRAddon : HTMaterialsAddon {
     }
 
     override fun replaceJsonRecipeOutput(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {
-        ModRecipes::class.java
+        if (serializer is RebornRecipeType<*>) {
+            if (serializer == ModRecipes.ROLLING_MACHINE) return
+            JsonHelper.getArray(jsonObject, "results").forEach { element: JsonElement ->
+                if (element is JsonObject) {
+                    HTMaterialsAPI.INSTANCE.partManager()
+                        .convertDefaultItem(JsonHelper.getItem(element, "item"))
+                        ?.run { element.addProperty("item", this.id.toString()) }
+                }
+            }
+        }
     }
 }

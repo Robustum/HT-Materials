@@ -1,10 +1,9 @@
-package io.github.hiiragi283.material.content
+package io.github.hiiragi283.api.material.content
 
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.extention.runWhenOn
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialType
-import io.github.hiiragi283.api.material.content.HTMaterialContent
 import io.github.hiiragi283.api.resource.HTRuntimeDataPack
 import io.github.hiiragi283.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.api.shape.HTShapeKey
@@ -14,20 +13,20 @@ import io.github.hiiragi283.api.util.buildJson
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.minecraft.block.Block
 import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.item.BlockItem
+import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.tag.Tag
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import java.util.function.Supplier
-import net.minecraft.block.Block as MCBlock
-import net.minecraft.item.Item as MCItem
 
 class HTStorageBlockContent(
     private val strength: Float = 5.0f,
-    private val toolTag: Supplier<Tag<MCItem>>? = null,
+    private val toolTag: Supplier<Tag<net.minecraft.item.Item>>? = null,
     private val toolLevel: Int = 0,
 ) : HTMaterialContent.Block(HTShapeKeys.BLOCK) {
     private fun getBlockSetting(type: HTMaterialType): FabricBlockSettings = FabricBlockSettings.of(type.blockMaterial).apply {
@@ -44,7 +43,7 @@ class HTStorageBlockContent(
 
     override fun blockId(materialKey: HTMaterialKey): Identifier = shapeKey.getShape().getIdentifier(materialKey)
 
-    override fun block(materialKey: HTMaterialKey): MCBlock = BlockImpl(
+    override fun block(materialKey: HTMaterialKey): net.minecraft.block.Block = BlockImpl(
         materialKey,
         shapeKey,
         getBlockSetting(materialKey.getMaterial().type),
@@ -90,14 +89,14 @@ class HTStorageBlockContent(
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
         settings: Settings,
-    ) : MCBlock(settings) {
+    ) : net.minecraft.block.Block(settings) {
         override fun getName(): MutableText = shapeKey.getTranslatedText(materialKey)
     }
 
     //    BlockItem    //
 
     private class BlockItemImpl(
-        block: MCBlock,
+        block: net.minecraft.block.Block,
         val materialKey: HTMaterialKey,
         val shapeKey: HTShapeKey,
     ) : BlockItem(block, Settings().group(HTMaterialsAPI.INSTANCE.itemGroup())) {

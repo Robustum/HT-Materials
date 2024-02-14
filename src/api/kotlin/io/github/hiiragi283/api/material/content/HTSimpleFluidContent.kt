@@ -1,15 +1,14 @@
-package io.github.hiiragi283.material.content
+package io.github.hiiragi283.api.material.content
 
 import com.google.common.base.Suppliers
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.extention.runWhenOn
+import io.github.hiiragi283.api.fluid.HTFluidRenderHandler
 import io.github.hiiragi283.api.material.HTMaterialKey
-import io.github.hiiragi283.api.material.content.HTMaterialContent
 import io.github.hiiragi283.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
-import io.github.hiiragi283.material.fluid.HTFluidRenderHandler
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
@@ -29,12 +28,9 @@ import net.minecraft.util.registry.Registry
 import net.minecraft.world.BlockView
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
-import net.minecraft.block.Block as MCBlock
-import net.minecraft.fluid.Fluid as MCFluid
-import net.minecraft.item.Item as MCItem
 
-class HTSimpleFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
-    lateinit var bucketItem: MCItem
+class HTSimpleFluidContent : HTMaterialContent.Fluid(FLUID_KEY) {
+    lateinit var bucketItem: net.minecraft.item.Item
         private set
 
     override fun init(materialKey: HTMaterialKey) {
@@ -47,8 +43,7 @@ class HTSimpleFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
             Registry.FLUID,
             HTMaterialsAPI.id("flowing_${materialKey.name}"),
             FluidImpl.Flowing(this),
-        )
-            .let { Suppliers.ofInstance(it) }
+        ).let { Suppliers.ofInstance(it) }
         bucketItem = Registry.register(
             Registry.ITEM,
             HTMaterialsAPI.id("${materialKey.name}_bucket"),
@@ -92,19 +87,19 @@ class HTSimpleFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
     //    Fluid    //
 
     private abstract class FluidImpl(private val content: HTSimpleFluidContent) : FlowableFluid() {
-        override fun matchesType(fluid: MCFluid): Boolean = fluid == still || fluid == flowing
+        override fun matchesType(fluid: net.minecraft.fluid.Fluid): Boolean = fluid == still || fluid == flowing
 
         override fun isInfinite(): Boolean = false
 
         override fun beforeBreakingBlock(world: WorldAccess, pos: BlockPos, state: BlockState) {
-            MCBlock.dropStacks(state, world, pos, world.getBlockEntity(pos))
+            net.minecraft.block.Block.dropStacks(state, world, pos, world.getBlockEntity(pos))
         }
 
         override fun canBeReplacedWith(
             state: FluidState,
             world: BlockView,
             pos: BlockPos,
-            fluid: MCFluid,
+            fluid: net.minecraft.fluid.Fluid,
             direction: Direction,
         ): Boolean = false
 
@@ -116,18 +111,18 @@ class HTSimpleFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
 
         override fun getBlastResistance(): Float = 100.0f
 
-        override fun getStill(): MCFluid = content.still.get()
+        override fun getStill(): net.minecraft.fluid.Fluid = content.still.get()
 
-        override fun getFlowing(): MCFluid = content.flowing.get()
+        override fun getFlowing(): net.minecraft.fluid.Fluid = content.flowing.get()
 
         override fun toBlockState(state: FluidState): BlockState = Blocks.AIR.defaultState
 
-        override fun getBucketItem(): MCItem = content.bucketItem
+        override fun getBucketItem(): net.minecraft.item.Item = content.bucketItem
 
         //    Flowing    //
 
         class Flowing(content: HTSimpleFluidContent) : FluidImpl(content) {
-            override fun appendProperties(builder: StateManager.Builder<MCFluid, FluidState>) {
+            override fun appendProperties(builder: StateManager.Builder<net.minecraft.fluid.Fluid, FluidState>) {
                 super.appendProperties(builder)
                 builder.add(LEVEL)
             }
@@ -148,7 +143,7 @@ class HTSimpleFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
 
     //    Bucket    //
 
-    private class BucketImpl(fluid: MCFluid, private val materialKey: HTMaterialKey) : BucketItem(
+    private class BucketImpl(fluid: net.minecraft.fluid.Fluid, private val materialKey: HTMaterialKey) : BucketItem(
         fluid,
         FabricItemSettings().group(HTMaterialsAPI.INSTANCE.itemGroup()).maxCount(1).recipeRemainder(Items.BUCKET),
     ) {
@@ -158,4 +153,6 @@ class HTSimpleFluidContent : HTMaterialContent.Fluid(HTShapeKey("fluid")) {
     }
 }
 
-private val BUCKET_SHAPE_KEY: HTShapeKey = HTShapeKey("bucket")
+private val FLUID_KEY = HTShapeKey("fluid")
+
+private val BUCKET_SHAPE_KEY = HTShapeKey("bucket")

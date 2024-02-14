@@ -11,9 +11,10 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
 data class HTMaterialKey(val name: String) {
-    fun getMaterial(): HTMaterial = checkNotNull(HTMaterialsAPI.INSTANCE.materialRegistry().getMaterial(this)) {
-        "Material with $name is not registered!"
-    }
+    fun getMaterialOrNull(): HTMaterial? = HTMaterialsAPI.INSTANCE.materialRegistry().getMaterial(this)
+
+    @Throws(IllegalStateException::class)
+    fun getMaterial(): HTMaterial = checkNotNull(getMaterialOrNull()) { "Material named $name is not registered!" }
 
     //    Identifier    //
 

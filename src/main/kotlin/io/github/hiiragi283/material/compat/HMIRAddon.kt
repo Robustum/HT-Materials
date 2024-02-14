@@ -1,6 +1,7 @@
 package io.github.hiiragi283.material.compat
 
 import com.google.common.collect.ImmutableSet
+import com.google.gson.JsonObject
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
@@ -8,8 +9,13 @@ import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeKey
 import me.steven.indrev.IndustrialRevolution
+import me.steven.indrev.recipes.machines.CompressorRecipe
+import me.steven.indrev.recipes.machines.IRRecipe
+import me.steven.indrev.recipes.machines.entries.OutputEntry
 import me.steven.indrev.registry.IRFluidRegistry
 import net.minecraft.fluid.Fluid
+import net.minecraft.recipe.RecipeSerializer
+import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
 @Suppress("unused")
@@ -53,6 +59,17 @@ object HMIRAddon : HTMaterialsAddon {
             builder.add(it, CHUNK, Registry.ITEM.get(CHUNK.getShape().getIdentifier(it, modId)))
             // Purified Ores
             builder.add(it, PURIFIED_ORE, Registry.ITEM.get(PURIFIED_ORE.getShape().getIdentifier(it, modId)))
+        }
+    }
+
+    override fun replaceJsonRecipeOutput(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {
+        if (serializer is IRRecipe.IRRecipeSerializer<*>) {
+            val outputs: Array<OutputEntry> = IRRecipe.itemStacksFromElement(jsonObject.get("output"))
+            outputs.map { it.stack }
+            when (serializer) {
+                CompressorRecipe.SERIALIZER -> {}
+                else -> {}
+            }
         }
     }
 }

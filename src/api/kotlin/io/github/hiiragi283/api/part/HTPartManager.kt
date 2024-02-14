@@ -41,6 +41,8 @@ class HTPartManager(builder: Builder) {
 
     // HTPart -> Item
 
+    fun convertDefaultItem(itemConvertible: ItemConvertible): Item? = getPart(itemConvertible)?.let(::getDefaultItem)
+
     fun getDefaultItem(part: HTPart): Item? = getDefaultItem(part.materialKey, part.shapeKey)
 
     fun getDefaultItem(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Item? {

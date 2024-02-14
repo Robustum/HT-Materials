@@ -16,7 +16,7 @@ import io.github.hiiragi283.api.shape.HTShapeKey;
 import io.github.hiiragi283.api.shape.HTShapeKeys;
 import io.github.hiiragi283.api.util.HTColor;
 import io.github.hiiragi283.api.collection.DefaultedMap;
-import io.github.hiiragi283.material.content.HTSimpleFluidContent;
+import io.github.hiiragi283.api.material.content.HTSimpleFluidContent;
 import io.github.hiiragi283.api.material.content.HTSimpleItemContent;
 import net.fabricmc.api.EnvType;
 import net.minecraft.item.Items;

@@ -1,4 +1,4 @@
-package io.github.hiiragi283.api.material
+package io.github.hiiragi283.material.compat
 
 import com.google.common.collect.ImmutableSet
 import com.google.gson.JsonObject
@@ -7,23 +7,25 @@ import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.collection.DefaultedMap
 import io.github.hiiragi283.api.extention.averageColor
 import io.github.hiiragi283.api.extention.id
+import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.material.HTMaterialKeys
+import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
-import io.github.hiiragi283.api.material.content.HTMaterialContent
-import io.github.hiiragi283.api.material.content.HTMaterialContentMap
-import io.github.hiiragi283.api.material.content.HTSimpleItemContent
+import io.github.hiiragi283.api.material.content.*
 import io.github.hiiragi283.api.material.element.HTElements
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.HTColor
 import io.github.hiiragi283.api.util.addAll
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import net.minecraft.recipe.RecipeSerializer
 import net.minecraft.util.Identifier
 import net.minecraft.util.JsonHelper
 import java.awt.Color
 
-abstract class HTMaterialsInit : HTMaterialsAddon {
-    final override val modId: String = HTMaterialsAPI.MOD_ID
-    final override val priority: Int = -100
+internal object HTMaterialsInit : HTMaterialsAddon {
+    override val modId: String = HTMaterialsAPI.MOD_ID
+    override val priority: Int = -100
 
     override fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {
         // Block
@@ -379,12 +381,24 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
     }
 
     override fun modifyMaterialContent(registry: DefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder>) {
+        // 1st Period
+        registry.getOrCreate(HTMaterialKeys.HYDROGEN)
+            .add(HTSimpleFluidContent())
+        registry.getOrCreate(HTMaterialKeys.HELIUM)
+            .add(HTSimpleFluidContent())
         // 2nd Period
         registry.getOrCreate(HTMaterialKeys.CARBON)
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
             .add(HTSimpleItemContent(HTShapeKeys.PLATE))
+        registry.getOrCreate(HTMaterialKeys.NITROGEN)
+            .add(HTSimpleFluidContent())
+        registry.getOrCreate(HTMaterialKeys.OXYGEN)
+            .add(HTSimpleFluidContent())
+        registry.getOrCreate(HTMaterialKeys.FLUORINE)
+            .add(HTSimpleFluidContent())
         // 3rd Period
         registry.getOrCreate(HTMaterialKeys.ALUMINUM)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.SILICON)
             .addMetalComponents()
@@ -392,41 +406,57 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
         registry.getOrCreate(HTMaterialKeys.SULFUR)
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
+        registry.getOrCreate(HTMaterialKeys.CHLORINE)
+            .add(HTSimpleFluidContent())
         // 4th Period
         registry.getOrCreate(HTMaterialKeys.TITANIUM)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.IRON)
             .addMetalComponents()
             .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.INGOT)
             .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.NUGGET)
         registry.getOrCreate(HTMaterialKeys.NICKEL)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.COPPER)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.ZINC)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
             .addMetalComponents()
         // 5th Period
         registry.getOrCreate(HTMaterialKeys.SILVER)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.TIN)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
             .addMetalComponents()
         // 6th Period
         registry.getOrCreate(HTMaterialKeys.TUNGSTEN)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.IRIDIUM)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.PLATINUM)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.GOLD)
             .addMetalComponents()
             .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.INGOT)
             .remove(HTMaterialContent.Type.ITEM, HTShapeKeys.NUGGET)
+        registry.getOrCreate(HTMaterialKeys.MERCURY)
+            .add(HTSimpleFluidContent())
         registry.getOrCreate(HTMaterialKeys.LEAD)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
             .addMetalComponents()
         // 7th Period
         registry.getOrCreate(HTMaterialKeys.URANIUM)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.PLUTONIUM)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addMetalComponents()
         // Vanilla - Fluids
         // Vanilla - Gems
@@ -506,33 +536,46 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
         // Common - Fluids
         // Common - Gems
         registry.getOrCreate(HTMaterialKeys.CINNABAR)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
             .add(HTSimpleItemContent(HTShapeKeys.GEM))
         registry.getOrCreate(HTMaterialKeys.COKE)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES))
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
             .add(HTSimpleItemContent(HTShapeKeys.GEM))
         registry.getOrCreate(HTMaterialKeys.OLIVINE)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addGemComponents()
         registry.getOrCreate(HTMaterialKeys.PERIDOT)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addGemComponents()
         registry.getOrCreate(HTMaterialKeys.RUBY)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
             .addGemComponents()
         registry.getOrCreate(HTMaterialKeys.SALT)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
             .addGemComponents()
         registry.getOrCreate(HTMaterialKeys.SAPPHIRE)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 3))
             .addGemComponents()
         // Common - Metals
         registry.getOrCreate(HTMaterialKeys.BRASS)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.BRONZE)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 1))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.ELECTRUM)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.INVAR)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.STAINLESS_STEEL)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addMetalComponents()
         registry.getOrCreate(HTMaterialKeys.STEEl)
+            .add(HTStorageBlockContent(toolTag = FabricToolTags::PICKAXES, toolLevel = 2))
             .addMetalComponents()
         // Common - Solids
         registry.getOrCreate(HTMaterialKeys.ASHES)
@@ -540,6 +583,7 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
         registry.getOrCreate(HTMaterialKeys.BAUXITE)
             .add(HTSimpleItemContent(HTShapeKeys.DUST))
         registry.getOrCreate(HTMaterialKeys.RUBBER)
+            .add(HTStorageBlockContent())
             .addMetalComponents()
         // Common - Stones
         registry.getOrCreate(HTMaterialKeys.MARBLE)
@@ -645,14 +689,13 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
         if (serializer in listOf(
                 RecipeSerializer.SHAPED,
                 RecipeSerializer.SHAPELESS,
-                RecipeSerializer.SMITHING
+                RecipeSerializer.SMITHING,
             )
         ) {
             jsonObject
                 .let { JsonHelper.getObject(it, "result") }
                 .let { JsonHelper.getItem(it, "item") }
-                .let { HTMaterialsAPI.INSTANCE.partManager().getPart(it) }
-                ?.let { HTMaterialsAPI.INSTANCE.partManager().getDefaultItem(it) }
+                .let { HTMaterialsAPI.INSTANCE.partManager().convertDefaultItem(it) }
                 ?.id
                 ?.let { replacedId: Identifier ->
                     JsonHelper.getObject(jsonObject, "result").addProperty("item", replacedId.toString())
@@ -668,8 +711,7 @@ abstract class HTMaterialsInit : HTMaterialsAddon {
         ) {
             jsonObject
                 .let { JsonHelper.getItem(it, "result") }
-                .let { HTMaterialsAPI.INSTANCE.partManager().getPart(it) }
-                ?.let { HTMaterialsAPI.INSTANCE.partManager().getDefaultItem(it) }
+                .let { HTMaterialsAPI.INSTANCE.partManager().convertDefaultItem(it) }
                 ?.id
                 ?.let { replacedId: Identifier ->
                     jsonObject.addProperty("result", replacedId.toString())
