@@ -15,7 +15,6 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 import net.minecraft.util.registry.Registry
-import java.util.function.Predicate
 
 class HTPartManager(builder: Builder) {
     init {
@@ -31,68 +30,66 @@ class HTPartManager(builder: Builder) {
         }
     }
 
-    // Item -> HTPart
+    // Item -> Entry, HTPart
 
-    val itemToPartMap: ImmutableMap<Item, HTPart> = ImmutableMap.copyOf(builder.itemToPartMap)
+    val itemToEntryMap: ImmutableMap<Item, Entry> = ImmutableMap.copyOf(builder.itemToEntryMap)
 
-    fun getPart(itemConvertible: ItemConvertible): HTPart? = itemToPartMap[itemConvertible.asItem()]
+    fun getEntry(itemConvertible: ItemConvertible): Entry? = itemToEntryMap[itemConvertible.asItem()]
 
-    fun hasPart(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in itemToPartMap
+    fun hasEntry(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in itemToEntryMap
 
-    // HTPart -> Item
+    fun convertDefaultItem(itemConvertible: ItemConvertible): Item? = getEntry(itemConvertible)?.part?.let(::getDefaultItem)
 
-    fun convertDefaultItem(itemConvertible: ItemConvertible): Item? = getPart(itemConvertible)?.let(::getDefaultItem)
+    // HTPart -> Entry, Item
 
     fun getDefaultItem(part: HTPart): Item? = getDefaultItem(part.materialKey, part.shapeKey)
 
-    fun getDefaultItem(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Item? {
-        val items: Collection<Item> = getItems(materialKey, shapeKey)
-        for (item: Item in items) {
-            val namespace: String = Registry.ITEM.getId(item).namespace
+    fun getDefaultItem(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Item? = getDefaultEntry(materialKey, shapeKey)?.item
+
+    fun getDefaultEntry(part: HTPart): Entry? = getDefaultEntry(part.materialKey, part.shapeKey)
+
+    fun getDefaultEntry(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Entry? {
+        val entries: Collection<Entry> = getEntries(materialKey, shapeKey)
+        for (entry: Entry in entries) {
+            val namespace: String = Registry.ITEM.getId(entry.item).namespace
             return when (namespace) {
-                "minecraft" -> item
-                HTMaterialsAPI.MOD_ID -> item
+                "minecraft" -> entry
+                HTMaterialsAPI.MOD_ID -> entry
                 else -> continue
             }
         }
-        return items.firstOrNull()
+        return entries.firstOrNull()
     }
 
-    // HTPart -> Collection<Item>
+    // HTPart -> Collection<Entry>
 
-    val partToItemsMap: ImmutableMultimap<HTPart, Item> = ImmutableMultimap.copyOf(builder.partToItemsMap)
+    val partToEntriesMap: ImmutableMultimap<HTPart, Entry> = ImmutableMultimap.copyOf(builder.partToEntriesMap)
 
-    fun getAllEntries(): Collection<Entry> {
-        val allEntries: Collection<Entry> = buildSet {
-            for ((part: HTPart, item: Item) in partToItemsMap.entries()) {
-                add(Entry(part.materialKey, part.shapeKey, item))
-            }
-        }
-        return allEntries
+    fun getAllEntries(): Collection<Entry> = partToEntriesMap.values()
+
+    fun getEntries(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Collection<Entry> = getEntries(HTPart(materialKey, shapeKey))
+
+    fun getEntries(part: HTPart): Collection<Entry> = partToEntriesMap.get(part)
+
+    fun hasEntry(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Boolean = hasEntry(HTPart(materialKey, shapeKey))
+
+    fun hasEntry(part: HTPart): Boolean = partToEntriesMap.containsKey(part)
+
+    data class Entry(val materialKey: HTMaterialKey, val shapeKey: HTShapeKey, val item: Item) {
+        val part = HTPart(materialKey, shapeKey)
     }
-
-    fun getFilteredItems(predicate: Predicate<Entry>): Collection<Entry> = getAllEntries().filter(predicate::test)
-
-    fun getItems(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Collection<Item> = getItems(HTPart(materialKey, shapeKey))
-
-    fun getItems(part: HTPart): Collection<Item> = partToItemsMap.get(part)
-
-    fun hasItem(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Boolean = hasItem(HTPart(materialKey, shapeKey))
-
-    fun hasItem(part: HTPart): Boolean = partToItemsMap.containsKey(part)
-
-    data class Entry(val materialKey: HTMaterialKey, val shapeKey: HTShapeKey, val item: Item)
 
     class Builder {
-        internal val itemToPartMap: MutableMap<Item, HTPart> = mutableMapOf()
+        internal val itemToEntryMap: MutableMap<Item, Entry> = mutableMapOf()
 
-        internal val partToItemsMap: Multimap<HTPart, Item> = HashMultimap.create()
+        internal val partToEntriesMap: Multimap<HTPart, Entry> = HashMultimap.create()
 
         fun add(materialKey: HTMaterialKey, shapeKey: HTShapeKey, itemConvertible: ItemConvertible) {
             val item: Item = itemConvertible.nonAirOrNull() ?: return
             val part = HTPart(materialKey, shapeKey)
-            itemToPartMap[item] = part
-            partToItemsMap.put(part, item)
+            val entry = Entry(materialKey, shapeKey, item)
+            itemToEntryMap[item] = entry
+            partToEntriesMap.put(part, entry)
         }
 
         init {

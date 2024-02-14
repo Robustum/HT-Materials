@@ -2,8 +2,10 @@ package io.github.hiiragi283.api
 
 import io.github.hiiragi283.api.extention.getSingleInstanceWith
 import io.github.hiiragi283.api.fluid.HTFluidManager
+import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.part.HTPartManager
+import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeRegistry
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
@@ -11,6 +13,7 @@ import net.minecraft.util.Identifier
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
+import java.util.function.BiConsumer
 
 interface HTMaterialsAPI {
     companion object {
@@ -29,6 +32,15 @@ interface HTMaterialsAPI {
         @JvmStatic
         fun log(message: String, level: Level = Level.INFO) {
             logger.log(level, "[$MOD_NAME] $message")
+        }
+
+        @JvmStatic
+        fun forEachPart(biConsumer: BiConsumer<HTMaterialKey, HTShapeKey>) {
+            INSTANCE.materialRegistry().getKeys().forEach { materialKey ->
+                INSTANCE.shapeRegistry().getKeys().forEach { shapeKey ->
+                    biConsumer.accept(materialKey, shapeKey)
+                }
+            }
         }
     }
 

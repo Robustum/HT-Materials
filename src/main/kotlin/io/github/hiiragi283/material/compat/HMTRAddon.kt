@@ -8,6 +8,7 @@ import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extention.id
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.part.HTPartManager
+import io.github.hiiragi283.api.recipe.HTReplaceManager
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import net.minecraft.recipe.RecipeSerializer
@@ -44,7 +45,11 @@ object HMTRAddon : HTMaterialsAddon {
                 if (element is JsonObject) {
                     HTMaterialsAPI.INSTANCE.partManager()
                         .convertDefaultItem(JsonHelper.getItem(element, "item"))
-                        ?.run { element.addProperty("item", this.id.toString()) }
+                        ?.takeIf(HTReplaceManager::enabledOutputReplace)
+                        ?.run {
+                            element.addProperty("item", this.id.toString())
+                            HTMaterialsAPI.log("Replaced recipe outputs!; $id")
+                        }
                 }
             }
         }

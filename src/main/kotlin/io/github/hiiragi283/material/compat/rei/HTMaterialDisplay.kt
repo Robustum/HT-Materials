@@ -25,6 +25,7 @@ class HTMaterialDisplay(val material: HTMaterial, val key: HTMaterialKey = mater
         .getFluids(key)
 
     private fun getItemEntries(): Collection<Item> = HTMaterialsAPI.INSTANCE.partManager()
-        .getFilteredItems { it.materialKey == key }
+        .getAllEntries()
+        .filter { it.materialKey == key }
         .map { it.item }
 }

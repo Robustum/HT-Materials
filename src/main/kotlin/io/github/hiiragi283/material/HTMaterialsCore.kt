@@ -198,7 +198,7 @@ internal object HTMaterialsCore {
     // 9x Nugget -> 1x Ingot
     @JvmStatic
     private fun ingotRecipe(partManager: HTPartManager, materialKey: HTMaterialKey, item: Item) {
-        if (!partManager.hasItem(materialKey, HTShapeKeys.NUGGET)) return
+        if (!partManager.hasEntry(materialKey, HTShapeKeys.NUGGET)) return
         val nuggetTag: Tag<Item> = HTPart(materialKey, HTShapeKeys.NUGGET).getPartTag()
         HTRuntimeDataPack.addRecipe { exporter ->
             ShapedRecipeJsonFactory.create(item)
@@ -214,7 +214,7 @@ internal object HTMaterialsCore {
     // 1x Ingot -> 9x Nugget
     @JvmStatic
     private fun nuggetRecipe(partManager: HTPartManager, materialKey: HTMaterialKey, item: Item) {
-        if (!partManager.hasItem(materialKey, HTShapeKeys.INGOT)) return
+        if (!partManager.hasEntry(materialKey, HTShapeKeys.INGOT)) return
         val ingotTag: Tag<Item> = HTPart(materialKey, HTShapeKeys.INGOT).getPartTag()
         HTRuntimeDataPack.addRecipe { exporter ->
             ShapelessRecipeJsonFactory.create(item, 9)

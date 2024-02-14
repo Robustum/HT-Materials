@@ -68,8 +68,8 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
     private fun getTooltip(stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
         if (stack.isEmpty) return
 
-        HTMaterialsAPI.INSTANCE.partManager().getPart(stack.item)?.let {
-            it.getMaterial().appendTooltip(it.shapeKey, stack, lines)
+        HTMaterialsAPI.INSTANCE.partManager().getEntry(stack.item)?.let {
+            it.materialKey.getMaterial().appendTooltip(it.shapeKey, stack, lines)
         }
 
         FluidStorage.ITEM.find(stack, ContainerItemContext.withInitial(stack))
