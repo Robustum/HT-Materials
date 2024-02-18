@@ -114,6 +114,7 @@
   "ht_shape.tiny_dust": "%s Tiny Dust",
   "ht_shape.wire": "%s Wire",
   "item.ht_materials.icon": "HT Materials",
+  "item.ht_materials.material_dictionary": "Material Dictionary",
   "itemGroup.ht_materials.material": "HT Materials",
   "tooltip.ht_materials.material.fluid_amount": "§7- Fluid Amount: %s Unit",
   "tooltip.ht_materials.material.formula": "§7- Formula: %s",

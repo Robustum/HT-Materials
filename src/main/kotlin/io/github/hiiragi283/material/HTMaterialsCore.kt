@@ -8,7 +8,6 @@ import io.github.hiiragi283.api.collection.buildDefaultedMap
 import io.github.hiiragi283.api.extention.getEntrypoints
 import io.github.hiiragi283.api.extention.id
 import io.github.hiiragi283.api.extention.isModLoaded
-import io.github.hiiragi283.api.extention.prefix
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
@@ -28,17 +27,15 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.data.server.RecipesProvider
-import net.minecraft.data.server.recipe.RecipeJsonProvider
-import net.minecraft.data.server.recipe.SingleItemRecipeJsonFactory
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
-import net.minecraft.recipe.Ingredient
+import net.minecraft.item.Items
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
 import java.util.function.BiConsumer
-import java.util.function.Consumer
 
 internal object HTMaterialsCore {
     private lateinit var addons: Iterable<HTMaterialsAddon>
@@ -178,21 +175,17 @@ internal object HTMaterialsCore {
         GlobalTagEvent.FLUID.register(HTMaterialsCore::onFluidTags)
         HTMaterialsAPI.log("Registered events!")
 
+        HTRuntimeDataPack.addRecipe { exporter ->
+            ShapelessRecipeJsonFactory.create(HTMaterialsAPI.INSTANCE.dictionaryItem())
+                .input(Items.BOOK)
+                .input(Items.IRON_INGOT)
+                .criterion("hsa_book", RecipesProvider.conditionsFromItem(Items.BOOK))
+                .offerTo(exporter, HTMaterialsAPI.INSTANCE.dictionaryItem().id)
+        }
+
         // Post initialize from addons
         addons.forEach { it.postInitialize(envType) }
         HTMaterialsAPI.log("Post-initialize completed!")
-    }
-
-    fun registerRecipes() {
-        HTMaterialsAPI.INSTANCE.partManager().partToEntriesMap.forEach { part: HTPart, entry: HTPartManager.Entry ->
-            HTRuntimeDataPack.addRecipe { exporter: Consumer<RecipeJsonProvider> ->
-                val partId: Identifier = part.getPartId()
-                val partTag: Tag<Item> = part.getPartTag()
-                SingleItemRecipeJsonFactory.createStonecutting(Ingredient.fromTag(partTag), entry.item)
-                    .create(partId.toString(), RecipesProvider.conditionsFromTag(partTag))
-                    .offerTo(exporter, entry.item.id.prefix("unification/"))
-            }
-        }
     }
 
     //    Event    //

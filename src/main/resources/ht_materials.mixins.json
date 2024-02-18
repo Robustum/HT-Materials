@@ -6,7 +6,6 @@
   "plugin": "io.github.hiiragi283.material.mixin.HTMixinConfig",
   "mixins": [
     "MinecraftServerMixin",
-    "RecipeManagerMixin",
     "ResourcePackManagerMixin",
     "TagGroupLoaderMixin",
     "TagGroupMixin"

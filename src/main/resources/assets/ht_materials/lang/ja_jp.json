@@ -114,6 +114,7 @@
   "ht_shape.tiny_dust": "%sの小さな粉",
   "ht_shape.wire": "%sのワイヤー",
   "item.ht_materials.icon": "HT Materials",
+  "item.ht_materials.material_dictionary": "素材辞典",
   "itemGroup.ht_materials.material": "HT Materials",
   "tooltip.ht_materials.material.fluid_amount": "§7- 液体量: %s単位",
   "tooltip.ht_materials.material.formula": "§7- 化学式: %s",

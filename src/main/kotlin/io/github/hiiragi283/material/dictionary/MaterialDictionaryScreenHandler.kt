@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.inventory.CraftingResultInventory
 import net.minecraft.inventory.Inventory
 import net.minecraft.inventory.SimpleInventory
+import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.screen.Property
 import net.minecraft.screen.ScreenHandler
@@ -44,22 +45,21 @@ class MaterialDictionaryScreenHandler(
     private var lastTakeTime: Long = 0
     private var contentChangedListener: Runnable = Runnable { }
 
-    val input: Inventory = object : SimpleInventory(1) {
+    private val input: Inventory = object : SimpleInventory(1) {
         override fun markDirty() {
             super.markDirty()
             this@MaterialDictionaryScreenHandler.onContentChanged(this)
             this@MaterialDictionaryScreenHandler.contentChangedListener.run()
         }
     }
-    private val output: CraftingResultInventory = CraftingResultInventory()
+    private val output: Inventory = CraftingResultInventory()
 
     val inputSlot: Slot = addSlot(Slot(input, 0, 20, 33))
-    val outputSlot: Slot = addSlot(object : Slot(output, 1, 143, 33) {
+    private val outputSlot: Slot = addSlot(object : Slot(output, 1, 143, 33) {
         override fun canInsert(stack: ItemStack): Boolean = false
 
         override fun onTakeItem(player: PlayerEntity, stack: ItemStack): ItemStack {
             stack.onCraft(player.world, player, stack.count)
-            this@MaterialDictionaryScreenHandler.output.unlockLastRecipe(player)
             val itemStack: ItemStack = this@MaterialDictionaryScreenHandler.inputSlot.takeStack(1)
             if (!itemStack.isEmpty) {
                 this@MaterialDictionaryScreenHandler.populateResult()
@@ -70,7 +70,7 @@ class MaterialDictionaryScreenHandler(
                     world.playSound(
                         null,
                         blockPos,
-                        SoundEvents.UI_STONECUTTER_TAKE_RESULT,
+                        SoundEvents.BLOCK_ENCHANTMENT_TABLE_USE,
                         SoundCategory.BLOCKS,
                         1.0f,
                         1.0f,
@@ -119,7 +119,7 @@ class MaterialDictionaryScreenHandler(
     private fun isValidId(id: Int): Boolean = id in availableEntries.indices
 
     override fun onContentChanged(inventory: Inventory) {
-        val stack = inputSlot.stack
+        val stack: ItemStack = inputSlot.stack
         if (!ItemStack.areItemsEqual(stack, inputStack)) {
             inputStack = stack.copy()
             updateInput(stack)
@@ -127,6 +127,7 @@ class MaterialDictionaryScreenHandler(
     }
 
     private fun updateInput(stack: ItemStack) {
+        availableEntries = listOf()
         selectedItem.set(-1)
         outputSlot.stack = ItemStack.EMPTY
         if (!stack.isEmpty) {
@@ -136,16 +137,14 @@ class MaterialDictionaryScreenHandler(
 
     private fun populateResult() {
         if (availableEntries.isNotEmpty() && isValidId(selectedItem.get())) {
-            val entry = availableEntries[selectedItem.get()]
+            val entry: HTPartManager.Entry = availableEntries[selectedItem.get()]
             outputSlot.stack = entry.item.defaultStack
         } else {
             outputSlot.stack = ItemStack.EMPTY
         }
     }
 
-    override fun getType(): ScreenHandlerType<*> {
-        return super.getType()
-    }
+    override fun getType(): ScreenHandlerType<*> = TYPE
 
     @Environment(EnvType.CLIENT)
     fun setContentChangedListener(runnable: Runnable) {
@@ -155,7 +154,43 @@ class MaterialDictionaryScreenHandler(
     override fun canInsertIntoSlot(stack: ItemStack, slot: Slot): Boolean = slot.inventory != output && super.canInsertIntoSlot(stack, slot)
 
     override fun transferSlot(player: PlayerEntity, index: Int): ItemStack {
-        return super.transferSlot(player, index)
+        var itemStack: ItemStack = ItemStack.EMPTY
+        val slot: Slot = slots[index]
+        if (slot.hasStack()) {
+            val itemStack2: ItemStack = slot.stack
+            val item: Item = itemStack2.item
+            itemStack = itemStack2.copy()
+            if (index == 1) {
+                item.onCraft(itemStack2, player.world, player)
+                if (!insertItem(itemStack2, 2, 38, true)) return ItemStack.EMPTY
+                slot.onQuickTransfer(itemStack2, itemStack)
+            } else if (if (index == 0) {
+                    !insertItem(itemStack2, 2, 38, false)
+                } else {
+                    (
+                        if (HTMaterialsAPI.INSTANCE.partManager().hasEntry(itemStack2.item)) {
+                            !this.insertItem(itemStack2, 0, 1, false)
+                        } else {
+                            (
+                                if (index in (2 until 29)) {
+                                    !this.insertItem(itemStack2, 29, 38, false)
+                                } else {
+                                    index in (29 until 38) && !this.insertItem(itemStack2, 2, 29, false)
+                                }
+                            )
+                        }
+                    )
+                }
+            ) {
+                return ItemStack.EMPTY
+            }
+            if (itemStack2.isEmpty) slot.stack = ItemStack.EMPTY
+            slot.markDirty()
+            if (itemStack2.count == itemStack.count) return ItemStack.EMPTY
+            slot.onTakeItem(player, itemStack2)
+            sendContentUpdates()
+        }
+        return itemStack
     }
 
     override fun close(player: PlayerEntity) {

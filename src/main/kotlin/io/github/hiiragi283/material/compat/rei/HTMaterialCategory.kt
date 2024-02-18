@@ -21,7 +21,7 @@ import net.minecraft.util.math.MathHelper
 object HTMaterialCategory : RecipeCategory<HTMaterialDisplay> {
     override fun getIdentifier(): Identifier = HMReiPlugin.MATERIAL
 
-    override fun getLogo(): EntryStack = EntryStack.create(HTMaterialsAPI.INSTANCE.iconItem())
+    override fun getLogo(): EntryStack = EntryStack.create(HTMaterialsAPI.INSTANCE.dictionaryItem())
 
     override fun getCategoryName(): String = HTMaterialsAPI.MOD_NAME
 
