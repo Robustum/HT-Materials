@@ -1,6 +1,7 @@
 package io.github.hiiragi283.api.part
 
 import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.extention.id
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShape
@@ -22,7 +23,7 @@ data class HTPart(
 
     fun getPartId(): Identifier = Identifier("part", "$shapeKey/$materialKey")
 
-    fun getPartTag(): Tag.Identified<Item> = TagRegistry.item(getPartId()) as Tag.Identified<Item>
+    fun getPartTag(): Tag<Item> = TagRegistry.item(getPartId())
 
     companion object {
         @JvmStatic
@@ -41,7 +42,7 @@ data class HTPart(
         }
 
         @JvmStatic
-        fun fromTag(tag: Tag<*>): HTPart? = (tag as? Tag.Identified<*>)?.id?.let(Companion::fromId)
+        inline fun <reified T> fromTag(tag: Tag<T>): HTPart? = tag.id()?.let(Companion::fromId)
 
         @JvmStatic
         fun fromId(id: Identifier): HTPart? = if (id.namespace == "c") cache[id] else null

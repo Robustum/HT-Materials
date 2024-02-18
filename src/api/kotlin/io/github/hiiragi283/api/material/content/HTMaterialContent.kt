@@ -2,6 +2,7 @@ package io.github.hiiragi283.api.material.content
 
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShapeKey
+import io.github.hiiragi283.api.util.HTToolManager
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.item.BlockItem
 import net.minecraft.tag.Tag
@@ -38,7 +39,13 @@ sealed class HTMaterialContent(val shapeKey: HTShapeKey, val type: Type) {
             blockItem = Registry.register(Registry.ITEM, blockId(materialKey), blockItem(materialKey))
         }
 
-        abstract fun blockId(materialKey: HTMaterialKey): Identifier
+        override fun postInit(materialKey: HTMaterialKey) {
+            harvestTool?.get()?.let { tag: Tag<net.minecraft.item.Item> ->
+                HTToolManager.putBreakByTool(block, tag, harvestLevel)
+            } ?: HTToolManager.setBreakByHand(block, true)
+        }
+
+        open fun blockId(materialKey: HTMaterialKey): Identifier = shapeKey.getShape().getIdentifier(materialKey)
 
         abstract fun block(materialKey: HTMaterialKey): MCBlock
 

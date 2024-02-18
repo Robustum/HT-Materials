@@ -1,21 +1,16 @@
 package io.github.hiiragi283.material.compat
 
 import com.google.common.collect.ImmutableSet
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.collection.DefaultedMap
 import io.github.hiiragi283.api.extention.averageColor
-import io.github.hiiragi283.api.extention.id
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.content.*
 import io.github.hiiragi283.api.material.element.HTElements
-import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.recipe.HTReplaceManager
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
@@ -24,9 +19,6 @@ import io.github.hiiragi283.api.util.addAll
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
 import net.minecraft.item.Items
-import net.minecraft.recipe.RecipeSerializer
-import net.minecraft.util.Identifier
-import net.minecraft.util.JsonHelper
 import java.awt.Color
 
 internal object HTMaterialsInit : HTMaterialsAddon {
@@ -700,66 +692,5 @@ internal object HTMaterialsInit : HTMaterialsAddon {
         HTReplaceManager.setReplaceCondition(Items.DARK_OAK_PLANKS, inputReplace = false, outputReplace = false)
         HTReplaceManager.setReplaceCondition(Items.CRIMSON_PLANKS, inputReplace = false, outputReplace = false)
         HTReplaceManager.setReplaceCondition(Items.WARPED_PLANKS, inputReplace = false, outputReplace = false)
-    }
-
-    override fun replaceJsonRecipe(id: Identifier, serializer: RecipeSerializer<*>, jsonObject: JsonObject) {
-        // Replace inputs
-        if (jsonObject.has("ingredients") && jsonObject.get("ingredients") is JsonArray) {
-            JsonHelper.getArray(jsonObject, "ingredients").forEach { element: JsonElement ->
-                if (element is JsonObject) {
-                    val part: HTPart = when {
-                        element.has("item") -> {
-                            HTMaterialsAPI.INSTANCE.partManager().getEntry(JsonHelper.getItem(element, "item"))
-                                ?.takeIf { HTReplaceManager.enabledInputReplace(it.item) }
-                                ?.part
-                        }
-                        element.has("tag") ->
-                            HTPart.fromId(JsonHelper.getString(element, "tag").let(::Identifier))
-                        else -> null
-                    } ?: return@forEach
-                    part.getPartId().toString().run {
-                        element.remove("item")
-                        element.addProperty("tag", this)
-                        HTMaterialsAPI.log("Replaced recipe inputs!; $id")
-                    }
-                }
-            }
-        }
-        // Replace outputs
-        if (serializer in listOf(
-                RecipeSerializer.SHAPED,
-                RecipeSerializer.SHAPELESS,
-                RecipeSerializer.SMITHING,
-            )
-        ) {
-            jsonObject
-                .let { JsonHelper.getObject(it, "result") }
-                .let { JsonHelper.getItem(it, "item") }
-                .takeIf(HTReplaceManager::enabledOutputReplace)
-                ?.let { HTMaterialsAPI.INSTANCE.partManager().convertDefaultItem(it) }
-                ?.id
-                ?.let { replacedId: Identifier ->
-                    JsonHelper.getObject(jsonObject, "result").addProperty("item", replacedId.toString())
-                    HTMaterialsAPI.log("Replaced recipe outputs!; $id")
-                }
-        } else if (
-            serializer in listOf(
-                RecipeSerializer.SMELTING,
-                RecipeSerializer.BLASTING,
-                RecipeSerializer.SMOKING,
-                RecipeSerializer.STONECUTTING,
-                RecipeSerializer.CAMPFIRE_COOKING,
-            )
-        ) {
-            jsonObject
-                .let { JsonHelper.getItem(it, "result") }
-                .let { HTMaterialsAPI.INSTANCE.partManager().convertDefaultItem(it) }
-                ?.takeIf(HTReplaceManager::enabledOutputReplace)
-                ?.id
-                ?.let { replacedId: Identifier ->
-                    jsonObject.addProperty("result", replacedId.toString())
-                    HTMaterialsAPI.log("Replaced recipe outputs!; $id")
-                }
-        }
     }
 }

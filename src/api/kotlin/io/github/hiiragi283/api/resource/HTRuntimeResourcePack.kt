@@ -36,29 +36,39 @@ object HTRuntimeResourcePack : HTRuntimePackBase(ResourceType.CLIENT_RESOURCES) 
 
     @JvmStatic
     fun addBlockState(block: Block, blockStateSupplier: BlockStateSupplier) {
-        _data[getBlockStateId(block)] = blockStateSupplier.get()
+        addBlockState(block, blockStateSupplier.get().asJsonObject)
     }
 
     @JvmStatic
     fun addBlockState(block: Block, json: JsonObject) {
-        _data[getBlockStateId(block)] = json
+        getBlockStateId(block).run {
+            addDomain(this.namespace)
+            _data[this] = json
+        }
     }
 
     @JvmStatic
     fun addModel(item: Item, texture: Texture = Texture.layer0(item), model: Model = Models.GENERATED) {
         model.upload(ModelIds.getItemModelId(item).modify { "models/$it.json" }, texture) { id, supplier ->
+            addDomain(id.namespace)
             _data[id] = supplier.get()
         }
     }
 
     @JvmStatic
     fun addModel(block: Block, json: JsonObject) {
-        _data[ModelIds.getBlockModelId(block).modify { "models/$it.json" }] = json
+        ModelIds.getBlockModelId(block).run {
+            addDomain(this.namespace)
+            _data[this.modify { "models/$it.json" }] = json
+        }
     }
 
     @JvmStatic
     fun addModel(item: Item, json: JsonObject) {
-        _data[ModelIds.getItemModelId(item).modify { "models/$it.json" }] = json
+        ModelIds.getItemModelId(item).run {
+            addDomain(this.namespace)
+            _data[this.modify { "models/$it.json" }] = json
+        }
     }
 
     //    ResourcePack    //

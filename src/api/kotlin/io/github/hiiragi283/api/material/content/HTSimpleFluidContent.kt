@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.extention.runWhenOn
 import io.github.hiiragi283.api.fluid.HTFluidRenderHandler
+import io.github.hiiragi283.api.fluid.HTMaterialFluidRenderHandler
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.api.shape.HTShapeKey
@@ -13,6 +14,7 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
 import net.minecraft.fluid.FlowableFluid
@@ -29,6 +31,7 @@ import net.minecraft.world.BlockView
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 
+@Suppress("UnstableApiUsage")
 class HTSimpleFluidContent : HTMaterialContent.Fluid(FLUID_KEY) {
     lateinit var bucketItem: net.minecraft.item.Item
         private set
@@ -81,6 +84,8 @@ class HTSimpleFluidContent : HTMaterialContent.Fluid(FLUID_KEY) {
                 flowing.get(),
                 HTFluidRenderHandler(materialKey.getMaterial()),
             )
+            FluidVariantRendering.register(still.get(), HTMaterialFluidRenderHandler(materialKey))
+            FluidVariantRendering.register(flowing.get(), HTMaterialFluidRenderHandler(materialKey))
         }
     }
 

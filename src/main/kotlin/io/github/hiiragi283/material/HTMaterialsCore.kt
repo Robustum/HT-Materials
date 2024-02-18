@@ -1,12 +1,12 @@
 package io.github.hiiragi283.material
 
 import com.google.common.collect.ImmutableSet
-import com.google.gson.JsonElement
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.collection.DefaultedMap
 import io.github.hiiragi283.api.collection.buildDefaultedMap
 import io.github.hiiragi283.api.extention.getEntrypoints
+import io.github.hiiragi283.api.extention.id
 import io.github.hiiragi283.api.extention.isModLoaded
 import io.github.hiiragi283.api.extention.prefix
 import io.github.hiiragi283.api.fluid.HTFluidManager
@@ -23,26 +23,26 @@ import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.resource.HTRuntimeDataPack
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeKey
-import io.github.hiiragi283.api.shape.HTShapeKeys
+import io.github.hiiragi283.api.tag.GlobalTagEvent
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.data.server.RecipesProvider
-import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
+import net.minecraft.data.server.recipe.RecipeJsonProvider
+import net.minecraft.data.server.recipe.SingleItemRecipeJsonFactory
+import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
+import net.minecraft.recipe.Ingredient
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
-import org.apache.logging.log4j.Level
 import java.util.function.BiConsumer
+import java.util.function.Consumer
 
 internal object HTMaterialsCore {
     private lateinit var addons: Iterable<HTMaterialsAddon>
 
-    @JvmStatic
     fun initAddons() {
         addons = getEntrypoints<HTMaterialsAddon>(HTMaterialsAPI.MOD_ID)
             .filter { isModLoaded(it.modId) }
@@ -58,7 +58,6 @@ internal object HTMaterialsCore {
 
     //    Initialize - HTShape    //
 
-    @JvmStatic
     fun createShapeMap(): Map<HTShapeKey, HTShape> {
         // Register shape keys
         val shapeKeySet: Set<HTShapeKey> = ImmutableSet.builder<HTShapeKey>().apply {
@@ -87,7 +86,6 @@ internal object HTMaterialsCore {
 
     //    Initialize - HTMaterial    //
 
-    @JvmStatic
     fun createMaterialMap(): Map<HTMaterialKey, HTMaterial> {
         // Register material keys
         val materialKeySet: ImmutableSet<HTMaterialKey> = ImmutableSet.builder<HTMaterialKey>().apply {
@@ -125,7 +123,6 @@ internal object HTMaterialsCore {
         return materialMap
     }
 
-    @JvmStatic
     fun verifyMaterial() {
         HTMaterialsAPI.INSTANCE.materialRegistry().getValues().forEach { material ->
             material.forEachProperty { it.verify(material) }
@@ -135,7 +132,6 @@ internal object HTMaterialsCore {
 
     //    Initialization    //
 
-    @JvmStatic
     private fun forEachContent(type: HTMaterialContent.Type, consumer: BiConsumer<HTMaterialContent, HTMaterialKey>) {
         for (material: HTMaterial in HTMaterialsAPI.INSTANCE.materialRegistry().getValues()) {
             for (content: HTMaterialContent in material.getContents(type)) {
@@ -144,7 +140,6 @@ internal object HTMaterialsCore {
         }
     }
 
-    @JvmStatic
     fun initContents() {
         forEachContent(HTMaterialContent.Type.BLOCK) { content, key -> content.init(key) }
         HTMaterialsAPI.log("All Material Blocks registered!")
@@ -156,7 +151,6 @@ internal object HTMaterialsCore {
 
     //    Post Initialization    //
 
-    @JvmStatic
     fun postInitialize(envType: EnvType) {
         // Process postInit on HTMaterialContent
         forEachContent(HTMaterialContent.Type.BLOCK) { content, key -> content.postInit(key) }
@@ -165,6 +159,7 @@ internal object HTMaterialsCore {
         HTMaterialsAPI.log("All post-initialization for Material Fluids completed!")
         forEachContent(HTMaterialContent.Type.ITEM) { content, key -> content.postInit(key) }
         HTMaterialsAPI.log("All post-initialization for Material Items completed!")
+
         // Bind game objects to HTPart
         HTFluidManager.Builder().run {
             addons.forEach { it.bindFluidToPart(this) }
@@ -175,73 +170,33 @@ internal object HTMaterialsCore {
             addons.forEach { it.bindItemToPart(this) }
             HTMaterialsAPIImpl.partManager = HTPartManager(this)
         }
-        ServerWorldEvents.LOAD.register(HTMaterialsCore::onWorldLoaded)
         HTMaterialsAPI.log("HTPartManager initialized!")
+
+        // Register Events
+        ServerWorldEvents.LOAD.register(HTMaterialsCore::onWorldLoaded)
+        GlobalTagEvent.ITEM.register(HTMaterialsCore::onItemTags)
+        GlobalTagEvent.FLUID.register(HTMaterialsCore::onFluidTags)
+        HTMaterialsAPI.log("Registered events!")
+
         // Post initialize from addons
         addons.forEach { it.postInitialize(envType) }
         HTMaterialsAPI.log("Post-initialize completed!")
-        // Register recipes
-        registerRecipes()
-        HTMaterialsAPI.log("Added material recipes!")
     }
 
-    @JvmStatic
-    private fun registerRecipes() {
-        HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { key ->
-            HTMaterialsAPI.INSTANCE.partManager().run {
-                getDefaultItem(key, HTShapeKeys.INGOT)?.let { ingotRecipe(this, key, it) }
-                getDefaultItem(key, HTShapeKeys.NUGGET)?.let { nuggetRecipe(this, key, it) }
+    fun registerRecipes() {
+        HTMaterialsAPI.INSTANCE.partManager().partToEntriesMap.forEach { part: HTPart, entry: HTPartManager.Entry ->
+            HTRuntimeDataPack.addRecipe { exporter: Consumer<RecipeJsonProvider> ->
+                val partId: Identifier = part.getPartId()
+                val partTag: Tag<Item> = part.getPartTag()
+                SingleItemRecipeJsonFactory.createStonecutting(Ingredient.fromTag(partTag), entry.item)
+                    .create(partId.toString(), RecipesProvider.conditionsFromTag(partTag))
+                    .offerTo(exporter, entry.item.id.prefix("unification/"))
             }
         }
     }
 
-    // 9x Nugget -> 1x Ingot
-    @JvmStatic
-    private fun ingotRecipe(partManager: HTPartManager, materialKey: HTMaterialKey, item: Item) {
-        if (!partManager.hasEntry(materialKey, HTShapeKeys.NUGGET)) return
-        val nuggetTag: Tag<Item> = HTPart(materialKey, HTShapeKeys.NUGGET).getPartTag()
-        HTRuntimeDataPack.addRecipe { exporter ->
-            ShapedRecipeJsonFactory.create(item)
-                .pattern("AAA")
-                .pattern("AAA")
-                .pattern("AAA")
-                .input('A', nuggetTag)
-                .criterion("has_nugget", RecipesProvider.conditionsFromTag(nuggetTag))
-                .offerTo(exporter, HTShapeKeys.INGOT.getShape().getIdentifier(materialKey).prefix("shaped/"))
-        }
-    }
+    //    Event    //
 
-    // 1x Ingot -> 9x Nugget
-    @JvmStatic
-    private fun nuggetRecipe(partManager: HTPartManager, materialKey: HTMaterialKey, item: Item) {
-        if (!partManager.hasEntry(materialKey, HTShapeKeys.INGOT)) return
-        val ingotTag: Tag<Item> = HTPart(materialKey, HTShapeKeys.INGOT).getPartTag()
-        HTRuntimeDataPack.addRecipe { exporter ->
-            ShapelessRecipeJsonFactory.create(item, 9)
-                .input(ingotTag)
-                .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag))
-                .offerTo(exporter, HTShapeKeys.NUGGET.getShape().getIdentifier(materialKey).prefix("shapeless/"))
-        }
-    }
-
-    @JvmStatic
-    fun recipeUnification(map: Map<Identifier, JsonElement>) {
-        map.forEach { (id: Identifier, jsonElement: JsonElement) ->
-            try {
-                jsonElement.asJsonObject.run json@{
-                    if (has("type")) {
-                        Registry.RECIPE_SERIALIZER.get(Identifier(getAsJsonPrimitive("type").asString))?.run type@{
-                            addons.forEach { it.replaceJsonRecipe(id, this@type, this@json) }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                HTMaterialsAPI.log(e.localizedMessage, Level.ERROR)
-            }
-        }
-    }
-
-    @JvmStatic
     @Suppress("UNUSED_PARAMETER")
     private fun onWorldLoaded(server: MinecraftServer, world: ServerWorld) {
         // Reload Fluid Manager
@@ -253,6 +208,8 @@ internal object HTMaterialsCore {
                 }
             }
         }.let { HTFluidManager(it) }
+        HTMaterialsAPI.log("Reloaded Fluid Manager!")
+
         // Reload Part Manager
         HTMaterialsAPIImpl.partManager = HTPartManager.Builder().apply {
             // Register items from part tag
@@ -264,5 +221,45 @@ internal object HTMaterialsCore {
                 }
             }
         }.let(::HTPartManager)
+        HTMaterialsAPI.log("Reloaded Part Manager!")
+
+        // registerRecipes()
+    }
+
+    private fun onItemTags(map: MutableMap<Identifier, Tag.Builder>) {
+        // Convert tags into part format
+        HashMap(map).forEach { (id: Identifier, builder: Tag.Builder) ->
+            HTPart.fromId(id)?.getPartId()?.let {
+                // copy builder to part id
+                map[it] = builder
+                // remove original id
+                map.remove(id)
+                HTMaterialsAPI.log("Migrated tag builder: $id -> $it")
+            }
+        }
+        HTMaterialsAPI.log("Converted existing tags!")
+
+        // Register Tags from HTPartManager
+        HTMaterialsAPI.INSTANCE.partManager().getAllEntries().forEach { entry ->
+            val (materialKey: HTMaterialKey, shapeKey: HTShapeKey, item: Item) = entry
+            // Shape tag
+            map.computeIfAbsent(shapeKey.getShapeId()) { Tag.Builder.create() }
+                .add(item.id, HTMaterialsAPI.MOD_NAME)
+            // Material tag
+            map.computeIfAbsent(materialKey.getMaterialId()) { Tag.Builder.create() }
+                .add(item.id, HTMaterialsAPI.MOD_NAME)
+            // Part tag
+            map.computeIfAbsent(entry.part.getPartId()) { Tag.Builder.create() }
+                .add(item.id, HTMaterialsAPI.MOD_NAME)
+        }
+        HTMaterialsAPI.log("Registered Tags for HTPartManager's Entries!")
+    }
+
+    private fun onFluidTags(map: MutableMap<Identifier, Tag.Builder>) {
+        // Register Tags from HTFluidManagerOld
+        HTMaterialsAPI.INSTANCE.fluidManager().materialToFluidsMap.forEach { key: HTMaterialKey, fluid: Fluid ->
+            map.computeIfAbsent(key.getCommonId()) { Tag.Builder.create() }
+                .add(fluid.id, HTMaterialsAPI.MOD_NAME)
+        }
     }
 }

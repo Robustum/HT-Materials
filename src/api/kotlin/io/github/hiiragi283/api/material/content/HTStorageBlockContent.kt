@@ -12,7 +12,7 @@ import io.github.hiiragi283.api.util.addObject
 import io.github.hiiragi283.api.util.buildJson
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
-import net.fabricmc.fabric.api.`object`.builder.v1.block.FabricBlockSettings
+import net.minecraft.block.AbstractBlock
 import net.minecraft.data.server.BlockLootTableGenerator
 import net.minecraft.item.BlockItem
 import net.minecraft.item.ItemStack
@@ -27,19 +27,9 @@ class HTStorageBlockContent(
     override var harvestTool: Supplier<Tag<net.minecraft.item.Item>>? = null,
     override var harvestLevel: Int = 0,
 ) : HTMaterialContent.Block(HTShapeKeys.BLOCK) {
-    private fun getBlockSetting(type: HTMaterialType): FabricBlockSettings = FabricBlockSettings.of(type.blockMaterial).apply {
-        harvestTool?.let {
-            strength(strength)
-            requiresTool()
-            breakByTool(it.get(), harvestLevel)
-        } ?: run {
-            breakByHand(true)
-        }
-    }
+    private fun getBlockSetting(type: HTMaterialType) = AbstractBlock.Settings.of(type.blockMaterial).strength(strength)
 
     //    HTMaterialContent    //
-
-    override fun blockId(materialKey: HTMaterialKey): Identifier = shapeKey.getShape().getIdentifier(materialKey)
 
     override fun block(materialKey: HTMaterialKey): net.minecraft.block.Block = BlockImpl(
         materialKey,
@@ -50,6 +40,7 @@ class HTStorageBlockContent(
     override fun blockItem(materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey)
 
     override fun postInit(materialKey: HTMaterialKey) {
+        super.postInit(materialKey)
         // LootTable
         HTRuntimeDataPack.addBlockLootTable(block, BlockLootTableGenerator.drops(block))
         // Client-only

@@ -30,7 +30,7 @@ class HTPartManager(builder: Builder) {
         }
     }
 
-    // Item -> Entry, HTPart
+    // Item -> Entry
 
     val itemToEntryMap: ImmutableMap<Item, Entry> = ImmutableMap.copyOf(builder.itemToEntryMap)
 
@@ -38,13 +38,7 @@ class HTPartManager(builder: Builder) {
 
     fun hasEntry(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in itemToEntryMap
 
-    fun convertDefaultItem(itemConvertible: ItemConvertible): Item? = getEntry(itemConvertible)?.part?.let(::getDefaultItem)
-
-    // HTPart -> Entry, Item
-
-    fun getDefaultItem(part: HTPart): Item? = getDefaultItem(part.materialKey, part.shapeKey)
-
-    fun getDefaultItem(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Item? = getDefaultEntry(materialKey, shapeKey)?.item
+    // HTPart -> Entry
 
     fun getDefaultEntry(part: HTPart): Entry? = getDefaultEntry(part.materialKey, part.shapeKey)
 
@@ -70,6 +64,9 @@ class HTPartManager(builder: Builder) {
     fun getEntries(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Collection<Entry> = getEntries(HTPart(materialKey, shapeKey))
 
     fun getEntries(part: HTPart): Collection<Entry> = partToEntriesMap.get(part)
+
+    fun getEntries(itemConvertible: ItemConvertible): Collection<Entry> =
+        getEntry(itemConvertible)?.part?.let { getEntries(it) } ?: listOf()
 
     fun hasEntry(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Boolean = hasEntry(HTPart(materialKey, shapeKey))
 

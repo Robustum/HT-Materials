@@ -8,12 +8,13 @@ import io.github.hiiragi283.api.shape.HTShapeRegistry
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 
-class HTMaterialsAPIImpl : HTMaterialsAPI {
+internal class HTMaterialsAPIImpl : HTMaterialsAPI {
     companion object {
         internal lateinit var shapeRegistry: HTShapeRegistry
         internal lateinit var materialRegistry: HTMaterialRegistry
         internal lateinit var itemGroup: ItemGroup
         internal lateinit var iconItem: Item
+        internal lateinit var dictionaryItem: Item
         internal lateinit var fluidManager: HTFluidManager
         internal lateinit var partManager: HTPartManager
     }
@@ -25,6 +26,8 @@ class HTMaterialsAPIImpl : HTMaterialsAPI {
     override fun itemGroup(): ItemGroup = itemGroup
 
     override fun iconItem(): Item = iconItem
+
+    override fun dictionaryItem(): Item = dictionaryItem
 
     override fun fluidManager(): HTFluidManager = fluidManager
 

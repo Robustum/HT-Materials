@@ -37,6 +37,7 @@ object HTRuntimeDataPack : HTRuntimePackBase(ResourceType.SERVER_DATA) {
 
     @JvmStatic
     fun addAdvancement(id: Identifier, task: Advancement.Task) {
+        addDomain(id.namespace)
         _data[id.modify { "advancements/$it.json" }] = task.toJson()
     }
 
@@ -44,7 +45,10 @@ object HTRuntimeDataPack : HTRuntimePackBase(ResourceType.SERVER_DATA) {
 
     @JvmStatic
     fun addBlockLootTable(block: Block, builder: LootTable.Builder) {
-        _data[block.lootTableId] = LootManager.toJson(builder.build())
+        block.lootTableId.run {
+            addDomain(this.namespace)
+            _data[this] = LootManager.toJson(builder.build())
+        }
     }
 
     //    Recipe    //
@@ -60,6 +64,7 @@ object HTRuntimeDataPack : HTRuntimePackBase(ResourceType.SERVER_DATA) {
 
     @JvmStatic
     fun addRecipe(id: Identifier, jsonElement: JsonElement) {
+        addDomain(id.namespace)
         _data[id.modify { "recipes/$it.json" }] = jsonElement
     }
 

@@ -21,5 +21,5 @@ data class HTShape(
 
     //    Tag    //
 
-    fun getShapeTag(): Tag.Identified<Item> = TagRegistry.item(key.getShapeId()) as Tag.Identified<Item>
+    fun getShapeTag(): Tag<Item> = TagRegistry.item(key.getShapeId())
 }

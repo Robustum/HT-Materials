@@ -5,12 +5,16 @@ import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.resource.HTResourcePackProvider
 import io.github.hiiragi283.api.shape.HTShapeRegistry
+import io.github.hiiragi283.material.dictionary.MaterialDictionaryItem
+import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreen
+import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreenHandler
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.ModInitializer
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
@@ -51,12 +55,18 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
             HTMaterialsAPI.id("icon"),
             Item(Item.Settings().group(HTMaterialsAPI.INSTANCE.itemGroup()).rarity(Rarity.EPIC)),
         )
+        HTMaterialsAPIImpl.dictionaryItem = Registry.register(
+            Registry.ITEM,
+            HTMaterialsAPI.id("material_dictionary"),
+            MaterialDictionaryItem,
+        )
         HTMaterialsCore.initContents()
     }
 
     // ClientModInitializer
     override fun onInitializeClient() {
         HTMaterialsCore.postInitialize(EnvType.CLIENT)
+        ScreenRegistry.register(MaterialDictionaryScreenHandler.TYPE, ::MaterialDictionaryScreen)
         ItemTooltipCallback.EVENT.register(HTMaterials::getTooltip)
         (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager)
             .`ht_materials$addPackProvider`(HTResourcePackProvider.CLIENT)

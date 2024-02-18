@@ -26,7 +26,7 @@ data class HTMaterialKey(val name: String) {
 
     //    Tag    //
 
-    fun getMaterialTag(): Tag.Identified<Item> = TagRegistry.item(getMaterialId()) as Tag.Identified<Item>
+    fun getMaterialTag(): Tag<Item> = TagRegistry.item(getMaterialId())
 
     //    Translation    //
 
