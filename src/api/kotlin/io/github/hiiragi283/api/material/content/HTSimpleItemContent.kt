@@ -13,12 +13,9 @@ import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
-import net.minecraft.util.Identifier
 import net.minecraft.item.Item as MCItem
 
 class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.Item(shapeKey) {
-    override fun itemId(materialKey: HTMaterialKey): Identifier = shapeKey.getShape().getIdentifier(materialKey)
-
     override fun item(materialKey: HTMaterialKey): MCItem = ItemImpl(materialKey, shapeKey)
 
     private fun getTextureName(type: HTMaterialType): String = if (type is HTMaterialType.Gem) {
@@ -33,11 +30,11 @@ class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.Item(shapeKe
             // ItemColor
             ColorProviderRegistry.ITEM.register(
                 { _, tintIndex: Int -> if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1 },
-                item,
+                item.get(),
             )
             // Model
             HTRuntimeResourcePack.addModel(
-                item,
+                item.get(),
                 buildJson {
                     addProperty("parent", "item/generated")
                     addObject("textures") {

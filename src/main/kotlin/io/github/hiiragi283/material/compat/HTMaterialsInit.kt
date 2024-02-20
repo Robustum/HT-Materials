@@ -11,14 +11,11 @@ import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.content.*
 import io.github.hiiragi283.api.material.element.HTElements
-import io.github.hiiragi283.api.recipe.HTReplaceManager
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.HTColor
 import io.github.hiiragi283.api.util.addAll
-import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags
-import net.minecraft.item.Items
 import java.awt.Color
 
 internal object HTMaterialsInit : HTMaterialsAddon {
@@ -681,16 +678,5 @@ internal object HTMaterialsInit : HTMaterialsAddon {
         // Common - Stones
         registry[HTMaterialKeys.MARBLE] = HTMaterialType.Stone
         // Common - Woods
-    }
-
-    override fun postInitialize(envType: EnvType) {
-        HTReplaceManager.setReplaceCondition(Items.OAK_PLANKS, inputReplace = false, outputReplace = false)
-        HTReplaceManager.setReplaceCondition(Items.BIRCH_PLANKS, inputReplace = false, outputReplace = false)
-        HTReplaceManager.setReplaceCondition(Items.SPRUCE_PLANKS, inputReplace = false, outputReplace = false)
-        HTReplaceManager.setReplaceCondition(Items.JUNGLE_PLANKS, inputReplace = false, outputReplace = false)
-        HTReplaceManager.setReplaceCondition(Items.ACACIA_PLANKS, inputReplace = false, outputReplace = false)
-        HTReplaceManager.setReplaceCondition(Items.DARK_OAK_PLANKS, inputReplace = false, outputReplace = false)
-        HTReplaceManager.setReplaceCondition(Items.CRIMSON_PLANKS, inputReplace = false, outputReplace = false)
-        HTReplaceManager.setReplaceCondition(Items.WARPED_PLANKS, inputReplace = false, outputReplace = false)
     }
 }

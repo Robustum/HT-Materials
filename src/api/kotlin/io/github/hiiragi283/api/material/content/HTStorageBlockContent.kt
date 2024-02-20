@@ -37,23 +37,23 @@ class HTStorageBlockContent(
         getBlockSetting(materialKey.getMaterial().type),
     )
 
-    override fun blockItem(materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey)
+    override fun blockItem(materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block.get(), materialKey, shapeKey)
 
     override fun postInit(materialKey: HTMaterialKey) {
         super.postInit(materialKey)
         // LootTable
-        HTRuntimeDataPack.addBlockLootTable(block, BlockLootTableGenerator.drops(block))
+        HTRuntimeDataPack.addBlockLootTable(block.get(), BlockLootTableGenerator.drops(blockItem.get()))
         // Client-only
         EnvType.CLIENT.runWhenOn {
             // BlockColor
             ColorProviderRegistry.BLOCK.register(
                 { _, _, _, _ -> materialKey.getMaterial().color().rgb },
-                block,
+                block.get(),
             )
             // BlockState
             val modelId: Identifier = HTMaterialsAPI.id("block/storage/${materialKey.getMaterial().type.resourcePath}")
             HTRuntimeResourcePack.addBlockState(
-                block,
+                block.get(),
                 buildJson {
                     addObject("variants") {
                         addObject("") {
@@ -65,10 +65,10 @@ class HTStorageBlockContent(
             // ItemColor
             ColorProviderRegistry.ITEM.register(
                 { _, tintIndex: Int -> if (tintIndex == 0) materialKey.getMaterial().color().rgb else -1 },
-                blockItem,
+                blockItem.get(),
             )
             // Model
-            HTRuntimeResourcePack.addModel(blockItem, buildJson { addProperty("parent", modelId.toString()) })
+            HTRuntimeResourcePack.addModel(blockItem.get(), buildJson { addProperty("parent", modelId.toString()) })
         }
     }
 

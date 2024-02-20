@@ -26,7 +26,7 @@ class HTMaterial(
 ) {
     //    Composition    //
 
-    fun componentMap(): Map<HTElement<*>, Int> = composition.componentMap
+    fun componentMap(): Map<HTElement, Int> = composition.componentMap
 
     fun color(): Color = composition.color
 

@@ -1,6 +1,5 @@
 package io.github.hiiragi283.api.fluid
 
-import io.github.hiiragi283.api.HTMaterialsAPI
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks
@@ -13,16 +12,15 @@ import net.minecraft.item.Items
 import net.minecraft.state.StateManager
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
-import net.minecraft.util.registry.Registry
 import net.minecraft.world.BlockView
 import net.minecraft.world.WorldAccess
 import net.minecraft.world.WorldView
 import java.util.function.Supplier
 
-abstract class HTFlowableFluid(protected val settings: Settings) : FlowableFluid() {
+abstract class HTFlowableFluid(private val settings: Settings) : FlowableFluid() {
     class Settings(
-        val still: String,
-        val flowing: String,
+        val still: Supplier<Fluid>,
+        val flowing: Supplier<Fluid>,
     ) {
         var infinite: Boolean = false
         var bucket: Supplier<Item> = Supplier(Items::AIR)
@@ -52,23 +50,9 @@ abstract class HTFlowableFluid(protected val settings: Settings) : FlowableFluid
         ?.with(FluidBlock.LEVEL, getBlockStateLevel(state))
         ?: settings.block.get().defaultState
 
-    private lateinit var flowing: Fluid
+    override fun getFlowing(): Fluid = settings.flowing.get()
 
-    override fun getFlowing(): Fluid {
-        if (!::flowing.isInitialized) {
-            flowing = Registry.FLUID.get(HTMaterialsAPI.id(settings.flowing))
-        }
-        return flowing
-    }
-
-    private lateinit var still: Fluid
-
-    override fun getStill(): Fluid {
-        if (!::still.isInitialized) {
-            still = Registry.FLUID.get(HTMaterialsAPI.id(settings.still))
-        }
-        return still
-    }
+    override fun getStill(): Fluid = settings.still.get()
 
     override fun isInfinite(): Boolean = settings.infinite
 
@@ -80,7 +64,7 @@ abstract class HTFlowableFluid(protected val settings: Settings) : FlowableFluid
 
     override fun getLevelDecreasePerBlock(world: WorldView?): Int = settings.levelPerDecrease
 
-    open class Flowing(settings: Settings) : HTFlowableFluid(settings) {
+    class Flowing(settings: Settings) : HTFlowableFluid(settings) {
         override fun appendProperties(builder: StateManager.Builder<Fluid, FluidState>) {
             super.appendProperties(builder)
             builder.add(LEVEL)
@@ -91,7 +75,7 @@ abstract class HTFlowableFluid(protected val settings: Settings) : FlowableFluid
         override fun isStill(state: FluidState): Boolean = false
     }
 
-    open class Still(settings: Settings) : HTFlowableFluid(settings) {
+    class Still(settings: Settings) : HTFlowableFluid(settings) {
         override fun getLevel(state: FluidState): Int = 8
 
         override fun isStill(state: FluidState): Boolean = true

@@ -32,7 +32,7 @@ class HTOreBlockContent(
         },
     )
 
-    override fun blockItem(materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block, materialKey, shapeKey)
+    override fun blockItem(materialKey: HTMaterialKey): BlockItem = BlockItemImpl(block.get(), materialKey, shapeKey)
 
     //    Block    //
 

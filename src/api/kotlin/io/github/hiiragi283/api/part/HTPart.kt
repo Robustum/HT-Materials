@@ -34,7 +34,6 @@ data class HTPart(
             val map: MutableMap<Identifier, HTPart> = hashMapOf()
             HTMaterialsAPI.INSTANCE.shapeRegistry().getValues().forEach { shape ->
                 HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { material ->
-                    shape.getCommonId(material)
                     map[shape.getCommonId(material)] = HTPart(material, shape.key)
                 }
             }
@@ -45,6 +44,6 @@ data class HTPart(
         inline fun <reified T> fromTag(tag: Tag<T>): HTPart? = tag.id()?.let(Companion::fromId)
 
         @JvmStatic
-        fun fromId(id: Identifier): HTPart? = if (id.namespace == "c") cache[id] else null
+        fun fromId(id: Identifier): HTPart? = cache[id]
     }
 }

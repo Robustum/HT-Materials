@@ -197,8 +197,8 @@ class HTPartManager(builder: Builder) {
             add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.JUNGLE_PLANKS)
             add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.ACACIA_PLANKS)
             add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.DARK_OAK_PLANKS)
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.CRIMSON_HYPHAE)
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.WARPED_HYPHAE)
+            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.CRIMSON_PLANKS)
+            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.WARPED_PLANKS)
         }
     }
 }

@@ -56,12 +56,12 @@ public class HTTestAddon implements HTMaterialsAddon {
         registry.add(INFINITY_KEY);
     }
 
-    public static final HTElement<?> INFINITY_ELEMENT = HTElement.of(HTColor.WHITE, "Inf.", Double.MAX_VALUE);
+    public static final HTElement INFINITY_ELEMENT = HTElement.of(HTColor.WHITE, "Inf.", Double.MAX_VALUE);
 
     @Override
     public void modifyMaterialComposition(@NotNull Map<HTMaterialKey, HTMaterialComposition> registry) {
         registry.put(INFINITY_KEY, HTMaterialComposition.molecular(
-                ImmutableMap.<HTElement<?>, Integer>builder()
+                ImmutableMap.<HTElement, Integer>builder()
                         .put(INFINITY_ELEMENT, 1)
                         .build()
         ));

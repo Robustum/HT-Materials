@@ -8,6 +8,7 @@ import io.github.hiiragi283.api.collection.buildDefaultedMap
 import io.github.hiiragi283.api.extention.getEntrypoints
 import io.github.hiiragi283.api.extention.id
 import io.github.hiiragi283.api.extention.isModLoaded
+import io.github.hiiragi283.api.extention.runWhenOn
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
@@ -19,21 +20,39 @@ import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
+import io.github.hiiragi283.api.resource.HTResourcePackProvider
 import io.github.hiiragi283.api.resource.HTRuntimeDataPack
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.tag.GlobalTagEvent
+import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreen
+import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreenHandler
 import net.fabricmc.api.EnvType
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
+import net.fabricmc.fabric.api.event.Event
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.fabricmc.fabric.api.tag.TagRegistry
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
+import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.item.TooltipContext
 import net.minecraft.data.server.RecipesProvider
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
+import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.world.ServerWorld
+import net.minecraft.tag.ItemTags
 import net.minecraft.tag.Tag
+import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import java.util.function.BiConsumer
 
@@ -170,9 +189,26 @@ internal object HTMaterialsCore {
         HTMaterialsAPI.log("HTPartManager initialized!")
 
         // Register Events
-        ServerWorldEvents.LOAD.register(HTMaterialsCore::onWorldLoaded)
-        GlobalTagEvent.ITEM.register(HTMaterialsCore::onItemTags)
-        GlobalTagEvent.FLUID.register(HTMaterialsCore::onFluidTags)
+        val id: Identifier = HTMaterialsAPI.id("before_default")
+        ServerWorldEvents.LOAD.run {
+            addPhaseOrdering(id, Event.DEFAULT_PHASE)
+            register(id, ::onWorldLoaded)
+        }
+        GlobalTagEvent.ITEM.run {
+            addPhaseOrdering(id, Event.DEFAULT_PHASE)
+            register(id, ::onItemTags)
+        }
+        GlobalTagEvent.FLUID.run {
+            addPhaseOrdering(id, Event.DEFAULT_PHASE)
+            register(id, ::onFluidTags)
+        }
+        EnvType.CLIENT.runWhenOn {
+            ScreenRegistry.register(MaterialDictionaryScreenHandler.TYPE, ::MaterialDictionaryScreen)
+            ItemTooltipCallback.EVENT.register(::getTooltip)
+            (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager)
+                .`ht_materials$addPackProvider`(HTResourcePackProvider.CLIENT)
+            HTMaterialsAPI.log("Registered runtime resource pack!")
+        }
         HTMaterialsAPI.log("Registered events!")
 
         HTRuntimeDataPack.addRecipe { exporter ->
@@ -189,6 +225,28 @@ internal object HTMaterialsCore {
     }
 
     //    Event    //
+
+    @Suppress("UnstableApiUsage", "DEPRECATION")
+    private fun getTooltip(stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
+        if (stack.isEmpty) return
+        // Part tooltip on item
+        HTMaterialsAPI.INSTANCE.partManager().getEntry(stack.item)?.let {
+            it.materialKey.getMaterial().appendTooltip(it.shapeKey, stack, lines)
+        }
+        // Material tooltip on fluid container item
+        FluidStorage.ITEM.find(stack, ContainerItemContext.withInitial(stack))
+            ?.iterable(Transaction.getCurrentUnsafe()?.openNested() ?: Transaction.openOuter())
+            ?.map(StorageView<FluidVariant>::getResource)
+            ?.map(FluidVariant::getFluid)
+            ?.mapNotNull { HTMaterialsAPI.INSTANCE.fluidManager().getMaterialKey(it) }
+            ?.forEach { it.getMaterial().appendTooltip(null, stack, lines) }
+        // Tag tooltips (only dev)
+        if (FabricLoader.getInstance().isDevelopmentEnvironment) {
+            ItemTags.getTagGroup().getTagsFor(stack.item).forEach { id: Identifier ->
+                lines.add(LiteralText(id.toString()))
+            }
+        }
+    }
 
     @Suppress("UNUSED_PARAMETER")
     private fun onWorldLoaded(server: MinecraftServer, world: ServerWorld) {

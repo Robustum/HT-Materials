@@ -14,14 +14,10 @@ class HTMaterialFlag private constructor(
 
     fun verify(material: HTMaterial) {
         requiredProperties.forEach { key: HTPropertyKey<*> ->
-            if (!material.hasProperty(key)) {
-                throw IllegalStateException("The material: $material has no property: ${key.name} but required for ${this.name}!")
-            }
+            check(material.hasProperty(key)) { "The material: $material has no property: ${key.name} but required for ${this.name}!" }
         }
         requiredFlags.forEach { flag: HTMaterialFlag ->
-            if (!material.hasFlag(flag)) {
-                throw IllegalStateException("The material: $material has no flag: ${flag.name} but required for ${this.name}!")
-            }
+            check(material.hasFlag(flag)) { "The material: $material has no flag: ${flag.name} but required for ${this.name}!" }
         }
     }
 
