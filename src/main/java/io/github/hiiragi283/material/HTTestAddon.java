@@ -43,8 +43,8 @@ public class HTTestAddon implements HTMaterialsAddon {
     public static final HTShapeKey DIRTY_DUST = new HTShapeKey("dirty_dust");
 
     @Override
-    public void registerShape(@NotNull ImmutableSet.Builder<HTShapeKey> registry) {
-        registry.add(DIRTY_DUST);
+    public void registerShape(@NotNull HTMaterialsAddon.ShapeHelper shapeHelper) {
+        shapeHelper.addShapeKey(DIRTY_DUST);
     }
 
     //    HTMaterial    //

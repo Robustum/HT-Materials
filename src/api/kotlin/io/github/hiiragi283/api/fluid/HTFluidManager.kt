@@ -13,7 +13,7 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.util.registry.Registry
 
-class HTFluidManager(builder: Builder) {
+class HTFluidManager private constructor(builder: Builder) {
     init {
         allModsId.forEach { modid: String ->
             HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { key ->
@@ -49,6 +49,8 @@ class HTFluidManager(builder: Builder) {
                 materialToFluidsMap.put(materialKey, this.still)
             }
         }
+
+        fun build() = HTFluidManager(this)
 
         init {
             add(HTMaterialKeys.WATER, Fluids.WATER)

@@ -9,7 +9,8 @@ import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.util.Identifier
 
-class HTMaterialDisplay(val material: HTMaterial, val key: HTMaterialKey = material.key) : RecipeDisplay {
+class HTMaterialDisplay(val material: HTMaterial) : RecipeDisplay {
+    private val key: HTMaterialKey = material.key
     val entries: List<EntryStack> = buildList {
         addAll(getItemEntries().map(EntryStack::create))
         addAll(getFluidEntries().map(EntryStack::create))

@@ -11,7 +11,6 @@ import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.content.*
 import io.github.hiiragi283.api.material.element.HTElements
-import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import io.github.hiiragi283.api.util.HTColor
 import io.github.hiiragi283.api.util.addAll
@@ -22,22 +21,18 @@ internal object HTMaterialsInit : HTMaterialsAddon {
     override val modId: String = HTMaterialsAPI.MOD_ID
     override val priority: Int = -100
 
-    override fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {
+    override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
         // Block
-        registry.addAll(
-            HTShapeKeys.BLOCK,
-            HTShapeKeys.ORE,
-        )
+        shapeHelper.addShapeKey(HTShapeKeys.BLOCK)
+        shapeHelper.addShapeKey(HTShapeKeys.ORE)
         // Item
-        registry.addAll(
-            HTShapeKeys.DUST,
-            HTShapeKeys.GEAR,
-            HTShapeKeys.GEM,
-            HTShapeKeys.INGOT,
-            HTShapeKeys.NUGGET,
-            HTShapeKeys.PLATE,
-            HTShapeKeys.ROD,
-        )
+        shapeHelper.addShapeKey(HTShapeKeys.DUST)
+        shapeHelper.addShapeKey(HTShapeKeys.GEAR)
+        shapeHelper.addShapeKey(HTShapeKeys.GEM)
+        shapeHelper.addShapeKey(HTShapeKeys.INGOT)
+        shapeHelper.addShapeKey(HTShapeKeys.NUGGET)
+        shapeHelper.addShapeKey(HTShapeKeys.PLATE)
+        shapeHelper.addShapeKey(HTShapeKeys.ROD)
     }
 
     override fun registerMaterialKey(registry: ImmutableSet.Builder<HTMaterialKey>) {

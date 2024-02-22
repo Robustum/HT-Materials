@@ -1,6 +1,5 @@
 package io.github.hiiragi283.material.compat
 
-import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
@@ -25,8 +24,9 @@ object HMIRAddon : HTMaterialsAddon {
     @JvmField
     val PURIFIED_ORE = HTShapeKey("purified_ore")
 
-    override fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {
-        registry.add(CHUNK, PURIFIED_ORE)
+    override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
+        shapeHelper.addShapeKey(CHUNK)
+        shapeHelper.addShapeKey(PURIFIED_ORE)
     }
 
     override fun bindFluidToPart(builder: HTFluidManager.Builder) {

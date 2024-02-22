@@ -18,11 +18,8 @@ import net.minecraft.item.Item as MCItem
 class HTSimpleItemContent(shapeKey: HTShapeKey) : HTMaterialContent.Item(shapeKey) {
     override fun item(materialKey: HTMaterialKey): MCItem = ItemImpl(materialKey, shapeKey)
 
-    private fun getTextureName(type: HTMaterialType): String = if (type is HTMaterialType.Gem) {
-        if (shapeKey == HTShapeKeys.GEM) "${type.name.lowercase()}_gem" else shapeKey.toString()
-    } else {
-        shapeKey.toString()
-    }
+    private fun getTextureName(type: HTMaterialType): String =
+        if (type is HTMaterialType.Gem && shapeKey == HTShapeKeys.GEM) "gem_${type.name.lowercase()}" else shapeKey.toString()
 
     override fun postInit(materialKey: HTMaterialKey) {
         // Client-only

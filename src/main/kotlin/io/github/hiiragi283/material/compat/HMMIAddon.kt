@@ -1,6 +1,5 @@
 package io.github.hiiragi283.material.compat
 
-import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extention.nonAirOrNull
@@ -14,7 +13,7 @@ object HMMIAddon : HTMaterialsAddon {
     override val modId: String = "modern_industrialization"
     override val priority: Int = 0
 
-    override fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {
+    override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
         listOf(
             "blade",
             "bolt",
@@ -28,7 +27,7 @@ object HMMIAddon : HTMaterialsAddon {
             "rotor",
             "tiny_dust",
             "wire",
-        ).map(::HTShapeKey).forEach(registry::add)
+        ).map(::HTShapeKey).forEach(shapeHelper::addShapeKey)
     }
 
     override fun bindItemToPart(builder: HTPartManager.Builder) {

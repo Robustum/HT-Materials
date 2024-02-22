@@ -1,6 +1,5 @@
 package io.github.hiiragi283.material.compat
 
-import com.google.common.collect.ImmutableSet
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.part.HTPartManager
@@ -16,8 +15,8 @@ object HMTRAddon : HTMaterialsAddon {
     @JvmField
     val SMALL_DUST = HTShapeKey("small_dust")
 
-    override fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {
-        registry.add(SMALL_DUST)
+    override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
+        shapeHelper.addShapeKey(SMALL_DUST)
     }
 
     override fun bindItemToPart(builder: HTPartManager.Builder) {

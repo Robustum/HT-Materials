@@ -16,7 +16,7 @@ import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 import net.minecraft.util.registry.Registry
 
-class HTPartManager(builder: Builder) {
+class HTPartManager private constructor(builder: Builder) {
     init {
         // Register items from Vanilla's registry
         allModsId.forEach { modid ->
@@ -88,6 +88,8 @@ class HTPartManager(builder: Builder) {
             itemToEntryMap[item] = entry
             partToEntriesMap.put(part, entry)
         }
+
+        fun build() = HTPartManager(this)
 
         init {
             // Amethyst

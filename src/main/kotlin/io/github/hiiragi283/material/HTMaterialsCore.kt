@@ -75,29 +75,18 @@ internal object HTMaterialsCore {
     //    Initialize - HTShape    //
 
     fun createShapeMap(): Map<HTShapeKey, HTShape> {
-        // Register shape keys
-        val shapeKeySet: Set<HTShapeKey> = ImmutableSet.builder<HTShapeKey>().apply {
-            addons.forEach { it.registerShape(this) }
-        }.build()
-        // Register shape id path
-        val idPathMap: Map<HTShapeKey, String> = buildMap {
-            addons.forEach { it.modifyShapeIdPath(this) }
-        }
-        // Register shape tag path
-        val tagPathMap: Map<HTShapeKey, String> = buildMap {
-            addons.forEach { it.modifyShapeTagPath(this) }
-        }
         // Create and register shape
-        val shapeMap: Map<HTShapeKey, HTShape> = buildMap {
-            shapeKeySet.forEach { key: HTShapeKey ->
-                val idPath: String = idPathMap.getOrDefault(key, "%s_${key.name}")
-                val tagPath: String = tagPathMap.getOrDefault(key, "${idPath}s")
+        val helper = HTMaterialsAddon.ShapeHelper()
+        addons.forEach { it.registerShape(helper) }
+        return buildMap {
+            helper.shapeKeys.forEach { key: HTShapeKey ->
+                val idPath: String = helper.getShapeIdPath(key)
+                val tagPath: String = helper.getShapeTagPath(key)
                 putIfAbsent(key, HTShape(key, idPath, tagPath))
                 HTMaterialsAPI.log("Shape: ${key.name} registered!")
             }
+            HTMaterialsAPI.log("HTShapeRegistry initialized!")
         }
-        HTMaterialsAPI.log("HTShapeRegistry initialized!")
-        return shapeMap
     }
 
     //    Initialize - HTMaterial    //
@@ -112,7 +101,7 @@ internal object HTMaterialsCore {
             buildMap { addons.forEach { it.modifyMaterialComposition(this) } }
         // Register material contents
         val contentMapMap: DefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder> =
-            buildDefaultedMap(HTMaterialContentMap::Builder) { addons.forEach { it.modifyMaterialContent(this) } }
+            buildDefaultedMap(HTMaterialContentMap::Builder) { /*addons.forEach { it.modifyMaterialContent(this) }*/ }
         // Register material flags
         val flagMap: DefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder> =
             buildDefaultedMap(HTMaterialFlagSet::Builder) { addons.forEach { it.modifyMaterialFlag(this) } }
@@ -123,6 +112,20 @@ internal object HTMaterialsCore {
         val typeMap: Map<HTMaterialKey, HTMaterialType> = buildMap {
             addons.forEach { it.modifyMaterialType(this) }
         }
+        /*val helper = HTMaterialsAddon.MaterialHelper()
+        addons.forEach { it.registerMaterial(helper) }
+        buildMap {
+            helper.materialKeys.forEach {  key ->
+                val composition: HTMaterialComposition = helper.getMaterialComposition(key)
+                val contentMap: HTMaterialContentMap = HTMaterialContentMap.Builder().build()
+                val flags: HTMaterialFlagSet = helper.getOrCreateFlagSet(key).build()
+                val property: HTMaterialPropertyMap = helper.getOrCreatePropertyMap(key).build()
+                val type: HTMaterialType = helper.getMaterialType(key)
+                put(key, HTMaterial(key, composition, contentMap, flags, property, type))
+                HTMaterialsAPI.log("Material: $key registered!")
+            }
+            HTMaterialsAPI.log("HTMaterialRegistry initialized!")
+        }*/
         // create and register material
         val materialMap: Map<HTMaterialKey, HTMaterial> = buildMap {
             materialKeySet.forEach { key: HTMaterialKey ->
@@ -179,12 +182,12 @@ internal object HTMaterialsCore {
         // Bind game objects to HTPart
         HTFluidManager.Builder().run {
             addons.forEach { it.bindFluidToPart(this) }
-            HTMaterialsAPIImpl.fluidManager = HTFluidManager(this)
+            HTMaterialsAPIImpl.fluidManager = build()
         }
         HTMaterialsAPI.log("HTFluidManager initialized!")
         HTPartManager.Builder().run {
             addons.forEach { it.bindItemToPart(this) }
-            HTMaterialsAPIImpl.partManager = HTPartManager(this)
+            HTMaterialsAPIImpl.partManager = build()
         }
         HTMaterialsAPI.log("HTPartManager initialized!")
 
@@ -226,7 +229,7 @@ internal object HTMaterialsCore {
 
     //    Event    //
 
-    @Suppress("UnstableApiUsage", "DEPRECATION")
+    @Suppress("UnstableApiUsage", "DEPRECATION", "UNUSED_PARAMETER")
     private fun getTooltip(stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
         if (stack.isEmpty) return
         // Part tooltip on item
@@ -258,7 +261,7 @@ internal object HTMaterialsCore {
                     add(materialKey, fluid)
                 }
             }
-        }.let { HTFluidManager(it) }
+        }.build()
         HTMaterialsAPI.log("Reloaded Fluid Manager!")
 
         // Reload Part Manager
@@ -271,7 +274,7 @@ internal object HTMaterialsCore {
                     }
                 }
             }
-        }.let(::HTPartManager)
+        }.build()
         HTMaterialsAPI.log("Reloaded Part Manager!")
 
         // registerRecipes()

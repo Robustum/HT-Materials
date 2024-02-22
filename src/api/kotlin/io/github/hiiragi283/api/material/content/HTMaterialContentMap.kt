@@ -6,7 +6,7 @@ import com.google.common.collect.Table
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 
-class HTMaterialContentMap(builder: Builder) {
+class HTMaterialContentMap private constructor(builder: Builder) {
     private val table: ImmutableTable<HTMaterialContent.Type, HTShapeKey, HTMaterialContent> = ImmutableTable.copyOf(builder.table)
 
     fun getContents(type: HTMaterialContent.Type) = table.values().filter { it.type == type }

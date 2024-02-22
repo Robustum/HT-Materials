@@ -24,11 +24,9 @@ interface HTMaterialsAddon {
 
     //    Initialize    //
 
-    fun registerShape(registry: ImmutableSet.Builder<HTShapeKey>) {}
+    fun registerShape(shapeHelper: ShapeHelper) {}
 
-    fun modifyShapeIdPath(registry: MutableMap<HTShapeKey, String>) {}
-
-    fun modifyShapeTagPath(registry: MutableMap<HTShapeKey, String>) {}
+    fun registerMaterial(materialHelper: MaterialHelper) {}
 
     fun registerMaterialKey(registry: ImmutableSet.Builder<HTMaterialKey>) {}
 
@@ -49,4 +47,84 @@ interface HTMaterialsAddon {
     fun bindFluidToPart(builder: HTFluidManager.Builder) {}
 
     fun postInitialize(envType: EnvType) {}
+
+    //    ShapeHelper    //
+
+    class ShapeHelper {
+
+        // Shape key
+        val shapeKeys: Set<HTShapeKey>
+            get() = _shapeKeys
+        private val _shapeKeys: MutableSet<HTShapeKey> = mutableSetOf()
+
+        fun addShapeKey(shapeKey: HTShapeKey) {
+            check(_shapeKeys.add(shapeKey)) { "" }
+        }
+
+        // Id Path
+        private val idPathMap: MutableMap<HTShapeKey, String> = hashMapOf()
+
+        fun getShapeIdPath(key: HTShapeKey): String =
+            idPathMap.getOrDefault(key, "%s_${key.name}")
+
+        fun setShapeIdPath(key: HTShapeKey, idPath: String) {
+            idPathMap[key] = idPath
+        }
+
+        // Tag Path
+        private val tagPathMap: MutableMap<HTShapeKey, String> = hashMapOf()
+
+        fun getShapeTagPath(key: HTShapeKey): String =
+            tagPathMap.getOrDefault(key, "${getShapeIdPath(key)}s")
+
+        fun setShapeTagPath(key: HTShapeKey, tagPath: String) {
+            tagPathMap[key] = tagPath
+        }
+    }
+
+    //    MaterialHelper    //
+
+    class MaterialHelper {
+
+        // Material key
+        val materialKeys: Set<HTMaterialKey>
+            get() = _materialKeys
+        private val _materialKeys: MutableSet<HTMaterialKey> = mutableSetOf()
+
+        fun addMaterialKey(materialKey: HTMaterialKey) {
+            check(_materialKeys.add(materialKey)) { "" }
+        }
+
+        // Material Composition
+        private val compositionMap: MutableMap<HTMaterialKey, HTMaterialComposition> = hashMapOf()
+
+        fun getMaterialComposition(key: HTMaterialKey): HTMaterialComposition =
+            compositionMap.getOrDefault(key, HTMaterialComposition.EMPTY)
+
+        fun setMaterialComposition(key: HTMaterialKey, composition: HTMaterialComposition) {
+            compositionMap[key] = composition
+        }
+
+        // Material flag
+        private val flagMap: MutableMap<HTMaterialKey, HTMaterialFlagSet.Builder> = hashMapOf()
+
+        fun getOrCreateFlagSet(key: HTMaterialKey): HTMaterialFlagSet.Builder =
+            flagMap.computeIfAbsent(key) { HTMaterialFlagSet.Builder() }
+
+        // Material Property
+        private val propertyMap: MutableMap<HTMaterialKey, HTMaterialPropertyMap.Builder> = hashMapOf()
+
+        fun getOrCreatePropertyMap(key: HTMaterialKey): HTMaterialPropertyMap.Builder =
+            propertyMap.computeIfAbsent(key) { HTMaterialPropertyMap.Builder() }
+
+        // Material Type
+        private val typeMap: MutableMap<HTMaterialKey, HTMaterialType> = hashMapOf()
+
+        fun getMaterialType(key: HTMaterialKey): HTMaterialType =
+            typeMap.getOrDefault(key, HTMaterialType.Undefined)
+
+        fun setMaterialType(key: HTMaterialKey, type: HTMaterialType) {
+            typeMap[key] = type
+        }
+    }
 }
