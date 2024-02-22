@@ -12,10 +12,13 @@ import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeKey
 import net.fabricmc.api.EnvType
+import net.minecraft.util.Identifier
 
 @JvmDefaultWithCompatibility
 interface HTMaterialsAddon {
     val modId: String
+
+    fun id(path: String) = Identifier(modId, path)
 
     val priority: Int
 

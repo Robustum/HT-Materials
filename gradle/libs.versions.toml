@@ -18,10 +18,11 @@ mod-modmenu = { group = "maven.modrinth", name = "modmenu", version = "1.16.23" 
 rei = { group = "me.shedaniel", name = "RoughlyEnoughItems", version = "5.12.385" }
 tech-reborn = { group = "TechReborn", name = "TechReborn-1.16", version = "+" }
 industrial-revolution = { group = "curse.maven", name = "industrial-revolution-391708", version = "3364481" }
+ae2 = { group = "appeng", name = "appliedenergistics2-fabric", version = "8.4.0-alpha.3" }
 
 [bundles]
 mods-fabric = ["fabric-loader", "fabric-api", "fabric-kotlin", "rei", "tech-reborn"]
-mods-compile = ["industrial-revolution"]
+mods-compile = ["industrial-revolution", "ae2"]
 mods-debug = ["mod-modmenu"]
 
 [plugins]

@@ -7,8 +7,10 @@ import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeKey
+import io.github.hiiragi283.api.shape.HTShapeKeys
 import me.steven.indrev.IndustrialRevolution
 import me.steven.indrev.registry.IRFluidRegistry
+import me.steven.indrev.registry.IRItemRegistry
 import net.minecraft.fluid.Fluid
 import net.minecraft.util.registry.Registry
 
@@ -54,5 +56,7 @@ object HMIRAddon : HTMaterialsAddon {
             // Purified Ores
             builder.add(it, PURIFIED_ORE, Registry.ITEM.get(PURIFIED_ORE.getShape().getIdentifier(it, modId)))
         }
+        builder.add(HTMaterialKeys.WOOD, HTShapeKeys.DUST, Registry.ITEM.get(id("sawdust")))
+        builder.add(HTMaterialKeys.SULFUR, HTShapeKeys.GEM, IRItemRegistry.SULFUR_CRYSTAL_ITEM)
     }
 }

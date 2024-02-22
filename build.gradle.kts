@@ -1,4 +1,3 @@
-import org.gradle.api.tasks.bundling.Jar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
@@ -32,6 +31,19 @@ repositories {
     }
     maven(url = "https://api.modrinth.com/maven") {
         content { includeGroup("maven.modrinth") }
+    }
+    // AE2
+    maven(url = "https://modmaven.dev/") {
+        content { includeGroup("appeng") }
+    }
+    maven(url = "https://mod-buildcraft.com/maven") {
+        content { includeGroup("alexiil.mc.lib") }
+    }
+    maven(url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/") {
+        content {
+            includeGroup("dev.technici4n")
+            includeGroup("net.fabricmc.fabric-api")
+        }
     }
     maven(url = "https://dvs1.progwml6.com/files/maven") // JEI
     maven(url = "https://maven.architectury.dev")
