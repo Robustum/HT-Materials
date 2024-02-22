@@ -1,8 +1,8 @@
 package io.github.hiiragi283.api.fluid
 
-import com.google.common.collect.HashMultimap
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableMultimap
+import com.google.common.collect.LinkedHashMultimap
 import com.google.common.collect.Multimap
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.extention.allModsId
@@ -41,7 +41,7 @@ class HTFluidManager private constructor(builder: Builder) {
     class Builder {
         internal val fluidToMaterialMap: MutableMap<Fluid, HTMaterialKey> = mutableMapOf()
 
-        internal val materialToFluidsMap: Multimap<HTMaterialKey, Fluid> = HashMultimap.create()
+        internal val materialToFluidsMap: Multimap<HTMaterialKey, Fluid> = LinkedHashMultimap.create()
 
         fun add(materialKey: HTMaterialKey, fluid: Fluid) {
             fluid.asFlowableOrNull()?.run {

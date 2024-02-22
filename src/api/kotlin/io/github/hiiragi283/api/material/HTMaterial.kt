@@ -1,8 +1,6 @@
 package io.github.hiiragi283.api.material
 
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
-import io.github.hiiragi283.api.material.content.HTMaterialContent
-import io.github.hiiragi283.api.material.content.HTMaterialContentMap
 import io.github.hiiragi283.api.material.element.HTElement
 import io.github.hiiragi283.api.material.flag.HTMaterialFlag
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
@@ -19,7 +17,7 @@ import java.util.function.Consumer
 class HTMaterial(
     val key: HTMaterialKey,
     private val composition: HTMaterialComposition,
-    private val contentMap: HTMaterialContentMap,
+    // private val contentMap: HTMaterialContentMap,
     private val flags: HTMaterialFlagSet,
     private val properties: HTMaterialPropertyMap,
     val type: HTMaterialType,
@@ -36,7 +34,7 @@ class HTMaterial(
 
     //    Content    //
 
-    fun getContents(type: HTMaterialContent.Type): Collection<HTMaterialContent> = contentMap.getContents(type)
+    // fun getContents(type: HTMaterialContent.Type): Collection<HTMaterialContent> = contentMap.getContents(type)
 
     //    Flags    //
 

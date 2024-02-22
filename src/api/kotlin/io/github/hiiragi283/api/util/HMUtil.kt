@@ -2,15 +2,8 @@
 
 package io.github.hiiragi283.api.util
 
-import com.google.common.collect.ImmutableCollection
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-
-//    Collection    //
-
-fun <T : Any> ImmutableCollection.Builder<T>.addAll(vararg element: T) {
-    element.forEach(this::add)
-}
 
 //    Json    //
 

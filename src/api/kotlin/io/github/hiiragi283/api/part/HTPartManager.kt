@@ -1,8 +1,8 @@
 package io.github.hiiragi283.api.part
 
-import com.google.common.collect.HashMultimap
 import com.google.common.collect.ImmutableMap
 import com.google.common.collect.ImmutableMultimap
+import com.google.common.collect.LinkedHashMultimap
 import com.google.common.collect.Multimap
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.extention.allModsId
@@ -79,7 +79,7 @@ class HTPartManager private constructor(builder: Builder) {
     class Builder {
         internal val itemToEntryMap: MutableMap<Item, Entry> = mutableMapOf()
 
-        internal val partToEntriesMap: Multimap<HTPart, Entry> = HashMultimap.create()
+        internal val partToEntriesMap: Multimap<HTPart, Entry> = LinkedHashMultimap.create()
 
         fun add(materialKey: HTMaterialKey, shapeKey: HTShapeKey, itemConvertible: ItemConvertible) {
             val item: Item = itemConvertible.nonAirOrNull() ?: return
