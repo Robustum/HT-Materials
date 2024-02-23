@@ -1,7 +1,7 @@
 package io.github.hiiragi283.material.dictionary
 
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.extention.openSimpleScreen
+import io.github.hiiragi283.api.extension.openSimpleScreen
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item

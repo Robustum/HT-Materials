@@ -1,6 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
-package io.github.hiiragi283.api.extention
+package io.github.hiiragi283.api.extension
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry

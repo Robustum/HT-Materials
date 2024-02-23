@@ -1,4 +1,4 @@
-package io.github.hiiragi283.api.extention
+package io.github.hiiragi283.api.extension
 
 fun calculateMolar(molars: Iterable<Double>) = calculateMolar(molars.associateWith { 1 })
 

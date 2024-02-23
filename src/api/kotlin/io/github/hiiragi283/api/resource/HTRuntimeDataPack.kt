@@ -2,8 +2,8 @@ package io.github.hiiragi283.api.resource
 
 import com.google.gson.JsonElement
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.extention.modify
-import io.github.hiiragi283.api.extention.suffix
+import io.github.hiiragi283.api.extension.modify
+import io.github.hiiragi283.api.extension.suffix
 import net.minecraft.advancement.Advancement
 import net.minecraft.block.Block
 import net.minecraft.data.server.recipe.RecipeJsonProvider

@@ -2,7 +2,7 @@ package io.github.hiiragi283.material.compat
 
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
-import io.github.hiiragi283.api.extention.nonAirOrNull
+import io.github.hiiragi283.api.extension.nonAirOrNull
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeKey

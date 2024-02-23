@@ -21,6 +21,7 @@ sealed interface HTMaterialType {
         CUBIC,
         DIAMOND,
         EMERALD,
+        FLINT,
         LAPIS,
         QUARTZ,
         RUBY,

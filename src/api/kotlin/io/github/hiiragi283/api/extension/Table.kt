@@ -1,4 +1,4 @@
-package io.github.hiiragi283.api.extention
+package io.github.hiiragi283.api.extension
 
 import com.google.common.collect.Table
 

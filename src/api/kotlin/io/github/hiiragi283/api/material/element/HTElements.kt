@@ -1,6 +1,6 @@
 package io.github.hiiragi283.api.material.element
 
-import io.github.hiiragi283.api.extention.averageColor
+import io.github.hiiragi283.api.extension.averageColor
 import io.github.hiiragi283.api.util.HTColor
 import java.awt.Color
 

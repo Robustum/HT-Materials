@@ -45,8 +45,8 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
             HTMaterialsAPI.id("material_dictionary"),
             MaterialDictionaryItem,
         )
-        HTMaterialsCore.initContents()
-        HTMaterialsAPIImpl.initRegister()
+        // HTMaterialsCore.initContents()
+        // HTMaterialsAPIImpl.initRegister()
     }
 
     // ClientModInitializer

@@ -1,7 +1,7 @@
 package io.github.hiiragi283.api.part
 
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.extention.id
+import io.github.hiiragi283.api.extension.id
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShape
