@@ -3,8 +3,8 @@ package io.github.hiiragi283.api.resource
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.extention.id
-import io.github.hiiragi283.api.extention.modify
+import io.github.hiiragi283.api.extension.id
+import io.github.hiiragi283.api.extension.modify
 import net.minecraft.block.Block
 import net.minecraft.data.client.model.*
 import net.minecraft.item.Item

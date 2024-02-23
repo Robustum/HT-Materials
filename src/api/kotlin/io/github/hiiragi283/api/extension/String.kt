@@ -1,4 +1,4 @@
-package io.github.hiiragi283.api.extention
+package io.github.hiiragi283.api.extension
 
 fun formatFormula(formulas: Iterable<String>): String = formatFormula(formulas.associateWith { 1 })
 

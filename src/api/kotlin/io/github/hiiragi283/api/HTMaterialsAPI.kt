@@ -1,6 +1,6 @@
 package io.github.hiiragi283.api
 
-import io.github.hiiragi283.api.extention.getSingleInstanceWith
+import io.github.hiiragi283.api.extension.getSingleInstanceWith
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.part.HTPartManager

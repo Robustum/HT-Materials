@@ -2,10 +2,10 @@ package io.github.hiiragi283.material
 
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
-import io.github.hiiragi283.api.extention.getEntrypoints
-import io.github.hiiragi283.api.extention.id
-import io.github.hiiragi283.api.extention.isModLoaded
-import io.github.hiiragi283.api.extention.runWhenOn
+import io.github.hiiragi283.api.extension.getEntrypoints
+import io.github.hiiragi283.api.extension.id
+import io.github.hiiragi283.api.extension.isModLoaded
+import io.github.hiiragi283.api.extension.runWhenOn
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey

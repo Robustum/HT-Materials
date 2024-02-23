@@ -1,4 +1,4 @@
-package io.github.hiiragi283.api.extention
+package io.github.hiiragi283.api.extension
 
 import net.minecraft.util.Identifier
 import java.util.function.Function

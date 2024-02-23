@@ -1,6 +1,6 @@
 package io.github.hiiragi283.api.tag
 
-import io.github.hiiragi283.api.extention.createEvent
+import io.github.hiiragi283.api.extension.createEvent
 import net.fabricmc.fabric.api.event.Event
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier

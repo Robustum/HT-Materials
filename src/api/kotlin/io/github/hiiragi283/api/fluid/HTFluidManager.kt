@@ -5,8 +5,8 @@ import com.google.common.collect.ImmutableMultimap
 import com.google.common.collect.LinkedHashMultimap
 import com.google.common.collect.Multimap
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.extention.allModsId
-import io.github.hiiragi283.api.extention.asFlowableOrNull
+import io.github.hiiragi283.api.extension.allModsId
+import io.github.hiiragi283.api.extension.asFlowableOrNull
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import net.minecraft.fluid.Fluid

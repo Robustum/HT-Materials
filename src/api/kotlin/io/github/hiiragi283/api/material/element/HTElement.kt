@@ -1,8 +1,8 @@
 package io.github.hiiragi283.api.material.element
 
-import io.github.hiiragi283.api.extention.averageColor
-import io.github.hiiragi283.api.extention.calculateMolar
-import io.github.hiiragi283.api.extention.formatFormula
+import io.github.hiiragi283.api.extension.averageColor
+import io.github.hiiragi283.api.extension.calculateMolar
+import io.github.hiiragi283.api.extension.formatFormula
 import java.awt.Color
 
 @Suppress("DataClassPrivateConstructor")
