@@ -8,10 +8,16 @@ import net.minecraft.client.resource.language.I18n
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
-data class HTShapeKey(val name: String) {
-    private val translationKey: String = "ht_shape.$name"
+class HTShapeKey(val name: String) {
 
-    fun getShapeOrNull(): HTShape? = HTMaterialsAPI.INSTANCE.shapeRegistry().getShape(this)
+    private var cache: HTShape? = null
+
+    fun getShapeOrNull(): HTShape? {
+        if (cache == null) {
+            cache = HTMaterialsAPI.INSTANCE.shapeRegistry().getShape(this)
+        }
+        return cache
+    }
 
     @Throws(IllegalStateException::class)
     fun getShape(): HTShape = checkNotNull(getShapeOrNull()) { "Shape with $name is not registered!" }
@@ -20,6 +26,8 @@ data class HTShapeKey(val name: String) {
 
     //    Translation    //
 
+    private val translationKey: String = "ht_shape.$name"
+
     @Environment(EnvType.CLIENT)
     fun getTranslatedName(materialKey: HTMaterialKey): String = I18n.translate(translationKey, materialKey.getTranslatedName())
 
@@ -27,10 +35,9 @@ data class HTShapeKey(val name: String) {
 
     //    Any    //
 
-    override fun toString(): String = name
+    override fun equals(other: Any?): Boolean = (other as? HTShapeKey)?.name == this.name
 
-    companion object {
-        @JvmStatic
-        val EMPTY = HTShapeKey("")
-    }
+    override fun hashCode(): Int = name.hashCode()
+
+    override fun toString(): String = name
 }

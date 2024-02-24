@@ -2,13 +2,11 @@ package io.github.hiiragi283.material
 
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
-import io.github.hiiragi283.api.extension.getEntrypoints
-import io.github.hiiragi283.api.extension.id
-import io.github.hiiragi283.api.extension.isModLoaded
-import io.github.hiiragi283.api.extension.runWhenOn
+import io.github.hiiragi283.api.extension.*
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
@@ -17,8 +15,10 @@ import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.resource.HTResourcePackProvider
 import io.github.hiiragi283.api.resource.HTRuntimeDataPack
+import io.github.hiiragi283.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeKey
+import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.api.tag.GlobalTagEvent
 import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreen
 import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreenHandler
@@ -36,6 +36,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
+import net.minecraft.data.client.model.Texture
 import net.minecraft.data.server.RecipesProvider
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
 import net.minecraft.fluid.Fluid
@@ -68,11 +69,11 @@ internal object HTMaterialsCore {
 
     //    Initialize - HTShape    //
 
-    fun createShapeMap(): Map<HTShapeKey, HTShape> {
+    fun initShapeRegistry() {
         // Create and register shape
         val helper = HTMaterialsAddon.ShapeHelper()
         addons.forEach { it.registerShape(helper) }
-        return buildMap {
+        HTMaterialsAPIImpl.shapeRegistry = HTShapeRegistry(buildMap {
             helper.shapeKeys.forEach { key: HTShapeKey ->
                 val idPath: String = helper.getIdPath(key)
                 val tagPath: String = helper.getTagPath(key)
@@ -80,26 +81,29 @@ internal object HTMaterialsCore {
                 HTMaterialsAPI.log("Shape: ${key.name} registered!")
             }
             HTMaterialsAPI.log("HTShapeRegistry initialized!")
-        }
+        })
     }
 
     //    Initialize - HTMaterial    //
 
-    fun createMaterialMap(): Map<HTMaterialKey, HTMaterial> {
+    fun initMaterialRegistry() {
         // create and register material
         val helper = HTMaterialsAddon.MaterialHelper()
         addons.forEach { it.registerMaterial(helper) }
-        return buildMap {
-            helper.materialKeys.forEach { key ->
+        HTMaterialsAPIImpl.materialRegistry = HTMaterialRegistry(buildMap {
+            helper.materialKeys.forEach { key: HTMaterialKey ->
                 val composition: HTMaterialComposition = helper.getComposition(key)
                 val flags: HTMaterialFlagSet = helper.getOrCreateFlagSet(key).build()
                 val property: HTMaterialPropertyMap = helper.getOrCreatePropertyMap(key).build()
                 val type: HTMaterialType = helper.getType(key)
-                put(key, HTMaterial(key, composition, flags, property, type))
+                val material = HTMaterial(key, composition, flags, property, type)
+                put(key, material)
                 HTMaterialsAPI.log("Material: $key registered!")
             }
-            HTMaterialsAPI.log("HTMaterialRegistry initialized!")
-        }
+        })
+        HTMaterialsAPI.log("HTMaterialRegistry initialized!")
+        // Init HTPart cache
+        HTPart.initCache(helper)
     }
 
     fun verifyMaterial() {
@@ -109,36 +113,9 @@ internal object HTMaterialsCore {
         }
     }
 
-    //    Initialization    //
-
-    /*private fun forEachContent(type: HTMaterialContent.Type, consumer: BiConsumer<HTMaterialContent, HTMaterialKey>) {
-        for (material: HTMaterial in HTMaterialsAPI.INSTANCE.materialRegistry().getValues()) {
-            for (content: HTMaterialContent in material.getContents(type)) {
-                consumer.accept(content, material.key)
-            }
-        }
-    }
-
-    fun initContents() {
-        forEachContent(HTMaterialContent.Type.BLOCK) { content, key -> content.init(key) }
-        HTMaterialsAPI.log("All Material Blocks registered!")
-        forEachContent(HTMaterialContent.Type.FLUID) { content, key -> content.init(key) }
-        HTMaterialsAPI.log("All Material Fluids registered!")
-        forEachContent(HTMaterialContent.Type.ITEM) { content, key -> content.init(key) }
-        HTMaterialsAPI.log("All Material Items registered!")
-    }*/
-
     //    Post Initialization    //
 
     fun postInitialize(envType: EnvType) {
-        // Process postInit on HTMaterialContent
-        /*forEachContent(HTMaterialContent.Type.BLOCK) { content, key -> content.postInit(key) }
-        HTMaterialsAPI.log("All post-initialization for Material Blocks completed!")
-        forEachContent(HTMaterialContent.Type.FLUID) { content, key -> content.postInit(key) }
-        HTMaterialsAPI.log("All post-initialization for Material Fluids completed!")
-        forEachContent(HTMaterialContent.Type.ITEM) { content, key -> content.postInit(key) }
-        HTMaterialsAPI.log("All post-initialization for Material Items completed!")*/
-
         // Bind game objects to HTPart
         HTFluidManager.Builder().run {
             addons.forEach { it.bindFluidToPart(this) }
@@ -166,20 +143,34 @@ internal object HTMaterialsCore {
             register(id, ::onFluidTags)
         }
         EnvType.CLIENT.runWhenOn {
-            ScreenRegistry.register(MaterialDictionaryScreenHandler.TYPE, ::MaterialDictionaryScreen)
             ItemTooltipCallback.EVENT.register(::getTooltip)
-            (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager)
-                .`ht_materials$addPackProvider`(HTResourcePackProvider.CLIENT)
-            HTMaterialsAPI.log("Registered runtime resource pack!")
         }
         HTMaterialsAPI.log("Registered events!")
 
+        // Register recipe
         HTRuntimeDataPack.addRecipe { exporter ->
             ShapelessRecipeJsonFactory.create(HTMaterialsAPI.INSTANCE.dictionaryItem())
                 .input(Items.BOOK)
                 .input(Items.IRON_INGOT)
                 .criterion("hsa_book", RecipesProvider.conditionsFromItem(Items.BOOK))
                 .offerTo(exporter, HTMaterialsAPI.INSTANCE.dictionaryItem().id)
+        }
+
+        EnvType.CLIENT.runWhenOn {
+            // Register model on client-side
+            HTRuntimeResourcePack.addModel(
+                HTMaterialsAPI.INSTANCE.dictionaryItem(),
+                Texture.layer0(HTMaterialsAPI.id("material_dictionary"))
+            )
+            HTRuntimeResourcePack.addModel(
+                HTMaterialsAPI.INSTANCE.iconItem(),
+                Texture.layer0(HTMaterialsAPI.id("icon"))
+            )
+            // Register runtime resource pack on client-side
+            ScreenRegistry.register(MaterialDictionaryScreenHandler.TYPE, ::MaterialDictionaryScreen)
+            (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager)
+                .`ht_materials$addPackProvider`(HTResourcePackProvider.CLIENT)
+            HTMaterialsAPI.log("Registered runtime resource pack!")
         }
 
         // Post initialize from addons
@@ -193,7 +184,7 @@ internal object HTMaterialsCore {
     private fun getTooltip(stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
         if (stack.isEmpty) return
         // Part tooltip on item
-        HTMaterialsAPI.INSTANCE.partManager().getEntry(stack.item)?.let {
+        stack.item.partEntry?.let {
             it.materialKey.getMaterial().appendTooltip(it.shapeKey, stack, lines)
         }
         // Material tooltip on fluid container item
@@ -201,7 +192,7 @@ internal object HTMaterialsCore {
             ?.iterable(Transaction.getCurrentUnsafe()?.openNested() ?: Transaction.openOuter())
             ?.map(StorageView<FluidVariant>::getResource)
             ?.map(FluidVariant::getFluid)
-            ?.mapNotNull { HTMaterialsAPI.INSTANCE.fluidManager().getMaterialKey(it) }
+            ?.mapNotNull(Fluid::materialKey)
             ?.forEach { it.getMaterial().appendTooltip(null, stack, lines) }
         // Tag tooltips (only dev)
         if (FabricLoader.getInstance().isDevelopmentEnvironment) {
@@ -271,9 +262,9 @@ internal object HTMaterialsCore {
 
     private fun onFluidTags(map: MutableMap<Identifier, Tag.Builder>) {
         // Register Tags from HTFluidManagerOld
-        HTMaterialsAPI.INSTANCE.fluidManager().materialToFluidsMap.forEach { key: HTMaterialKey, fluid: Fluid ->
-            map.computeIfAbsent(key.getCommonId()) { Tag.Builder.create() }
-                .add(fluid.id, HTMaterialsAPI.MOD_NAME)
+        HTMaterialsAPI.INSTANCE.fluidManager().materialToFluidsMap.forEach { materialKey, entry ->
+            map.computeIfAbsent(materialKey.getCommonId()) { Tag.Builder.create() }
+                .add(entry.fluid.id, HTMaterialsAPI.MOD_NAME)
         }
     }
 }

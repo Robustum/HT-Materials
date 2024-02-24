@@ -160,7 +160,26 @@ class MaterialDictionaryScreenHandler(
             val itemStack2: ItemStack = slot.stack
             val item: Item = itemStack2.item
             itemStack = itemStack2.copy()
-            if (index == 1) {
+            when (index) {
+                1 -> {
+                    item.onCraft(itemStack2, player.world, player)
+                    if (!insertItem(itemStack2, 2, 38, true)) return ItemStack.EMPTY
+                    slot.onQuickTransfer(itemStack2, itemStack)
+                }
+                0 -> {
+                    if (!insertItem(itemStack2, 2, 38, false)) return ItemStack.EMPTY
+                }
+                else -> if (HTMaterialsAPI.INSTANCE.partManager().hasEntry(itemStack2.item)) {
+                    if (!insertItem(itemStack2, 0, 1, false)) {
+                        return ItemStack.EMPTY
+                    } else if (index in (2 until 29)) {
+                        if (!insertItem(itemStack2, 29, 38, false)) return ItemStack.EMPTY
+                    } else if (index in (29 until 38) && !insertItem(itemStack2, 2, 29, false)) {
+                        return ItemStack.EMPTY
+                    }
+                }
+            }
+            /*if (index == 1) {
                 item.onCraft(itemStack2, player.world, player)
                 if (!insertItem(itemStack2, 2, 38, true)) return ItemStack.EMPTY
                 slot.onQuickTransfer(itemStack2, itemStack)
@@ -183,7 +202,7 @@ class MaterialDictionaryScreenHandler(
                 }
             ) {
                 return ItemStack.EMPTY
-            }
+            }*/
             if (itemStack2.isEmpty) slot.stack = ItemStack.EMPTY
             slot.markDirty()
             if (itemStack2.count == itemStack.count) return ItemStack.EMPTY

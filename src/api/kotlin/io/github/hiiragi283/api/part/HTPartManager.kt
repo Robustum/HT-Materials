@@ -6,6 +6,7 @@ import com.google.common.collect.LinkedHashMultimap
 import com.google.common.collect.Multimap
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.extension.allModsId
+import io.github.hiiragi283.api.extension.id
 import io.github.hiiragi283.api.extension.nonAirOrNull
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
@@ -45,7 +46,7 @@ class HTPartManager private constructor(builder: Builder) {
     fun getDefaultEntry(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Entry? {
         val entries: Collection<Entry> = getEntries(materialKey, shapeKey)
         for (entry: Entry in entries) {
-            val namespace: String = Registry.ITEM.getId(entry.item).namespace
+            val namespace: String = entry.item.id.namespace
             return when (namespace) {
                 "minecraft" -> entry
                 HTMaterialsAPI.MOD_ID -> entry
@@ -89,6 +90,16 @@ class HTPartManager private constructor(builder: Builder) {
             partToEntriesMap.put(part, entry)
         }
 
+        fun remove(materialKey: HTMaterialKey, shapeKey: HTShapeKey, itemConvertible: ItemConvertible) {
+            val item: Item = itemConvertible.nonAirOrNull() ?: return
+            val part = HTPart(materialKey, shapeKey)
+            val entry = Entry(materialKey, shapeKey, item)
+            if (item in itemToEntryMap && partToEntriesMap.containsKey(part)) {
+                itemToEntryMap.remove(item, entry)
+                partToEntriesMap.remove(part, entry)
+            }
+        }
+
         fun build() = HTPartManager(this)
 
         init {
@@ -101,9 +112,15 @@ class HTPartManager private constructor(builder: Builder) {
             // Basalt
             add(HTMaterialKeys.BASALT, HTShapeKeys.BLOCK, Items.BASALT)
             add(HTMaterialKeys.BASALT, HTShapeKeys.BLOCK, Items.POLISHED_BASALT)
+            // Blackstone
+            add(HTMaterialKeys.BLACKSTONE, HTShapeKeys.BLOCK, Items.BLACKSTONE)
+            add(HTMaterialKeys.BLACKSTONE, HTShapeKeys.BLOCK, Items.POLISHED_BLACKSTONE)
+            add(HTMaterialKeys.BLACKSTONE, HTShapeKeys.BRICKS, Items.CHISELED_POLISHED_BLACKSTONE)
+            add(HTMaterialKeys.BLACKSTONE, HTShapeKeys.BRICKS, Items.CRACKED_POLISHED_BLACKSTONE_BRICKS)
+            add(HTMaterialKeys.BLACKSTONE, HTShapeKeys.BRICKS, Items.POLISHED_BLACKSTONE_BRICKS)
             // Brick
-            add(HTMaterialKeys.BRICK, HTShapeKeys.BLOCK, Items.BRICKS)
-            add(HTMaterialKeys.BRICK, HTShapeKeys.GEM, Items.BRICK)
+            add(HTMaterialKeys.BRICK, HTShapeKeys.BRICKS, Items.BRICKS)
+            add(HTMaterialKeys.BRICK, HTShapeKeys.INGOT, Items.BRICK)
             // Calcite
             // add(HTMaterialKeys.CALCITE, HTShapeKeys.BLOCK, Items.CALCITE)
             // Charcoal
@@ -137,6 +154,7 @@ class HTPartManager private constructor(builder: Builder) {
             add(HTMaterialKeys.EMERALD, HTShapeKeys.ORE, Items.EMERALD_ORE)
             // End Stone
             add(HTMaterialKeys.END_STONE, HTShapeKeys.BLOCK, Items.END_STONE)
+            add(HTMaterialKeys.END_STONE, HTShapeKeys.BRICKS, Items.END_STONE_BRICKS)
             // Ender Pearl
             add(HTMaterialKeys.ENDER_PEARL, HTShapeKeys.GEM, Items.ENDER_PEARL)
             // Flint
@@ -168,8 +186,8 @@ class HTPartManager private constructor(builder: Builder) {
             add(HTMaterialKeys.LAPIS, HTShapeKeys.GEM, Items.LAPIS_LAZULI)
             add(HTMaterialKeys.LAPIS, HTShapeKeys.ORE, Items.LAPIS_ORE)
             // Nether Brick
-            add(HTMaterialKeys.NETHER_BRICK, HTShapeKeys.BLOCK, Items.NETHER_BRICKS)
-            add(HTMaterialKeys.NETHER_BRICK, HTShapeKeys.GEM, Items.NETHER_BRICK)
+            add(HTMaterialKeys.NETHER_BRICK, HTShapeKeys.BRICKS, Items.NETHER_BRICKS)
+            add(HTMaterialKeys.NETHER_BRICK, HTShapeKeys.INGOT, Items.NETHER_BRICK)
             // Netherite
             add(HTMaterialKeys.NETHERITE, HTShapeKeys.BLOCK, Items.NETHERITE_BLOCK)
             add(HTMaterialKeys.NETHERITE, HTShapeKeys.INGOT, Items.NETHERITE_INGOT)
@@ -190,17 +208,42 @@ class HTPartManager private constructor(builder: Builder) {
             add(HTMaterialKeys.REDSTONE, HTShapeKeys.ORE, Items.REDSTONE_ORE)
             // Stone
             add(HTMaterialKeys.STONE, HTShapeKeys.BLOCK, Items.STONE)
+            add(HTMaterialKeys.STONE, HTShapeKeys.BRICKS, Items.STONE_BRICKS)
+            add(HTMaterialKeys.STONE, HTShapeKeys.BRICKS, Items.MOSSY_STONE_BRICKS)
+            add(HTMaterialKeys.STONE, HTShapeKeys.BRICKS, Items.CRACKED_STONE_BRICKS)
             // Tuff
             // add(HTMaterialKeys.TUFF, HTShapeKeys.BLOCK, Items.TUFF)
             // Wood
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.OAK_PLANKS)
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.BIRCH_PLANKS)
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.SPRUCE_PLANKS)
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.JUNGLE_PLANKS)
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.ACACIA_PLANKS)
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.DARK_OAK_PLANKS)
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.CRIMSON_PLANKS)
-            add(HTMaterialKeys.WOOD, HTShapeKeys.BLOCK, Items.WARPED_PLANKS)
+            listOf(
+                Items.OAK_LOG,
+                Items.BIRCH_LOG,
+                Items.SPRUCE_LOG,
+                Items.JUNGLE_LOG,
+                Items.ACACIA_LOG,
+                Items.DARK_OAK_LOG,
+                Items.CRIMSON_HYPHAE,
+                Items.WARPED_HYPHAE,
+            ).forEach { add(HTMaterialKeys.WOOD, HTShapeKeys.LOG, it) }
+            listOf(
+                Items.OAK_WOOD,
+                Items.BIRCH_WOOD,
+                Items.SPRUCE_WOOD,
+                Items.JUNGLE_WOOD,
+                Items.ACACIA_WOOD,
+                Items.DARK_OAK_WOOD,
+                Items.CRIMSON_STEM,
+                Items.WARPED_STEM,
+            ).forEach { add(HTMaterialKeys.WOOD, HTShapeKeys.LOG, it) }
+            listOf(
+                Items.OAK_PLANKS,
+                Items.BIRCH_PLANKS,
+                Items.SPRUCE_PLANKS,
+                Items.JUNGLE_PLANKS,
+                Items.ACACIA_PLANKS,
+                Items.DARK_OAK_PLANKS,
+                Items.CRIMSON_PLANKS,
+                Items.WARPED_PLANKS,
+            ).forEach { add(HTMaterialKeys.WOOD, HTShapeKeys.PLANKS, it) }
         }
     }
 }

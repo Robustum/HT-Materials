@@ -2,6 +2,8 @@
 
 package io.github.hiiragi283.api.extension
 
+import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.material.HTMaterialKey
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRenderHandler
@@ -27,6 +29,9 @@ val Fluid.variantRenderer: FluidVariantRenderHandler
 
 val FluidVariant.renderer: FluidVariantRenderHandler
     get() = this.fluid.variantRenderer
+
+val Fluid.materialKey: HTMaterialKey?
+    get() = HTMaterialsAPI.INSTANCE.fluidManager().getEntry(this)?.materialKey
 
 fun Fluid.asBlock(): Block = this.defaultState.blockState.block
 

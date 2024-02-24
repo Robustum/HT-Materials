@@ -1,6 +1,6 @@
 package io.github.hiiragi283.api
 
-import io.github.hiiragi283.api.extension.getSingleInstanceWith
+import io.github.hiiragi283.api.extension.getSingleton
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.part.HTPartManager
@@ -18,7 +18,7 @@ interface HTMaterialsAPI {
         const val MOD_NAME: String = "HT Materials"
 
         @JvmStatic
-        val INSTANCE: HTMaterialsAPI = getSingleInstanceWith()
+        val INSTANCE: HTMaterialsAPI = getSingleton()
 
         @JvmStatic
         fun id(path: String) = Identifier(MOD_ID, path)
@@ -45,10 +45,4 @@ interface HTMaterialsAPI {
     fun fluidManager(): HTFluidManager
 
     fun partManager(): HTPartManager
-
-    /*fun registerBlock(path: String, supplier: Supplier<out Block>): Supplier<Block>
-
-    fun registerFluid(path: String, supplier: Supplier<out Fluid>): Supplier<Fluid>
-
-    fun registerItem(path: String, supplier: Supplier<out Item>): Supplier<Item>*/
 }

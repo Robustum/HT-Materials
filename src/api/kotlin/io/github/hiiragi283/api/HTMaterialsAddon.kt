@@ -1,5 +1,7 @@
 package io.github.hiiragi283.api
 
+import com.google.common.collect.HashMultimap
+import com.google.common.collect.Multimap
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialType
@@ -75,6 +77,15 @@ interface HTMaterialsAddon {
 
         fun addMaterialKey(materialKey: HTMaterialKey) {
             check(_materialKeys.add(materialKey)) { "" }
+        }
+
+        // Alternative Name
+        private val alternativeNameMap: Multimap<HTMaterialKey, String> = HashMultimap.create()
+
+        fun getAlternativeNames(key: HTMaterialKey): Collection<String> = alternativeNameMap[key]
+
+        fun addAlternativeName(key: HTMaterialKey, vararg alternativeNames: String) {
+            alternativeNameMap.putAll(key, alternativeNames.toList())
         }
 
         // Material Composition

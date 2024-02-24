@@ -14,20 +14,16 @@ class HTMaterialFlag private constructor(
 
     fun verify(material: HTMaterial) {
         requiredProperties.forEach { key: HTPropertyKey<*> ->
-            check(material.hasProperty(key)) { "The material: $material has no property: ${key.name} but required for ${this.name}!" }
+            check(material.hasProperty(key)) { "The material:$material has no property:${key.name} but required for ${this.name}!" }
         }
         requiredFlags.forEach { flag: HTMaterialFlag ->
-            check(material.hasFlag(flag)) { "The material: $material has no flag: ${flag.name} but required for ${this.name}!" }
+            check(material.hasFlag(flag)) { "The material:$material has no flag:${flag.name} but required for ${this.name}!" }
         }
     }
 
     //    Any    //
 
-    override fun equals(other: Any?): Boolean = when (other) {
-        null -> false
-        !is HTMaterialFlag -> false
-        else -> other.name == this.name
-    }
+    override fun equals(other: Any?): Boolean = (other as? HTMaterialFlag)?.name == this.name
 
     override fun hashCode(): Int = name.hashCode()
 

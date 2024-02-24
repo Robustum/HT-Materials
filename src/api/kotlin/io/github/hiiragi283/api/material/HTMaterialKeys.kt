@@ -235,6 +235,9 @@ object HTMaterialKeys {
     @JvmField
     val END_STONE = HTMaterialKey("end_stone")
 
+    @JvmField
+    val BLACKSTONE = HTMaterialKey("blackstone")
+
     //    Vanilla - Woods    //
 
     @JvmField

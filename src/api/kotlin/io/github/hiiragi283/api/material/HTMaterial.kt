@@ -17,7 +17,6 @@ import java.util.function.Consumer
 class HTMaterial(
     val key: HTMaterialKey,
     private val composition: HTMaterialComposition,
-    // private val contentMap: HTMaterialContentMap,
     private val flags: HTMaterialFlagSet,
     private val properties: HTMaterialPropertyMap,
     val type: HTMaterialType,
@@ -31,10 +30,6 @@ class HTMaterial(
     fun formula(): String = composition.formula
 
     fun molar(): Double = "%.1f".format(composition.molar).toDouble()
-
-    //    Content    //
-
-    // fun getContents(type: HTMaterialContent.Type): Collection<HTMaterialContent> = contentMap.getContents(type)
 
     //    Flags    //
 

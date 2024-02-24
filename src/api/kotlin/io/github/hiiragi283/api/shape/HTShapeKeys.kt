@@ -7,7 +7,16 @@ object HTShapeKeys {
     val BLOCK = HTShapeKey("block") // forgePath = "storage_blocks/%s"
 
     @JvmField
+    val BRICKS = HTShapeKey("bricks")
+
+    @JvmField
+    val LOG = HTShapeKey("log")
+
+    @JvmField
     val ORE = HTShapeKey("ore")
+
+    @JvmField
+    val PLANKS = HTShapeKey("planks")
 
     //    Item    //
 

@@ -55,8 +55,8 @@ class MaterialDictionaryScreen(
         drawTexture(matrices, i, j, 0, 0, backgroundWidth, backgroundHeight)
         val k: Int = (41.0f * this.scrollAmount).toInt()
         drawTexture(matrices, i + 119, j + 15 + k, 176 + (if (shouldScroll()) 0 else 12), 0, 12, 15)
-        val l: Int = this.x + 52
-        val m: Int = this.y + 14
+        val l: Int = i + 52
+        val m: Int = j + 14
         val n: Int = this.scrollOffset + 12
         renderRecipeBackground(matrices, mouseX, mouseY, l, m, n)
         renderRecipeIcons(l, m, n)

@@ -1,9 +1,12 @@
 package io.github.hiiragi283.material.compat
 
 import io.github.hiiragi283.api.HTMaterialsAddon
+import io.github.hiiragi283.api.extension.HTColor
+import io.github.hiiragi283.api.extension.averageColor
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
+import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
@@ -24,9 +27,19 @@ object HMIRAddon : HTMaterialsAddon {
     @JvmField
     val PURIFIED_ORE = HTShapeKey("purified_ore")
 
+    @JvmField
+    val NIKOLITE = HTMaterialKey("nikolite")
+
     override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
         shapeHelper.addShapeKey(CHUNK)
         shapeHelper.addShapeKey(PURIFIED_ORE)
+    }
+
+    override fun registerMaterial(materialHelper: HTMaterialsAddon.MaterialHelper) {
+        materialHelper.addMaterialKey(NIKOLITE)
+        materialHelper.setComposition(NIKOLITE, HTMaterialComposition.molecular {
+            color = averageColor(HTColor.DARK_BLUE, HTColor.DARK_GREEN)
+        })
     }
 
     override fun bindFluidToPart(builder: HTFluidManager.Builder) {
@@ -50,6 +63,7 @@ object HMIRAddon : HTMaterialsAddon {
             HTMaterialKeys.NETHERITE,
             HTMaterialKeys.SILVER,
             HTMaterialKeys.TIN,
+            NIKOLITE
         ).forEach {
             // Chunks
             builder.add(it, CHUNK, Registry.ITEM.get(CHUNK.getShape().getIdentifier(it, modId)))

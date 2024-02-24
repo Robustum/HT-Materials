@@ -1,9 +1,6 @@
 package io.github.hiiragi283.material
 
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.material.HTMaterialRegistry
-import io.github.hiiragi283.api.part.HTPart
-import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.material.dictionary.MaterialDictionaryItem
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.DedicatedServerModInitializer
@@ -21,12 +18,10 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
         // Collect Addons
         HTMaterialsCore.initAddons()
         // Create Shapes
-        HTMaterialsAPIImpl.shapeRegistry = HTShapeRegistry(HTMaterialsCore.createShapeMap())
+        HTMaterialsCore.initShapeRegistry()
         // Create Materials
-        HTMaterialsAPIImpl.materialRegistry = HTMaterialRegistry(HTMaterialsCore.createMaterialMap())
+        HTMaterialsCore.initMaterialRegistry()
         HTMaterialsCore.verifyMaterial()
-        // Init HTPart cache
-        HTPart.initCache()
     }
 
     // ModInitializer
@@ -45,8 +40,6 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
             HTMaterialsAPI.id("material_dictionary"),
             MaterialDictionaryItem,
         )
-        // HTMaterialsCore.initContents()
-        // HTMaterialsAPIImpl.initRegister()
     }
 
     // ClientModInitializer

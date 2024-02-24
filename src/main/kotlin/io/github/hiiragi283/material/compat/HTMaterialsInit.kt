@@ -2,13 +2,13 @@ package io.github.hiiragi283.material.compat
 
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
+import io.github.hiiragi283.api.extension.HTColor
 import io.github.hiiragi283.api.extension.averageColor
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.element.HTElements
 import io.github.hiiragi283.api.shape.HTShapeKeys
-import io.github.hiiragi283.api.util.HTColor
 import java.awt.Color
 
 internal object HTMaterialsInit : HTMaterialsAddon {
@@ -18,7 +18,10 @@ internal object HTMaterialsInit : HTMaterialsAddon {
     override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
         // Block
         shapeHelper.addShapeKey(HTShapeKeys.BLOCK)
+        shapeHelper.addShapeKey(HTShapeKeys.BRICKS)
+        shapeHelper.addShapeKey(HTShapeKeys.LOG)
         shapeHelper.addShapeKey(HTShapeKeys.ORE)
+        shapeHelper.addShapeKey(HTShapeKeys.PLANKS)
         // Item
         shapeHelper.addShapeKey(HTShapeKeys.DUST)
         shapeHelper.addShapeKey(HTShapeKeys.GEAR)
@@ -44,6 +47,7 @@ internal object HTMaterialsInit : HTMaterialsAddon {
         materialHelper.addMetalMaterial(HTMaterialKeys.SODIUM, HTElements.Na)
         materialHelper.addMetalMaterial(HTMaterialKeys.MAGNESIUM, HTElements.Mg)
         materialHelper.addMetalMaterial(HTMaterialKeys.ALUMINUM, HTElements.Al)
+        materialHelper.addAlternativeName(HTMaterialKeys.ALUMINUM, "aluminium")
         materialHelper.addMetalMaterial(HTMaterialKeys.SILICON, HTElements.Si)
         materialHelper.addSimpleMaterial(HTMaterialKeys.PHOSPHORUS, HTElements.P to 1)
         materialHelper.addSimpleMaterial(HTMaterialKeys.SULFUR, HTElements.S to 8)
@@ -53,6 +57,7 @@ internal object HTMaterialsInit : HTMaterialsAddon {
         materialHelper.addMetalMaterial(HTMaterialKeys.CALCIUM, HTElements.Ca)
         materialHelper.addMetalMaterial(HTMaterialKeys.TITANIUM, HTElements.Ti)
         materialHelper.addMetalMaterial(HTMaterialKeys.CHROMIUM, HTElements.Cr)
+        materialHelper.addAlternativeName(HTMaterialKeys.CHROMIUM, "chrome")
         materialHelper.addMetalMaterial(HTMaterialKeys.MANGANESE, HTElements.Mn)
         materialHelper.addMetalMaterial(HTMaterialKeys.IRON, HTElements.Fe)
         materialHelper.addMetalMaterial(HTMaterialKeys.COBALT, HTElements.Co)
@@ -284,6 +289,13 @@ internal object HTMaterialsInit : HTMaterialsAddon {
             HTMaterialKeys.END_STONE,
             HTMaterialComposition.molecular(HTElements.SiO2 to 1) {
                 color = averageColor(HTColor.YELLOW to 1, HTColor.WHITE to 3)
+            },
+        )
+
+        materialHelper.addStoneMaterial(
+            HTMaterialKeys.BLACKSTONE,
+            HTMaterialComposition.molecular(HTElements.SiO2 to 1) {
+                color = HTColor.BLACK
             },
         )
         // Vanilla - Woods

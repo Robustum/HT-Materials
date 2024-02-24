@@ -3,18 +3,23 @@ package io.github.hiiragi283.api.material
 import io.github.hiiragi283.api.HTMaterialsAPI
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
-import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.client.resource.language.I18n
-import net.minecraft.item.Item
-import net.minecraft.tag.Tag
 import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
-data class HTMaterialKey(val name: String) {
-    fun getMaterialOrNull(): HTMaterial? = HTMaterialsAPI.INSTANCE.materialRegistry().getMaterial(this)
+class HTMaterialKey(val name: String) {
+
+    private var cache: HTMaterial? = null
+
+    fun getMaterialOrNull(): HTMaterial? {
+        if (cache == null) {
+            cache = HTMaterialsAPI.INSTANCE.materialRegistry().getMaterial(this)
+        }
+        return cache
+    }
 
     @Throws(IllegalStateException::class)
-    fun getMaterial(): HTMaterial = checkNotNull(getMaterialOrNull()) { "Material named $name is not registered!" }
+    fun getMaterial(): HTMaterial = checkNotNull(getMaterialOrNull()) { "material:$name is not registered!" }
 
     //    Identifier    //
 
@@ -23,10 +28,6 @@ data class HTMaterialKey(val name: String) {
     fun getCommonId() = Identifier("c", name)
 
     fun getMaterialId() = getIdentifier("material")
-
-    //    Tag    //
-
-    fun getMaterialTag(): Tag<Item> = TagRegistry.item(getMaterialId())
 
     //    Translation    //
 
@@ -38,6 +39,10 @@ data class HTMaterialKey(val name: String) {
     fun getTranslatedText(): TranslatableText = TranslatableText(translationKey)
 
     //    Any    //
+
+    override fun equals(other: Any?): Boolean = (other as? HTMaterialKey)?.name == this.name
+
+    override fun hashCode(): Int = name.hashCode()
 
     override fun toString(): String = name
 }

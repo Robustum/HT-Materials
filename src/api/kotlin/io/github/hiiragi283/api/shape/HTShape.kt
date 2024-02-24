@@ -17,7 +17,9 @@ data class HTShape(
     fun getIdentifier(materialKey: HTMaterialKey, namespace: String = HTMaterialsAPI.MOD_ID) =
         Identifier(namespace, idPath.replace("%s", materialKey.name))
 
-    fun getCommonId(material: HTMaterialKey): Identifier = Identifier("c", tagPath.replace("%s", material.name))
+    fun getCommonId(material: HTMaterialKey): Identifier = getCommonId(material.name)
+
+    fun getCommonId(name: String) = Identifier("c", tagPath.replace("%s", name))
 
     //    Tag    //
 

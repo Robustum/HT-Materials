@@ -1,10 +1,10 @@
 package io.github.hiiragi283.api.material.composition
 
+import io.github.hiiragi283.api.extension.HTColor
 import io.github.hiiragi283.api.extension.averageColor
 import io.github.hiiragi283.api.extension.calculateMolar
 import io.github.hiiragi283.api.extension.formatFormula
 import io.github.hiiragi283.api.material.element.HTElement
-import io.github.hiiragi283.api.util.HTColor
 import java.awt.Color
 
 abstract class HTMaterialComposition {

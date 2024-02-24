@@ -1,6 +1,7 @@
 package io.github.hiiragi283.api.part
 
 import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extension.id
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
@@ -30,14 +31,17 @@ data class HTPart(
         private lateinit var cache: Map<Identifier, HTPart>
 
         @JvmStatic
-        fun initCache() {
-            val map: MutableMap<Identifier, HTPart> = hashMapOf()
-            HTMaterialsAPI.INSTANCE.shapeRegistry().getValues().forEach { shape ->
-                HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { material ->
-                    map[shape.getCommonId(material)] = HTPart(material, shape.key)
+        fun initCache(materialHelper: HTMaterialsAddon.MaterialHelper) {
+            cache = buildMap {
+                HTMaterialsAPI.INSTANCE.shapeRegistry().getValues().forEach { shape: HTShape ->
+                    HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { key: HTMaterialKey ->
+                        put(shape.getCommonId(key), HTPart(key, shape.key))
+                        materialHelper.getAlternativeNames(key).forEach {
+                            put(shape.getCommonId(it), HTPart(key, shape.key))
+                        }
+                    }
                 }
             }
-            cache = map
         }
 
         @JvmStatic
