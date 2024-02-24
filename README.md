@@ -13,13 +13,6 @@ The Material System was invented to handle Tags more generally by decomposing th
 
 ![Material System](image/material_system.png)
 
-## Material Item
-
-HT Materials can automatically generate simple ingredient items, called _Material Item_ based on the Material
-System.
-
-![Material Item](image/material_item.png)
-
 ## Part Tag
 
 Many Fabric mods follows `Conventional Tag` format such as `c:copper_ingots`. This mod **automatically** replaces these
@@ -40,11 +33,13 @@ namespace. Based on the Material System, there fluids are linked to Conventional
 ## How to create Addon
 
 1. Add new entrypoint `ht_materials` in `fabric.mod.json`
-2.
-
-Implement [io.github.hiiragi283.api.HTMaterialsAddon](common/src/main/kotlin/io/github/hiiragi283/api/HTMaterialsAddon.kt)
+2. Implement [io.github.hiiragi283.api.HTMaterialsAddon](src/api/kotlin/io/github/hiiragi283/api/HTMaterialsAddon.kt)
 
 ### Example
 
-- [fabric.mod.json](fabric/src/main/resources/fabric.mod.json)
-- [HTTestAddon](fabric/src/main/java/io/github/hiiragi283/fabric/HTTestAddon.java)
+- [fabric.mod.json](src/main/resources/fabric.mod.json)
+- [HTTestAddon](src/main/java/io/github/hiiragi283/material/HTTestAddon.java)
+
+## API
+
+- Accessible HT-Materials' API via [HTMaterialsAPI.INSTANCE](src/api/kotlin/io/github/hiiragi283/api/HTMaterialsAPI.kt)
