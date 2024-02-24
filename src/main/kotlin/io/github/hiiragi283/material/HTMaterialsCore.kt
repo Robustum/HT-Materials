@@ -73,15 +73,17 @@ internal object HTMaterialsCore {
         // Create and register shape
         val helper = HTMaterialsAddon.ShapeHelper()
         addons.forEach { it.registerShape(helper) }
-        HTMaterialsAPIImpl.shapeRegistry = HTShapeRegistry(buildMap {
-            helper.shapeKeys.forEach { key: HTShapeKey ->
-                val idPath: String = helper.getIdPath(key)
-                val tagPath: String = helper.getTagPath(key)
-                putIfAbsent(key, HTShape(key, idPath, tagPath))
-                HTMaterialsAPI.log("Shape: ${key.name} registered!")
-            }
-            HTMaterialsAPI.log("HTShapeRegistry initialized!")
-        })
+        HTMaterialsAPIImpl.shapeRegistry = HTShapeRegistry(
+            buildMap {
+                helper.shapeKeys.forEach { key: HTShapeKey ->
+                    val idPath: String = helper.getIdPath(key)
+                    val tagPath: String = helper.getTagPath(key)
+                    putIfAbsent(key, HTShape(key, idPath, tagPath))
+                    HTMaterialsAPI.log("Shape: ${key.name} registered!")
+                }
+                HTMaterialsAPI.log("HTShapeRegistry initialized!")
+            },
+        )
     }
 
     //    Initialize - HTMaterial    //
@@ -90,17 +92,19 @@ internal object HTMaterialsCore {
         // create and register material
         val helper = HTMaterialsAddon.MaterialHelper()
         addons.forEach { it.registerMaterial(helper) }
-        HTMaterialsAPIImpl.materialRegistry = HTMaterialRegistry(buildMap {
-            helper.materialKeys.forEach { key: HTMaterialKey ->
-                val composition: HTMaterialComposition = helper.getComposition(key)
-                val flags: HTMaterialFlagSet = helper.getOrCreateFlagSet(key).build()
-                val property: HTMaterialPropertyMap = helper.getOrCreatePropertyMap(key).build()
-                val type: HTMaterialType = helper.getType(key)
-                val material = HTMaterial(key, composition, flags, property, type)
-                put(key, material)
-                HTMaterialsAPI.log("Material: $key registered!")
-            }
-        })
+        HTMaterialsAPIImpl.materialRegistry = HTMaterialRegistry(
+            buildMap {
+                helper.materialKeys.forEach { key: HTMaterialKey ->
+                    val composition: HTMaterialComposition = helper.getComposition(key)
+                    val flags: HTMaterialFlagSet = helper.getOrCreateFlagSet(key).build()
+                    val property: HTMaterialPropertyMap = helper.getOrCreatePropertyMap(key).build()
+                    val type: HTMaterialType = helper.getType(key)
+                    val material = HTMaterial(key, composition, flags, property, type)
+                    put(key, material)
+                    HTMaterialsAPI.log("Material: $key registered!")
+                }
+            },
+        )
         HTMaterialsAPI.log("HTMaterialRegistry initialized!")
         // Init HTPart cache
         HTPart.initCache(helper)
@@ -160,11 +164,11 @@ internal object HTMaterialsCore {
             // Register model on client-side
             HTRuntimeResourcePack.addModel(
                 HTMaterialsAPI.INSTANCE.dictionaryItem(),
-                Texture.layer0(HTMaterialsAPI.id("material_dictionary"))
+                Texture.layer0(HTMaterialsAPI.id("material_dictionary")),
             )
             HTRuntimeResourcePack.addModel(
                 HTMaterialsAPI.INSTANCE.iconItem(),
-                Texture.layer0(HTMaterialsAPI.id("icon"))
+                Texture.layer0(HTMaterialsAPI.id("icon")),
             )
             // Register runtime resource pack on client-side
             ScreenRegistry.register(MaterialDictionaryScreenHandler.TYPE, ::MaterialDictionaryScreen)

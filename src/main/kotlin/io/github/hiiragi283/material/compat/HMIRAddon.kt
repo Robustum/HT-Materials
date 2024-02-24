@@ -37,9 +37,12 @@ object HMIRAddon : HTMaterialsAddon {
 
     override fun registerMaterial(materialHelper: HTMaterialsAddon.MaterialHelper) {
         materialHelper.addMaterialKey(NIKOLITE)
-        materialHelper.setComposition(NIKOLITE, HTMaterialComposition.molecular {
-            color = averageColor(HTColor.DARK_BLUE, HTColor.DARK_GREEN)
-        })
+        materialHelper.setComposition(
+            NIKOLITE,
+            HTMaterialComposition.molecular {
+                color = averageColor(HTColor.DARK_BLUE, HTColor.DARK_GREEN)
+            },
+        )
     }
 
     override fun bindFluidToPart(builder: HTFluidManager.Builder) {
@@ -63,7 +66,7 @@ object HMIRAddon : HTMaterialsAddon {
             HTMaterialKeys.NETHERITE,
             HTMaterialKeys.SILVER,
             HTMaterialKeys.TIN,
-            NIKOLITE
+            NIKOLITE,
         ).forEach {
             // Chunks
             builder.add(it, CHUNK, Registry.ITEM.get(CHUNK.getShape().getIdentifier(it, modId)))

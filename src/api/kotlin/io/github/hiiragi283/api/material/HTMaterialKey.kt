@@ -8,7 +8,6 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
 class HTMaterialKey(val name: String) {
-
     private var cache: HTMaterial? = null
 
     fun getMaterialOrNull(): HTMaterial? {

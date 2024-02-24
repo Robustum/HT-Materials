@@ -9,7 +9,6 @@ import net.minecraft.text.TranslatableText
 import net.minecraft.util.Identifier
 
 class HTShapeKey(val name: String) {
-
     private var cache: HTShape? = null
 
     fun getShapeOrNull(): HTShape? {
