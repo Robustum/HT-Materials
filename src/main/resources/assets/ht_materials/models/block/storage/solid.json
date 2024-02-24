@@ -1,6 +1,0 @@
-{
-  "parent": "ht_materials:block/all_tinted",
-  "textures": {
-    "all": "block/white_concrete_powder"
-  }
-}

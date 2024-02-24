@@ -1,26 +1,20 @@
 package io.github.hiiragi283.material;
 
-import com.google.common.collect.ImmutableSet;
-import io.github.hiiragi283.material.api.HTMaterialsAddon;
-import io.github.hiiragi283.material.api.material.*;
-import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap;
-import io.github.hiiragi283.material.api.material.content.HTSimpleFluidContent;
-import io.github.hiiragi283.material.api.material.content.HTSimpleItemContent;
-import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap;
-import io.github.hiiragi283.material.api.util.collection.DefaultedMap;
-import io.github.hiiragi283.material.api.util.collection.DefaultedTable;
-import io.github.hiiragi283.material.api.shape.HTShape;
-import io.github.hiiragi283.material.api.shape.HTShapeKey;
-import io.github.hiiragi283.material.api.shape.HTShapes;
-import io.github.hiiragi283.material.api.util.HTColor;
+import com.google.common.collect.ImmutableMap;
+import io.github.hiiragi283.api.HTMaterialsAPI;
+import io.github.hiiragi283.api.HTMaterialsAddon;
+import io.github.hiiragi283.api.extension.HTColor;
+import io.github.hiiragi283.api.fluid.HTFluidManager;
+import io.github.hiiragi283.api.material.HTMaterialKey;
+import io.github.hiiragi283.api.material.HTMaterialType;
+import io.github.hiiragi283.api.material.composition.HTMaterialComposition;
+import io.github.hiiragi283.api.material.element.HTElement;
+import io.github.hiiragi283.api.part.HTPartManager;
+import io.github.hiiragi283.api.shape.HTShapeKey;
+import io.github.hiiragi283.api.shape.HTShapeKeys;
 import net.fabricmc.api.EnvType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.Items;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
-import java.util.Map;
 
 @SuppressWarnings("unused")
 public class HTTestAddon implements HTMaterialsAddon {
@@ -28,7 +22,7 @@ public class HTTestAddon implements HTMaterialsAddon {
     @NotNull
     @Override
     public String getModId() {
-        return HTMaterials.MOD_ID;
+        return HTMaterialsAPI.MOD_ID;
     }
 
     @Override
@@ -41,72 +35,55 @@ public class HTTestAddon implements HTMaterialsAddon {
     public static final HTShapeKey DIRTY_DUST = new HTShapeKey("dirty_dust");
 
     @Override
-    public void registerShape(@NotNull ImmutableSet.Builder<HTShapeKey> registry) {
-        registry.add(DIRTY_DUST);
+    public void registerShape(@NotNull HTMaterialsAddon.ShapeHelper shapeHelper) {
+        shapeHelper.addShapeKey(DIRTY_DUST);
     }
 
     //    HTMaterial    //
 
-    public static final HTMaterialKey INFINITY = new HTMaterialKey("infinity");
+    public static final HTMaterialKey INFINITY_KEY = new HTMaterialKey("infinity");
+    public static final HTElement INFINITY_ELEMENT = HTElement.of(HTColor.WHITE, "Inf.", Double.MAX_VALUE);
 
     @Override
-    public void registerMaterialKey(@NotNull ImmutableSet.Builder<HTMaterialKey> registry) {
-        registry.add(INFINITY);
+    public void registerMaterial(@NotNull HTMaterialsAddon.MaterialHelper materialHelper) {
+        materialHelper.addMaterialKey(INFINITY_KEY);
+        materialHelper.setComposition(INFINITY_KEY, HTMaterialComposition.molecular(
+                ImmutableMap.<HTElement, Integer>builder()
+                        .put(INFINITY_ELEMENT, 1)
+                        .build()
+        ));
+        materialHelper.getOrCreatePropertyMap(INFINITY_KEY);
+        materialHelper.setType(INFINITY_KEY, HTMaterialType.Metal.INSTANCE);
     }
 
-    @Override
-    public void modifyMaterialContent(@NotNull DefaultedMap<HTMaterialKey, HTMaterialContentMap> registry) {
-        HTMaterialContentMap builder = registry.getOrCreate(INFINITY);
+    /*@Override
+    public void modifyMaterialContent(@NotNull DefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder> registry) {
+        HTMaterialContentMap.Builder builder = registry.getOrCreate(INFINITY_KEY);
         builder.add(new HTSimpleFluidContent());
-        builder.add(new HTSimpleItemContent(HTShapes.DUST));
-        builder.add(new HTSimpleItemContent(HTShapes.GEAR));
-        builder.add(new HTSimpleItemContent(HTShapes.INGOT));
-        builder.add(new HTSimpleItemContent(HTShapes.NUGGET));
-        builder.add(new HTSimpleItemContent(HTShapes.PLATE));
-        builder.add(new HTSimpleItemContent(HTShapes.ROD));
-    }
-
-    @Override
-    public void modifyMaterialProperty(@NotNull DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> registry) {
-        HTMaterialPropertyMap.Builder builder = registry.getOrCreate(INFINITY);
-    }
-
-    @Override
-    public void modifyMaterialColor(@NotNull Map<HTMaterialKey, ColorConvertible> registry) {
-        registry.put(INFINITY, () -> HTColor.WHITE);
-    }
-
-    @Override
-    public void modifyMaterialFormula(@NotNull Map<HTMaterialKey, FormulaConvertible> registry) {
-        registry.put(INFINITY, () -> "INFINITY");
-    }
-
-    @Override
-    public void modifyMaterialMolar(@NotNull Map<HTMaterialKey, MolarMassConvertible> registry) {
-        registry.put(INFINITY, () -> Double.MAX_VALUE);
-    }
-
-    @Override
-    public void modifyMaterialType(@NotNull Map<HTMaterialKey, HTMaterialType> registry) {
-        registry.put(INFINITY, HTMaterialType.Metal.INSTANCE);
-    }
+        builder.add(new HTSimpleItemContent(HTShapeKeys.DUST));
+        builder.add(new HTSimpleItemContent(HTShapeKeys.GEAR));
+        builder.add(new HTSimpleItemContent(HTShapeKeys.INGOT));
+        builder.add(new HTSimpleItemContent(HTShapeKeys.NUGGET));
+        builder.add(new HTSimpleItemContent(HTShapeKeys.PLATE));
+        builder.add(new HTSimpleItemContent(HTShapeKeys.ROD));
+    }*/
 
     //    Post Init    //
 
     @Override
-    public void bindFluidToPart(@NotNull DefaultedMap<HTMaterialKey, Collection<Fluid>> registry) {
+    public void bindFluidToPart(@NotNull HTFluidManager.Builder builder) {
 
     }
 
     @Override
-    public void bindItemToPart(@NotNull DefaultedTable<HTMaterialKey, HTShapeKey, Collection<ItemConvertible>> registry) {
-        registry.getOrCreate(INFINITY, HTShapes.GEM).add(Items.NETHER_STAR);
+    public void bindItemToPart(@NotNull HTPartManager.Builder builder) {
+        builder.add(INFINITY_KEY, HTShapeKeys.GEM, Items.NETHER_STAR);
     }
 
     @Override
     public void postInitialize(@NotNull EnvType envType) {
-        HTShape.getShapeKeys().forEach(key -> HTMaterials.log("Shape: " + key));
-        HTMaterial.getMaterials().forEach(key -> HTMaterials.log("Material: " + key));
+        HTMaterialsAPI.getINSTANCE().shapeRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Shape: " + key));
+        HTMaterialsAPI.getINSTANCE().materialRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Material: " + key));
     }
 
 }

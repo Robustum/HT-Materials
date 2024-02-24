@@ -1,247 +1,274 @@
 package io.github.hiiragi283.material
 
-import com.google.common.collect.ImmutableSet
-import io.github.hiiragi283.material.api.HTMaterialsAddon
-import io.github.hiiragi283.material.api.fluid.HTFluidManager
-import io.github.hiiragi283.material.api.material.*
-import io.github.hiiragi283.material.api.material.content.HTMaterialContent
-import io.github.hiiragi283.material.api.material.content.HTMaterialContentMap
-import io.github.hiiragi283.material.api.material.flag.HTMaterialFlagSet
-import io.github.hiiragi283.material.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.material.api.material.property.component.HTComponentProperty
-import io.github.hiiragi283.material.api.part.HTPart
-import io.github.hiiragi283.material.api.part.HTPartManager
-import io.github.hiiragi283.material.api.shape.HTShape
-import io.github.hiiragi283.material.api.shape.HTShapeKey
-import io.github.hiiragi283.material.api.shape.HTShapes
-import io.github.hiiragi283.material.api.util.collection.DefaultedMap
-import io.github.hiiragi283.material.api.util.collection.DefaultedTable
-import io.github.hiiragi283.material.api.util.collection.HashDefaultedMap
-import io.github.hiiragi283.material.api.util.collection.HashDefaultedTable
-import io.github.hiiragi283.material.api.util.isModLoaded
-import io.github.hiiragi283.material.api.util.prefix
-import io.github.hiiragi283.material.api.util.resource.HTRuntimeDataManager
+import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.HTMaterialsAddon
+import io.github.hiiragi283.api.extension.*
+import io.github.hiiragi283.api.fluid.HTFluidManager
+import io.github.hiiragi283.api.material.HTMaterial
+import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.material.HTMaterialRegistry
+import io.github.hiiragi283.api.material.HTMaterialType
+import io.github.hiiragi283.api.material.composition.HTMaterialComposition
+import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
+import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
+import io.github.hiiragi283.api.part.HTPart
+import io.github.hiiragi283.api.part.HTPartManager
+import io.github.hiiragi283.api.resource.HTResourcePackProvider
+import io.github.hiiragi283.api.resource.HTRuntimeDataPack
+import io.github.hiiragi283.api.resource.HTRuntimeResourcePack
+import io.github.hiiragi283.api.shape.HTShape
+import io.github.hiiragi283.api.shape.HTShapeKey
+import io.github.hiiragi283.api.shape.HTShapeRegistry
+import io.github.hiiragi283.api.tag.GlobalTagEvent
+import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreen
+import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreenHandler
 import net.fabricmc.api.EnvType
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
+import net.fabricmc.fabric.api.event.Event
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
+import net.fabricmc.fabric.api.tag.TagRegistry
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.item.TooltipContext
+import net.minecraft.data.client.model.Texture
 import net.minecraft.data.server.RecipesProvider
-import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory
 import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
-import net.minecraft.item.ItemConvertible
+import net.minecraft.item.ItemStack
+import net.minecraft.item.Items
+import net.minecraft.server.MinecraftServer
+import net.minecraft.server.world.ServerWorld
+import net.minecraft.tag.ItemTags
 import net.minecraft.tag.Tag
-import net.minecraft.util.registry.Registry
-import net.minecraft.util.registry.RegistryKey
+import net.minecraft.text.LiteralText
+import net.minecraft.text.Text
+import net.minecraft.util.Identifier
 
 internal object HTMaterialsCore {
-    private lateinit var entryPoints: Iterable<HTMaterialsAddon>
+    private lateinit var addons: Iterable<HTMaterialsAddon>
 
-    fun initEntryPoints() {
-        entryPoints = FabricLoader.getInstance()
-            .getEntrypoints(HTMaterials.MOD_ID, HTMaterialsAddon::class.java)
+    fun initAddons() {
+        addons = getEntrypoints<HTMaterialsAddon>(HTMaterialsAPI.MOD_ID)
             .filter { isModLoaded(it.modId) }
             .sortedWith(compareBy(HTMaterialsAddon::priority).thenBy { it.javaClass.name })
+        // Print sorted addons
+        HTMaterialsAPI.log("HTMaterialsAddon collected!")
+        HTMaterialsAPI.log("=== List ===")
+        addons.forEach {
+            HTMaterialsAPI.log("${it::class.qualifiedName} - Priority: ${it.priority}")
+        }
+        HTMaterialsAPI.log("============")
     }
 
     //    Initialize - HTShape    //
 
-    private val shapeKeySet: ImmutableSet.Builder<HTShapeKey> = ImmutableSet.builder()
-
-    fun createShape() {
-        entryPoints.forEach { it.registerShape(shapeKeySet) }
-        shapeKeySet.build().forEach(HTShape.Companion::create)
+    fun initShapeRegistry() {
+        // Create and register shape
+        val helper = HTMaterialsAddon.ShapeHelper()
+        addons.forEach { it.registerShape(helper) }
+        HTMaterialsAPIImpl.shapeRegistry = HTShapeRegistry(
+            buildMap {
+                helper.shapeKeys.forEach { key: HTShapeKey ->
+                    val idPath: String = helper.getIdPath(key)
+                    val tagPath: String = helper.getTagPath(key)
+                    putIfAbsent(key, HTShape(key, idPath, tagPath))
+                    HTMaterialsAPI.log("Shape: ${key.name} registered!")
+                }
+                HTMaterialsAPI.log("HTShapeRegistry initialized!")
+            },
+        )
     }
 
     //    Initialize - HTMaterial    //
 
-    private val materialKeySet: ImmutableSet.Builder<HTMaterialKey> = ImmutableSet.builder()
-    private val contentMap: DefaultedMap<HTMaterialKey, HTMaterialContentMap> =
-        HashDefaultedMap { HTMaterialContentMap() }
-    private val propertyMap: DefaultedMap<HTMaterialKey, HTMaterialPropertyMap.Builder> =
-        HashDefaultedMap { HTMaterialPropertyMap.Builder() }
-    private val flagMap: DefaultedMap<HTMaterialKey, HTMaterialFlagSet.Builder> =
-        HashDefaultedMap { HTMaterialFlagSet.Builder() }
-    private val colorMap: MutableMap<HTMaterialKey, ColorConvertible> = hashMapOf()
-    private val formulaMap: MutableMap<HTMaterialKey, FormulaConvertible> = hashMapOf()
-    private val molarMap: MutableMap<HTMaterialKey, MolarMassConvertible> = hashMapOf()
-    private val typeMap: MutableMap<HTMaterialKey, HTMaterialType> = hashMapOf()
-
-    private fun getColor(key: HTMaterialKey, property: HTMaterialPropertyMap): ColorConvertible {
-        var color: ColorConvertible? = property.values.filterIsInstance<HTComponentProperty<*>>().getOrNull(0)
-        colorMap[key]?.let { color = it }
-        return color ?: ColorConvertible.EMPTY
-    }
-
-    private fun getFormula(key: HTMaterialKey, property: HTMaterialPropertyMap): FormulaConvertible {
-        var formula: FormulaConvertible? = property.values.filterIsInstance<HTComponentProperty<*>>().getOrNull(0)
-        formulaMap[key]?.let { formula = it }
-        return formula ?: FormulaConvertible.EMPTY
-    }
-
-    private fun getMolar(key: HTMaterialKey, property: HTMaterialPropertyMap): MolarMassConvertible {
-        var molar: MolarMassConvertible? = property.values.filterIsInstance<HTComponentProperty<*>>().getOrNull(0)
-        molarMap[key]?.let { molar = it }
-        return molar ?: MolarMassConvertible.EMPTY
-    }
-
-    fun createMaterial() {
-        entryPoints.forEach {
-            it.registerMaterialKey(materialKeySet)
-            it.modifyMaterialContent(contentMap)
-            it.modifyMaterialProperty(propertyMap)
-            it.modifyMaterialFlag(flagMap)
-            it.modifyMaterialColor(colorMap)
-            it.modifyMaterialFormula(formulaMap)
-            it.modifyMaterialMolar(molarMap)
-            it.modifyMaterialType(typeMap)
-        }
-        materialKeySet.build().forEach { key: HTMaterialKey ->
-            val property: HTMaterialPropertyMap = propertyMap.getOrCreate(key).build()
-            val flags: HTMaterialFlagSet = flagMap.getOrCreate(key).build()
-            val color: ColorConvertible = getColor(key, property)
-            val formula: FormulaConvertible = getFormula(key, property)
-            val molar: MolarMassConvertible = getMolar(key, property)
-            val type: HTMaterialType = typeMap.getOrDefault(key, HTMaterialType.Undefined)
-            HTMaterial.create(
-                key,
-                property,
-                flags,
-                color.asColor(),
-                formula.asFormula(),
-                "%.1f".format(molar.asMolarMass()).toDouble(),
-                type,
-            )
-        }
+    fun initMaterialRegistry() {
+        // create and register material
+        val helper = HTMaterialsAddon.MaterialHelper()
+        addons.forEach { it.registerMaterial(helper) }
+        HTMaterialsAPIImpl.materialRegistry = HTMaterialRegistry(
+            buildMap {
+                helper.materialKeys.forEach { key: HTMaterialKey ->
+                    val composition: HTMaterialComposition = helper.getComposition(key)
+                    val flags: HTMaterialFlagSet = helper.getOrCreateFlagSet(key).build()
+                    val property: HTMaterialPropertyMap = helper.getOrCreatePropertyMap(key).build()
+                    val type: HTMaterialType = helper.getType(key)
+                    val material = HTMaterial(key, composition, flags, property, type)
+                    put(key, material)
+                    HTMaterialsAPI.log("Material: $key registered!")
+                }
+            },
+        )
+        HTMaterialsAPI.log("HTMaterialRegistry initialized!")
+        // Init HTPart cache
+        HTPart.initCache(helper)
     }
 
     fun verifyMaterial() {
-        HTMaterial.getMaterials().forEach { material ->
-            material.properties.values.forEach { it.verify(material) }
-            material.flags.forEach { it.verify(material) }
+        HTMaterialsAPI.INSTANCE.materialRegistry().getValues().forEach { material ->
+            material.forEachProperty { it.verify(material) }
+            material.forEachFlag { it.verify(material) }
         }
-    }
-
-    //    Initialization    //
-
-    fun <T : Any> createContent(registryKey: RegistryKey<Registry<T>>) {
-        for (materialKey: HTMaterialKey in HTMaterial.getMaterialKeys()) {
-            for (content: HTMaterialContent<T> in contentMap.getOrCreate(materialKey).getContents(registryKey)) {
-                when (content) {
-                    is HTMaterialContent.BLOCK -> createBlock(content, materialKey)
-                    is HTMaterialContent.FLUID -> createFluid(content, materialKey)
-                    is HTMaterialContent.ITEM -> createItem(content, materialKey)
-                }
-            }
-        }
-    }
-
-    private fun createBlock(content: HTMaterialContent.BLOCK, materialKey: HTMaterialKey) {
-        // Register Block
-        content.block(materialKey)
-            ?.let { Registry.register(Registry.BLOCK, content.id(materialKey), it) }
-            ?.run {
-                // Register BlockItem if exists
-                content.blockItem(this, materialKey)
-                    ?.let { Registry.register(Registry.ITEM, content.id(materialKey), it) }
-                content.onCreate(materialKey, this)
-            }
-    }
-
-    private fun createFluid(content: HTMaterialContent.FLUID, materialKey: HTMaterialKey) {
-        // Register Flowing Fluid if exists
-        content.flowing(materialKey)
-            ?.let { Registry.register(Registry.FLUID, content.flowingId(materialKey), it) }
-        // Register Still Fluid
-        Registry.register(
-            Registry.FLUID,
-            content.id(materialKey),
-            content.still(materialKey),
-        ).run {
-            // Register FluidBlock if exists
-            content.block(this, materialKey)?.let {
-                Registry.register(Registry.BLOCK, content.blockId(materialKey), it)
-            }
-            // Register BucketItem if exists
-            content.bucket(this, materialKey)?.let {
-                Registry.register(Registry.ITEM, content.bucketId(materialKey), it)
-            }
-            content.onCreate(materialKey, this)
-        }
-    }
-
-    private fun createItem(content: HTMaterialContent.ITEM, materialKey: HTMaterialKey) {
-        // Register Item
-        content.item(materialKey)
-            ?.let { Registry.register(Registry.ITEM, content.id(materialKey), it) }
-            ?.run { content.onCreate(materialKey, this) }
     }
 
     //    Post Initialization    //
 
     fun postInitialize(envType: EnvType) {
-        // Bind Game Objects to HTPart
-        bindItemToPart()
-        bindFluidToPart()
+        // Bind game objects to HTPart
+        HTFluidManager.Builder().run {
+            addons.forEach { it.bindFluidToPart(this) }
+            HTMaterialsAPIImpl.fluidManager = build()
+        }
+        HTMaterialsAPI.log("HTFluidManager initialized!")
+        HTPartManager.Builder().run {
+            addons.forEach { it.bindItemToPart(this) }
+            HTMaterialsAPIImpl.partManager = build()
+        }
+        HTMaterialsAPI.log("HTPartManager initialized!")
 
-        entryPoints.forEach { it.postInitialize(envType) }
+        // Register Events
+        val id: Identifier = HTMaterialsAPI.id("before_default")
+        ServerWorldEvents.LOAD.run {
+            addPhaseOrdering(id, Event.DEFAULT_PHASE)
+            register(id, ::onWorldLoaded)
+        }
+        GlobalTagEvent.ITEM.run {
+            addPhaseOrdering(id, Event.DEFAULT_PHASE)
+            register(id, ::onItemTags)
+        }
+        GlobalTagEvent.FLUID.run {
+            addPhaseOrdering(id, Event.DEFAULT_PHASE)
+            register(id, ::onFluidTags)
+        }
+        EnvType.CLIENT.runWhenOn {
+            ItemTooltipCallback.EVENT.register(::getTooltip)
+        }
+        HTMaterialsAPI.log("Registered events!")
 
-        registerRecipes()
-        HTMaterials.log("Added Material Recipes!")
+        // Register recipe
+        HTRuntimeDataPack.addRecipe { exporter ->
+            ShapelessRecipeJsonFactory.create(HTMaterialsAPI.INSTANCE.dictionaryItem())
+                .input(Items.BOOK)
+                .input(Items.IRON_INGOT)
+                .criterion("hsa_book", RecipesProvider.conditionsFromItem(Items.BOOK))
+                .offerTo(exporter, HTMaterialsAPI.INSTANCE.dictionaryItem().id)
+        }
 
-        HTFluidManager.registerAllFluids()
-        HTMaterials.log("All Fluids Registered to HTFluidManager!")
+        EnvType.CLIENT.runWhenOn {
+            // Register model on client-side
+            HTRuntimeResourcePack.addModel(
+                HTMaterialsAPI.INSTANCE.dictionaryItem(),
+                Texture.layer0(HTMaterialsAPI.id("material_dictionary")),
+            )
+            HTRuntimeResourcePack.addModel(
+                HTMaterialsAPI.INSTANCE.iconItem(),
+                Texture.layer0(HTMaterialsAPI.id("icon")),
+            )
+            // Register runtime resource pack on client-side
+            ScreenRegistry.register(MaterialDictionaryScreenHandler.TYPE, ::MaterialDictionaryScreen)
+            (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager)
+                .`ht_materials$addPackProvider`(HTResourcePackProvider.CLIENT)
+            HTMaterialsAPI.log("Registered runtime resource pack!")
+        }
+
+        // Post initialize from addons
+        addons.forEach { it.postInitialize(envType) }
+        HTMaterialsAPI.log("Post-initialize completed!")
     }
 
-    private val itemTable: DefaultedTable<HTMaterialKey, HTShapeKey, MutableCollection<ItemConvertible>> =
-        HashDefaultedTable { _, _ -> mutableSetOf() }
+    //    Event    //
 
-    private fun bindItemToPart() {
-        entryPoints.forEach { it.bindItemToPart(itemTable) }
-        itemTable.forEach { materialKey: HTMaterialKey, shapeKey: HTShapeKey, items: MutableCollection<ItemConvertible> ->
-            items.forEach { item: ItemConvertible -> HTPartManager.register(materialKey, shapeKey, item) }
+    @Suppress("UnstableApiUsage", "DEPRECATION", "UNUSED_PARAMETER")
+    private fun getTooltip(stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
+        if (stack.isEmpty) return
+        // Part tooltip on item
+        stack.item.partEntry?.let {
+            it.materialKey.getMaterial().appendTooltip(it.shapeKey, stack, lines)
+        }
+        // Material tooltip on fluid container item
+        FluidStorage.ITEM.find(stack, ContainerItemContext.withInitial(stack))
+            ?.iterable(Transaction.getCurrentUnsafe()?.openNested() ?: Transaction.openOuter())
+            ?.map(StorageView<FluidVariant>::getResource)
+            ?.map(FluidVariant::getFluid)
+            ?.mapNotNull(Fluid::materialKey)
+            ?.forEach { it.getMaterial().appendTooltip(null, stack, lines) }
+        // Tag tooltips (only dev)
+        if (FabricLoader.getInstance().isDevelopmentEnvironment) {
+            ItemTags.getTagGroup().getTagsFor(stack.item).forEach { id: Identifier ->
+                lines.add(LiteralText(id.toString()))
+            }
         }
     }
 
-    private val fluidMap: DefaultedMap<HTMaterialKey, MutableCollection<Fluid>> = HashDefaultedMap { mutableSetOf() }
+    @Suppress("UNUSED_PARAMETER")
+    private fun onWorldLoaded(server: MinecraftServer, world: ServerWorld) {
+        // Reload Fluid Manager
+        HTMaterialsAPIImpl.fluidManager = HTFluidManager.Builder().apply {
+            // Register fluids from common tag
+            HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { materialKey: HTMaterialKey ->
+                TagRegistry.fluid(materialKey.getCommonId()).values().forEach { fluid ->
+                    add(materialKey, fluid)
+                }
+            }
+        }.build()
+        HTMaterialsAPI.log("Reloaded Fluid Manager!")
 
-    private fun bindFluidToPart() {
-        entryPoints.forEach { it.bindFluidToPart(fluidMap) }
-        fluidMap.forEach { materialKey: HTMaterialKey, fluids: MutableCollection<Fluid> ->
-            fluids.forEach { fluid: Fluid -> HTFluidManager.register(materialKey, fluid) }
+        // Reload Part Manager
+        HTMaterialsAPIImpl.partManager = HTPartManager.Builder().apply {
+            // Register items from part tag
+            HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { materialKey: HTMaterialKey ->
+                HTMaterialsAPI.INSTANCE.shapeRegistry().getKeys().forEach { shapeKey: HTShapeKey ->
+                    HTPart(materialKey, shapeKey).getPartTag().values().forEach { item ->
+                        add(materialKey, shapeKey, item)
+                    }
+                }
+            }
+        }.build()
+        HTMaterialsAPI.log("Reloaded Part Manager!")
+
+        // registerRecipes()
+    }
+
+    private fun onItemTags(map: MutableMap<Identifier, Tag.Builder>) {
+        // Convert tags into part format
+        HashMap(map).forEach { (id: Identifier, builder: Tag.Builder) ->
+            HTPart.fromId(id)?.getPartId()?.let {
+                // copy builder to part id
+                map[it] = builder
+                // remove original id
+                map.remove(id)
+                HTMaterialsAPI.log("Migrated tag builder: $id -> $it")
+            }
         }
-    }
+        HTMaterialsAPI.log("Converted existing tags!")
 
-    private fun registerRecipes() {
-        HTMaterial.getMaterialKeys().forEach { key ->
-            HTPartManager.getDefaultItem(key, HTShapes.INGOT)?.let { ingotRecipe(key, it) }
-            HTPartManager.getDefaultItem(key, HTShapes.NUGGET)?.let { nuggetRecipe(key, it) }
+        // Register Tags from HTPartManager
+        HTMaterialsAPI.INSTANCE.partManager().getAllEntries().forEach { entry ->
+            val (materialKey: HTMaterialKey, shapeKey: HTShapeKey, item: Item) = entry
+            // Shape tag
+            map.computeIfAbsent(shapeKey.getShapeId()) { Tag.Builder.create() }
+                .add(item.id, HTMaterialsAPI.MOD_NAME)
+            // Material tag
+            map.computeIfAbsent(materialKey.getMaterialId()) { Tag.Builder.create() }
+                .add(item.id, HTMaterialsAPI.MOD_NAME)
+            // Part tag
+            map.computeIfAbsent(entry.part.getPartId()) { Tag.Builder.create() }
+                .add(item.id, HTMaterialsAPI.MOD_NAME)
         }
+        HTMaterialsAPI.log("Registered Tags for HTPartManager's Entries!")
     }
 
-    private fun ingotRecipe(material: HTMaterialKey, item: Item) {
-        // 9x Nugget -> 1x Ingot
-        if (!HTPartManager.hasDefaultItem(material, HTShapes.NUGGET)) return
-        val nuggetTag: Tag<Item> = HTPart(material, HTShapes.NUGGET).getPartTag()
-        HTRuntimeDataManager.addShapedCrafting(
-            HTShapes.INGOT.getIdentifier(material).prefix("shaped/"),
-            ShapedRecipeJsonFactory.create(item)
-                .pattern("AAA")
-                .pattern("AAA")
-                .pattern("AAA")
-                .input('A', nuggetTag)
-                .criterion("has_nugget", RecipesProvider.conditionsFromTag(nuggetTag)),
-        )
-    }
-
-    private fun nuggetRecipe(material: HTMaterialKey, item: Item) {
-        // 1x Ingot -> 9x Nugget
-        if (!HTPartManager.hasDefaultItem(material, HTShapes.INGOT)) return
-        val ingotTag: Tag<Item> = HTPart(material, HTShapes.INGOT).getPartTag()
-        HTRuntimeDataManager.addShapelessCrafting(
-            HTShapes.NUGGET.getIdentifier(material).prefix("shapeless/"),
-            ShapelessRecipeJsonFactory.create(item, 9)
-                .input(ingotTag)
-                .criterion("has_ingot", RecipesProvider.conditionsFromTag(ingotTag)),
-        )
+    private fun onFluidTags(map: MutableMap<Identifier, Tag.Builder>) {
+        // Register Tags from HTFluidManagerOld
+        HTMaterialsAPI.INSTANCE.fluidManager().materialToFluidsMap.forEach { materialKey, entry ->
+            map.computeIfAbsent(materialKey.getCommonId()) { Tag.Builder.create() }
+                .add(entry.fluid.id, HTMaterialsAPI.MOD_NAME)
+        }
     }
 }

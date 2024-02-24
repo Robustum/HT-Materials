@@ -7,8 +7,22 @@ plugins {
     alias(libs.plugins.ktlint)
 }
 
-group = "io.github.hiiragi283.material"
-version = "1.3.0+1.16.5"
+group = "io.github.hiiragi283"
+version = "2.0.0+1.16.5"
+
+sourceSets {
+    create("api")
+    main {
+        // compileClasspath.forEach { print("$it\n") }
+        compileClasspath += getByName("api").output
+        runtimeClasspath += getByName("api").output
+    }
+}
+
+configurations {
+    // names.forEach { print("$it\n") }
+    getByName("apiCompileClasspath").extendsFrom(getByName("compileClasspath"))
+}
 
 repositories {
     mavenCentral()
@@ -18,12 +32,24 @@ repositories {
     maven(url = "https://api.modrinth.com/maven") {
         content { includeGroup("maven.modrinth") }
     }
-    maven(url = "https://maven.architectury.dev/")
-    maven(url = "https://maven.blamejared.com") {
-        content { includeGroup("vazkii.patchouli") }
+    // AE2
+    maven(url = "https://modmaven.dev/") {
+        content { includeGroup("appeng") }
     }
-    maven(url = "https://maven.shedaniel.me/")
-    maven(url = "https://maven.terraformersmc.com/releases/")
+    maven(url = "https://mod-buildcraft.com/maven") {
+        content { includeGroup("alexiil.mc.lib") }
+    }
+    maven(url = "https://raw.githubusercontent.com/Technici4n/Technici4n-maven/master/") {
+        content {
+            includeGroup("dev.technici4n")
+            includeGroup("net.fabricmc.fabric-api")
+        }
+    }
+    maven(url = "https://dvs1.progwml6.com/files/maven") // JEI
+    maven(url = "https://maven.architectury.dev")
+    maven(url = "https://maven.shedaniel.me") // REI
+    maven(url = "https://maven.terraformersmc.com/releases")
+    maven(url = "https://thedarkcolour.github.io/KotlinForForge") // KfF
 }
 
 dependencies {
@@ -95,6 +121,18 @@ tasks {
     jar {
         from("LICENSE") {
             rename { "${it}_${project.base.archivesName.get()}" }
+        }
+        from(sourceSets.getByName("api").output)
+        dependsOn(getByName("apiClasses"))
+    }
+
+    register("apiJar", Jar::class.java) {
+        archiveClassifier = "api"
+        from(sourceSets.getByName("api").java) {
+            include("io/github/hiiragi283/api/**")
+        }
+        from(sourceSets.getByName("api").output) {
+            include("io/github/hiiragi283/api/**")
         }
     }
 }
