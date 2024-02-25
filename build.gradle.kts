@@ -55,7 +55,7 @@ repositories {
 dependencies {
     minecraft(libs.minecraft)
     mappings("net.fabricmc:yarn:${libs.versions.fabric.yarn.get()}:v2")
-    modApi(libs.bundles.mods.fabric) {
+    modImplementation(libs.bundles.mods.fabric) {
         exclude(module = "fabric-api")
         exclude(module = "fabric-loader")
     }
@@ -128,11 +128,6 @@ tasks {
 
     register("apiJar", Jar::class.java) {
         archiveClassifier = "api"
-        from(sourceSets.getByName("api").java) {
-            include("io/github/hiiragi283/api/**")
-        }
-        from(sourceSets.getByName("api").output) {
-            include("io/github/hiiragi283/api/**")
-        }
+        from(sourceSets.getByName("api").output)
     }
 }
