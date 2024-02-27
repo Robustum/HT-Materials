@@ -47,3 +47,21 @@ fun <T> Tag<T>.combine(other: Tag<T>?): Tag<T> = Tag.of(
         addAll(other?.values() ?: listOf())
     },
 )
+
+//    Builder    //
+
+fun Tag.Builder.add(block: Block, source: String): Tag.Builder = apply {
+    add(block.id, source)
+}
+
+fun Tag.Builder.add(item: Item, source: String): Tag.Builder = apply {
+    add(item.id, source)
+}
+
+fun Tag.Builder.add(fluid: Fluid, source: String): Tag.Builder = apply {
+    add(fluid.id, source)
+}
+
+fun Tag.Builder.merge(other: Tag.Builder): Tag.Builder = apply {
+    other.streamEntries().forEach(this::add)
+}

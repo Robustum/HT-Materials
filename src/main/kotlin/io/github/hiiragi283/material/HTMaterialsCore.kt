@@ -14,8 +14,6 @@ import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.resource.HTResourcePackProvider
-import io.github.hiiragi283.api.resource.HTRuntimeDataPack
-import io.github.hiiragi283.api.resource.HTRuntimeResourcePack
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeRegistry
@@ -36,17 +34,12 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
-import net.minecraft.data.client.model.Texture
-import net.minecraft.data.server.RecipesProvider
-import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.world.ServerWorld
 import net.minecraft.tag.ItemTags
-import net.minecraft.tag.Tag
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
@@ -151,25 +144,7 @@ internal object HTMaterialsCore {
         }
         HTMaterialsAPI.log("Registered events!")
 
-        // Register recipe
-        HTRuntimeDataPack.addRecipe { exporter ->
-            ShapelessRecipeJsonFactory.create(HTMaterialsAPI.INSTANCE.dictionaryItem())
-                .input(Items.BOOK)
-                .input(Items.IRON_INGOT)
-                .criterion("hsa_book", RecipesProvider.conditionsFromItem(Items.BOOK))
-                .offerTo(exporter, HTMaterialsAPI.INSTANCE.dictionaryItem().id)
-        }
-
         EnvType.CLIENT.runWhenOn {
-            // Register model on client-side
-            HTRuntimeResourcePack.addModel(
-                HTMaterialsAPI.INSTANCE.dictionaryItem(),
-                Texture.layer0(HTMaterialsAPI.id("material_dictionary")),
-            )
-            HTRuntimeResourcePack.addModel(
-                HTMaterialsAPI.INSTANCE.iconItem(),
-                Texture.layer0(HTMaterialsAPI.id("icon")),
-            )
             // Register runtime resource pack on client-side
             ScreenRegistry.register(MaterialDictionaryScreenHandler.TYPE, ::MaterialDictionaryScreen)
             (MinecraftClient.getInstance().resourcePackManager as MutableResourcePackManager)
@@ -235,40 +210,24 @@ internal object HTMaterialsCore {
         // registerRecipes()
     }
 
-    private fun onItemTags(map: MutableMap<Identifier, Tag.Builder>) {
-        // Convert tags into part format
-        HashMap(map).forEach { (id: Identifier, builder: Tag.Builder) ->
-            HTPart.fromId(id)?.getPartId()?.let {
-                // copy builder to part id
-                map[it] = builder
-                // remove original id
-                map.remove(id)
-                HTMaterialsAPI.log("Migrated tag builder: $id -> $it")
-            }
-        }
-        HTMaterialsAPI.log("Converted existing tags!")
-
+    private fun onItemTags(handler: GlobalTagEvent.Handler) {
         // Register Tags from HTPartManager
         HTMaterialsAPI.INSTANCE.partManager().getAllEntries().forEach { entry ->
             val (materialKey: HTMaterialKey, shapeKey: HTShapeKey, item: Item) = entry
             // Shape tag
-            map.computeIfAbsent(shapeKey.getShapeId()) { Tag.Builder.create() }
-                .add(item.id, HTMaterialsAPI.MOD_NAME)
+            handler.builder(shapeKey.getShapeId()).add(item, HTMaterialsAPI.MOD_NAME)
             // Material tag
-            map.computeIfAbsent(materialKey.getMaterialId()) { Tag.Builder.create() }
-                .add(item.id, HTMaterialsAPI.MOD_NAME)
+            handler.builder(materialKey.getMaterialId()).add(item, HTMaterialsAPI.MOD_NAME)
             // Part tag
-            map.computeIfAbsent(entry.part.getPartId()) { Tag.Builder.create() }
-                .add(item.id, HTMaterialsAPI.MOD_NAME)
+            handler.builder(entry.part.getPartId()).add(item, HTMaterialsAPI.MOD_NAME)
         }
         HTMaterialsAPI.log("Registered Tags for HTPartManager's Entries!")
     }
 
-    private fun onFluidTags(map: MutableMap<Identifier, Tag.Builder>) {
+    private fun onFluidTags(handler: GlobalTagEvent.Handler) {
         // Register Tags from HTFluidManagerOld
         HTMaterialsAPI.INSTANCE.fluidManager().materialToFluidsMap.forEach { materialKey, entry ->
-            map.computeIfAbsent(materialKey.getCommonId()) { Tag.Builder.create() }
-                .add(entry.fluid.id, HTMaterialsAPI.MOD_NAME)
+            handler.builder(materialKey.getCommonId()).add(entry.fluid, HTMaterialsAPI.MOD_NAME)
         }
     }
 }

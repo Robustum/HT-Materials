@@ -1,6 +1,8 @@
 package io.github.hiiragi283.material.mixin;
 
 import io.github.hiiragi283.api.HTMaterialsAPI;
+import io.github.hiiragi283.api.extension.TagKt;
+import io.github.hiiragi283.api.part.HTPart;
 import io.github.hiiragi283.api.tag.GlobalTagEvent;
 import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagGroup;
@@ -29,19 +31,30 @@ public abstract class TagGroupLoaderMixin<T> {
         HTMaterialsAPI.log("Current entry type: " + entryType);
         switch (entryType) {
             case "block": {
-                GlobalTagEvent.getBLOCK().invoker().register(tags);
+                GlobalTagEvent.getBLOCK().invoker().register(new GlobalTagEvent.Handler(tags));
                 break;
             }
             case "item": {
-                GlobalTagEvent.getITEM().invoker().register(tags);
+                GlobalTagEvent.getITEM().invoker().register(new GlobalTagEvent.Handler(tags));
+                // Convert tags into part format
+                new HashMap<>(tags).forEach((Identifier id, Tag.Builder builder) -> {
+                    HTPart part = HTPart.fromId(id);
+                    if (part != null) {
+                        Identifier partId = part.getPartId();
+                        tags.compute(partId, (partId2, partBuilder) -> partBuilder == null ? builder : TagKt.merge(builder, partBuilder));
+                        tags.remove(id);
+                        HTMaterialsAPI.log("Migrated tag builder; " + id + " -> " + partId);
+                    }
+                });
+                HTMaterialsAPI.log("Converted existing tags!");
                 break;
             }
             case "fluid": {
-                GlobalTagEvent.getFLUID().invoker().register(tags);
+                GlobalTagEvent.getFLUID().invoker().register(new GlobalTagEvent.Handler(tags));
                 break;
             }
             case "entity_type": {
-                GlobalTagEvent.getENTITY_TYPE().invoker().register(tags);
+                GlobalTagEvent.getENTITY_TYPE().invoker().register(new GlobalTagEvent.Handler(tags));
                 break;
             }
             default: break;
