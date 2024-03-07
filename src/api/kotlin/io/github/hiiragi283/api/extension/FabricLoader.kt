@@ -28,3 +28,9 @@ val currentEnvType: EnvType = FabricLoader.getInstance().environmentType
 val gameDir: Path = FabricLoader.getInstance().gameDir
 
 val configDir: Path = FabricLoader.getInstance().configDir
+
+val isDev: Boolean = FabricLoader.getInstance().isDevelopmentEnvironment
+
+inline fun onDev(runnable: () -> Unit) {
+    if (isDev) runnable()
+}

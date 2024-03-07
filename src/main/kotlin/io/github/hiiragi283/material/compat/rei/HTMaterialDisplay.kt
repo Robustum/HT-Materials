@@ -3,6 +3,7 @@ package io.github.hiiragi283.material.compat.rei
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.part.HTPart
 import me.shedaniel.rei.api.EntryStack
 import me.shedaniel.rei.api.RecipeDisplay
 import net.minecraft.fluid.Fluid
@@ -22,11 +23,10 @@ class HTMaterialDisplay(val material: HTMaterial) : RecipeDisplay {
 
     override fun getRecipeCategory(): Identifier = HMReiPlugin.MATERIAL
 
-    private fun getFluidEntries(): Collection<Fluid> = HTMaterialsAPI.INSTANCE.fluidManager()
-        .getFluids(key)
+    private fun getFluidEntries(): Collection<Fluid> = HTMaterialsAPI.INSTANCE.fluidRegistry()
+        .getFluid(key)
 
-    private fun getItemEntries(): Collection<Item> = HTMaterialsAPI.INSTANCE.partManager()
-        .getAllEntries()
-        .filter { it.materialKey == key }
-        .map { it.item }
+    private fun getItemEntries(): Collection<Item> = HTMaterialsAPI.INSTANCE.shapeRegistry().getValues()
+        .map { HTPart(material, it) }
+        .flatMap(HTMaterialsAPI.INSTANCE.partRegistry()::getItem)
 }

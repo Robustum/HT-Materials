@@ -2,7 +2,6 @@ package io.github.hiiragi283.api.part
 
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
-import io.github.hiiragi283.api.extension.id
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShape
@@ -43,9 +42,6 @@ data class HTPart(
                 }
             }
         }
-
-        @JvmStatic
-        inline fun <reified T> fromTag(tag: Tag<T>): HTPart? = tag.id()?.let(Companion::fromId)
 
         @JvmStatic
         fun fromId(id: Identifier): HTPart? = cache[id]

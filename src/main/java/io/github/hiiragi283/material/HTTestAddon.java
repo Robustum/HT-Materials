@@ -4,12 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import io.github.hiiragi283.api.HTMaterialsAPI;
 import io.github.hiiragi283.api.HTMaterialsAddon;
 import io.github.hiiragi283.api.extension.HTColor;
-import io.github.hiiragi283.api.fluid.HTFluidManager;
+import io.github.hiiragi283.api.fluid.HTFluidRegistry;
 import io.github.hiiragi283.api.material.HTMaterialKey;
 import io.github.hiiragi283.api.material.HTMaterialType;
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition;
 import io.github.hiiragi283.api.material.element.HTElement;
-import io.github.hiiragi283.api.part.HTPartManager;
+import io.github.hiiragi283.api.part.HTPartRegistry;
 import io.github.hiiragi283.api.shape.HTShapeKey;
 import io.github.hiiragi283.api.shape.HTShapeKeys;
 import net.fabricmc.api.EnvType;
@@ -71,13 +71,13 @@ public class HTTestAddon implements HTMaterialsAddon {
     //    Post Init    //
 
     @Override
-    public void bindFluidToPart(@NotNull HTFluidManager.Builder builder) {
+    public void registerFluidRegistry(@NotNull HTFluidRegistry registry) {
 
     }
 
     @Override
-    public void bindItemToPart(@NotNull HTPartManager.Builder builder) {
-        builder.add(INFINITY_KEY, HTShapeKeys.GEM, Items.NETHER_STAR);
+    public void registerPartRegistry(@NotNull HTPartRegistry registry) {
+        registry.add(Items.NETHER_STAR, INFINITY_KEY, HTShapeKeys.GEM);
     }
 
     @Override

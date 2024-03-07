@@ -31,7 +31,7 @@ val FluidVariant.renderer: FluidVariantRenderHandler
     get() = this.fluid.variantRenderer
 
 val Fluid.materialKey: HTMaterialKey?
-    get() = HTMaterialsAPI.INSTANCE.fluidManager().getEntry(this)?.materialKey
+    get() = HTMaterialsAPI.INSTANCE.fluidRegistry()[this]
 
 fun Fluid.asBlock(): Block = this.defaultState.blockState.block
 

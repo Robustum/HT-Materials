@@ -3,11 +3,11 @@ package io.github.hiiragi283.material.compat
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extension.HTColor
 import io.github.hiiragi283.api.extension.averageColor
-import io.github.hiiragi283.api.fluid.HTFluidManager
+import io.github.hiiragi283.api.fluid.HTFluidRegistry
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
-import io.github.hiiragi283.api.part.HTPartManager
+import io.github.hiiragi283.api.part.HTPartRegistry
 import io.github.hiiragi283.api.shape.HTShapeKey
 import io.github.hiiragi283.api.shape.HTShapeKeys
 import me.steven.indrev.IndustrialRevolution
@@ -45,7 +45,7 @@ object HMIRAddon : HTMaterialsAddon {
         )
     }
 
-    override fun bindFluidToPart(builder: HTFluidManager.Builder) {
+    override fun registerFluidRegistry(registry: HTFluidRegistry) {
         mapOf(
             HTMaterialKeys.COPPER to IRFluidRegistry.MOLTEN_COPPER_STILL,
             HTMaterialKeys.GOLD to IRFluidRegistry.MOLTEN_GOLD_STILL,
@@ -54,10 +54,10 @@ object HMIRAddon : HTMaterialsAddon {
             HTMaterialKeys.NETHERITE to IRFluidRegistry.MOLTEN_NETHERITE_STILL,
             HTMaterialKeys.SILVER to IRFluidRegistry.MOLTEN_SILVER_STILL,
             HTMaterialKeys.TIN to IRFluidRegistry.MOLTEN_TIN_STILL,
-        ).forEach { (key: HTMaterialKey, fluid: Fluid) -> builder.add(key, fluid) }
+        ).forEach { (key: HTMaterialKey, fluid: Fluid) -> registry.add(fluid, key) }
     }
 
-    override fun bindItemToPart(builder: HTPartManager.Builder) {
+    override fun registerPartRegistry(registry: HTPartRegistry) {
         listOf(
             HTMaterialKeys.COPPER,
             HTMaterialKeys.GOLD,
@@ -69,11 +69,11 @@ object HMIRAddon : HTMaterialsAddon {
             NIKOLITE,
         ).forEach {
             // Chunks
-            builder.add(it, CHUNK, Registry.ITEM.get(CHUNK.getShape().getIdentifier(it, modId)))
+            registry.add(Registry.ITEM.get(CHUNK.getShape().getIdentifier(it, modId)), it, CHUNK)
             // Purified Ores
-            builder.add(it, PURIFIED_ORE, Registry.ITEM.get(PURIFIED_ORE.getShape().getIdentifier(it, modId)))
+            registry.add(Registry.ITEM.get(PURIFIED_ORE.getShape().getIdentifier(it, modId)), it, PURIFIED_ORE)
         }
-        builder.add(HTMaterialKeys.WOOD, HTShapeKeys.DUST, Registry.ITEM.get(id("sawdust")))
-        builder.add(HTMaterialKeys.SULFUR, HTShapeKeys.GEM, IRItemRegistry.SULFUR_CRYSTAL_ITEM)
+        registry.add(Registry.ITEM.get(id("sawdust")), HTMaterialKeys.WOOD, HTShapeKeys.DUST)
+        registry.add(IRItemRegistry.SULFUR_CRYSTAL_ITEM, HTMaterialKeys.SULFUR, HTShapeKeys.GEM)
     }
 }

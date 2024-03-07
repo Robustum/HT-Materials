@@ -3,7 +3,6 @@ package io.github.hiiragi283.material
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extension.*
-import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialRegistry
@@ -12,7 +11,6 @@ import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.api.part.HTPart
-import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.resource.HTResourcePackProvider
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeKey
@@ -20,25 +18,22 @@ import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.api.tag.GlobalTagEvent
 import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreen
 import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreenHandler
+import io.github.hiiragi283.material.impl.HTFluidRegistryImpl
+import io.github.hiiragi283.material.impl.HTPartRegistryImpl
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
 import net.fabricmc.fabric.api.event.Event
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
-import net.fabricmc.fabric.api.tag.TagRegistry
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.item.TooltipContext
 import net.minecraft.fluid.Fluid
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.server.MinecraftServer
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.tag.ItemTags
 import net.minecraft.text.LiteralText
 import net.minecraft.text.Text
@@ -113,24 +108,17 @@ internal object HTMaterialsCore {
     //    Post Initialization    //
 
     fun postInitialize(envType: EnvType) {
-        // Bind game objects to HTPart
-        HTFluidManager.Builder().run {
-            addons.forEach { it.bindFluidToPart(this) }
-            HTMaterialsAPIImpl.fluidManager = build()
+        // Bind Items/Fluids to materials
+        addons.forEach {
+            it.registerFluidRegistry(HTFluidRegistryImpl)
+            it.registerPartRegistry(HTPartRegistryImpl)
         }
-        HTMaterialsAPI.log("HTFluidManager initialized!")
-        HTPartManager.Builder().run {
-            addons.forEach { it.bindItemToPart(this) }
-            HTMaterialsAPIImpl.partManager = build()
-        }
-        HTMaterialsAPI.log("HTPartManager initialized!")
-
         // Register Events
         val id: Identifier = HTMaterialsAPI.id("before_default")
-        ServerWorldEvents.LOAD.run {
+        /*ServerWorldEvents.LOAD.run {
             addPhaseOrdering(id, Event.DEFAULT_PHASE)
             register(id, ::onWorldLoaded)
-        }
+        }*/
         GlobalTagEvent.ITEM.run {
             addPhaseOrdering(id, Event.DEFAULT_PHASE)
             register(id, ::onItemTags)
@@ -163,8 +151,8 @@ internal object HTMaterialsCore {
     private fun getTooltip(stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
         if (stack.isEmpty) return
         // Part tooltip on item
-        stack.item.partEntry?.let {
-            it.materialKey.getMaterial().appendTooltip(it.shapeKey, stack, lines)
+        HTMaterialsAPI.INSTANCE.partRegistry().get(stack.item)?.run {
+            getMaterial().appendTooltip(shapeKey, stack, lines)
         }
         // Material tooltip on fluid container item
         FluidStorage.ITEM.find(stack, ContainerItemContext.withInitial(stack))
@@ -172,19 +160,22 @@ internal object HTMaterialsCore {
             ?.map(StorageView<FluidVariant>::getResource)
             ?.map(FluidVariant::getFluid)
             ?.mapNotNull(Fluid::materialKey)
-            ?.forEach { it.getMaterial().appendTooltip(null, stack, lines) }
+            ?.map(HTMaterialKey::getMaterial)
+            ?.forEach { it.appendTooltip(null, stack, lines) }
         // Tag tooltips (only dev)
-        if (FabricLoader.getInstance().isDevelopmentEnvironment) {
+        onDev {
             ItemTags.getTagGroup().getTagsFor(stack.item).forEach { id: Identifier ->
                 lines.add(LiteralText(id.toString()))
             }
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
+    /*@Suppress("UNUSED_PARAMETER")
     private fun onWorldLoaded(server: MinecraftServer, world: ServerWorld) {
         // Reload Fluid Manager
-        HTMaterialsAPIImpl.fluidManager = HTFluidManager.Builder().apply {
+        HTFluidManager.Builder().apply {
+            // Register fluids from Registry
+            // addons.forEach { it.bindFluidToPart(this) }
             // Register fluids from common tag
             HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { materialKey: HTMaterialKey ->
                 TagRegistry.fluid(materialKey.getCommonId()).values().forEach { fluid ->
@@ -192,10 +183,12 @@ internal object HTMaterialsCore {
                 }
             }
         }.build()
-        HTMaterialsAPI.log("Reloaded Fluid Manager!")
+        HTMaterialsAPI.log("Fluid Manager initialized!")
 
         // Reload Part Manager
-        HTMaterialsAPIImpl.partManager = HTPartManager.Builder().apply {
+        HTPartManager.Builder().apply {
+            // Register items from Registry
+            // addons.forEach { it.bindItemToPart(this) }
             // Register items from part tag
             HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { materialKey: HTMaterialKey ->
                 HTMaterialsAPI.INSTANCE.shapeRegistry().getKeys().forEach { shapeKey: HTShapeKey ->
@@ -205,29 +198,27 @@ internal object HTMaterialsCore {
                 }
             }
         }.build()
-        HTMaterialsAPI.log("Reloaded Part Manager!")
-
-        // registerRecipes()
-    }
+        HTMaterialsAPI.log("Part Manager initialized!")
+    }*/
 
     private fun onItemTags(handler: GlobalTagEvent.Handler) {
         // Register Tags from HTPartManager
-        HTMaterialsAPI.INSTANCE.partManager().getAllEntries().forEach { entry ->
-            val (materialKey: HTMaterialKey, shapeKey: HTShapeKey, item: Item) = entry
+        HTMaterialsAPI.INSTANCE.partRegistry().allEntries.forEach { (item: Item, part: HTPart) ->
+            val (materialKey: HTMaterialKey, shapeKey: HTShapeKey) = part
             // Shape tag
             handler.builder(shapeKey.getShapeId()).add(item, HTMaterialsAPI.MOD_NAME)
             // Material tag
             handler.builder(materialKey.getMaterialId()).add(item, HTMaterialsAPI.MOD_NAME)
             // Part tag
-            handler.builder(entry.part.getPartId()).add(item, HTMaterialsAPI.MOD_NAME)
+            handler.builder(part.getPartId()).add(item, HTMaterialsAPI.MOD_NAME)
         }
         HTMaterialsAPI.log("Registered Tags for HTPartManager's Entries!")
     }
 
     private fun onFluidTags(handler: GlobalTagEvent.Handler) {
         // Register Tags from HTFluidManagerOld
-        HTMaterialsAPI.INSTANCE.fluidManager().materialToFluidsMap.forEach { materialKey, entry ->
-            handler.builder(materialKey.getCommonId()).add(entry.fluid, HTMaterialsAPI.MOD_NAME)
+        HTMaterialsAPI.INSTANCE.fluidRegistry().allEntries.forEach { (fluid: Fluid, key: HTMaterialKey) ->
+            handler.builder(key.getCommonId()).add(fluid, HTMaterialsAPI.MOD_NAME)
         }
     }
 }

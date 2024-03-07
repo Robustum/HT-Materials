@@ -6,7 +6,6 @@ import com.google.common.collect.LinkedHashMultimap
 import com.google.common.collect.Multimap
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.extension.allModsId
-import io.github.hiiragi283.api.extension.id
 import io.github.hiiragi283.api.extension.nonAirOrNull
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
@@ -37,11 +36,11 @@ class HTPartManager private constructor(builder: Builder) {
 
     fun getEntry(itemConvertible: ItemConvertible): Entry? = itemToEntryMap[itemConvertible.asItem()]
 
-    fun hasEntry(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in itemToEntryMap
+    // fun hasEntry(itemConvertible: ItemConvertible): Boolean = itemConvertible.asItem() in itemToEntryMap
 
     // HTPart -> Entry
 
-    fun getDefaultEntry(part: HTPart): Entry? = getDefaultEntry(part.materialKey, part.shapeKey)
+    /*fun getDefaultEntry(part: HTPart): Entry? = getDefaultEntry(part.materialKey, part.shapeKey)
 
     fun getDefaultEntry(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Entry? {
         val entries: Collection<Entry> = getEntries(materialKey, shapeKey)
@@ -54,24 +53,23 @@ class HTPartManager private constructor(builder: Builder) {
             }
         }
         return entries.firstOrNull()
-    }
+    }*/
 
     // HTPart -> Collection<Entry>
 
     val partToEntriesMap: ImmutableMultimap<HTPart, Entry> = ImmutableMultimap.copyOf(builder.partToEntriesMap)
 
-    fun getAllEntries(): Collection<Entry> = partToEntriesMap.values()
+    // fun getAllEntries(): Collection<Entry> = partToEntriesMap.values()
 
-    fun getEntries(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Collection<Entry> = getEntries(HTPart(materialKey, shapeKey))
+    // fun getEntries(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Collection<Entry> = getEntries(HTPart(materialKey, shapeKey))
 
-    fun getEntries(part: HTPart): Collection<Entry> = partToEntriesMap.get(part)
+    // fun getEntries(part: HTPart): Collection<Entry> = partToEntriesMap.get(part)
 
-    fun getEntries(itemConvertible: ItemConvertible): Collection<Entry> =
-        getEntry(itemConvertible)?.part?.let { getEntries(it) } ?: listOf()
+    // fun getEntries(itemConvertible: ItemConvertible): Collection<Entry> = getEntry(itemConvertible)?.part?.let { getEntries(it) } ?: listOf()
 
-    fun hasEntry(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Boolean = hasEntry(HTPart(materialKey, shapeKey))
+    // fun hasEntry(materialKey: HTMaterialKey, shapeKey: HTShapeKey): Boolean = hasEntry(HTPart(materialKey, shapeKey))
 
-    fun hasEntry(part: HTPart): Boolean = partToEntriesMap.containsKey(part)
+    // fun hasEntry(part: HTPart): Boolean = partToEntriesMap.containsKey(part)
 
     data class Entry(val materialKey: HTMaterialKey, val shapeKey: HTShapeKey, val item: Item) {
         val part = HTPart(materialKey, shapeKey)

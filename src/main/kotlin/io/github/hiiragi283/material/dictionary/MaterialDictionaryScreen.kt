@@ -1,7 +1,6 @@
 package io.github.hiiragi283.material.dictionary
 
 import com.mojang.blaze3d.systems.RenderSystem
-import io.github.hiiragi283.api.part.HTPartManager
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.MinecraftClient
@@ -9,6 +8,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.client.sound.PositionedSoundInstance
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.player.PlayerInventory
+import net.minecraft.item.Item
 import net.minecraft.sound.SoundEvents
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
@@ -69,7 +69,7 @@ class MaterialDictionaryScreen(
             val j: Int = this.y + 14
             val k: Int = this.scrollOffset + 12
             var l: Int = this.scrollOffset
-            val list: List<HTPartManager.Entry> = handler.getAvailableEntries()
+            val list: List<Item> = handler.getAvailableEntries()
             while (l < k && l < handler.getAvailableEntryCount()) {
                 val m: Int = l - this.scrollOffset
                 val n: Int = i + m % 4 * 16
@@ -78,7 +78,7 @@ class MaterialDictionaryScreen(
                     ++l
                     continue
                 }
-                this.renderTooltip(matrices, list[l].item.defaultStack, x, y)
+                this.renderTooltip(matrices, list[l].defaultStack, x, y)
                 ++l
             }
         }
@@ -110,14 +110,14 @@ class MaterialDictionaryScreen(
     }
 
     private fun renderRecipeIcons(x: Int, y: Int, scrollOffset: Int) {
-        val list: List<HTPartManager.Entry> = handler.getAvailableEntries()
+        val list: List<Item> = handler.getAvailableEntries()
         var i: Int = this.scrollOffset
         while (i < scrollOffset && i < handler.getAvailableEntryCount()) {
             val j: Int = i - this.scrollOffset
             val k: Int = x + j % 4 * 16
             val l: Int = j / 4
             val m: Int = y + l * 18 + 2
-            client!!.itemRenderer.renderInGuiWithOverrides(list[i].item.defaultStack, k, m)
+            client!!.itemRenderer.renderInGuiWithOverrides(list[i].defaultStack, k, m)
             ++i
         }
     }

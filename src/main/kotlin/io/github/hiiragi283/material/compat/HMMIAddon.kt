@@ -4,7 +4,7 @@ import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extension.nonAirOrNull
 import io.github.hiiragi283.api.material.HTMaterialKey
-import io.github.hiiragi283.api.part.HTPartManager
+import io.github.hiiragi283.api.part.HTPartRegistry
 import io.github.hiiragi283.api.shape.HTShapeKey
 import net.minecraft.util.registry.Registry
 
@@ -30,12 +30,12 @@ object HMMIAddon : HTMaterialsAddon {
         ).map(::HTShapeKey).forEach(shapeHelper::addShapeKey)
     }
 
-    override fun bindItemToPart(builder: HTPartManager.Builder) {
+    override fun registerPartRegistry(registry: HTPartRegistry) {
         // Register Tags for ALL MI Material Items
         HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { material: HTMaterialKey ->
             HTMaterialsAPI.INSTANCE.shapeRegistry().getValues().forEach { shape ->
                 Registry.ITEM.get(shape.getIdentifier(material, modId)).nonAirOrNull()?.run {
-                    builder.add(material, shape.key, this)
+                    registry.add(this, material, shape.key)
                 }
             }
         }

@@ -1,7 +1,6 @@
 package io.github.hiiragi283.material.dictionary
 
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.part.HTPartManager
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry
@@ -40,7 +39,7 @@ class MaterialDictionaryScreenHandler(
     private val playerInventory: PlayerInventory = player.inventory
     private val selectedItem: Property = Property.create()
     private val world: World = player.world
-    private var availableEntries: List<HTPartManager.Entry> = listOf()
+    private var availableEntries: List<Item> = listOf()
     private var inputStack: ItemStack = ItemStack.EMPTY
     private var lastTakeTime: Long = 0
     private var contentChangedListener: Runnable = Runnable { }
@@ -98,7 +97,7 @@ class MaterialDictionaryScreenHandler(
     fun getSelectedItem(): Int = selectedItem.get()
 
     @Environment(EnvType.CLIENT)
-    fun getAvailableEntries(): List<HTPartManager.Entry> = availableEntries
+    fun getAvailableEntries(): List<Item> = availableEntries
 
     @Environment(EnvType.CLIENT)
     fun getAvailableEntryCount(): Int = availableEntries.size
@@ -131,14 +130,14 @@ class MaterialDictionaryScreenHandler(
         selectedItem.set(-1)
         outputSlot.stack = ItemStack.EMPTY
         if (!stack.isEmpty) {
-            availableEntries = HTMaterialsAPI.INSTANCE.partManager().getEntries(stack.item).toList()
+            availableEntries = HTMaterialsAPI.INSTANCE.partRegistry().convertItems(stack.item).toList()
         }
     }
 
     private fun populateResult() {
         if (availableEntries.isNotEmpty() && isValidId(selectedItem.get())) {
-            val entry: HTPartManager.Entry = availableEntries[selectedItem.get()]
-            outputSlot.stack = entry.item.defaultStack
+            val item: Item = availableEntries[selectedItem.get()]
+            outputSlot.stack = item.defaultStack
         } else {
             outputSlot.stack = ItemStack.EMPTY
         }
@@ -169,7 +168,7 @@ class MaterialDictionaryScreenHandler(
                 0 -> {
                     if (!insertItem(itemStack2, 2, 38, false)) return ItemStack.EMPTY
                 }
-                else -> if (HTMaterialsAPI.INSTANCE.partManager().hasEntry(itemStack2.item)) {
+                else -> if (HTMaterialsAPI.INSTANCE.partRegistry().contains(itemStack2.item)) {
                     if (!insertItem(itemStack2, 0, 1, false)) {
                         return ItemStack.EMPTY
                     } else if (index in (2 until 29)) {

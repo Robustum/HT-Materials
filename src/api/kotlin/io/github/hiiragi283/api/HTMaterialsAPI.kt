@@ -1,9 +1,10 @@
 package io.github.hiiragi283.api
 
 import io.github.hiiragi283.api.extension.getSingleton
-import io.github.hiiragi283.api.fluid.HTFluidManager
+import io.github.hiiragi283.api.extension.onDev
+import io.github.hiiragi283.api.fluid.HTFluidRegistry
 import io.github.hiiragi283.api.material.HTMaterialRegistry
-import io.github.hiiragi283.api.part.HTPartManager
+import io.github.hiiragi283.api.part.HTPartRegistry
 import io.github.hiiragi283.api.shape.HTShapeRegistry
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
@@ -30,6 +31,17 @@ interface HTMaterialsAPI {
         fun log(message: String, level: Level = Level.INFO) {
             logger.log(level, "[$MOD_NAME] $message")
         }
+
+        @JvmOverloads
+        @JvmStatic
+        fun debugLog(message: String, level: Level = Level.INFO) {
+            onDev { log(message, level) }
+        }
+
+        @JvmStatic
+        fun exception(e: Exception) {
+            log(e.localizedMessage, Level.ERROR)
+        }
     }
 
     fun shapeRegistry(): HTShapeRegistry
@@ -42,7 +54,7 @@ interface HTMaterialsAPI {
 
     fun dictionaryItem(): Item
 
-    fun fluidManager(): HTFluidManager
+    fun fluidRegistry(): HTFluidRegistry
 
-    fun partManager(): HTPartManager
+    fun partRegistry(): HTPartRegistry
 }
