@@ -4,11 +4,19 @@ import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extension.HTColor
 import io.github.hiiragi283.api.extension.averageColor
+import io.github.hiiragi283.api.fluid.HTFluidRegistry
+import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.element.HTElements
-import io.github.hiiragi283.api.shape.HTShapeKeys
+import io.github.hiiragi283.api.part.HTPart
+import io.github.hiiragi283.api.part.HTPartRegistry
+import io.github.hiiragi283.api.shape.HTShape
+import io.github.hiiragi283.api.shape.HTShapes
+import net.fabricmc.fabric.api.tag.TagRegistry
+import net.minecraft.fluid.Fluids
+import net.minecraft.item.Items
 import java.awt.Color
 
 internal object HTMaterialsInit : HTMaterialsAddon {
@@ -17,19 +25,19 @@ internal object HTMaterialsInit : HTMaterialsAddon {
 
     override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
         // Block
-        shapeHelper.addShapeKey(HTShapeKeys.BLOCK)
-        shapeHelper.addShapeKey(HTShapeKeys.BRICKS)
-        shapeHelper.addShapeKey(HTShapeKeys.LOG)
-        shapeHelper.addShapeKey(HTShapeKeys.ORE)
-        shapeHelper.addShapeKey(HTShapeKeys.PLANKS)
+        shapeHelper.addShape(HTShapes.BLOCK)
+        shapeHelper.addShape(HTShapes.BRICKS)
+        shapeHelper.addShape(HTShapes.LOG)
+        shapeHelper.addShape(HTShapes.ORE)
+        shapeHelper.addShape(HTShapes.PLANKS)
         // Item
-        shapeHelper.addShapeKey(HTShapeKeys.DUST)
-        shapeHelper.addShapeKey(HTShapeKeys.GEAR)
-        shapeHelper.addShapeKey(HTShapeKeys.GEM)
-        shapeHelper.addShapeKey(HTShapeKeys.INGOT)
-        shapeHelper.addShapeKey(HTShapeKeys.NUGGET)
-        shapeHelper.addShapeKey(HTShapeKeys.PLATE)
-        shapeHelper.addShapeKey(HTShapeKeys.ROD)
+        shapeHelper.addShape(HTShapes.DUST)
+        shapeHelper.addShape(HTShapes.GEAR)
+        shapeHelper.addShape(HTShapes.GEM)
+        shapeHelper.addShape(HTShapes.INGOT)
+        shapeHelper.addShape(HTShapes.NUGGET)
+        shapeHelper.addShape(HTShapes.PLATE)
+        shapeHelper.addShape(HTShapes.ROD)
     }
 
     override fun registerMaterial(materialHelper: HTMaterialsAddon.MaterialHelper) {
@@ -448,5 +456,148 @@ internal object HTMaterialsInit : HTMaterialsAddon {
             HTMaterialComposition.molecular(HTElements.Ca to 1, HTElements.CO3 to 1),
         )
         // Common - Woods
+    }
+
+    override fun registerFluidRegistry(registry: HTFluidRegistry) {
+        // Register vanilla fluids
+        registry.add(Fluids.WATER, HTMaterialKeys.WATER)
+        registry.add(Fluids.LAVA, HTMaterialKeys.LAVA)
+        // Register common tags
+        HTMaterialsAPI.INSTANCE.materialRegistry().keys.forEach { key: HTMaterialKey ->
+            registry.add(TagRegistry.fluid(key.commonId), key)
+        }
+    }
+
+    override fun registerPartRegistry(registry: HTPartRegistry) {
+        // Register vanilla items
+        registerVanillaItems(registry)
+        // Register part tags
+        HTMaterialsAPI.INSTANCE.shapeRegistry().values.forEach { shape: HTShape ->
+            HTMaterialsAPI.INSTANCE.materialRegistry().keys.forEach { key: HTMaterialKey ->
+                registry.add(HTPart(key, shape).partTag, key, shape)
+            }
+        }
+    }
+
+    private fun registerVanillaItems(registry: HTPartRegistry) {
+        // Andesite
+        registry.add(Items.ANDESITE, HTMaterialKeys.ANDESITE, HTShapes.BLOCK)
+        registry.add(Items.POLISHED_ANDESITE, HTMaterialKeys.ANDESITE, HTShapes.BLOCK)
+        // Basalt
+        registry.add(Items.BASALT, HTMaterialKeys.BASALT, HTShapes.BLOCK)
+        registry.add(Items.POLISHED_BASALT, HTMaterialKeys.BASALT, HTShapes.BLOCK)
+        // Blackstone
+        registry.add(Items.BLACKSTONE, HTMaterialKeys.BLACKSTONE, HTShapes.BLOCK)
+        registry.add(Items.CHISELED_POLISHED_BLACKSTONE, HTMaterialKeys.BLACKSTONE, HTShapes.BRICKS)
+        registry.add(Items.CRACKED_POLISHED_BLACKSTONE_BRICKS, HTMaterialKeys.BLACKSTONE, HTShapes.BRICKS)
+        registry.add(Items.POLISHED_BLACKSTONE, HTMaterialKeys.BLACKSTONE, HTShapes.BLOCK)
+        registry.add(Items.POLISHED_BLACKSTONE_BRICKS, HTMaterialKeys.BLACKSTONE, HTShapes.BRICKS)
+        // Brick
+        registry.add(Items.BRICK, HTMaterialKeys.BRICK, HTShapes.INGOT)
+        registry.add(Items.BRICKS, HTMaterialKeys.BRICK, HTShapes.BRICKS)
+        // Charcoal
+        registry.add(Items.CHARCOAL, HTMaterialKeys.CHARCOAL, HTShapes.GEM)
+        // Clay
+        registry.add(Items.CLAY, HTMaterialKeys.CLAY, HTShapes.BLOCK)
+        registry.add(Items.CLAY_BALL, HTMaterialKeys.CLAY, HTShapes.GEM)
+        // Coal
+        registry.add(Items.COAL, HTMaterialKeys.COAL, HTShapes.GEM)
+        registry.add(Items.COAL_BLOCK, HTMaterialKeys.COAL, HTShapes.BLOCK)
+        // Diamond
+        registry.add(Items.DIAMOND, HTMaterialKeys.DIAMOND, HTShapes.GEM)
+        registry.add(Items.DIAMOND_BLOCK, HTMaterialKeys.DIAMOND, HTShapes.BLOCK)
+        registry.add(Items.DIAMOND_ORE, HTMaterialKeys.DIAMOND, HTShapes.ORE)
+        // Diorite
+        registry.add(Items.DIORITE, HTMaterialKeys.DIORITE, HTShapes.BLOCK)
+        registry.add(Items.POLISHED_DIORITE, HTMaterialKeys.DIORITE, HTShapes.BLOCK)
+        // Emerald
+        registry.add(Items.EMERALD, HTMaterialKeys.EMERALD, HTShapes.GEM)
+        registry.add(Items.EMERALD_BLOCK, HTMaterialKeys.EMERALD, HTShapes.BLOCK)
+        registry.add(Items.EMERALD_ORE, HTMaterialKeys.EMERALD, HTShapes.ORE)
+        // End Stone
+        registry.add(Items.END_STONE, HTMaterialKeys.END_STONE, HTShapes.BLOCK)
+        registry.add(Items.END_STONE_BRICKS, HTMaterialKeys.END_STONE, HTShapes.BRICKS)
+        // Ender Pearl
+        registry.add(Items.ENDER_PEARL, HTMaterialKeys.ENDER_PEARL, HTShapes.GEM)
+        // Flint
+        registry.add(Items.FLINT, HTMaterialKeys.FLINT, HTShapes.GEM)
+        // Iron
+        registry.add(Items.IRON_BLOCK, HTMaterialKeys.IRON, HTShapes.BLOCK)
+        registry.add(Items.IRON_INGOT, HTMaterialKeys.IRON, HTShapes.INGOT)
+        registry.add(Items.IRON_NUGGET, HTMaterialKeys.IRON, HTShapes.NUGGET)
+        registry.add(Items.IRON_ORE, HTMaterialKeys.IRON, HTShapes.ORE)
+        // Glass
+        registry.add(Items.GLASS, HTMaterialKeys.GLASS, HTShapes.BLOCK)
+        // Glowstone
+        registry.add(Items.GLOWSTONE, HTMaterialKeys.GLOWSTONE, HTShapes.BLOCK)
+        registry.add(Items.GLOWSTONE_DUST, HTMaterialKeys.GLOWSTONE, HTShapes.DUST)
+        // Gold
+        registry.add(Items.GOLD_BLOCK, HTMaterialKeys.GOLD, HTShapes.BLOCK)
+        registry.add(Items.GOLD_INGOT, HTMaterialKeys.GOLD, HTShapes.INGOT)
+        registry.add(Items.GOLD_NUGGET, HTMaterialKeys.GOLD, HTShapes.NUGGET)
+        registry.add(Items.GOLD_ORE, HTMaterialKeys.GOLD, HTShapes.ORE)
+        // Granite
+        registry.add(Items.GRANITE, HTMaterialKeys.GRANITE, HTShapes.BLOCK)
+        registry.add(Items.POLISHED_GRANITE, HTMaterialKeys.GRANITE, HTShapes.BLOCK)
+        // Lapis
+        registry.add(Items.LAPIS_BLOCK, HTMaterialKeys.LAPIS, HTShapes.BLOCK)
+        registry.add(Items.LAPIS_LAZULI, HTMaterialKeys.LAPIS, HTShapes.GEM)
+        registry.add(Items.LAPIS_ORE, HTMaterialKeys.LAPIS, HTShapes.ORE)
+        // Nether Brick
+        registry.add(Items.NETHER_BRICKS, HTMaterialKeys.NETHER_BRICK, HTShapes.BRICKS)
+        registry.add(Items.NETHER_BRICK, HTMaterialKeys.NETHER_BRICK, HTShapes.INGOT)
+        // Netherite
+        registry.add(Items.NETHERITE_BLOCK, HTMaterialKeys.NETHERITE, HTShapes.BLOCK)
+        registry.add(Items.NETHERITE_INGOT, HTMaterialKeys.NETHERITE, HTShapes.INGOT)
+        // Netherrack
+        registry.add(Items.NETHERRACK, HTMaterialKeys.NETHERRACK, HTShapes.BLOCK)
+        // Obsidian
+        registry.add(Items.OBSIDIAN, HTMaterialKeys.OBSIDIAN, HTShapes.BLOCK)
+        // Quartz
+        registry.add(Items.NETHER_QUARTZ_ORE, HTMaterialKeys.QUARTZ, HTShapes.ORE)
+        registry.add(Items.QUARTZ, HTMaterialKeys.QUARTZ, HTShapes.GEM)
+        registry.add(Items.QUARTZ_BLOCK, HTMaterialKeys.QUARTZ, HTShapes.BLOCK)
+        registry.add(Items.SMOOTH_QUARTZ, HTMaterialKeys.QUARTZ, HTShapes.BLOCK)
+        // Redstone
+        registry.add(Items.REDSTONE, HTMaterialKeys.REDSTONE, HTShapes.DUST)
+        registry.add(Items.REDSTONE_BLOCK, HTMaterialKeys.REDSTONE, HTShapes.BLOCK)
+        registry.add(Items.REDSTONE_ORE, HTMaterialKeys.REDSTONE, HTShapes.ORE)
+        // Stone
+        registry.add(Items.CRACKED_STONE_BRICKS, HTMaterialKeys.STONE, HTShapes.BRICKS)
+        registry.add(Items.MOSSY_STONE_BRICKS, HTMaterialKeys.STONE, HTShapes.BRICKS)
+        registry.add(Items.SMOOTH_STONE, HTMaterialKeys.STONE, HTShapes.BLOCK)
+        registry.add(Items.STONE, HTMaterialKeys.STONE, HTShapes.BLOCK)
+        registry.add(Items.STONE_BRICKS, HTMaterialKeys.STONE, HTShapes.BRICKS)
+        // Wood
+        listOf(
+            Items.OAK_LOG,
+            Items.BIRCH_LOG,
+            Items.SPRUCE_LOG,
+            Items.JUNGLE_LOG,
+            Items.ACACIA_LOG,
+            Items.DARK_OAK_LOG,
+            Items.CRIMSON_HYPHAE,
+            Items.WARPED_HYPHAE,
+        ).forEach { registry.add(it, HTMaterialKeys.WOOD, HTShapes.LOG) }
+        listOf(
+            Items.OAK_WOOD,
+            Items.BIRCH_WOOD,
+            Items.SPRUCE_WOOD,
+            Items.JUNGLE_WOOD,
+            Items.ACACIA_WOOD,
+            Items.DARK_OAK_WOOD,
+            Items.CRIMSON_STEM,
+            Items.WARPED_STEM,
+        ).forEach { registry.add(it, HTMaterialKeys.WOOD, HTShapes.LOG) }
+        listOf(
+            Items.OAK_PLANKS,
+            Items.BIRCH_PLANKS,
+            Items.SPRUCE_PLANKS,
+            Items.JUNGLE_PLANKS,
+            Items.ACACIA_PLANKS,
+            Items.DARK_OAK_PLANKS,
+            Items.CRIMSON_PLANKS,
+            Items.WARPED_PLANKS,
+        ).forEach { registry.add(it, HTMaterialKeys.WOOD, HTShapes.PLANKS) }
     }
 }

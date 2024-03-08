@@ -5,38 +5,62 @@ import com.google.common.collect.Multimap
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.fluid.HTFluidRegistry
 import io.github.hiiragi283.api.material.HTMaterialKey
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener
+import io.github.hiiragi283.api.tag.TagReloadedEvent
 import net.minecraft.fluid.Fluid
-import net.minecraft.resource.ResourceManager
-import net.minecraft.resource.ResourceType
 import net.minecraft.tag.Tag
-import net.minecraft.util.Identifier
 
-object HTFluidRegistryImpl : HTFluidRegistry, SimpleSynchronousResourceReloadListener {
+object HTFluidRegistryImpl : HTFluidRegistry {
     private val registeredFluidMap: MutableMap<Fluid, HTMaterialKey?> = hashMapOf()
     private val registeredTagMap: MutableMap<Tag<Fluid>, HTMaterialKey?> = hashMapOf()
-    private val fluidToMaterialMap: MutableMap<Fluid, HTMaterialKey> = linkedMapOf()
-    private val materialToFluidsMap: Multimap<HTMaterialKey, Fluid> = LinkedHashMultimap.create()
-    private var tagsPresent: Boolean = false
+    private var fluidToMaterialMap: MutableMap<Fluid, HTMaterialKey>? = null
+    private var materialToFluidsMap: Multimap<HTMaterialKey, Fluid>? = null
 
     init {
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(this)
+        TagReloadedEvent.EVENT.register {
+            fluidToMaterialMap = null
+            materialToFluidsMap = null
+        }
     }
 
     //    HTFluidRegistry    //
 
+    private fun getEntryMapPair(): Pair<Map<Fluid, HTMaterialKey>, Multimap<HTMaterialKey, Fluid>> {
+        var fluidToMaterial: MutableMap<Fluid, HTMaterialKey>? = fluidToMaterialMap
+        var materialToFluid: Multimap<HTMaterialKey, Fluid>? = materialToFluidsMap
+        if (fluidToMaterial == null || materialToFluid == null) {
+            fluidToMaterial = mutableMapOf()
+            materialToFluid = LinkedHashMultimap.create()!!
+            // Reload from tags
+            registeredTagMap.forEach { (tag: Tag<Fluid>, key: HTMaterialKey?) ->
+                if (key == null) return@forEach
+                tag.values().forEach { fluid: Fluid ->
+                    fluidToMaterial[fluid] = key
+                    materialToFluid.put(key, fluid)
+                }
+            }
+            // Reload from fluids
+            registeredFluidMap.forEach { (fluid: Fluid, key: HTMaterialKey?) ->
+                if (key == null) return@forEach
+                fluidToMaterial[fluid] = key
+                materialToFluid.put(key, fluid)
+            }
+            fluidToMaterialMap = fluidToMaterial
+            materialToFluidsMap = materialToFluid
+            HTMaterialsAPI.log("HTFluidRegistry reloaded!")
+        }
+        return fluidToMaterial to materialToFluid
+    }
+
     override val allEntries: Map<Fluid, HTMaterialKey>
-        get() = fluidToMaterialMap
+        get() = getEntryMapPair().first
 
-    override fun getFluid(materialKey: HTMaterialKey): Collection<Fluid> = materialToFluidsMap.get(materialKey)
+    override fun getFluid(materialKey: HTMaterialKey): Collection<Fluid> = getEntryMapPair().second.get(materialKey)
 
-    override fun contains(fluid: Fluid): Boolean = fluid in fluidToMaterialMap
+    override fun contains(fluid: Fluid): Boolean = fluid in getEntryMapPair().first
 
-    override fun contains(materialKey: HTMaterialKey): Boolean = materialToFluidsMap.containsKey(materialKey)
+    override fun contains(materialKey: HTMaterialKey): Boolean = getEntryMapPair().second.containsKey(materialKey)
 
-    override fun get(fluid: Fluid): HTMaterialKey? = fluidToMaterialMap[fluid]
+    override fun get(fluid: Fluid): HTMaterialKey? = getEntryMapPair().first[fluid]
 
     override fun add(fluid: Fluid, value: HTMaterialKey?) {
         registeredFluidMap[fluid] = value
@@ -56,43 +80,9 @@ object HTFluidRegistryImpl : HTFluidRegistry, SimpleSynchronousResourceReloadLis
 
     override fun clear(fluid: Fluid) {
         remove(fluid)
-        if (tagsPresent) reload()
     }
 
     override fun clear(tag: Tag<Fluid>) {
         remove(tag)
-        if (tagsPresent) reload()
     }
-
-    //    SimpleSynchronousResourceReloadListener    //
-
-    private fun reload() {
-        fluidToMaterialMap.clear()
-        materialToFluidsMap.clear()
-
-        registeredTagMap.forEach { (tag: Tag<Fluid>, key: HTMaterialKey?) ->
-            if (key == null) return@forEach
-            tag.values().forEach { fluid: Fluid ->
-                fluidToMaterialMap[fluid] = key
-                materialToFluidsMap.put(key, fluid)
-            }
-        }
-
-        registeredFluidMap.forEach { (fluid: Fluid, key: HTMaterialKey?) ->
-            if (key == null) return@forEach
-            fluidToMaterialMap[fluid] = key
-            materialToFluidsMap.put(key, fluid)
-        }
-    }
-
-    override fun reload(manager: ResourceManager) {
-        reload()
-        tagsPresent = true
-    }
-
-    override fun getFabricId(): Identifier = HTMaterialsAPI.id("fluid_registry")
-
-    private val dependenciesTag: Collection<Identifier> = listOf(ResourceReloadListenerKeys.TAGS)
-
-    override fun getFabricDependencies(): Collection<Identifier> = dependenciesTag
 }

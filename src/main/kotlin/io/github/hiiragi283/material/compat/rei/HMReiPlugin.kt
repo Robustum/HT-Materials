@@ -19,7 +19,7 @@ object HMReiPlugin : REIPluginV0 {
     }
 
     override fun registerRecipeDisplays(recipeHelper: RecipeHelper) {
-        HTMaterialsAPI.INSTANCE.materialRegistry().getValues()
+        HTMaterialsAPI.INSTANCE.materialRegistry().values
             .map(::HTMaterialDisplay)
             .filterNot { it.entries.isEmpty() }
             .forEach(recipeHelper::registerDisplay)

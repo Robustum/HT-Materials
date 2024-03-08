@@ -1,11 +1,8 @@
 package io.github.hiiragi283.api.part
 
-import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShape
-import io.github.hiiragi283.api.shape.HTShapeKey
 import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.item.Item
 import net.minecraft.tag.Tag
@@ -13,37 +10,15 @@ import net.minecraft.util.Identifier
 
 data class HTPart(
     val materialKey: HTMaterialKey,
-    val shapeKey: HTShapeKey,
+    val shapeKey: HTShape,
 ) {
-    constructor(material: HTMaterial, shape: HTShape) : this(material.key, shape.key)
+    constructor(material: HTMaterial, shapeKey: HTShape) : this(material.key, shapeKey)
 
-    fun getMaterial(): HTMaterial = materialKey.getMaterial()
+    val material: HTMaterial
+        get() = materialKey.material
 
-    fun getShape(): HTShape = shapeKey.getShape()
+    val partId: Identifier = Identifier("c", "$shapeKey/$materialKey")
 
-    fun getPartId(): Identifier = Identifier("part", "$shapeKey/$materialKey")
-
-    fun getPartTag(): Tag<Item> = TagRegistry.item(getPartId())
-
-    companion object {
-        @JvmStatic
-        private lateinit var cache: Map<Identifier, HTPart>
-
-        @JvmStatic
-        fun initCache(materialHelper: HTMaterialsAddon.MaterialHelper) {
-            cache = buildMap {
-                HTMaterialsAPI.INSTANCE.shapeRegistry().getValues().forEach { shape: HTShape ->
-                    HTMaterialsAPI.INSTANCE.materialRegistry().getKeys().forEach { key: HTMaterialKey ->
-                        put(shape.getCommonId(key), HTPart(key, shape.key))
-                        materialHelper.getAlternativeNames(key).forEach {
-                            put(shape.getCommonId(it), HTPart(key, shape.key))
-                        }
-                    }
-                }
-            }
-        }
-
-        @JvmStatic
-        fun fromId(id: Identifier): HTPart? = cache[id]
-    }
+    val partTag: Tag<Item>
+        get() = TagRegistry.item(partId)
 }

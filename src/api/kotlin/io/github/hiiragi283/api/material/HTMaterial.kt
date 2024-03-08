@@ -7,7 +7,7 @@ import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialProperty
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.api.material.property.HTPropertyKey
-import io.github.hiiragi283.api.shape.HTShapeKey
+import io.github.hiiragi283.api.shape.HTShape
 import net.minecraft.item.ItemStack
 import net.minecraft.text.Text
 import net.minecraft.text.TranslatableText
@@ -16,20 +16,17 @@ import java.util.function.Consumer
 
 class HTMaterial(
     val key: HTMaterialKey,
-    private val composition: HTMaterialComposition,
+    composition: HTMaterialComposition,
     private val flags: HTMaterialFlagSet,
     private val properties: HTMaterialPropertyMap,
     val type: HTMaterialType,
 ) {
     //    Composition    //
 
-    fun componentMap(): Map<HTElement, Int> = composition.componentMap
-
-    fun color(): Color = composition.color
-
-    fun formula(): String = composition.formula
-
-    fun molar(): Double = "%.1f".format(composition.molar).toDouble()
+    val componentMap: Map<HTElement, Int> = composition.componentMap
+    val color: Color = composition.color
+    val formula: String = composition.formula
+    val molar: Double = "%.1f".format(composition.molar).toDouble()
 
     //    Flags    //
 
@@ -59,24 +56,24 @@ class HTMaterial(
 
     //    Type    //
 
-    fun getDefaultShape(): HTShapeKey? = type.defaultShape
+    val defaultShape: HTShape? = type.defaultShape
 
     //    Other    //
 
-    fun appendTooltip(shapeKey: HTShapeKey?, stack: ItemStack, lines: MutableList<Text>) {
+    fun appendTooltip(shapeKey: HTShape?, stack: ItemStack, lines: MutableList<Text>) {
         // Title
         lines.add(TranslatableText("tooltip.ht_materials.material.title"))
         // Name
-        val name: String = shapeKey?.getTranslatedName(key) ?: key.getTranslatedName()
+        val name: String = shapeKey?.getTranslatedName(key) ?: key.translatedName
         lines.add(TranslatableText("tooltip.ht_materials.material.name", name))
         // Type
         lines.add(TranslatableText("tooltip.ht_materials.material.type", type))
         // Formula
-        formula().takeIf(String::isNotEmpty)?.let { formula: String ->
+        formula.takeIf(String::isNotEmpty)?.let { formula: String ->
             lines.add(TranslatableText("tooltip.ht_materials.material.formula", formula))
         }
         // Molar Mass
-        molar().takeIf { it > 0.0 }?.let { molar: Double ->
+        molar.takeIf { it > 0.0 }?.let { molar: Double ->
             lines.add(TranslatableText("tooltip.ht_materials.material.molar", molar))
         }
         // Tooltip from Properties

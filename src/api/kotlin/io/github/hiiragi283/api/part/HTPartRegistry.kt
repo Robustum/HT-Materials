@@ -1,7 +1,7 @@
 package io.github.hiiragi283.api.part
 
 import io.github.hiiragi283.api.material.HTMaterialKey
-import io.github.hiiragi283.api.shape.HTShapeKey
+import io.github.hiiragi283.api.shape.HTShape
 import net.fabricmc.fabric.api.util.Item2ObjectMap
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
@@ -10,11 +10,11 @@ import net.minecraft.tag.Tag
 interface HTPartRegistry : Item2ObjectMap<HTPart?> {
     val allEntries: Map<Item, HTPart>
 
-    fun add(item: ItemConvertible, materialKey: HTMaterialKey, shapeKey: HTShapeKey) {
+    fun add(item: ItemConvertible, materialKey: HTMaterialKey, shapeKey: HTShape) {
         add(item, HTPart(materialKey, shapeKey))
     }
 
-    fun add(tag: Tag<Item>, materialKey: HTMaterialKey, shapeKey: HTShapeKey) {
+    fun add(tag: Tag<Item>, materialKey: HTMaterialKey, shapeKey: HTShape) {
         add(tag, HTPart(materialKey, shapeKey))
     }
 

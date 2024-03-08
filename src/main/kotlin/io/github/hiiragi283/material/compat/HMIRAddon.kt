@@ -8,8 +8,8 @@ import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.part.HTPartRegistry
-import io.github.hiiragi283.api.shape.HTShapeKey
-import io.github.hiiragi283.api.shape.HTShapeKeys
+import io.github.hiiragi283.api.shape.HTShape
+import io.github.hiiragi283.api.shape.HTShapes
 import me.steven.indrev.IndustrialRevolution
 import me.steven.indrev.registry.IRFluidRegistry
 import me.steven.indrev.registry.IRItemRegistry
@@ -22,17 +22,17 @@ object HMIRAddon : HTMaterialsAddon {
     override val priority: Int = 0
 
     @JvmField
-    val CHUNK = HTShapeKey("chunk")
+    val CHUNK = HTShape("chunk")
 
     @JvmField
-    val PURIFIED_ORE = HTShapeKey("purified_ore")
+    val PURIFIED_ORE = HTShape("purified_ore")
 
     @JvmField
     val NIKOLITE = HTMaterialKey("nikolite")
 
     override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
-        shapeHelper.addShapeKey(CHUNK)
-        shapeHelper.addShapeKey(PURIFIED_ORE)
+        shapeHelper.addShape(CHUNK)
+        shapeHelper.addShape(PURIFIED_ORE)
     }
 
     override fun registerMaterial(materialHelper: HTMaterialsAddon.MaterialHelper) {
@@ -69,11 +69,11 @@ object HMIRAddon : HTMaterialsAddon {
             NIKOLITE,
         ).forEach {
             // Chunks
-            registry.add(Registry.ITEM.get(CHUNK.getShape().getIdentifier(it, modId)), it, CHUNK)
+            registry.add(Registry.ITEM.get(CHUNK.getId(it, modId)), it, CHUNK)
             // Purified Ores
-            registry.add(Registry.ITEM.get(PURIFIED_ORE.getShape().getIdentifier(it, modId)), it, PURIFIED_ORE)
+            registry.add(Registry.ITEM.get(PURIFIED_ORE.getId(it, modId)), it, PURIFIED_ORE)
         }
-        registry.add(Registry.ITEM.get(id("sawdust")), HTMaterialKeys.WOOD, HTShapeKeys.DUST)
-        registry.add(IRItemRegistry.SULFUR_CRYSTAL_ITEM, HTMaterialKeys.SULFUR, HTShapeKeys.GEM)
+        registry.add(Registry.ITEM.get(id("sawdust")), HTMaterialKeys.WOOD, HTShapes.DUST)
+        registry.add(IRItemRegistry.SULFUR_CRYSTAL_ITEM, HTMaterialKeys.SULFUR, HTShapes.GEM)
     }
 }

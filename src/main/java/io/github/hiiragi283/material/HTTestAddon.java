@@ -10,8 +10,8 @@ import io.github.hiiragi283.api.material.HTMaterialType;
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition;
 import io.github.hiiragi283.api.material.element.HTElement;
 import io.github.hiiragi283.api.part.HTPartRegistry;
-import io.github.hiiragi283.api.shape.HTShapeKey;
-import io.github.hiiragi283.api.shape.HTShapeKeys;
+import io.github.hiiragi283.api.shape.HTShape;
+import io.github.hiiragi283.api.shape.HTShapes;
 import net.fabricmc.api.EnvType;
 import net.minecraft.item.Items;
 import org.jetbrains.annotations.NotNull;
@@ -32,11 +32,11 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     //    HTShape    //
 
-    public static final HTShapeKey DIRTY_DUST = new HTShapeKey("dirty_dust");
+    public static final HTShape DIRTY_DUST = new HTShape("dirty_dust");
 
     @Override
     public void registerShape(@NotNull HTMaterialsAddon.ShapeHelper shapeHelper) {
-        shapeHelper.addShapeKey(DIRTY_DUST);
+        shapeHelper.addShape(DIRTY_DUST);
     }
 
     //    HTMaterial    //
@@ -60,12 +60,12 @@ public class HTTestAddon implements HTMaterialsAddon {
     public void modifyMaterialContent(@NotNull DefaultedMap<HTMaterialKey, HTMaterialContentMap.Builder> registry) {
         HTMaterialContentMap.Builder builder = registry.getOrCreate(INFINITY_KEY);
         builder.add(new HTSimpleFluidContent());
-        builder.add(new HTSimpleItemContent(HTShapeKeys.DUST));
-        builder.add(new HTSimpleItemContent(HTShapeKeys.GEAR));
-        builder.add(new HTSimpleItemContent(HTShapeKeys.INGOT));
-        builder.add(new HTSimpleItemContent(HTShapeKeys.NUGGET));
-        builder.add(new HTSimpleItemContent(HTShapeKeys.PLATE));
-        builder.add(new HTSimpleItemContent(HTShapeKeys.ROD));
+        builder.add(new HTSimpleItemContent(HTShapes.DUST));
+        builder.add(new HTSimpleItemContent(HTShapes.GEAR));
+        builder.add(new HTSimpleItemContent(HTShapes.INGOT));
+        builder.add(new HTSimpleItemContent(HTShapes.NUGGET));
+        builder.add(new HTSimpleItemContent(HTShapes.PLATE));
+        builder.add(new HTSimpleItemContent(HTShapes.ROD));
     }*/
 
     //    Post Init    //
@@ -77,7 +77,7 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     @Override
     public void registerPartRegistry(@NotNull HTPartRegistry registry) {
-        registry.add(Items.NETHER_STAR, INFINITY_KEY, HTShapeKeys.GEM);
+        registry.add(Items.NETHER_STAR, INFINITY_KEY, HTShapes.GEM);
     }
 
     @Override

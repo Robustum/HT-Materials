@@ -8,6 +8,7 @@ import net.minecraft.util.registry.Registry
 val Block.id: Identifier
     get() = Registry.BLOCK.getId(this)
 
-fun Block.isAir(): Boolean = this == Blocks.AIR
+val Block.isAir: Boolean
+    get() = this == Blocks.AIR
 
-fun Block.nonAirOrNull(): Block? = takeUnless { isAir() }
+fun Block.nonAirOrNull(): Block? = takeUnless { isAir }

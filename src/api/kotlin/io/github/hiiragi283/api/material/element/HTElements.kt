@@ -267,6 +267,9 @@ object HTElements {
     //    Groups    //
 
     @JvmField
+    val WATER = HTElement.group(H to 2, O to 1)
+
+    @JvmField
     val CO3 = HTElement.group(C to 1, O to 3)
 
     @JvmField

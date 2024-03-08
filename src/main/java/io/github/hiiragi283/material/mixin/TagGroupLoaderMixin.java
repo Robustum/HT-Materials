@@ -1,8 +1,6 @@
 package io.github.hiiragi283.material.mixin;
 
 import io.github.hiiragi283.api.HTMaterialsAPI;
-import io.github.hiiragi283.api.extension.TagKt;
-import io.github.hiiragi283.api.part.HTPart;
 import io.github.hiiragi283.api.tag.GlobalTagEvent;
 import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagGroup;
@@ -36,17 +34,6 @@ public abstract class TagGroupLoaderMixin<T> {
             }
             case "item": {
                 GlobalTagEvent.getITEM().invoker().register(new GlobalTagEvent.Handler(tags));
-                // Convert tags into part format
-                new HashMap<>(tags).forEach((Identifier id, Tag.Builder builder) -> {
-                    HTPart part = HTPart.fromId(id);
-                    if (part != null) {
-                        Identifier partId = part.getPartId();
-                        tags.compute(partId, (partId2, partBuilder) -> partBuilder == null ? builder : TagKt.merge(builder, partBuilder));
-                        tags.remove(id);
-                        HTMaterialsAPI.log("Migrated tag builder; " + id + " -> " + partId);
-                    }
-                });
-                HTMaterialsAPI.log("Converted existing tags!");
                 break;
             }
             case "fluid": {

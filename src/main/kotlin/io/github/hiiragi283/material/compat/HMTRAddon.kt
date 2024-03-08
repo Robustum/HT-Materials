@@ -4,8 +4,8 @@ import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extension.notEmptyOrNull
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.part.HTPartRegistry
-import io.github.hiiragi283.api.shape.HTShapeKey
-import io.github.hiiragi283.api.shape.HTShapeKeys
+import io.github.hiiragi283.api.shape.HTShape
+import io.github.hiiragi283.api.shape.HTShapes
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants
@@ -23,18 +23,18 @@ object HMTRAddon : HTMaterialsAddon {
     override val priority: Int = 0
 
     @JvmField
-    val SMALL_DUST = HTShapeKey("small_dust")
+    val SMALL_DUST = HTShape("small_dust")
 
     override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
-        shapeHelper.addShapeKey(SMALL_DUST)
+        shapeHelper.addShape(SMALL_DUST)
     }
 
     override fun registerPartRegistry(registry: HTPartRegistry) {
-        registry.add(TRContent.Dusts.PHOSPHOROUS, HTMaterialKeys.PHOSPHORUS, HTShapeKeys.DUST)
+        registry.add(TRContent.Dusts.PHOSPHOROUS, HTMaterialKeys.PHOSPHORUS, HTShapes.DUST)
         registry.add(TRContent.SmallDusts.PHOSPHOROUS, HTMaterialKeys.PHOSPHORUS, SMALL_DUST)
-        registry.add(TRContent.Gems.RUBY, HTMaterialKeys.RUBY, HTShapeKeys.GEM)
-        registry.add(TRContent.Gems.SAPPHIRE, HTMaterialKeys.SAPPHIRE, HTShapeKeys.GEM)
-        registry.add(TRContent.Dusts.SAW, HTMaterialKeys.WOOD, HTShapeKeys.DUST)
+        registry.add(TRContent.Gems.RUBY, HTMaterialKeys.RUBY, HTShapes.GEM)
+        registry.add(TRContent.Gems.SAPPHIRE, HTMaterialKeys.SAPPHIRE, HTShapes.GEM)
+        registry.add(TRContent.Dusts.SAW, HTMaterialKeys.WOOD, HTShapes.DUST)
     }
 
     @Suppress("UnstableApiUsage")
@@ -42,7 +42,7 @@ object HMTRAddon : HTMaterialsAddon {
         FluidStorage.combinedItemApiProvider(TRContent.CELL).register { context: ContainerItemContext ->
             val stack: ItemStack = context.itemVariant.toStack()
             val item: DynamicCellItem = stack.item as? DynamicCellItem ?: return@register null
-            val fluid: Fluid = item.getFluid(stack).notEmptyOrNull() ?: return@register null
+            val fluid: Fluid = item.getFluid(stack).notEmptyOrNull ?: return@register null
             return@register FullItemFluidStorage(context, TRContent.CELL, FluidVariant.of(fluid), FluidConstants.BUCKET)
         }
     }

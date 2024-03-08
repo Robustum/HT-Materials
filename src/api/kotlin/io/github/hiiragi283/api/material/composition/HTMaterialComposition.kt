@@ -5,6 +5,7 @@ import io.github.hiiragi283.api.extension.averageColor
 import io.github.hiiragi283.api.extension.calculateMolar
 import io.github.hiiragi283.api.extension.formatFormula
 import io.github.hiiragi283.api.material.element.HTElement
+import io.github.hiiragi283.api.material.element.HTElements
 import java.awt.Color
 
 abstract class HTMaterialComposition {
@@ -87,6 +88,7 @@ abstract class HTMaterialComposition {
     ) : HTMaterialComposition() {
         override val componentMap: Map<HTElement, Int> = buildMap {
             putAll(unhydrate.componentMap)
+            put(HTElements.WATER, waterCount)
         }
     }
 

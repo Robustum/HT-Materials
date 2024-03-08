@@ -12,16 +12,22 @@ import net.minecraft.util.registry.Registry
 val Item.id: Identifier
     get() = Registry.ITEM.getId(this)
 
-fun Item.asBlock(): Block = (this as? BlockItem)?.block ?: Blocks.AIR
+val Item.asBlock: Block
+    get() = (this as? BlockItem)?.block ?: Blocks.AIR
 
-fun Item.isAir(): Boolean = this == Items.AIR
+val Item.isAir: Boolean
+    get() = this == Items.AIR
 
-fun Item.nonAirOrNull(): Item? = takeUnless { isAir() }
+val Item.nonAirOrNull: Item?
+    get() = takeUnless { isAir }
 
 //    ItemConvertible    //
 
-fun ItemConvertible.asBlock() = asItem().asBlock()
+val ItemConvertible.asBlock: Block
+    get() = asItem().asBlock
 
-fun ItemConvertible.isAir(): Boolean = asItem().isAir()
+val ItemConvertible.isAir: Boolean
+    get() = asItem().isAir
 
-fun ItemConvertible.nonAirOrNull(): Item? = asItem().nonAirOrNull()
+val ItemConvertible.nonAirOrNull: Item?
+    get() = asItem().nonAirOrNull

@@ -10,7 +10,7 @@ import io.github.hiiragi283.api.material.element.HTElement
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
 import io.github.hiiragi283.api.part.HTPartRegistry
-import io.github.hiiragi283.api.shape.HTShapeKey
+import io.github.hiiragi283.api.shape.HTShape
 import net.fabricmc.api.EnvType
 import net.minecraft.util.Identifier
 
@@ -40,30 +40,16 @@ interface HTMaterialsAddon {
 
     class ShapeHelper {
         // Shape key
-        val shapeKeys: Set<HTShapeKey>
+        val shapeKeys: Set<String>
             get() = _shapeKeys
-        private val _shapeKeys: MutableSet<HTShapeKey> = mutableSetOf()
+        private val _shapeKeys: MutableSet<String> = mutableSetOf()
 
-        fun addShapeKey(shapeKey: HTShapeKey) {
-            check(_shapeKeys.add(shapeKey)) { "" }
+        fun addShape(shapeKey: HTShape) {
+            addShape(shapeKey.name)
         }
 
-        // Id Path
-        private val idPathMap: MutableMap<HTShapeKey, String> = hashMapOf()
-
-        fun getIdPath(key: HTShapeKey): String = idPathMap.getOrDefault(key, "%s_${key.name}")
-
-        fun setIdPath(key: HTShapeKey, idPath: String) {
-            idPathMap[key] = idPath
-        }
-
-        // Tag Path
-        private val tagPathMap: MutableMap<HTShapeKey, String> = hashMapOf()
-
-        fun getTagPath(key: HTShapeKey): String = tagPathMap.getOrDefault(key, "${getIdPath(key)}s")
-
-        fun setTagPath(key: HTShapeKey, tagPath: String) {
-            tagPathMap[key] = tagPath
+        fun addShape(name: String) {
+            check(_shapeKeys.add(name)) { "Shape named $name is already registered!" }
         }
     }
 
@@ -76,7 +62,7 @@ interface HTMaterialsAddon {
         private val _materialKeys: MutableSet<HTMaterialKey> = mutableSetOf()
 
         fun addMaterialKey(materialKey: HTMaterialKey) {
-            check(_materialKeys.add(materialKey)) { "" }
+            check(_materialKeys.add(materialKey)) { "Material named ${materialKey.name} is already registered!" }
         }
 
         // Alternative Name

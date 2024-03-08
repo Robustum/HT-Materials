@@ -12,19 +12,21 @@ class HTMaterialKey(val name: String) {
 
     fun getMaterialOrNull(): HTMaterial? {
         if (cache == null) {
-            cache = HTMaterialsAPI.INSTANCE.materialRegistry().getMaterial(this)
+            cache = HTMaterialsAPI.INSTANCE.materialRegistry()[this]
         }
         return cache
     }
 
-    @Throws(IllegalStateException::class)
-    fun getMaterial(): HTMaterial = checkNotNull(getMaterialOrNull()) { "material:$name is not registered!" }
+    val material: HTMaterial
+        @Throws(IllegalStateException::class)
+        get() = checkNotNull(getMaterialOrNull()) { "material:$name is not registered!" }
 
     //    Identifier    //
 
     fun getIdentifier(namespace: String = HTMaterialsAPI.MOD_ID): Identifier = Identifier(namespace, name)
 
-    fun getCommonId() = Identifier("c", name)
+    val commonId: Identifier
+        get() = Identifier("c", name)
 
     fun getMaterialId() = getIdentifier("material")
 
@@ -32,10 +34,12 @@ class HTMaterialKey(val name: String) {
 
     val translationKey: String = "ht_material.$name"
 
-    @Environment(EnvType.CLIENT)
-    fun getTranslatedName(): String = I18n.translate(translationKey)
+    val translatedName: String
+        @Environment(EnvType.CLIENT)
+        get() = I18n.translate(translationKey)
 
-    fun getTranslatedText(): TranslatableText = TranslatableText(translationKey)
+    val translatedText: TranslatableText
+        get() = TranslatableText(translationKey)
 
     //    Any    //
 
