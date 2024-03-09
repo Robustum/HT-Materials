@@ -17,8 +17,6 @@ import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.api.tag.GlobalTagEvent
 import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreen
 import io.github.hiiragi283.material.dictionary.MaterialDictionaryScreenHandler
-import io.github.hiiragi283.material.impl.HTFluidRegistryImpl
-import io.github.hiiragi283.material.impl.HTPartRegistryImpl
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry
@@ -39,7 +37,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 
 internal object HTMaterialsCore {
-    private lateinit var addons: Iterable<HTMaterialsAddon>
+    lateinit var addons: Iterable<HTMaterialsAddon>
 
     fun initAddons() {
         addons = getEntrypoints<HTMaterialsAddon>(HTMaterialsAPI.MOD_ID)
@@ -60,7 +58,7 @@ internal object HTMaterialsCore {
         // Create and register shape
         val helper = HTMaterialsAddon.ShapeHelper()
         addons.forEach { it.registerShape(helper) }
-        HTMaterialsAPIImpl.shapeRegistry = HTShapeRegistry(
+        HTMaterialsAPIImpl.shapeRegistry1 = HTShapeRegistry(
             buildMap {
                 helper.shapeKeys.forEach { name: String ->
                     putIfAbsent(name, HTShape(name))
@@ -77,7 +75,7 @@ internal object HTMaterialsCore {
         // create and register material
         val helper = HTMaterialsAddon.MaterialHelper()
         addons.forEach { it.registerMaterial(helper) }
-        HTMaterialsAPIImpl.materialRegistry = HTMaterialRegistry(
+        HTMaterialsAPIImpl.materialRegistry1 = HTMaterialRegistry(
             buildMap {
                 helper.materialKeys.forEach { key: HTMaterialKey ->
                     val composition: HTMaterialComposition = helper.getComposition(key)
@@ -94,7 +92,7 @@ internal object HTMaterialsCore {
     }
 
     fun verifyMaterial() {
-        HTMaterialsAPI.INSTANCE.materialRegistry().values.forEach { material ->
+        HTMaterialsAPI.INSTANCE.materialRegistry.values.forEach { material ->
             material.forEachProperty { it.verify(material) }
             material.forEachFlag { it.verify(material) }
         }
@@ -103,11 +101,6 @@ internal object HTMaterialsCore {
     //    Post Initialization    //
 
     fun postInitialize(envType: EnvType) {
-        // Register HTFluidRegistry and HTPartRegistry
-        addons.forEach {
-            it.registerFluidRegistry(HTFluidRegistryImpl)
-            it.registerPartRegistry(HTPartRegistryImpl)
-        }
         // Register Events
         val id: Identifier = HTMaterialsAPI.id("before_default")
         GlobalTagEvent.ITEM.run {
@@ -142,8 +135,8 @@ internal object HTMaterialsCore {
     private fun getTooltip(stack: ItemStack, context: TooltipContext, lines: MutableList<Text>) {
         if (stack.isEmpty) return
         // Part tooltip on item
-        HTMaterialsAPI.INSTANCE.partRegistry().get(stack.item)?.run {
-            material.appendTooltip(shapeKey, stack, lines)
+        HTMaterialsAPI.INSTANCE.partManager[stack.item]?.run {
+            material.appendTooltip(shape, stack, lines)
         }
         // Material tooltip on fluid container item
         FluidStorage.ITEM.find(stack, ContainerItemContext.withInitial(stack))
@@ -163,7 +156,7 @@ internal object HTMaterialsCore {
 
     private fun onItemTags(handler: GlobalTagEvent.Handler) {
         // Register Tags from HTPartManager
-        HTMaterialsAPI.INSTANCE.partRegistry().allEntries.forEach { (item: Item, part: HTPart) ->
+        HTMaterialsAPI.INSTANCE.partManager.itemToEntryMap.forEach { (item: Item, part: HTPart) ->
             val (materialKey: HTMaterialKey, shapeKey: HTShape) = part
             // Shape tag
             handler.builder(shapeKey.getShapeId()).add(item, HTMaterialsAPI.MOD_NAME)
@@ -177,7 +170,7 @@ internal object HTMaterialsCore {
 
     private fun onFluidTags(handler: GlobalTagEvent.Handler) {
         // Register Tags from HTFluidManagerOld
-        HTMaterialsAPI.INSTANCE.fluidRegistry().allEntries.forEach { (fluid: Fluid, key: HTMaterialKey) ->
+        HTMaterialsAPI.INSTANCE.fluidManager.fluidToMaterialMap.forEach { (fluid: Fluid, key: HTMaterialKey) ->
             handler.builder(key.commonId).add(fluid, HTMaterialsAPI.MOD_NAME)
         }
     }

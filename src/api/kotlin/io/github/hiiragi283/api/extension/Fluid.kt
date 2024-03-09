@@ -31,16 +31,13 @@ val FluidVariant.renderer: FluidVariantRenderHandler
     get() = this.fluid.variantRenderer
 
 val Fluid.materialKey: HTMaterialKey?
-    get() = HTMaterialsAPI.INSTANCE.fluidRegistry()[this]
+    get() = HTMaterialsAPI.INSTANCE.fluidManager[this]
 
 val Fluid.asBlock: Block
     get() = this.defaultState.blockState.block
 
-val Fluid.isEmpty: Boolean
-    get() = this == Fluids.EMPTY
-
 val Fluid.notEmptyOrNull: Fluid?
-    get() = takeUnless { isEmpty }
+    get() = takeUnless { this == Fluids.EMPTY }
 
 val Fluid.isFlowable: Boolean
     get() = this is FlowableFluid

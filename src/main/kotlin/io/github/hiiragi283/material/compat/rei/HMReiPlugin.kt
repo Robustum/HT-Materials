@@ -19,13 +19,13 @@ object HMReiPlugin : REIPluginV0 {
     }
 
     override fun registerRecipeDisplays(recipeHelper: RecipeHelper) {
-        HTMaterialsAPI.INSTANCE.materialRegistry().values
+        HTMaterialsAPI.INSTANCE.materialRegistry.values
             .map(::HTMaterialDisplay)
             .filterNot { it.entries.isEmpty() }
             .forEach(recipeHelper::registerDisplay)
     }
 
     override fun registerOthers(recipeHelper: RecipeHelper) {
-        recipeHelper.registerWorkingStations(MATERIAL, EntryStack.create(HTMaterialsAPI.INSTANCE.dictionaryItem()))
+        recipeHelper.registerWorkingStations(MATERIAL, EntryStack.create(HTMaterialsAPI.INSTANCE.dictionaryItem))
     }
 }

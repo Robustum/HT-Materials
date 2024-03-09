@@ -10,14 +10,14 @@ import net.minecraft.util.Identifier
 
 data class HTPart(
     val materialKey: HTMaterialKey,
-    val shapeKey: HTShape,
+    val shape: HTShape,
 ) {
     constructor(material: HTMaterial, shapeKey: HTShape) : this(material.key, shapeKey)
 
     val material: HTMaterial
         get() = materialKey.material
 
-    val partId: Identifier = Identifier("c", "$shapeKey/$materialKey")
+    val partId: Identifier = Identifier("c", "$shape/$materialKey")
 
     val partTag: Tag<Item>
         get() = TagRegistry.item(partId)

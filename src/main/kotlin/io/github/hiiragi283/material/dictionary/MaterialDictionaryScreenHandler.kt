@@ -130,7 +130,7 @@ class MaterialDictionaryScreenHandler(
         selectedItem.set(-1)
         outputSlot.stack = ItemStack.EMPTY
         if (!stack.isEmpty) {
-            availableEntries = HTMaterialsAPI.INSTANCE.partRegistry().convertItems(stack.item).toList()
+            availableEntries = HTMaterialsAPI.INSTANCE.partManager.convertItems(stack.item).toList()
         }
     }
 
@@ -168,7 +168,7 @@ class MaterialDictionaryScreenHandler(
                 0 -> {
                     if (!insertItem(itemStack2, 2, 38, false)) return ItemStack.EMPTY
                 }
-                else -> if (HTMaterialsAPI.INSTANCE.partRegistry().contains(itemStack2.item)) {
+                else -> if (HTMaterialsAPI.INSTANCE.partManager.contains(itemStack2.item)) {
                     if (!insertItem(itemStack2, 0, 1, false)) {
                         return ItemStack.EMPTY
                     } else if (index in (2 until 29)) {

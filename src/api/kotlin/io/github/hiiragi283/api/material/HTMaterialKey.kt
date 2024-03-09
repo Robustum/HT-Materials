@@ -12,7 +12,7 @@ class HTMaterialKey(val name: String) {
 
     fun getMaterialOrNull(): HTMaterial? {
         if (cache == null) {
-            cache = HTMaterialsAPI.INSTANCE.materialRegistry()[this]
+            cache = HTMaterialsAPI.INSTANCE.materialRegistry[this]
         }
         return cache
     }

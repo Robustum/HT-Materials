@@ -3,7 +3,7 @@ package io.github.hiiragi283.material.compat
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extension.notEmptyOrNull
 import io.github.hiiragi283.api.material.HTMaterialKeys
-import io.github.hiiragi283.api.part.HTPartRegistry
+import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapes
 import net.fabricmc.api.EnvType
@@ -29,12 +29,12 @@ object HMTRAddon : HTMaterialsAddon {
         shapeHelper.addShape(SMALL_DUST)
     }
 
-    override fun registerPartRegistry(registry: HTPartRegistry) {
-        registry.add(TRContent.Dusts.PHOSPHOROUS, HTMaterialKeys.PHOSPHORUS, HTShapes.DUST)
-        registry.add(TRContent.SmallDusts.PHOSPHOROUS, HTMaterialKeys.PHOSPHORUS, SMALL_DUST)
-        registry.add(TRContent.Gems.RUBY, HTMaterialKeys.RUBY, HTShapes.GEM)
-        registry.add(TRContent.Gems.SAPPHIRE, HTMaterialKeys.SAPPHIRE, HTShapes.GEM)
-        registry.add(TRContent.Dusts.SAW, HTMaterialKeys.WOOD, HTShapes.DUST)
+    override fun modifyPartManager(builder: HTPartManager.Builder) {
+        builder.add(HTMaterialKeys.PHOSPHORUS, HTShapes.DUST, TRContent.Dusts.PHOSPHOROUS)
+        builder.add(HTMaterialKeys.PHOSPHORUS, SMALL_DUST, TRContent.SmallDusts.PHOSPHOROUS)
+        builder.add(HTMaterialKeys.RUBY, HTShapes.GEM, TRContent.Gems.RUBY)
+        builder.add(HTMaterialKeys.SAPPHIRE, HTShapes.GEM, TRContent.Gems.SAPPHIRE)
+        builder.add(HTMaterialKeys.WOOD, HTShapes.DUST, TRContent.Dusts.SAW)
     }
 
     @Suppress("UnstableApiUsage")

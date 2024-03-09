@@ -6,9 +6,9 @@ import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint
 import net.minecraft.item.Item
+import net.minecraft.item.ItemGroup
 import net.minecraft.util.Rarity
 import net.minecraft.util.registry.Registry
 
@@ -27,15 +27,12 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
     // ModInitializer
     override fun onInitialize() {
         // Initialize Game Objects
-        HTMaterialsAPIImpl.itemGroup = FabricItemGroupBuilder.build(HTMaterialsAPI.id("material")) {
-            HTMaterialsAPI.INSTANCE.iconItem().defaultStack
-        }
-        HTMaterialsAPIImpl.iconItem = Registry.register(
+        HTMaterialsAPIImpl.iconItem1 = Registry.register(
             Registry.ITEM,
             HTMaterialsAPI.id("icon"),
-            Item(Item.Settings().group(HTMaterialsAPI.INSTANCE.itemGroup()).rarity(Rarity.EPIC)),
+            Item(Item.Settings().group(ItemGroup.MISC).rarity(Rarity.EPIC)),
         )
-        HTMaterialsAPIImpl.dictionaryItem = Registry.register(
+        HTMaterialsAPIImpl.dictionaryItem1 = Registry.register(
             Registry.ITEM,
             HTMaterialsAPI.id("material_dictionary"),
             MaterialDictionaryItem,

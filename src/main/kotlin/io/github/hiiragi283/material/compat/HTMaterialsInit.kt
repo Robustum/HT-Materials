@@ -4,19 +4,20 @@ import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
 import io.github.hiiragi283.api.extension.HTColor
 import io.github.hiiragi283.api.extension.averageColor
-import io.github.hiiragi283.api.fluid.HTFluidRegistry
+import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.element.HTElements
 import io.github.hiiragi283.api.part.HTPart
-import io.github.hiiragi283.api.part.HTPartRegistry
+import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapes
 import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.Items
+import net.minecraft.tag.ItemTags
 import java.awt.Color
 
 internal object HTMaterialsInit : HTMaterialsAddon {
@@ -458,146 +459,122 @@ internal object HTMaterialsInit : HTMaterialsAddon {
         // Common - Woods
     }
 
-    override fun registerFluidRegistry(registry: HTFluidRegistry) {
+    override fun modifyFluidManager(builder: HTFluidManager.Builder) {
         // Register vanilla fluids
-        registry.add(Fluids.WATER, HTMaterialKeys.WATER)
-        registry.add(Fluids.LAVA, HTMaterialKeys.LAVA)
+        builder[HTMaterialKeys.WATER] = Fluids.WATER
+        builder[HTMaterialKeys.LAVA] = Fluids.LAVA
         // Register common tags
-        HTMaterialsAPI.INSTANCE.materialRegistry().keys.forEach { key: HTMaterialKey ->
-            registry.add(TagRegistry.fluid(key.commonId), key)
+        HTMaterialsAPI.INSTANCE.materialRegistry.keys.forEach { key: HTMaterialKey ->
+            builder[key] = TagRegistry.fluid(key.commonId)
         }
     }
 
-    override fun registerPartRegistry(registry: HTPartRegistry) {
+    override fun modifyPartManager(builder: HTPartManager.Builder) {
         // Register vanilla items
-        registerVanillaItems(registry)
+        registerVanillaItems(builder)
         // Register part tags
-        HTMaterialsAPI.INSTANCE.shapeRegistry().values.forEach { shape: HTShape ->
-            HTMaterialsAPI.INSTANCE.materialRegistry().keys.forEach { key: HTMaterialKey ->
-                registry.add(HTPart(key, shape).partTag, key, shape)
+        HTMaterialsAPI.INSTANCE.shapeRegistry.values.forEach { shape: HTShape ->
+            HTMaterialsAPI.INSTANCE.materialRegistry.keys.forEach { key: HTMaterialKey ->
+                builder.add(key, shape, HTPart(key, shape).partTag)
             }
         }
     }
 
-    private fun registerVanillaItems(registry: HTPartRegistry) {
+    private fun registerVanillaItems(builder: HTPartManager.Builder) {
         // Andesite
-        registry.add(Items.ANDESITE, HTMaterialKeys.ANDESITE, HTShapes.BLOCK)
-        registry.add(Items.POLISHED_ANDESITE, HTMaterialKeys.ANDESITE, HTShapes.BLOCK)
+        builder.add(HTMaterialKeys.ANDESITE, HTShapes.BLOCK, Items.ANDESITE)
+        builder.add(HTMaterialKeys.ANDESITE, HTShapes.BLOCK, Items.POLISHED_ANDESITE)
         // Basalt
-        registry.add(Items.BASALT, HTMaterialKeys.BASALT, HTShapes.BLOCK)
-        registry.add(Items.POLISHED_BASALT, HTMaterialKeys.BASALT, HTShapes.BLOCK)
+        builder.add(HTMaterialKeys.BASALT, HTShapes.BLOCK, Items.BASALT)
+        builder.add(HTMaterialKeys.BASALT, HTShapes.BLOCK, Items.POLISHED_BASALT)
         // Blackstone
-        registry.add(Items.BLACKSTONE, HTMaterialKeys.BLACKSTONE, HTShapes.BLOCK)
-        registry.add(Items.CHISELED_POLISHED_BLACKSTONE, HTMaterialKeys.BLACKSTONE, HTShapes.BRICKS)
-        registry.add(Items.CRACKED_POLISHED_BLACKSTONE_BRICKS, HTMaterialKeys.BLACKSTONE, HTShapes.BRICKS)
-        registry.add(Items.POLISHED_BLACKSTONE, HTMaterialKeys.BLACKSTONE, HTShapes.BLOCK)
-        registry.add(Items.POLISHED_BLACKSTONE_BRICKS, HTMaterialKeys.BLACKSTONE, HTShapes.BRICKS)
+        builder.add(HTMaterialKeys.BLACKSTONE, HTShapes.BLOCK, Items.BLACKSTONE)
+        builder.add(HTMaterialKeys.BLACKSTONE, HTShapes.BLOCK, Items.POLISHED_BLACKSTONE)
+        builder.add(HTMaterialKeys.BLACKSTONE, HTShapes.BRICKS, Items.CHISELED_POLISHED_BLACKSTONE)
+        builder.add(HTMaterialKeys.BLACKSTONE, HTShapes.BRICKS, Items.CRACKED_POLISHED_BLACKSTONE_BRICKS)
+        builder.add(HTMaterialKeys.BLACKSTONE, HTShapes.BRICKS, Items.POLISHED_BLACKSTONE_BRICKS)
         // Brick
-        registry.add(Items.BRICK, HTMaterialKeys.BRICK, HTShapes.INGOT)
-        registry.add(Items.BRICKS, HTMaterialKeys.BRICK, HTShapes.BRICKS)
+        builder.add(HTMaterialKeys.BRICK, HTShapes.BRICKS, Items.BRICKS)
+        builder.add(HTMaterialKeys.BRICK, HTShapes.INGOT, Items.BRICK)
         // Charcoal
-        registry.add(Items.CHARCOAL, HTMaterialKeys.CHARCOAL, HTShapes.GEM)
+        builder.add(HTMaterialKeys.CHARCOAL, HTShapes.GEM, Items.CHARCOAL)
         // Clay
-        registry.add(Items.CLAY, HTMaterialKeys.CLAY, HTShapes.BLOCK)
-        registry.add(Items.CLAY_BALL, HTMaterialKeys.CLAY, HTShapes.GEM)
+        builder.add(HTMaterialKeys.CLAY, HTShapes.BLOCK, Items.CLAY)
+        builder.add(HTMaterialKeys.CLAY, HTShapes.GEM, Items.CLAY_BALL)
         // Coal
-        registry.add(Items.COAL, HTMaterialKeys.COAL, HTShapes.GEM)
-        registry.add(Items.COAL_BLOCK, HTMaterialKeys.COAL, HTShapes.BLOCK)
+        builder.add(HTMaterialKeys.COAL, HTShapes.GEM, Items.COAL)
+        builder.add(HTMaterialKeys.COAL, HTShapes.BLOCK, Items.COAL_BLOCK)
         // Diamond
-        registry.add(Items.DIAMOND, HTMaterialKeys.DIAMOND, HTShapes.GEM)
-        registry.add(Items.DIAMOND_BLOCK, HTMaterialKeys.DIAMOND, HTShapes.BLOCK)
-        registry.add(Items.DIAMOND_ORE, HTMaterialKeys.DIAMOND, HTShapes.ORE)
+        builder.add(HTMaterialKeys.DIAMOND, HTShapes.BLOCK, Items.DIAMOND_BLOCK)
+        builder.add(HTMaterialKeys.DIAMOND, HTShapes.GEM, Items.DIAMOND)
+        builder.add(HTMaterialKeys.DIAMOND, HTShapes.ORE, Items.DIAMOND_ORE)
         // Diorite
-        registry.add(Items.DIORITE, HTMaterialKeys.DIORITE, HTShapes.BLOCK)
-        registry.add(Items.POLISHED_DIORITE, HTMaterialKeys.DIORITE, HTShapes.BLOCK)
+        builder.add(HTMaterialKeys.DIORITE, HTShapes.BLOCK, Items.DIORITE)
+        builder.add(HTMaterialKeys.DIORITE, HTShapes.BLOCK, Items.POLISHED_DIORITE)
+        // Dripstone
+        // builder.add(HTMaterialKeys.DRIPSTONE, HTShapes.BLOCK, Items.DRIPSTONE_BLOCK)
         // Emerald
-        registry.add(Items.EMERALD, HTMaterialKeys.EMERALD, HTShapes.GEM)
-        registry.add(Items.EMERALD_BLOCK, HTMaterialKeys.EMERALD, HTShapes.BLOCK)
-        registry.add(Items.EMERALD_ORE, HTMaterialKeys.EMERALD, HTShapes.ORE)
+        builder.add(HTMaterialKeys.EMERALD, HTShapes.BLOCK, Items.EMERALD_BLOCK)
+        builder.add(HTMaterialKeys.EMERALD, HTShapes.GEM, Items.EMERALD)
+        builder.add(HTMaterialKeys.EMERALD, HTShapes.ORE, Items.EMERALD_ORE)
         // End Stone
-        registry.add(Items.END_STONE, HTMaterialKeys.END_STONE, HTShapes.BLOCK)
-        registry.add(Items.END_STONE_BRICKS, HTMaterialKeys.END_STONE, HTShapes.BRICKS)
+        builder.add(HTMaterialKeys.END_STONE, HTShapes.BLOCK, Items.END_STONE)
+        builder.add(HTMaterialKeys.END_STONE, HTShapes.BRICKS, Items.END_STONE_BRICKS)
         // Ender Pearl
-        registry.add(Items.ENDER_PEARL, HTMaterialKeys.ENDER_PEARL, HTShapes.GEM)
+        builder.add(HTMaterialKeys.ENDER_PEARL, HTShapes.GEM, Items.ENDER_PEARL)
         // Flint
-        registry.add(Items.FLINT, HTMaterialKeys.FLINT, HTShapes.GEM)
+        builder.add(HTMaterialKeys.FLINT, HTShapes.GEM, Items.FLINT)
         // Iron
-        registry.add(Items.IRON_BLOCK, HTMaterialKeys.IRON, HTShapes.BLOCK)
-        registry.add(Items.IRON_INGOT, HTMaterialKeys.IRON, HTShapes.INGOT)
-        registry.add(Items.IRON_NUGGET, HTMaterialKeys.IRON, HTShapes.NUGGET)
-        registry.add(Items.IRON_ORE, HTMaterialKeys.IRON, HTShapes.ORE)
+        builder.add(HTMaterialKeys.IRON, HTShapes.BLOCK, Items.IRON_BLOCK)
+        builder.add(HTMaterialKeys.IRON, HTShapes.INGOT, Items.IRON_INGOT)
+        builder.add(HTMaterialKeys.IRON, HTShapes.NUGGET, Items.IRON_NUGGET)
+        builder.add(HTMaterialKeys.IRON, HTShapes.ORE, Items.IRON_ORE)
         // Glass
-        registry.add(Items.GLASS, HTMaterialKeys.GLASS, HTShapes.BLOCK)
+        builder.add(HTMaterialKeys.GLASS, HTShapes.BLOCK, Items.GLASS)
         // Glowstone
-        registry.add(Items.GLOWSTONE, HTMaterialKeys.GLOWSTONE, HTShapes.BLOCK)
-        registry.add(Items.GLOWSTONE_DUST, HTMaterialKeys.GLOWSTONE, HTShapes.DUST)
+        builder.add(HTMaterialKeys.GLOWSTONE, HTShapes.BLOCK, Items.GLOWSTONE)
+        builder.add(HTMaterialKeys.GLOWSTONE, HTShapes.DUST, Items.GLOWSTONE_DUST)
         // Gold
-        registry.add(Items.GOLD_BLOCK, HTMaterialKeys.GOLD, HTShapes.BLOCK)
-        registry.add(Items.GOLD_INGOT, HTMaterialKeys.GOLD, HTShapes.INGOT)
-        registry.add(Items.GOLD_NUGGET, HTMaterialKeys.GOLD, HTShapes.NUGGET)
-        registry.add(Items.GOLD_ORE, HTMaterialKeys.GOLD, HTShapes.ORE)
+        builder.add(HTMaterialKeys.GOLD, HTShapes.BLOCK, Items.GOLD_BLOCK)
+        builder.add(HTMaterialKeys.GOLD, HTShapes.INGOT, Items.GOLD_INGOT)
+        builder.add(HTMaterialKeys.GOLD, HTShapes.NUGGET, Items.GOLD_NUGGET)
+        builder.add(HTMaterialKeys.GOLD, HTShapes.ORE, Items.GOLD_ORE)
         // Granite
-        registry.add(Items.GRANITE, HTMaterialKeys.GRANITE, HTShapes.BLOCK)
-        registry.add(Items.POLISHED_GRANITE, HTMaterialKeys.GRANITE, HTShapes.BLOCK)
+        builder.add(HTMaterialKeys.GRANITE, HTShapes.BLOCK, Items.GRANITE)
+        builder.add(HTMaterialKeys.GRANITE, HTShapes.BLOCK, Items.POLISHED_GRANITE)
         // Lapis
-        registry.add(Items.LAPIS_BLOCK, HTMaterialKeys.LAPIS, HTShapes.BLOCK)
-        registry.add(Items.LAPIS_LAZULI, HTMaterialKeys.LAPIS, HTShapes.GEM)
-        registry.add(Items.LAPIS_ORE, HTMaterialKeys.LAPIS, HTShapes.ORE)
+        builder.add(HTMaterialKeys.LAPIS, HTShapes.BLOCK, Items.LAPIS_BLOCK)
+        builder.add(HTMaterialKeys.LAPIS, HTShapes.GEM, Items.LAPIS_LAZULI)
+        builder.add(HTMaterialKeys.LAPIS, HTShapes.ORE, Items.LAPIS_ORE)
         // Nether Brick
-        registry.add(Items.NETHER_BRICKS, HTMaterialKeys.NETHER_BRICK, HTShapes.BRICKS)
-        registry.add(Items.NETHER_BRICK, HTMaterialKeys.NETHER_BRICK, HTShapes.INGOT)
+        builder.add(HTMaterialKeys.NETHER_BRICK, HTShapes.BRICKS, Items.NETHER_BRICKS)
+        builder.add(HTMaterialKeys.NETHER_BRICK, HTShapes.INGOT, Items.CHISELED_NETHER_BRICKS)
+        builder.add(HTMaterialKeys.NETHER_BRICK, HTShapes.INGOT, Items.CRACKED_NETHER_BRICKS)
+        builder.add(HTMaterialKeys.NETHER_BRICK, HTShapes.INGOT, Items.NETHER_BRICK)
         // Netherite
-        registry.add(Items.NETHERITE_BLOCK, HTMaterialKeys.NETHERITE, HTShapes.BLOCK)
-        registry.add(Items.NETHERITE_INGOT, HTMaterialKeys.NETHERITE, HTShapes.INGOT)
+        builder.add(HTMaterialKeys.NETHERITE, HTShapes.BLOCK, Items.NETHERITE_BLOCK)
+        builder.add(HTMaterialKeys.NETHERITE, HTShapes.INGOT, Items.NETHERITE_INGOT)
         // Netherrack
-        registry.add(Items.NETHERRACK, HTMaterialKeys.NETHERRACK, HTShapes.BLOCK)
+        builder.add(HTMaterialKeys.NETHERRACK, HTShapes.BLOCK, Items.NETHERRACK)
         // Obsidian
-        registry.add(Items.OBSIDIAN, HTMaterialKeys.OBSIDIAN, HTShapes.BLOCK)
+        builder.add(HTMaterialKeys.OBSIDIAN, HTShapes.BLOCK, Items.OBSIDIAN)
         // Quartz
-        registry.add(Items.NETHER_QUARTZ_ORE, HTMaterialKeys.QUARTZ, HTShapes.ORE)
-        registry.add(Items.QUARTZ, HTMaterialKeys.QUARTZ, HTShapes.GEM)
-        registry.add(Items.QUARTZ_BLOCK, HTMaterialKeys.QUARTZ, HTShapes.BLOCK)
-        registry.add(Items.SMOOTH_QUARTZ, HTMaterialKeys.QUARTZ, HTShapes.BLOCK)
+        builder.add(HTMaterialKeys.QUARTZ, HTShapes.BLOCK, Items.CHISELED_QUARTZ_BLOCK)
+        builder.add(HTMaterialKeys.QUARTZ, HTShapes.BLOCK, Items.QUARTZ_BLOCK)
+        builder.add(HTMaterialKeys.QUARTZ, HTShapes.BLOCK, Items.QUARTZ_PILLAR)
+        builder.add(HTMaterialKeys.QUARTZ, HTShapes.BLOCK, Items.SMOOTH_QUARTZ)
+        builder.add(HTMaterialKeys.QUARTZ, HTShapes.GEM, Items.QUARTZ)
+        builder.add(HTMaterialKeys.QUARTZ, HTShapes.ORE, Items.NETHER_QUARTZ_ORE)
         // Redstone
-        registry.add(Items.REDSTONE, HTMaterialKeys.REDSTONE, HTShapes.DUST)
-        registry.add(Items.REDSTONE_BLOCK, HTMaterialKeys.REDSTONE, HTShapes.BLOCK)
-        registry.add(Items.REDSTONE_ORE, HTMaterialKeys.REDSTONE, HTShapes.ORE)
+        builder.add(HTMaterialKeys.REDSTONE, HTShapes.BLOCK, Items.REDSTONE_BLOCK)
+        builder.add(HTMaterialKeys.REDSTONE, HTShapes.DUST, Items.REDSTONE)
+        builder.add(HTMaterialKeys.REDSTONE, HTShapes.ORE, Items.REDSTONE_ORE)
         // Stone
-        registry.add(Items.CRACKED_STONE_BRICKS, HTMaterialKeys.STONE, HTShapes.BRICKS)
-        registry.add(Items.MOSSY_STONE_BRICKS, HTMaterialKeys.STONE, HTShapes.BRICKS)
-        registry.add(Items.SMOOTH_STONE, HTMaterialKeys.STONE, HTShapes.BLOCK)
-        registry.add(Items.STONE, HTMaterialKeys.STONE, HTShapes.BLOCK)
-        registry.add(Items.STONE_BRICKS, HTMaterialKeys.STONE, HTShapes.BRICKS)
+        builder.add(HTMaterialKeys.STONE, HTShapes.BLOCK, Items.SMOOTH_STONE)
+        builder.add(HTMaterialKeys.STONE, HTShapes.BLOCK, Items.STONE)
+        builder.add(HTMaterialKeys.STONE, HTShapes.BRICKS, ItemTags.STONE_BRICKS)
         // Wood
-        listOf(
-            Items.OAK_LOG,
-            Items.BIRCH_LOG,
-            Items.SPRUCE_LOG,
-            Items.JUNGLE_LOG,
-            Items.ACACIA_LOG,
-            Items.DARK_OAK_LOG,
-            Items.CRIMSON_HYPHAE,
-            Items.WARPED_HYPHAE,
-        ).forEach { registry.add(it, HTMaterialKeys.WOOD, HTShapes.LOG) }
-        listOf(
-            Items.OAK_WOOD,
-            Items.BIRCH_WOOD,
-            Items.SPRUCE_WOOD,
-            Items.JUNGLE_WOOD,
-            Items.ACACIA_WOOD,
-            Items.DARK_OAK_WOOD,
-            Items.CRIMSON_STEM,
-            Items.WARPED_STEM,
-        ).forEach { registry.add(it, HTMaterialKeys.WOOD, HTShapes.LOG) }
-        listOf(
-            Items.OAK_PLANKS,
-            Items.BIRCH_PLANKS,
-            Items.SPRUCE_PLANKS,
-            Items.JUNGLE_PLANKS,
-            Items.ACACIA_PLANKS,
-            Items.DARK_OAK_PLANKS,
-            Items.CRIMSON_PLANKS,
-            Items.WARPED_PLANKS,
-        ).forEach { registry.add(it, HTMaterialKeys.WOOD, HTShapes.PLANKS) }
+        builder.add(HTMaterialKeys.WOOD, HTShapes.PLANKS, ItemTags.LOGS)
+        builder.add(HTMaterialKeys.WOOD, HTShapes.PLANKS, ItemTags.PLANKS)
     }
 }

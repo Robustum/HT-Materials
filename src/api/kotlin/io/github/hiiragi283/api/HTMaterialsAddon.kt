@@ -2,14 +2,14 @@ package io.github.hiiragi283.api
 
 import com.google.common.collect.HashMultimap
 import com.google.common.collect.Multimap
-import io.github.hiiragi283.api.fluid.HTFluidRegistry
+import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.element.HTElement
 import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
 import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
-import io.github.hiiragi283.api.part.HTPartRegistry
+import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
 import net.fabricmc.api.EnvType
 import net.minecraft.util.Identifier
@@ -30,9 +30,9 @@ interface HTMaterialsAddon {
 
     //    Post Initialization    //
 
-    fun registerFluidRegistry(registry: HTFluidRegistry) {}
+    fun modifyFluidManager(builder: HTFluidManager.Builder) {}
 
-    fun registerPartRegistry(registry: HTPartRegistry) {}
+    fun modifyPartManager(builder: HTPartManager.Builder) {}
 
     fun postInitialize(envType: EnvType) {}
 

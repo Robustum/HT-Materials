@@ -12,14 +12,14 @@ class HTMaterialDisplay(val material: HTMaterial) : RecipeDisplay {
     private val key: HTMaterialKey = material.key
     val entries: List<EntryStack> = buildList {
         addAll(
-            HTMaterialsAPI.INSTANCE.fluidRegistry()
-                .getFluid(key)
+            HTMaterialsAPI.INSTANCE.fluidManager[key]
                 .map(EntryStack::create),
         )
         addAll(
-            HTMaterialsAPI.INSTANCE.shapeRegistry().values
+            HTMaterialsAPI.INSTANCE.shapeRegistry.values
                 .map { HTPart(material, it) }
-                .flatMap(HTMaterialsAPI.INSTANCE.partRegistry()::getItem)
+                .flatMap(HTMaterialsAPI.INSTANCE.partManager::get)
+                .toSet()
                 .map(EntryStack::create),
         )
     }

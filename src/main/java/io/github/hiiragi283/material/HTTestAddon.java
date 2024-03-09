@@ -4,12 +4,12 @@ import com.google.common.collect.ImmutableMap;
 import io.github.hiiragi283.api.HTMaterialsAPI;
 import io.github.hiiragi283.api.HTMaterialsAddon;
 import io.github.hiiragi283.api.extension.HTColor;
-import io.github.hiiragi283.api.fluid.HTFluidRegistry;
+import io.github.hiiragi283.api.fluid.HTFluidManager;
 import io.github.hiiragi283.api.material.HTMaterialKey;
 import io.github.hiiragi283.api.material.HTMaterialType;
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition;
 import io.github.hiiragi283.api.material.element.HTElement;
-import io.github.hiiragi283.api.part.HTPartRegistry;
+import io.github.hiiragi283.api.part.HTPartManager;
 import io.github.hiiragi283.api.shape.HTShape;
 import io.github.hiiragi283.api.shape.HTShapes;
 import net.fabricmc.api.EnvType;
@@ -70,20 +70,21 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     //    Post Init    //
 
-    @Override
-    public void registerFluidRegistry(@NotNull HTFluidRegistry registry) {
 
+    @Override
+    public void modifyFluidManager(@NotNull HTFluidManager.Builder builder) {
+        HTMaterialsAddon.super.modifyFluidManager(builder);
     }
 
     @Override
-    public void registerPartRegistry(@NotNull HTPartRegistry registry) {
-        registry.add(Items.NETHER_STAR, INFINITY_KEY, HTShapes.GEM);
+    public void modifyPartManager(@NotNull HTPartManager.Builder builder) {
+        builder.add(INFINITY_KEY, HTShapes.GEM, Items.NETHER_STAR);
     }
 
     @Override
     public void postInitialize(@NotNull EnvType envType) {
-        HTMaterialsAPI.getINSTANCE().shapeRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Shape: " + key));
-        HTMaterialsAPI.getINSTANCE().materialRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Material: " + key));
+        HTMaterialsAPI.getINSTANCE().getShapeRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Shape: " + key));
+        HTMaterialsAPI.getINSTANCE().getMaterialRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Material: " + key));
     }
 
 }
