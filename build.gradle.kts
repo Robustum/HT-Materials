@@ -67,6 +67,7 @@ dependencies {
         exclude(module = "fabric-api")
         exclude(module = "fabric-loader")
     }
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
