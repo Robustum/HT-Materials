@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "io.github.hiiragi283"
-version = "2.0.0+1.16.5"
+version = "2.1.0+1.16.5"
 
 sourceSets {
     create("api")
@@ -73,6 +73,7 @@ dependencies {
 
 loom {
     accessWidenerPath = file("src/main/resources/ht_materials.accesswidener")
+    log4jConfigs.from(file("log4j.xml"))
     runs {
         getByName("client") {
             programArg("--username=Developer")
@@ -80,6 +81,7 @@ loom {
         }
         getByName("server") {
             runDir = "server"
+            vmArg("-Dmixin.debug.export=true")
         }
     }
 }
