@@ -1,13 +1,12 @@
 package io.github.hiiragi283.api.extension
 
 import net.minecraft.util.Identifier
-import java.util.function.Function
 
 fun Identifier.prefix(prefix: String) = Identifier(this.namespace, prefix + this.path)
 
 fun Identifier.suffix(suffix: String) = Identifier(this.namespace, this.path + suffix)
 
-fun Identifier.modify(function: Function<String, String>) = Identifier(this.namespace, function.apply(this.path))
+inline fun Identifier.modify(function: (String) -> String) = Identifier(this.namespace, function(this.path))
 
 fun Identifier.removePrefix(prefix: String) = Identifier(this.namespace, this.path.removePrefix(prefix))
 

@@ -6,25 +6,25 @@ import net.fabricmc.fabric.api.event.Event
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
 
-fun interface GlobalTagEvent {
+fun interface TagsBuildingEvent {
     fun register(handler: Handler)
 
     companion object {
-        private fun createEvent(): Event<GlobalTagEvent> = createEvent { callbacks ->
-            GlobalTagEvent { handler -> callbacks.forEach { it.register(handler) } }
+        private fun createEvent(): Event<TagsBuildingEvent> = createEvent { callbacks ->
+            TagsBuildingEvent { handler -> callbacks.forEach { it.register(handler) } }
         }
 
         @JvmStatic
-        val BLOCK: Event<GlobalTagEvent> = createEvent()
+        val BLOCK: Event<TagsBuildingEvent> = createEvent()
 
         @JvmStatic
-        val ITEM: Event<GlobalTagEvent> = createEvent()
+        val ITEM: Event<TagsBuildingEvent> = createEvent()
 
         @JvmStatic
-        val FLUID: Event<GlobalTagEvent> = createEvent()
+        val FLUID: Event<TagsBuildingEvent> = createEvent()
 
         @JvmStatic
-        val ENTITY_TYPE: Event<GlobalTagEvent> = createEvent()
+        val ENTITY_TYPE: Event<TagsBuildingEvent> = createEvent()
     }
 
     class Handler(val map: MutableMap<Identifier, Tag.Builder>) {

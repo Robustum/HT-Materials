@@ -4,16 +4,15 @@ import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.extension.runTryAndCatch
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.tag.TagsUpdatedEvent
 import io.github.hiiragi283.material.HTMaterialsCore
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.minecraft.fluid.Fluid
-import net.minecraft.server.MinecraftServer
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.tag.Tag
+import net.minecraft.tag.TagManager
 
-object HTFluidManagerImpl : HTFluidManager, ServerWorldEvents.Load {
+object HTFluidManagerImpl : HTFluidManager, TagsUpdatedEvent {
     init {
-        ServerWorldEvents.LOAD.register(::onWorldLoad)
+        TagsUpdatedEvent.EVENT.register(::onUpdated)
     }
 
     //    HTFluidRegistry    //
@@ -24,7 +23,8 @@ object HTFluidManagerImpl : HTFluidManager, ServerWorldEvents.Load {
     override var materialToFluidsMap: Map<HTMaterialKey, Set<Fluid>> = mapOf()
         private set
 
-    override fun onWorldLoad(server: MinecraftServer, world: ServerWorld) {
+    override fun onUpdated(tagManager: TagManager, isClient: Boolean) {
+        if (isClient) return
         HTFluidManager.Builder().run {
             // Register from Addons
             HTMaterialsCore.addons.forEach { runTryAndCatch { it.modifyFluidManager(this) } }
@@ -47,6 +47,6 @@ object HTFluidManagerImpl : HTFluidManager, ServerWorldEvents.Load {
             this@HTFluidManagerImpl.fluidToMaterialMap = fluidToMaterial
             this@HTFluidManagerImpl.materialToFluidsMap = materialToFluid
         }
-        HTMaterialsAPI.log("HTFluidManager reloaded!")
+        HTMaterialsAPI.LOGGER.info("HTFluidManager reloaded!")
     }
 }

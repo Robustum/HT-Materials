@@ -83,8 +83,8 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     @Override
     public void postInitialize(@NotNull EnvType envType) {
-        HTMaterialsAPI.getINSTANCE().getShapeRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Shape: " + key));
-        HTMaterialsAPI.getINSTANCE().getMaterialRegistry().getKeys().forEach(key -> HTMaterialsAPI.log("Material: " + key));
+        HTMaterialsAPI.getINSTANCE().getShapeRegistry().getKeys().forEach(key -> HTMaterialsAPI.getLOGGER().info("Shape: " + key));
+        HTMaterialsAPI.getINSTANCE().getMaterialRegistry().getKeys().forEach(key -> HTMaterialsAPI.getLOGGER().info("Material: " + key));
     }
 
 }

@@ -4,19 +4,15 @@ import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.extension.runTryAndCatch
 import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
+import io.github.hiiragi283.api.tag.TagsUpdatedEvent
 import io.github.hiiragi283.material.HTMaterialsCore
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents
 import net.minecraft.item.Item
-import net.minecraft.server.MinecraftServer
-import net.minecraft.server.world.ServerWorld
 import net.minecraft.tag.Tag
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.set
+import net.minecraft.tag.TagManager
 
-object HTPartManagerImpl : HTPartManager, ServerWorldEvents.Load {
+object HTPartManagerImpl : HTPartManager, TagsUpdatedEvent {
     init {
-        ServerWorldEvents.LOAD.register(::onWorldLoad)
+        TagsUpdatedEvent.EVENT.register(::onUpdated)
     }
 
     //    HTPartRegistry    //
@@ -27,7 +23,8 @@ object HTPartManagerImpl : HTPartManager, ServerWorldEvents.Load {
     override var partToEntriesMap: Map<HTPart, Set<Item>> = mapOf()
         private set
 
-    override fun onWorldLoad(server: MinecraftServer, world: ServerWorld) {
+    override fun onUpdated(tagManager: TagManager, isClient: Boolean) {
+        if (isClient) return
         HTPartManager.Builder().run {
             // Reload from Addons
             HTMaterialsCore.addons.forEach { runTryAndCatch { it.modifyPartManager(this) } }
@@ -50,6 +47,6 @@ object HTPartManagerImpl : HTPartManager, ServerWorldEvents.Load {
             this@HTPartManagerImpl.itemToEntryMap = itemToPart
             this@HTPartManagerImpl.partToEntriesMap = partToItem
         }
-        HTMaterialsAPI.log("HTPartManager reloaded!")
+        HTMaterialsAPI.LOGGER.info("HTPartManager reloaded!")
     }
 }

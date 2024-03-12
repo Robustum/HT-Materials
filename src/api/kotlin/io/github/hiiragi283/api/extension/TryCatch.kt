@@ -6,6 +6,6 @@ inline fun runTryAndCatch(runnable: () -> Unit) {
     try {
         runnable()
     } catch (e: Exception) {
-        HTMaterialsAPI.exception(e)
+        HTMaterialsAPI.LOGGER.error(e.localizedMessage)
     }
 }

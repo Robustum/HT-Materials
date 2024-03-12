@@ -42,12 +42,12 @@ object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, 
     // ClientModInitializer
     override fun onInitializeClient() {
         HTMaterialsCore.postInitialize(EnvType.CLIENT)
-        HTMaterialsAPI.log("Client post-initialize completed!")
+        HTMaterialsAPI.LOGGER.info("Client post-initialize completed!")
     }
 
     // DedicatedServerModInitializer
     override fun onInitializeServer() {
         HTMaterialsCore.postInitialize(EnvType.SERVER)
-        HTMaterialsAPI.log("Server post-initialize completed!")
+        HTMaterialsAPI.LOGGER.info("Server post-initialize completed!")
     }
 }
