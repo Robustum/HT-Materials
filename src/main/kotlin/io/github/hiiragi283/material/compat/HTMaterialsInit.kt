@@ -13,6 +13,7 @@ import io.github.hiiragi283.api.material.element.HTElements
 import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
+import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.api.shape.HTShapes
 import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.fluid.Fluids
@@ -24,23 +25,24 @@ internal object HTMaterialsInit : HTMaterialsAddon {
     override val modId: String = HTMaterialsAPI.MOD_ID
     override val priority: Int = -100
 
-    override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
+    override fun modifyShapeRegistry(builder: HTShapeRegistry.Builder) {
         // Block
-        shapeHelper.addShape(HTShapes.BLOCK)
-        shapeHelper.addShape(HTShapes.BRICKS)
-        shapeHelper.addShape(HTShapes.LOG)
-        shapeHelper.addShape(HTShapes.ORE)
-        shapeHelper.addShape(HTShapes.PLANKS)
+        builder.add(HTShapes.BLOCK)
+        builder.add(HTShapes.BRICKS)
+        builder.add(HTShapes.LOG)
+        builder.add(HTShapes.ORE)
+        builder.add(HTShapes.PLANKS)
         // Item
-        shapeHelper.addShape(HTShapes.DUST)
-        shapeHelper.addShape(HTShapes.GEAR)
-        shapeHelper.addShape(HTShapes.GEM)
-        shapeHelper.addShape(HTShapes.INGOT)
-        shapeHelper.addShape(HTShapes.NUGGET)
-        shapeHelper.addShape(HTShapes.PLATE)
-        shapeHelper.addShape(HTShapes.ROD)
+        builder.add(HTShapes.DUST)
+        builder.add(HTShapes.GEAR)
+        builder.add(HTShapes.GEM)
+        builder.add(HTShapes.INGOT)
+        builder.add(HTShapes.NUGGET)
+        builder.add(HTShapes.PLATE)
+        builder.add(HTShapes.ROD)
     }
 
+    @Deprecated("Use modifyMaterialRegistry()")
     override fun registerMaterial(materialHelper: HTMaterialsAddon.MaterialHelper) {
         // 1st Period
         materialHelper.addSimpleMaterial(HTMaterialKeys.HYDROGEN, HTElements.H to 2)

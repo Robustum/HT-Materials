@@ -1,31 +1,37 @@
 package io.github.hiiragi283.material
 
 import io.github.hiiragi283.api.HTMaterialsAPI
+import io.github.hiiragi283.api.material.property.HTPropertyType
 import io.github.hiiragi283.material.dictionary.MaterialDictionaryItem
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.ModInitializer
-import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.util.Rarity
 import net.minecraft.util.registry.Registry
 
-object HTMaterials : PreLaunchEntrypoint, ModInitializer, ClientModInitializer, DedicatedServerModInitializer {
-    // PreLaunchEntrypoint
-    override fun onPreLaunch() {
-        // Collect Addons
-        HTMaterialsCore.initAddons()
-        // Create Shapes
-        HTMaterialsCore.initShapeRegistry()
-        // Create Materials
-        HTMaterialsCore.initMaterialRegistry()
-        HTMaterialsCore.verifyMaterial()
+object HTMaterials : ModInitializer, ClientModInitializer, DedicatedServerModInitializer {
+    init {
+        HTMaterialsAPI
     }
 
     // ModInitializer
     override fun onInitialize() {
+        // Print sorted addons
+        HTMaterialsAPI.LOGGER.info("HTMaterialsAddon collected!")
+        HTMaterialsAPI.LOGGER.info("=== List ===")
+        HTMaterialsAPI.INSTANCE.forEachAddon {
+            HTMaterialsAPI.LOGGER.info("${it::class.qualifiedName} - Priority: ${it.priority}")
+        }
+        HTMaterialsAPI.LOGGER.info("============")
+        // Initialize Registry
+        HTMaterialsAPI.INSTANCE.shapeRegistry
+        HTMaterialsAPI.INSTANCE.materialRegistry
+        HTMaterialsAPI.INSTANCE.fluidManager
+        HTMaterialsAPI.INSTANCE.partManager
+        HTPropertyType.REGISTRY
         // Initialize Game Objects
         HTMaterialsAPIImpl.iconItem1 = Registry.register(
             Registry.ITEM,

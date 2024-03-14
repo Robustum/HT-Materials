@@ -5,12 +5,15 @@ import io.github.hiiragi283.api.HTMaterialsAPI;
 import io.github.hiiragi283.api.HTMaterialsAddon;
 import io.github.hiiragi283.api.extension.HTColor;
 import io.github.hiiragi283.api.fluid.HTFluidManager;
+import io.github.hiiragi283.api.material.HTMaterial;
 import io.github.hiiragi283.api.material.HTMaterialKey;
+import io.github.hiiragi283.api.material.HTMaterialRegistry;
 import io.github.hiiragi283.api.material.HTMaterialType;
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition;
 import io.github.hiiragi283.api.material.element.HTElement;
 import io.github.hiiragi283.api.part.HTPartManager;
 import io.github.hiiragi283.api.shape.HTShape;
+import io.github.hiiragi283.api.shape.HTShapeRegistry;
 import io.github.hiiragi283.api.shape.HTShapes;
 import net.fabricmc.api.EnvType;
 import net.minecraft.item.Items;
@@ -35,8 +38,8 @@ public class HTTestAddon implements HTMaterialsAddon {
     public static final HTShape DIRTY_DUST = new HTShape("dirty_dust");
 
     @Override
-    public void registerShape(@NotNull HTMaterialsAddon.ShapeHelper shapeHelper) {
-        shapeHelper.addShape(DIRTY_DUST);
+    public void modifyShapeRegistry(@NotNull HTShapeRegistry.Builder builder) {
+        builder.add(DIRTY_DUST);
     }
 
     //    HTMaterial    //
@@ -45,15 +48,14 @@ public class HTTestAddon implements HTMaterialsAddon {
     public static final HTElement INFINITY_ELEMENT = HTElement.of(HTColor.WHITE, "Inf.", Double.MAX_VALUE);
 
     @Override
-    public void registerMaterial(@NotNull HTMaterialsAddon.MaterialHelper materialHelper) {
-        materialHelper.addMaterialKey(INFINITY_KEY);
-        materialHelper.setComposition(INFINITY_KEY, HTMaterialComposition.molecular(
+    public void modifyMaterialRegistry(@NotNull HTMaterialRegistry.Builder builder) {
+        HTMaterial.Builder builder1 = builder.getOrCreate(INFINITY_KEY);
+        builder1.setComposition(HTMaterialComposition.molecular(
                 ImmutableMap.<HTElement, Integer>builder()
                         .put(INFINITY_ELEMENT, 1)
                         .build()
         ));
-        materialHelper.getOrCreatePropertyMap(INFINITY_KEY);
-        materialHelper.setType(INFINITY_KEY, HTMaterialType.Metal.INSTANCE);
+        builder1.setType(HTMaterialType.Metal.INSTANCE);
     }
 
     /*@Override
@@ -83,8 +85,8 @@ public class HTTestAddon implements HTMaterialsAddon {
 
     @Override
     public void postInitialize(@NotNull EnvType envType) {
-        HTMaterialsAPI.getINSTANCE().getShapeRegistry().getKeys().forEach(key -> HTMaterialsAPI.getLOGGER().info("Shape: " + key));
-        HTMaterialsAPI.getINSTANCE().getMaterialRegistry().getKeys().forEach(key -> HTMaterialsAPI.getLOGGER().info("Material: " + key));
+        HTMaterialsAPI.getINSTANCE().getShapeRegistry().keySet().forEach(key -> HTMaterialsAPI.getLOGGER().info("Shape: " + key));
+        HTMaterialsAPI.getINSTANCE().getMaterialRegistry().keySet().forEach(key -> HTMaterialsAPI.getLOGGER().info("Material: " + key));
     }
 
 }

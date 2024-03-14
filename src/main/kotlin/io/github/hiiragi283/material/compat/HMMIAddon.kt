@@ -6,6 +6,7 @@ import io.github.hiiragi283.api.extension.nonAirOrNull
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
+import io.github.hiiragi283.api.shape.HTShapeRegistry
 import net.minecraft.util.registry.Registry
 
 @Suppress("unused")
@@ -13,7 +14,7 @@ object HMMIAddon : HTMaterialsAddon {
     override val modId: String = "modern_industrialization"
     override val priority: Int = 0
 
-    override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
+    override fun modifyShapeRegistry(builder: HTShapeRegistry.Builder) {
         listOf(
             "blade",
             "bolt",
@@ -27,7 +28,7 @@ object HMMIAddon : HTMaterialsAddon {
             "rotor",
             "tiny_dust",
             "wire",
-        ).map(::HTShape).forEach(shapeHelper::addShape)
+        ).map(::HTShape).forEach(builder::add)
     }
 
     override fun modifyPartManager(builder: HTPartManager.Builder) {

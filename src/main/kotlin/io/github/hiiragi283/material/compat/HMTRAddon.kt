@@ -5,6 +5,7 @@ import io.github.hiiragi283.api.extension.notEmptyOrNull
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
+import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.api.shape.HTShapes
 import net.fabricmc.api.EnvType
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext
@@ -25,8 +26,8 @@ object HMTRAddon : HTMaterialsAddon {
     @JvmField
     val SMALL_DUST = HTShape("small_dust")
 
-    override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
-        shapeHelper.addShape(SMALL_DUST)
+    override fun modifyShapeRegistry(builder: HTShapeRegistry.Builder) {
+        builder += SMALL_DUST
     }
 
     override fun modifyPartManager(builder: HTPartManager.Builder) {

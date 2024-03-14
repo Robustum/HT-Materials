@@ -16,13 +16,13 @@ interface HTMaterialsAPI {
         const val MOD_NAME: String = "HT Materials"
 
         @JvmStatic
-        val INSTANCE: HTMaterialsAPI = getSingleton()
-
-        @JvmStatic
         fun id(path: String) = Identifier(MOD_ID, path)
 
         @JvmStatic
         val LOGGER: Logger = LogManager.getLogger(MOD_NAME)
+
+        @JvmStatic
+        val INSTANCE: HTMaterialsAPI = getSingleton()
     }
 
     val iconItem: Item
@@ -32,4 +32,6 @@ interface HTMaterialsAPI {
     val materialRegistry: HTMaterialRegistry
     val fluidManager: HTFluidManager
     val partManager: HTPartManager
+
+    fun forEachAddon(action: (HTMaterialsAddon) -> Unit)
 }

@@ -5,7 +5,6 @@ import io.github.hiiragi283.api.extension.runTryAndCatch
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.tag.TagsUpdatedEvent
-import io.github.hiiragi283.material.HTMaterialsCore
 import net.minecraft.fluid.Fluid
 import net.minecraft.tag.Tag
 import net.minecraft.tag.TagManager
@@ -27,7 +26,9 @@ object HTFluidManagerImpl : HTFluidManager, TagsUpdatedEvent {
         if (isClient) return
         HTFluidManager.Builder().run {
             // Register from Addons
-            HTMaterialsCore.addons.forEach { runTryAndCatch { it.modifyFluidManager(this) } }
+            HTMaterialsAPI.INSTANCE.forEachAddon {
+                runTryAndCatch { it.modifyFluidManager(this) }
+            }
             // Reload
             val fluidToMaterial: MutableMap<Fluid, HTMaterialKey> = mutableMapOf()
             val materialToFluid: MutableMap<HTMaterialKey, MutableSet<Fluid>> = mutableMapOf()

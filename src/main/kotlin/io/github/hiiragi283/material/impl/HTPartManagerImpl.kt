@@ -5,7 +5,6 @@ import io.github.hiiragi283.api.extension.runTryAndCatch
 import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.tag.TagsUpdatedEvent
-import io.github.hiiragi283.material.HTMaterialsCore
 import net.minecraft.item.Item
 import net.minecraft.tag.Tag
 import net.minecraft.tag.TagManager
@@ -27,7 +26,7 @@ object HTPartManagerImpl : HTPartManager, TagsUpdatedEvent {
         if (isClient) return
         HTPartManager.Builder().run {
             // Reload from Addons
-            HTMaterialsCore.addons.forEach { runTryAndCatch { it.modifyPartManager(this) } }
+            HTMaterialsAPI.INSTANCE.forEachAddon { runTryAndCatch { it.modifyPartManager(this) } }
             // Reload
             val itemToPart: MutableMap<Item, HTPart> = mutableMapOf()
             val partToItem: MutableMap<HTPart, MutableSet<Item>> = mutableMapOf()

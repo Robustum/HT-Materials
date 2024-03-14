@@ -4,13 +4,14 @@ import com.google.common.collect.HashMultimap
 import com.google.common.collect.Multimap
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
+import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.element.HTElement
-import io.github.hiiragi283.api.material.flag.HTMaterialFlagSet
-import io.github.hiiragi283.api.material.property.HTMaterialPropertyMap
+import io.github.hiiragi283.api.material.property.HTMaterialProperty
+import io.github.hiiragi283.api.material.property.HTPropertyType
 import io.github.hiiragi283.api.part.HTPartManager
-import io.github.hiiragi283.api.shape.HTShape
+import io.github.hiiragi283.api.shape.HTShapeRegistry
 import net.fabricmc.api.EnvType
 import net.minecraft.util.Identifier
 
@@ -24,9 +25,12 @@ interface HTMaterialsAddon {
 
     //    Pre Initialize    //
 
-    fun registerShape(shapeHelper: ShapeHelper) {}
-
+    @Deprecated("Use modifyMaterialRegistry()")
     fun registerMaterial(materialHelper: MaterialHelper) {}
+
+    fun modifyShapeRegistry(builder: HTShapeRegistry.Builder) {}
+
+    fun modifyMaterialRegistry(builder: HTMaterialRegistry.Builder) {}
 
     //    Post Initialization    //
 
@@ -35,23 +39,6 @@ interface HTMaterialsAddon {
     fun modifyPartManager(builder: HTPartManager.Builder) {}
 
     fun postInitialize(envType: EnvType) {}
-
-    //    ShapeHelper    //
-
-    class ShapeHelper {
-        // Shape key
-        val shapeKeys: Set<String>
-            get() = _shapeKeys
-        private val _shapeKeys: MutableSet<String> = mutableSetOf()
-
-        fun addShape(shapeKey: HTShape) {
-            addShape(shapeKey.name)
-        }
-
-        fun addShape(name: String) {
-            check(_shapeKeys.add(name)) { "Shape named $name is already registered!" }
-        }
-    }
 
     //    MaterialHelper    //
 
@@ -84,15 +71,21 @@ interface HTMaterialsAddon {
         }
 
         // Material flag
-        private val flagMap: MutableMap<HTMaterialKey, HTMaterialFlagSet.Builder> = hashMapOf()
+        private val flagMap: MutableMap<HTMaterialKey, MutableSet<Identifier>> = hashMapOf()
 
-        fun getOrCreateFlagSet(key: HTMaterialKey): HTMaterialFlagSet.Builder = flagMap.computeIfAbsent(key) { HTMaterialFlagSet.Builder() }
+        fun getOrCreateFlagSet(key: HTMaterialKey): MutableSet<Identifier> = flagMap.computeIfAbsent(key) { hashSetOf() }
 
         // Material Property
-        private val propertyMap: MutableMap<HTMaterialKey, HTMaterialPropertyMap.Builder> = hashMapOf()
+        private val propertyMap: MutableMap<HTMaterialKey, MutableMap<HTPropertyType<*>, HTMaterialProperty<*>>> =
+            hashMapOf()
 
-        fun getOrCreatePropertyMap(key: HTMaterialKey): HTMaterialPropertyMap.Builder =
-            propertyMap.computeIfAbsent(key) { HTMaterialPropertyMap.Builder() }
+        fun getOrCreatePropertyMap(key: HTMaterialKey): MutableMap<HTPropertyType<*>, HTMaterialProperty<*>> =
+            propertyMap.computeIfAbsent(key) { hashMapOf() }
+
+        @JvmOverloads
+        fun <T : HTMaterialProperty<T>> addProperty(key: HTMaterialKey, property: T, action: T.() -> Unit = {}) {
+            getOrCreatePropertyMap(key)[property.type] = property.apply(action)
+        }
 
         // Material Type
         private val typeMap: MutableMap<HTMaterialKey, HTMaterialType> = hashMapOf()

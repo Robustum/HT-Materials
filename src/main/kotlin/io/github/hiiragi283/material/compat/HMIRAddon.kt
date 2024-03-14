@@ -6,9 +6,11 @@ import io.github.hiiragi283.api.extension.averageColor
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
+import io.github.hiiragi283.api.material.HTMaterialRegistry
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
+import io.github.hiiragi283.api.shape.HTShapeRegistry
 import io.github.hiiragi283.api.shape.HTShapes
 import me.steven.indrev.IndustrialRevolution
 import me.steven.indrev.registry.IRFluidRegistry
@@ -30,19 +32,17 @@ object HMIRAddon : HTMaterialsAddon {
     @JvmField
     val NIKOLITE = HTMaterialKey("nikolite")
 
-    override fun registerShape(shapeHelper: HTMaterialsAddon.ShapeHelper) {
-        shapeHelper.addShape(CHUNK)
-        shapeHelper.addShape(PURIFIED_ORE)
+    override fun modifyShapeRegistry(builder: HTShapeRegistry.Builder) {
+        builder += CHUNK
+        builder += PURIFIED_ORE
     }
 
-    override fun registerMaterial(materialHelper: HTMaterialsAddon.MaterialHelper) {
-        materialHelper.addMaterialKey(NIKOLITE)
-        materialHelper.setComposition(
-            NIKOLITE,
-            HTMaterialComposition.molecular {
+    override fun modifyMaterialRegistry(builder: HTMaterialRegistry.Builder) {
+        builder.getOrCreate(NIKOLITE).run {
+            composition = HTMaterialComposition.molecular {
                 color = averageColor(HTColor.DARK_BLUE, HTColor.DARK_GREEN)
-            },
-        )
+            }
+        }
     }
 
     override fun modifyFluidManager(builder: HTFluidManager.Builder) {
