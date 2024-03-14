@@ -7,9 +7,7 @@ import net.minecraft.text.Text
 
 @JvmDefaultWithCompatibility
 interface HTMaterialProperty<T : HTMaterialProperty<T>> {
-    val key: HTPropertyKey<T>
-
-    fun verify(material: HTMaterial)
+    val type: HTPropertyType<T>
 
     fun appendTooltip(
         material: HTMaterial,

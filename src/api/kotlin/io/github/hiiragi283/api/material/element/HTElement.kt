@@ -1,5 +1,8 @@
 package io.github.hiiragi283.api.material.element
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import io.github.hiiragi283.api.extension.ColorCodec
 import io.github.hiiragi283.api.extension.averageColor
 import io.github.hiiragi283.api.extension.calculateMolar
 import io.github.hiiragi283.api.extension.formatFormula
@@ -14,6 +17,15 @@ data class HTElement private constructor(
     fun bracket() = copy(formula = "($formula)")
 
     companion object {
+        @JvmField
+        val CODEC: Codec<HTElement> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                ColorCodec.fieldOf("color").forGetter(HTElement::color),
+                Codec.STRING.orElse("").fieldOf("formula").forGetter(HTElement::formula),
+                Codec.DOUBLE.orElse(0.0).fieldOf("molar").forGetter(HTElement::molar),
+            ).apply(instance, ::of)
+        }
+
         @JvmStatic
         fun of(color: Color, formula: String, molar: Double): HTElement = HTElement(color, formula, molar)
 
