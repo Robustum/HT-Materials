@@ -1,6 +1,16 @@
 package io.github.hiiragi283.api.extension
 
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
 import java.awt.Color
+
+val ColorCodec: Codec<Color> = RecordCodecBuilder.create { instance ->
+    instance.group(
+        Codec.INT.fieldOf("red").forGetter(Color::getRed),
+        Codec.INT.fieldOf("green").forGetter(Color::getGreen),
+        Codec.INT.fieldOf("blue").forGetter(Color::getBlue),
+    ).apply(instance) { r, g, b -> Color(r, g, b) }
+}
 
 fun averageColor(vararg colors: Color): Color = averageColor(colors.associateWith { 1 })
 

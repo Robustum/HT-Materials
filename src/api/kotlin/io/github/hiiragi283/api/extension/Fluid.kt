@@ -43,4 +43,4 @@ val Fluid.isFlowable: Boolean
     get() = this is FlowableFluid
 
 val Fluid.asFlowableOrNull: FlowableFluid?
-    get() = this.castTo()
+    get() = this as? FlowableFluid
