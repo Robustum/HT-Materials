@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "ht_materials_test",
+  "version": "${version}",
+  "name": "HT Materials Test",
+  "description": "A simple Minecraft mod for Fabric/Quilt that provides Material System and Tag Sync",
+  "authors": [
+    "Hiiragi283"
+  ],
+  "contributors": [
+    "MrKono"
+  ],
+  "contact": {
+    "issues": "https://github.com/Hiiragi283/HT-Materials/issues",
+    "sources": "https://github.com/Hiiragi283/HT-Materials"
+  },
+  "license": [
+    "MPL-2.0"
+  ],
+  "icon": "assets/ht_materials/textures/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.test.HTMaterialsTest"
+      }
+    ],
+    "ht_materials": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hiiragi283.material.test.HTMaterialsAddonTest"
+      }
+    ]
+  },
+  "mixins": [],
+  "depends": {
+    "fabric": "*",
+    "fabric-language-kotlin": "*",
+    "fabricloader": ">=0.15.0",
+    "minecraft": "1.16.5"
+  }
+}

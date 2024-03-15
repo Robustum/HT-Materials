@@ -17,11 +17,17 @@ sourceSets {
         compileClasspath += getByName("api").output
         runtimeClasspath += getByName("api").output
     }
+    getByName("test") {
+        compileClasspath += getByName("api").output
+        runtimeClasspath += getByName("api").output
+    }
 }
 
 configurations {
     // names.forEach { print("$it\n") }
-    getByName("apiCompileClasspath").extendsFrom(getByName("compileClasspath"))
+    getByName("apiCompileClasspath")
+        .extendsFrom(getByName("compileClasspath"))
+        .extendsFrom(getByName("testCompileClasspath"))
 }
 
 repositories {
@@ -67,12 +73,12 @@ dependencies {
         exclude(module = "fabric-api")
         exclude(module = "fabric-loader")
     }
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+    // modImplementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/ht_materials.accesswidener")
+    // accessWidenerPath = file("src/main/resources/ht_materials.accesswidener")
     log4jConfigs.from(file("log4j.xml"))
     runs {
         getByName("client") {
@@ -82,6 +88,11 @@ loom {
         getByName("server") {
             runDir = "server"
             vmArg("-Dmixin.debug.export=true")
+        }
+        create("test") {
+            client()
+            runDir = "run"
+            source(sourceSets.getByName("test"))
         }
     }
 }

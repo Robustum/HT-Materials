@@ -70,8 +70,6 @@
     "fabric": "*",
     "fabric-language-kotlin": "*",
     "fabricloader": ">=0.15.0",
-    "ht_tag_formatter": "*",
     "minecraft": "1.16.5"
-  },
-  "accessWidener" : "ht_materials.accesswidener"
+  }
 }

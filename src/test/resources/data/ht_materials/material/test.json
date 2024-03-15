@@ -1,0 +1,31 @@
+{
+  "composition": {
+    "components": [
+      {
+        "element": {
+          "color": {
+            "red": 255,
+            "green": 0,
+            "blue": 63
+          },
+          "formula": "Ht",
+          "molar": 283.0
+        },
+        "weight": 2
+      }
+    ]
+  },
+  "flags": [
+    "c:test1",
+    "c:test2"
+  ],
+  "properties": [
+    {
+      "type": "ht_materials:test_type",
+      "property": {
+        "name": "test",
+        "value": 12
+      }
+    }
+  ]
+}
