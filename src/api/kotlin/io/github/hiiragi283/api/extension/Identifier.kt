@@ -11,3 +11,11 @@ inline fun Identifier.modify(function: (String) -> String) = Identifier(this.nam
 fun Identifier.removePrefix(prefix: String) = Identifier(this.namespace, this.path.removePrefix(prefix))
 
 fun Identifier.removeSuffix(suffix: String) = Identifier(this.namespace, this.path.removeSuffix(suffix))
+
+fun Identifier.arrange(prefix: String? = null, suffix: String? = null): Identifier = Identifier(
+    namespace,
+    this.path.also {
+        prefix?.let(it::removePrefix)
+        suffix?.let(it::removeSuffix)
+    },
+)

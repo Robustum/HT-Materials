@@ -3,7 +3,7 @@ package io.github.hiiragi283.material.impl
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.extension.modify
+import io.github.hiiragi283.api.extension.arrange
 import io.github.hiiragi283.api.tag.TagsBuildingEvent
 import net.minecraft.resource.Resource
 import net.minecraft.resource.ResourceManager
@@ -20,7 +20,7 @@ object HMMixinsImpl {
     fun loadTagMap(manager: ResourceManager, dataType: String): Map<Identifier, Tag.Builder> {
         val result: MutableMap<Identifier, Tag.Builder> = hashMapOf()
         manager.findResources(dataType) { it.endsWith(".json") }.forEach { id: Identifier ->
-            val tagId: Identifier = id.modify { it.removePrefix("$dataType/").removeSuffix(".json") }
+            val tagId: Identifier = id.arrange("$dataType/", ".json")
             manager.getAllResources(id).forEach { resource: Resource ->
                 resource.use {
                     resource
