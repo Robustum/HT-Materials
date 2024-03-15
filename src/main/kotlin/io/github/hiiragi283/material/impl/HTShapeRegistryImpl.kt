@@ -42,8 +42,8 @@ object HTShapeRegistryImpl : HTShapeRegistry, SimpleSynchronousResourceReloadLis
             HTShapeRegistry.Builder(this).run {
                 // Reload from data pack
                 manager.findResources("shape") { it.endsWith(".json") }
-                    .map(Identifier::getPath)
-                    .forEach<String>(::add)
+                    .map { it.path.removePrefix("shape/").removeSuffix(".json") }
+                    .forEach(::add)
                 // Reload from addons
                 HTMaterialsAPI.INSTANCE.forEachAddon { it.modifyShapeRegistry(this) }
             }

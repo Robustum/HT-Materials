@@ -1,7 +1,6 @@
 package io.github.hiiragi283.api.material.composition
 
 import com.google.gson.JsonObject
-import com.mojang.serialization.Codec
 import com.mojang.serialization.JsonOps
 import io.github.hiiragi283.api.extension.*
 import io.github.hiiragi283.api.material.element.HTElement
@@ -32,16 +31,17 @@ abstract class HTMaterialComposition {
                         ?.getOrNull()
                         ?.let { it to weight }
                 }.toMap()
-            val color: Color = ColorCodec.parse(JsonOps.INSTANCE, JsonHelper.getObject(jsonObject, "color"))
-                .result()
-                .orElse(HTColor.WHITE)
-            val formula: String = Codec.STRING.parse(JsonOps.INSTANCE, jsonObject.get("formula"))
-                .result()
-                .orElse("")
-            val molar: Double = Codec.DOUBLE.parse(JsonOps.INSTANCE, jsonObject.get("molar"))
-                .result()
-                .orElse(0.0)
-            return Mutable(components, color, formula, molar)
+            val color: Color? = JsonHelper.getObject(jsonObject, "color", null)
+                ?.let { ColorCodec.parse(JsonOps.INSTANCE, it) }
+                ?.result()
+                ?.getOrNull()
+            val formula: String? = JsonHelper.getString(jsonObject, "formula", null)
+            val molar: Double? = if (jsonObject.has("molar")) jsonObject.getAsJsonPrimitive("molar").asDouble else null
+            return Mutable(components).apply {
+                color?.let { this.color = it }
+                formula?.let { this.formula = it }
+                molar?.let { this.molar = it }
+            }
         }
 
         //    Molecular    //

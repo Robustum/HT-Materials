@@ -23,6 +23,11 @@ class HTMaterialDisplay(val material: HTMaterial) : RecipeDisplay {
                 .map(EntryStack::create),
         )
     }
+    val iconItem: EntryStack = material.defaultShape
+        ?.let { HTMaterialsAPI.INSTANCE.partManager.getDefaultItem(key, it) }
+        ?.let { EntryStack.create(it) }
+        ?: entries.getOrNull(0)
+        ?: EntryStack.empty()
 
     override fun getInputEntries(): List<List<EntryStack>> = listOf(entries)
 

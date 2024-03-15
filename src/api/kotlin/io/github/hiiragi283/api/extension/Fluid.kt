@@ -13,11 +13,6 @@ import net.minecraft.block.Block
 import net.minecraft.fluid.FlowableFluid
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
-import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
-
-val Fluid.id: Identifier
-    get() = Registry.FLUID.getId(this)
 
 private val EMPTY_RENDER_HANDLER = FluidRenderHandler { _, _, _ -> arrayOf() }
 

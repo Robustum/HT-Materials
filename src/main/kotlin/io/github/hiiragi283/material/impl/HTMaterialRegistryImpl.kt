@@ -62,7 +62,7 @@ object HTMaterialRegistryImpl : HTMaterialRegistry, SimpleSynchronousResourceRel
             HTMaterialRegistry.Builder(this).run {
                 // Reload from data pack
                 manager.findResources("material") { it.endsWith(".json") }.forEach { id: Identifier ->
-                    val key = HTMaterialKey(id.path)
+                    val key = HTMaterialKey(id.path.removePrefix("material/").removeSuffix(".json"))
                     manager.getAllResources(id).forEach { resource: Resource ->
                         resource.use { resource1: Resource ->
                             resource1

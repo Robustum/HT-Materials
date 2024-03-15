@@ -25,7 +25,7 @@ interface HTPropertyType<T : HTMaterialProperty<T>> {
         fun deserializeJson(jsonObject: JsonObject): HTMaterialProperty<*> {
             val id: Identifier = JsonHelper.getString(jsonObject, "type").let(::Identifier)
             val type: HTPropertyType<*> = checkNotNull(REGISTRY.get(id))
-            return type.readJson(jsonObject)
+            return type.readJson(JsonHelper.getObject(jsonObject, "property"))
         }
     }
 }

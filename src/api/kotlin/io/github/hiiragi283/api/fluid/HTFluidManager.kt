@@ -8,6 +8,7 @@ import io.github.hiiragi283.api.material.HTMaterialKeys
 import net.minecraft.fluid.Fluid
 import net.minecraft.fluid.Fluids
 import net.minecraft.tag.Tag
+import net.minecraft.util.registry.Registry
 
 interface HTFluidManager {
     // Fluid -> Fluid
@@ -23,7 +24,7 @@ interface HTFluidManager {
     fun getDefaultFluid(materialKey: HTMaterialKey): Fluid? {
         val fluids: Collection<Fluid> = get(materialKey)
         for (fluid in fluids) {
-            val namespace = fluid.id.namespace
+            val namespace = fluid.id(Registry.FLUID::getId).namespace
             return when (namespace) {
                 "minecraft" -> fluid
                 HTMaterialsAPI.MOD_ID -> fluid

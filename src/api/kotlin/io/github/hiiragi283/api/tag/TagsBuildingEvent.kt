@@ -1,7 +1,6 @@
 package io.github.hiiragi283.api.tag
 
 import io.github.hiiragi283.api.extension.createEvent
-import io.github.hiiragi283.api.extension.id
 import net.fabricmc.fabric.api.event.Event
 import net.minecraft.tag.Tag
 import net.minecraft.util.Identifier
@@ -28,8 +27,6 @@ fun interface TagsBuildingEvent {
     }
 
     class Handler(val map: MutableMap<Identifier, Tag.Builder>) {
-        inline fun <reified T> builder(tag: Tag<T>): Tag.Builder = tag.id()?.let(::builder) ?: Tag.Builder.create()
-
         fun builder(id: Identifier): Tag.Builder = map.computeIfAbsent(id) { Tag.Builder.create() }
     }
 }

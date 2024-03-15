@@ -69,11 +69,11 @@ class HTMaterial(
 
     //    Other    //
 
-    fun appendTooltip(shapeKey: HTShape?, stack: ItemStack, lines: MutableList<Text>) {
+    fun appendTooltip(shape: HTShape?, stack: ItemStack, lines: MutableList<Text>) {
         // Title
         lines.add(TranslatableText("tooltip.ht_materials.material.title"))
         // Name
-        val name: String = shapeKey?.getTranslatedName(key) ?: key.translatedName
+        val name: String = shape?.getTranslatedName(key) ?: key.translatedName
         lines.add(TranslatableText("tooltip.ht_materials.material.name", name))
         // Type
         lines.add(TranslatableText("tooltip.ht_materials.material.type", type))
@@ -86,7 +86,7 @@ class HTMaterial(
             lines.add(TranslatableText("tooltip.ht_materials.material.molar", molar))
         }
         // Tooltip from Properties
-        properties.values.forEach { it.appendTooltip(this, shapeKey, stack, lines) }
+        properties.values.forEach { it.appendTooltip(this, shape, stack, lines) }
     }
 
     //    Any    //

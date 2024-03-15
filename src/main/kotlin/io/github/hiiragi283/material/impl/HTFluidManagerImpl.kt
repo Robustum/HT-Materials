@@ -1,7 +1,6 @@
 package io.github.hiiragi283.material.impl
 
 import io.github.hiiragi283.api.HTMaterialsAPI
-import io.github.hiiragi283.api.extension.runTryAndCatch
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.tag.TagsUpdatedEvent
@@ -26,9 +25,7 @@ object HTFluidManagerImpl : HTFluidManager, TagsUpdatedEvent {
         if (isClient) return
         HTFluidManager.Builder().run {
             // Register from Addons
-            HTMaterialsAPI.INSTANCE.forEachAddon {
-                runTryAndCatch { it.modifyFluidManager(this) }
-            }
+            HTMaterialsAPI.INSTANCE.forEachAddon { it.modifyFluidManager(this) }
             // Reload
             val fluidToMaterial: MutableMap<Fluid, HTMaterialKey> = mutableMapOf()
             val materialToFluid: MutableMap<HTMaterialKey, MutableSet<Fluid>> = mutableMapOf()

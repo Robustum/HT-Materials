@@ -16,12 +16,12 @@ import org.apache.logging.log4j.LogManager
 
 object HTMaterialsTest : ModInitializer {
     private val logger = LogManager.getLogger(HTMaterialsTest::class.java)
-    
+
     override fun onInitialize() {
         Registry.register(
             HTPropertyType.REGISTRY,
             HTMaterialsAPI.id("test_type"),
-            Type
+            Type,
         )
         logger.info("HTMaterialsTest initialized!")
     }
@@ -37,7 +37,12 @@ object HTMaterialsTest : ModInitializer {
     class Property(private val name: String, private val value: Int) : HTMaterialProperty<Property> {
         override val type: HTPropertyType<Property> = Type
 
-        override fun appendTooltip(material: HTMaterial, shape: HTShape?, stack: ItemStack, lines: MutableList<Text>) {
+        override fun appendTooltip(
+            material: HTMaterial,
+            shape: HTShape?,
+            stack: ItemStack,
+            lines: MutableList<Text>,
+        ) {
             lines.add(LiteralText("- Name: $name"))
             lines.add(LiteralText("- Value: $value"))
         }

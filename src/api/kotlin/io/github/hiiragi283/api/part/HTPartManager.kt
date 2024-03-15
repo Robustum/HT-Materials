@@ -11,6 +11,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
 import net.minecraft.tag.Tag
+import net.minecraft.util.registry.Registry
 
 interface HTPartManager {
     // Item -> HTPart
@@ -28,7 +29,7 @@ interface HTPartManager {
     fun getDefaultItem(materialKey: HTMaterialKey, shape: HTShape): Item? {
         val items: Collection<Item> = get(materialKey, shape)
         for (item: Item in items) {
-            val namespace: String = item.id.namespace
+            val namespace: String = item.id(Registry.ITEM::getId).namespace
             return when (namespace) {
                 "minecraft" -> item
                 HTMaterialsAPI.MOD_ID -> item

@@ -5,10 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder
 import io.github.hiiragi283.api.material.HTMaterial
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.shape.HTShape
-import net.fabricmc.fabric.api.tag.TagRegistry
-import net.minecraft.item.Item
-import net.minecraft.tag.Tag
-import net.minecraft.util.Identifier
 
 data class HTPart(
     val materialKey: HTMaterialKey,
@@ -30,9 +26,4 @@ data class HTPart(
 
     val material: HTMaterial
         get() = materialKey.material
-
-    val partId: Identifier = Identifier("c", "$shape/$materialKey")
-
-    val partTag: Tag<Item>
-        get() = TagRegistry.item(partId)
 }

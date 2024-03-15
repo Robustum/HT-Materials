@@ -6,11 +6,6 @@ import net.minecraft.item.BlockItem
 import net.minecraft.item.Item
 import net.minecraft.item.ItemConvertible
 import net.minecraft.item.Items
-import net.minecraft.util.Identifier
-import net.minecraft.util.registry.Registry
-
-val Item.id: Identifier
-    get() = Registry.ITEM.getId(this)
 
 val Item.asBlock: Block
     get() = (this as? BlockItem)?.block ?: Blocks.AIR

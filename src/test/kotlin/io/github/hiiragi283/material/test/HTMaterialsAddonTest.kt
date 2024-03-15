@@ -11,7 +11,7 @@ object HTMaterialsAddonTest : HTMaterialsAddon {
     override val priority: Int = -90
 
     private val testMaterialKey = HTMaterialKey("test")
-    
+
     override fun modifyPartManager(builder: HTPartManager.Builder) {
         builder.add(testMaterialKey, HTShapes.INGOT, Items.GLASS_BOTTLE)
     }

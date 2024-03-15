@@ -29,7 +29,7 @@ object HTMaterialCategory : RecipeCategory<HTMaterialDisplay> {
         val widgets: MutableList<Widget> = mutableListOf()
         widgets += Widgets
             .createSlot(Point(bounds.centerX - 8, bounds.y + 3))
-            .entry(display.entries.firstOrNull() ?: EntryStack.empty())
+            .entry(display.iconItem)
         val rectangle = Rectangle(
             bounds.centerX - bounds.width / 2 - 1,
             bounds.y + 23,

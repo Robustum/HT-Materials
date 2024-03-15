@@ -11,7 +11,7 @@ interface HTMaterialProperty<T : HTMaterialProperty<T>> {
 
     fun appendTooltip(
         material: HTMaterial,
-        shapeKey: HTShape?,
+        shape: HTShape?,
         stack: ItemStack,
         lines: MutableList<Text>,
     ) {}

@@ -23,12 +23,10 @@ class HTMaterialKey(val name: String) {
 
     //    Identifier    //
 
-    fun getIdentifier(namespace: String = HTMaterialsAPI.MOD_ID): Identifier = Identifier(namespace, name)
+    fun getId(namespace: String = HTMaterialsAPI.MOD_ID): Identifier = Identifier(namespace, name)
 
     val commonId: Identifier
         get() = Identifier("c", name)
-
-    fun getMaterialId() = getIdentifier("material")
 
     //    Translation    //
 

@@ -2,15 +2,13 @@ package io.github.hiiragi283.material.compat
 
 import io.github.hiiragi283.api.HTMaterialsAPI
 import io.github.hiiragi283.api.HTMaterialsAddon
-import io.github.hiiragi283.api.extension.HTColor
-import io.github.hiiragi283.api.extension.averageColor
+import io.github.hiiragi283.api.extension.*
 import io.github.hiiragi283.api.fluid.HTFluidManager
 import io.github.hiiragi283.api.material.HTMaterialKey
 import io.github.hiiragi283.api.material.HTMaterialKeys
 import io.github.hiiragi283.api.material.HTMaterialType
 import io.github.hiiragi283.api.material.composition.HTMaterialComposition
 import io.github.hiiragi283.api.material.element.HTElements
-import io.github.hiiragi283.api.part.HTPart
 import io.github.hiiragi283.api.part.HTPartManager
 import io.github.hiiragi283.api.shape.HTShape
 import io.github.hiiragi283.api.shape.HTShapeRegistry
@@ -19,6 +17,7 @@ import net.fabricmc.fabric.api.tag.TagRegistry
 import net.minecraft.fluid.Fluids
 import net.minecraft.item.Items
 import net.minecraft.tag.ItemTags
+import net.minecraft.util.registry.Registry
 import java.awt.Color
 
 internal object HTMaterialsInit : HTMaterialsAddon {
@@ -465,8 +464,13 @@ internal object HTMaterialsInit : HTMaterialsAddon {
         // Register vanilla fluids
         builder[HTMaterialKeys.WATER] = Fluids.WATER
         builder[HTMaterialKeys.LAVA] = Fluids.LAVA
-        // Register common tags
-        HTMaterialsAPI.INSTANCE.materialRegistry.keys.forEach { key: HTMaterialKey ->
+        // Register fluids from registry and conventional tags
+        HTMaterialsAPI.INSTANCE.materialRegistry.keys.forEach { key ->
+            allModsId.forEach { modId: String ->
+                Registry.FLUID.get(key.getId(modId)).notEmptyOrNull?.run {
+                    builder[key] = this
+                }
+            }
             builder[key] = TagRegistry.fluid(key.commonId)
         }
     }
@@ -474,10 +478,15 @@ internal object HTMaterialsInit : HTMaterialsAddon {
     override fun modifyPartManager(builder: HTPartManager.Builder) {
         // Register vanilla items
         registerVanillaItems(builder)
-        // Register part tags
+        // Register items from registry and conventional tags
         HTMaterialsAPI.INSTANCE.shapeRegistry.values.forEach { shape: HTShape ->
             HTMaterialsAPI.INSTANCE.materialRegistry.keys.forEach { key: HTMaterialKey ->
-                builder.add(key, shape, HTPart(key, shape).partTag)
+                allModsId.forEach { modId: String ->
+                    Registry.ITEM.get(shape.getId(key, modId)).nonAirOrNull?.run {
+                        builder.add(key, shape, this)
+                    }
+                }
+                builder.add(key, shape, shape.getTag(key))
             }
         }
     }
