@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+@SuppressWarnings("unused")
 @Mixin(TagGroupLoader.class)
 public abstract class TagGroupLoaderMixin<T> {
     @Shadow @Final private String dataType;

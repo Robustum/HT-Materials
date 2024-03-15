@@ -12,10 +12,12 @@ fun Identifier.removePrefix(prefix: String) = Identifier(this.namespace, this.pa
 
 fun Identifier.removeSuffix(suffix: String) = Identifier(this.namespace, this.path.removeSuffix(suffix))
 
-fun Identifier.arrange(prefix: String? = null, suffix: String? = null): Identifier = Identifier(
-    namespace,
-    this.path.also {
-        prefix?.let(it::removePrefix)
-        suffix?.let(it::removeSuffix)
-    },
-)
+fun Identifier.arrange(prefix: String? = null, suffix: String? = null): Identifier {
+    var arrangedPath: String = path
+    prefix?.let { arrangedPath = arrangedPath.removePrefix(it) }
+    suffix?.let { arrangedPath = arrangedPath.removeSuffix(it) }
+    return Identifier(
+        namespace,
+        arrangedPath,
+    )
+}
